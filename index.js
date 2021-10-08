@@ -13,7 +13,7 @@ app.use('/classes', express.static('classes'));
 io.on('connection', (socket) => {
   console.log('a user connected');
   socket.on('go', () => {
-    
+    console.log('f')
   })
 });
 
