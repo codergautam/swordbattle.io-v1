@@ -1,19 +1,13 @@
-<script type="module">
-
-// import kaboom lib
-import kaboom from "https://unpkg.com/kaboom@next/dist/kaboom.mjs";
-
-// initialize kaboom context
-kaboom({
-background: [255,255,255]
-});
-
-// add a piece of text at position (120, 80)
-add([
-    text("sword.io"),
-    pos(120, 80)
-]);
-
-
-
-</script>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sword.io</title>
+</head>
+<body>
+  <script src="/socket.io/socket.io.js"></script>
+  <script src="/classes/Player.js"></script>
+  <script type="module" src="/js/game.js"></script>
+</body>
+</html>
