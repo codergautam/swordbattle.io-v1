@@ -15,6 +15,17 @@ io.on('connection', (socket) => {
   socket.on('go', () => {
     socket.player = new Player()
   })
+
+  socket.on('angle', (angle) => {
+    socket.player.angle = angle
+    console.log(socket.player)
+  })
+
+  socket.on('mouseDown', (down) => {
+    socket.player.mouseDown = down;
+  })
+
+  
 });
 
 server.listen(3000, () => {
