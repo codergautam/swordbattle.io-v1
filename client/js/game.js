@@ -37,8 +37,9 @@ const sword = add([
 
 mouseMove((mousePos) => {
     var offset = 45
-    sword.angle = Math.atan2(mousePos.y - ((viewport().height - 10) / 2), mousePos.x - ((viewport().width - 10)/2))* 180 / Math.PI +45;
-    sword.pos = player.pos
+    sword.angle = Math.atan2(mousePos.y - ((viewport().height - 10) / 2), mousePos.x - ((viewport().width - 10)/2))* 180 / Math.PI +offset;
+   //sword.angle = Math.atan2(mousePos.y - sword.pos.y, mousePos.x - sword.pos.x)* 180 / Math.PI +45;
+    sword.pos = vec2(player.pos.x+player.width/6*Math.cos(sword.angle*Math.PI/180), player.pos.y+player.width/6*Math.sin(sword.angle*Math.PI/180))
     console.log(sword.pos)
 })
 
