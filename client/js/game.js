@@ -3,7 +3,6 @@ import { viewport } from "/js/functions.js"
 
 var socket = io()
 
-
 kaboom({
 background: [255,255,255],
 width: viewport().width - 10,
