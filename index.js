@@ -11,12 +11,25 @@ const Player = require("./classes/Player")
 app.use('/', express.static('client'));
 app.use('/classes', express.static('classes'));
 
+
 io.on('connection', (socket) => {
-  console.log('a user connected');
+  //console.log('a user connected');
 
   socket.on('go', () => {
     socket.player = new Player(socket.id)
     socket.broadcast.emit("new", socket.player)
+   io.fetchSockets().then((all) => {
+  all.filter(thesocket => thesocket.hasOwnProperty("player") && thesocket.id != socket.id)
+  if(all && all.length > 0) {
+
+  var allPlayers = []
+      console.log("all:")
+    console.log(allPlayers)
+  all.forEach(socket => allPlayers[allPlayers.length]= socket.player)
+  socket.emit("players", allPlayers)
+  }
+   })
+
   })
 
   socket.on('angle', (angle) => {

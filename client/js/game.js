@@ -1,5 +1,5 @@
 import kaboom from "https://unpkg.com/kaboom@next/dist/kaboom.mjs";
-import { viewport } from "/js/functions.js"
+import { viewport } from "/js/resources.js"
 
 var socket = io()
 
@@ -15,8 +15,9 @@ loadSprite("sword", "/assets/images/sword.png")
 
 var mouseDown =false
 var mousePos = vec2(0,0)
+var players = []
 // add a piece of text at position (120, 80)
-const player = add([
+var player = add([
 sprite("player"),
 pos(0,0),
 scale(0.25,0.25),
@@ -25,7 +26,7 @@ solid(),
 origin("center"),
 ]);
 
-const sword = add([
+var sword = add([
     sprite("sword"),
     pos(0,0),
     scale(0.25,0.25),
@@ -84,7 +85,31 @@ action(() => {
     
 })
 
+function addPlayer(player) {
+  players[players.length] = add([
+sprite("player"),
+pos(player.pos.x,player.pos.y),
+scale(0.25,0.25),
+area({ width: 12, height: 12, offset: vec2(0, 6) }),
+solid(),
+origin("center"),
+player.id
+]);
+}
 
+socket.on("players", (all) => {
+ for (player in all) {
+   addPlayer(player)
+ }
+})
+
+socket.on("new", (player) => {
+  addPlayer(player)
+})
+
+socket.on("myPos", (pos) => {
+  player.pos = vec2(pos.x, pos.y)
+})
 
 
 camPos(player.pos)

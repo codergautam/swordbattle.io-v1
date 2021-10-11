@@ -10,8 +10,8 @@ class Player {
   }
 
   move(controller) {
-    if(controller.up) this.pos.y += this.speed
-    if(controller.down) this.pos.y -= this.speed
+    if(controller.up) this.pos.y -= this.speed
+    if(controller.down) this.pos.y += this.speed
     if(controller.right) this.pos.x += this.speed
     if(controller.left) this.pos.x -= this.speed
   }
