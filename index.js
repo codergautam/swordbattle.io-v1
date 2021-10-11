@@ -11,42 +11,52 @@ const Player = require("./classes/Player")
 app.use('/', express.static('client'));
 app.use('/classes', express.static('classes'));
 
+Object.filter = (obj, predicate) => 
+    Object.keys(obj)
+          .filter( key => predicate(obj[key]) )
+          .reduce( (res, key) => (res[key] = obj[key], res), {} );
+
+var players = {}
 
 io.on('connection', (socket) => {
-  //console.log('a user connected');
+  console.log('a user connected\n'+socket.id);
 
-  socket.on('go', () => {
-    socket.player = new Player(socket.id)
-    socket.broadcast.emit("new", socket.player)
-   io.fetchSockets().then((all) => {
-  all.filter(thesocket => thesocket.hasOwnProperty("player") && thesocket.id != socket.id)
-  if(all && all.length > 0) {
 
-  var allPlayers = []
-      console.log("all:")
+  socket.on('go', async () => {
+    players[socket.id] = new Player(socket.id)
+    socket.broadcast.emit("new", players[socket.id])
+
+  var allPlayers = Object.values(players)
+  allPlayers = allPlayers.filter(player => player.id != socket.id)
+
+  if(allPlayers && allPlayers.length > 0) {
+    socket.emit("players", allPlayers)
     console.log(allPlayers)
-  all.forEach(socket => allPlayers[allPlayers.length]= socket.player)
-  socket.emit("players", allPlayers)
   }
-   })
+   
 
   })
 
   socket.on('angle', (angle) => {
-    socket.player.angle = angle
+    players[socket.id].angle = angle
     socket.broadcast.emit("angle", socket.id, angle)
   })
 
   socket.on('mouseDown', (down) => {
-    socket.player.mouseDown = down;
+    players[socket.id].mouseDown = down;
     socket.broadcast.emit("down", socket.id, down)
   })
 
   socket.on('move', (controller) => {
-    socket.player.move(controller)
+    players[socket.id] = players[socket.id].move(controller)
 
-    socket.emit("myPos", socket.player.pos)
-    socket.broadcast.emit("move", socket.id, socket.player.pos)
+    socket.emit("myPos", players[socket.id].pos)
+    socket.broadcast.emit("move", socket.id, players[socket.id].pos)
+  })
+
+  socket.on('disconnect', () => {
+    players = Object.filter(players, player => player.id != socket.id)
+    socket.broadcast.emit("playerLeave", socket.id)
   })
 });
 /*

@@ -82,6 +82,7 @@ action(() => {
  
 
    socket.emit("move", controller);
+   camPos(player.pos)
     
 })
 
@@ -97,14 +98,26 @@ player.id
 ]);
 }
 
-socket.on("players", (all) => {
- for (player in all) {
-   addPlayer(player)
- }
+function removePlayer(playerId) {
+  console.log(playerId)
+  var index = players.findIndex(player => player.id == playerId)
+  console.log(index)
+  destroy(players.indexOf(index))
+  players.splice(index, 1);
+
+}
+
+socket.on("players", (players) => {
+ players.forEach(player => addPlayer(player))
+ console.log(players)
 })
 
 socket.on("new", (player) => {
   addPlayer(player)
+})
+
+socket.on("playerLeave", (id) => {
+  removePlayer(id)
 })
 
 socket.on("myPos", (pos) => {
@@ -112,5 +125,5 @@ socket.on("myPos", (pos) => {
 })
 
 
-camPos(player.pos)
+
 socket.emit("go")

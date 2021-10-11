@@ -14,6 +14,7 @@ class Player {
     if(controller.down) this.pos.y += this.speed
     if(controller.right) this.pos.x += this.speed
     if(controller.left) this.pos.x -= this.speed
+    return this
   }
 }
 
