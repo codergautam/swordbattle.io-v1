@@ -100,7 +100,7 @@ solid(),
 origin("center"),
 player.id
 ]);
-
+/*
 swords[swords.length] = add([
   sprite("sword"),
   pos(player.pos.x,player.pos.y),
@@ -110,13 +110,15 @@ swords[swords.length] = add([
   origin("center"),
   player.id
   ]);
+  */
 }
+
 
 function removePlayer(playerId) {
   destroy(get(playerId)[0])
   destroy(get(playerId)[1])
   players.splice(players.findIndex(player => player.id == playerId), 1);
-  swords.splice(swords.findIndex(sword => sword.id == playerId), 1);
+ // swords.splice(swords.findIndex(sword => sword.id == playerId), 1);
 }
 
 socket.on("players", (players) => {
