@@ -3,6 +3,7 @@ node_modules/
 .env
 # Compiled source #
 ###################
+.breakpoints
 *.com
 *.class
 *.dll

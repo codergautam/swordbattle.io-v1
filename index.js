@@ -8,7 +8,9 @@ const io = new Server(server);
 
 const Player = require("./classes/Player")
 
-app.use('/', express.static('client'));
+app.use('/', express.static('pixiclient'));
+app.use('/kaboomclient', express.static('kaboomclient'));
+app.use('/assets', express.static('assets'));
 app.use('/classes', express.static('classes'));
 
 Object.filter = (obj, predicate) => 
