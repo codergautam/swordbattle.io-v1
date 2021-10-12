@@ -8,7 +8,7 @@ const io = new Server(server);
 
 const Player = require("./classes/Player")
 
-app.use('/', express.static('pixiclient'));
+app.use('/', express.static('phaserclient'));
 app.use('/kaboomclient', express.static('kaboomclient'));
 app.use('/assets', express.static('assets'));
 app.use('/classes', express.static('classes'));

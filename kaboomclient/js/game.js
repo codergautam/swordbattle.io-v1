@@ -100,7 +100,7 @@ solid(),
 origin("center"),
 player.id
 ]);
-/*
+
 swords[swords.length] = add([
   sprite("sword"),
   pos(player.pos.x,player.pos.y),
@@ -110,15 +110,20 @@ swords[swords.length] = add([
   origin("center"),
   player.id
   ]);
-  */
+  
 }
 
 
 function removePlayer(playerId) {
+  try {
+  players.splice(players.findIndex(player => player.is(playerId)), 1);
+  swords.splice(swords.findIndex(sword => sword.is(playerId)), 1);
   destroy(get(playerId)[0])
   destroy(get(playerId)[1])
-  players.splice(players.findIndex(player => player.id == playerId), 1);
- // swords.splice(swords.findIndex(sword => sword.id == playerId), 1);
+  } catch(e) {
+    console.log(e)
+  }
+
 }
 
 socket.on("players", (players) => {
@@ -128,6 +133,7 @@ socket.on("players", (players) => {
 
 socket.on("new", (player) => {
   addPlayer(player)
+  ready = true
 })
 
 socket.on("playerLeave", (id) => {
@@ -135,9 +141,22 @@ socket.on("playerLeave", (id) => {
 })
 
 socket.on("move", (id, pos) => {
+  if(ready) {
+    //alert(pos.x)
  get(id)[0].pos = vec2(pos.x, pos.y)
+  get(id)[1].pos = vec2(pos.x+ get(id)[0].width/6*Math.cos(get(id)[1].angle*Math.PI/180), pos.y+ get(id)[0].width/6*Math.sin(get(id)[1].angle*Math.PI/180))
+  }
   
 })
+
+socket.on("angle", (id, angle) => {
+  if(ready) {
+    //alert(angle)
+  get(id)[1].angle = angle
+    get(id)[1].pos = vec2(get(id)[0].pos.x+ get(id)[0].width/6*Math.cos(angle*Math.PI/180), get(id)[0].pos.y+ get(id)[0].width/6*Math.sin(angle*Math.PI/180))
+  }
+})
+
 
 socket.on("myPos", (pos) => {
   player.pos = vec2(pos.x, pos.y)
