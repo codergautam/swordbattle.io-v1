@@ -15,7 +15,11 @@ loadSprite("sword", "/assets/images/sword.png")
 
 var mouseDown =false
 var mousePos = vec2(0,0)
+
 var players = []
+var swords = []
+
+var ready = false;
 // add a piece of text at position (120, 80)
 var player = add([
 sprite("player"),
@@ -96,20 +100,28 @@ solid(),
 origin("center"),
 player.id
 ]);
+
+swords[swords.length] = add([
+  sprite("sword"),
+  pos(player.pos.x,player.pos.y),
+  scale(0.25,0.25),
+  area({ width: 12, height: 12, offset: vec2(0, 6) }),
+  solid(),
+  origin("center"),
+  player.id
+  ]);
 }
 
 function removePlayer(playerId) {
-  console.log(playerId)
-  var index = players.findIndex(player => player.id == playerId)
-  console.log(index)
-  destroy(players.indexOf(index))
-  players.splice(index, 1);
-
+  destroy(get(playerId)[0])
+  destroy(get(playerId)[1])
+  players.splice(players.findIndex(player => player.id == playerId), 1);
+  swords.splice(swords.findIndex(sword => player.id == playerId), 1);
 }
 
 socket.on("players", (players) => {
  players.forEach(player => addPlayer(player))
- console.log(players)
+  ready = true
 })
 
 socket.on("new", (player) => {
@@ -117,7 +129,11 @@ socket.on("new", (player) => {
 })
 
 socket.on("playerLeave", (id) => {
-  removePlayer(id)
+  if(ready) removePlayer(id)
+})
+
+socket.on("move", (id, pos) => {
+  if(ready) get(id)[0].pos = vec2(pos.x, pos.y)
 })
 
 socket.on("myPos", (pos) => {
