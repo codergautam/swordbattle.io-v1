@@ -37,7 +37,8 @@ var sword = add([
     area(),
     solid(),
     origin("center"),
-    rotate(0)
+    rotate(0),
+    "mySword"
     ]);
 mouseClick(() => {
     if(!mouseDown) {
@@ -98,7 +99,8 @@ scale(0.25,0.25),
 area({ width: 12, height: 12, offset: vec2(0, 6) }),
 solid(),
 origin("center"),
-player.id
+player.id,
+"enemy"
 ]);
 
 swords[swords.length] = add([
@@ -164,6 +166,12 @@ socket.on("myPos", (pos) => {
 
 socket.on("refresh", ()=> {
   location.reload()
+})
+
+collides("mySword", "enemy", () => {
+  if(mouseDown) {
+    //alert("nice")
+  }
 })
 
 socket.emit("go")
