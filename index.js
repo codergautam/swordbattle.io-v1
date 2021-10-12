@@ -38,20 +38,32 @@ io.on('connection', (socket) => {
   })
 
   socket.on('angle', (angle) => {
+    if(players.hasOwnProperty(socket.id)) {
     players[socket.id].angle = angle
     socket.broadcast.emit("angle", socket.id, angle)
+    } else {
+      socket.emit("refresh")
+    }
   })
 
   socket.on('mouseDown', (down) => {
+     if(players.hasOwnProperty(socket.id)) {
     players[socket.id].mouseDown = down;
     socket.broadcast.emit("down", socket.id, down)
+     } else {
+       socket.emit("refresh")
+     }
   })
 
   socket.on('move', (controller) => {
+     if(players.hasOwnProperty(socket.id)) {
     players[socket.id] = players[socket.id].move(controller)
 
     socket.emit("myPos", players[socket.id].pos)
     socket.broadcast.emit("move", socket.id, players[socket.id].pos)
+     } else {
+       socket.emit("refresh")
+     }
   })
 
   socket.on('disconnect', () => {

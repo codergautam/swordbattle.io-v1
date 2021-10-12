@@ -135,13 +135,16 @@ socket.on("playerLeave", (id) => {
 })
 
 socket.on("move", (id, pos) => {
-  if(ready) get(id)[0].pos = vec2(pos.x, pos.y)
+ get(id)[0].pos = vec2(pos.x, pos.y)
+  
 })
 
 socket.on("myPos", (pos) => {
   player.pos = vec2(pos.x, pos.y)
 })
 
-
+socket.on("refresh", ()=> {
+  location.reload()
+})
 
 socket.emit("go")
