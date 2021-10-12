@@ -116,7 +116,7 @@ function removePlayer(playerId) {
   destroy(get(playerId)[0])
   destroy(get(playerId)[1])
   players.splice(players.findIndex(player => player.id == playerId), 1);
-  swords.splice(swords.findIndex(sword => player.id == playerId), 1);
+  swords.splice(swords.findIndex(sword => sword.id == playerId), 1);
 }
 
 socket.on("players", (players) => {
