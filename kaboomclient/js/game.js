@@ -1,5 +1,5 @@
 import kaboom from "https://unpkg.com/kaboom@next/dist/kaboom.mjs";
-import { viewport } from "/js/resources.js"
+import { viewport } from "/kaboomclient/js/resources.js"
 
 var socket = io()
 
