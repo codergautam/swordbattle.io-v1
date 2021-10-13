@@ -33,24 +33,46 @@ return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
 
     function create ()
     {
-       this.add.tileSprite(0, 0,1000, 1000, 'background');
-      // game.world.setBounds(0, 0, 1000, 1000);
-        var mePlayer = this.add.image(400, 100,"player")
-        this.cameras.main.startFollow(this.player, true);
-        mePlayer.setScale(0.25)
+        //background
+        this.background = this.add.tileSprite(0, 0,viewport().width-10, viewport().height-10, 'background').setOrigin(0).setScrollFactor(0,0);
+        this.background.fixedToCamera = true;
+
+        //player 
+        this.mePlayer = this.add.image(400, 100,"player")
+        this.mePlayer.setScale(0.25)
+
+        //arrow keys
         this.cursors = this.input.keyboard.createCursorKeys();
-         
-         
+
+        this.cameras.main.startFollow(this.mePlayer);
     }
 
     function update ()
     {
-            if (this.cursors.up.isDown)
+        var wKey = this.input.keyboard.addKey('W'); 
+        var aKey = this.input.keyboard.addKey('A');  // Get key object
+        var sKey = this.input.keyboard.addKey('S'); 
+        var dKey = this.input.keyboard.addKey('D'); 
+
+            if (this.cursors.up.isDown || wKey.isDown)
     {
-        mePlayer.body.moveUp(300)
+        this.mePlayer.y -= 5
+        
     }
-    else if (this.cursors.down.isDown)
+    else if (this.cursors.down.isDown ||sKey.isDown)
     {
-        mePlayer.body.moveDown(300);
+        this.mePlayer.y += 5
     }
+    if (this.cursors.right.isDown||dKey.isDown)
+    {
+        this.mePlayer.x += 5
+      
+    }
+    else if (this.cursors.left.isDown||aKey.isDown )
+    {
+        this.mePlayer.x -= 5
+      
+    }
+    this.background.setTilePosition(this.cameras.main.scrollX,this.cameras.main.scrollY);
+ 
     }
