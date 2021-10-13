@@ -38,12 +38,24 @@ return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
         this.background.fixedToCamera = true;
 
         //player 
-        this.mePlayer = this.add.image(400, 100,"player")
-        this.mePlayer.setScale(0.25)
+        this.mePlayer = this.add.image(400, 100,"player").setScale(0.25)
+
+        //sword
+        this.meSword = this.add.image(400,100, "sword").setScale(0.25)
 
         //arrow keys
         this.cursors = this.input.keyboard.createCursorKeys();
 
+        //mouse down
+        this.input.on('pointerdown', function (pointer) {
+          this.mouseDown = true
+        }, this);
+        this.input.on('pointerup', function (pointer) {
+          this.mouseDown = false
+        }, this);
+
+
+        //camera follow
         this.cameras.main.startFollow(this.mePlayer);
     }
 
@@ -73,6 +85,24 @@ return { width : e[ a+'Width' ] , height : e[ a+'Height' ] }
         this.mePlayer.x -= 5
       
     }
+    //sword rotation
+    var mousePos = this.input
+    this.meSword.angle = Math.atan2(mousePos.y - ((viewport().height - 10) / 2), mousePos.x - ((viewport().width - 10)/2))* 180 / Math.PI + 45;
+
+    this.meSword.x = this.mePlayer.x+this.mePlayer.width/6*Math.cos(this.meSword.angle*Math.PI/180)
+    this.meSword.y =  this.mePlayer.y+this.mePlayer.width/6*Math.sin(this.meSword.angle*Math.PI/180)
+
+    if(this.mouseDown) this.meSword.angle -= 30
+   
+    //background movement
     this.background.setTilePosition(this.cameras.main.scrollX,this.cameras.main.scrollY);
  
     }
+
+//for debugging on the chromebooks they fricking banned dev console
+                window.onerror = function (msg, url, line) {
+               document.write("Error : " + msg +"<br><br>");
+                document.write("Line number : " + line +"<br><br>" );
+               document.write("File : " + url);
+              
+            }
