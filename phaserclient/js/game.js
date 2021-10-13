@@ -110,17 +110,23 @@ function update() {
     if (this.mouseDown) this.meSword.angle -= 30
 
     //server -> client
-    function addPlayer(player) {
+   const addPlayer = (player) => {
   this.enemyPlayers[this.enemyPlayers.length] = this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25)
 this.enemySwords[this.enemySwords.length] = this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25)
 }
     this.socket.on("players", (players) => {
       players.forEach(player=>addPlayer(player))
     })
-
+    this.socket.on("new", (player) => {
+        addPlayer(player)
+      })
     this.socket.on("myPos", (pos) => {
       this.mePlayer.x = pos.x
       this.mePlayer.y = pos.y
+    })
+
+    this.socket.on("pos", (id, pos) => {
+        
     })
 
     //background movement
