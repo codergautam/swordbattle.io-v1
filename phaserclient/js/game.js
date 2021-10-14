@@ -31,6 +31,7 @@ function preload() {
     this.load.image('background', '/assets/images/background.jpeg');
 
     this.socket = io()
+    this.ready = false;
 }
 
 function create() {
@@ -111,24 +112,47 @@ function update() {
 
     //server -> client
    const addPlayer = (player) => {
-  this.enemyPlayers[this.enemyPlayers.length] = this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25)
-this.enemySwords[this.enemySwords.length] = this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25)
+  this.enemyPlayers[this.enemyPlayers.length] = {item: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25), id: player.id}
+  this.enemySwords[this.enemySwords.length] = {item: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25), id:player.id}
 }
     this.socket.on("players", (players) => {
       players.forEach(player=>addPlayer(player))
+      this.ready = true
     })
     this.socket.on("new", (player) => {
         addPlayer(player)
+        this.ready = true
       })
     this.socket.on("myPos", (pos) => {
       this.mePlayer.x = pos.x
       this.mePlayer.y = pos.y
     })
 
-    this.socket.on("pos", (id, pos) => {
-        
+    this.socket.on("move", (id, pos) => {
+      if(!this.ready) return
+        var enemyPlayer = this.enemyPlayers.find(enemyPlayer=>enemyPlayer.id == id).item
+        var enemySword = this.enemySwords.find(enemySword=>enemySword.id == id).item
+
+        enemyPlayer.x = pos.x
+        enemyPlayer.y = pos.y
+           
+        enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
+        enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
     })
 
+    this.socket.on("angle", (id, angle) => {
+      var enemySword = this.enemySwords.find(enemySword=>enemySword.id == id).item
+      enemySword.angle = angle
+  })
+
+  this.socket.on("down", (id,down) => {
+    /*
+    if(down) {
+      this.enemySwords.find(enemySword=>enemySword.id == id).item.angle -= 30
+    } else {
+      this.enemySwords.find(enemySword=>enemySword.id == id).item.angle += 30
+    }*/
+  })
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
