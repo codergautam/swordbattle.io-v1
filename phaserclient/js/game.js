@@ -107,7 +107,12 @@ function update() {
     this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
-    if (this.meSword.angle != old) this.socket.emit("angle", this.meSword.angle)
+    var mousePos2  = {
+      viewport: viewport(),
+      x: mousePos.x,
+      y: mousePos.y
+    }
+    if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
     if (this.mouseDown) this.meSword.angle -= 30
 
     //server -> client
@@ -140,11 +145,16 @@ function update() {
         enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
     })
 
-    this.socket.on("angle", (id, angle) => {
+    this.socket.on("mousePos", (id, mousePos) => {
+      var enemyPlayer = this.enemyPlayers.find(enemyPlayer=>enemyPlayer.id == id).item
       var enemySword = this.enemySwords.find(enemySword=>enemySword.id == id).item
-      enemySword.angle = angle
-  })
 
+            enemySword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height - 10) / 2), mousePos.x - ((mousePos.viewport.width - 10) / 2)) * 180 / Math.PI + 45;
+
+
+              enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
+        enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
+  })
   this.socket.on("down", (id,down) => {
     /*
     if(down) {
@@ -153,10 +163,17 @@ function update() {
       this.enemySwords.find(enemySword=>enemySword.id == id).item.angle += 30
     }*/
   })
+  this.socket.on("playerLeave", (id)=>{
+     this.enemySwords.find(enemySword=>enemySword.id == id).item.destroy()
+     this.enemyPlayers.find(enemyPlayer=>enemyPlayer.id == id).item.destroy()
+    delete this.enemySwords.find(enemySword=>enemySword.id == id)
+    delete this.enemyPlayers.find(enemyPlayer=>enemyPlayer.id == id)
+  })
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
 }
+
 
 //for debugging on the school chromebooks they fricking banned dev console
 window.onerror = function(msg, url, line) {

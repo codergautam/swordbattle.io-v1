@@ -39,10 +39,10 @@ io.on('connection', (socket) => {
 
   })
 
-  socket.on('angle', (angle) => {
+  socket.on('mousePos', (mousePos) => {
     if(players.hasOwnProperty(socket.id)) {
-    players[socket.id].angle = angle
-    socket.broadcast.emit("angle", socket.id, angle)
+    players[socket.id].mouse = mousePos
+    socket.broadcast.emit("mousePos", socket.id, mousePos)
     } else {
       socket.emit("refresh")
     }
