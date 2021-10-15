@@ -50,11 +50,14 @@ io.on('connection', (socket) => {
   })
 
   socket.on('mouseDown', (down) => {
+    
      if(players.hasOwnProperty(socket.id)) {
        var player =  players[socket.id]
+       if(player.mouseDown == down) return
     player.mouseDown = down;
     socket.broadcast.emit("down", socket.id, down)
     //collision v1
+    if(player.mouseDown)
     Object.values(players).forEach(enemy => {
       if(enemy.id != player.id) {
     var circle = [enemy.pos.x, enemy.pos.y]

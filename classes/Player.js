@@ -13,7 +13,7 @@ class Player {
   }
 
   move(controller) {
-    console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
+  //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
     if(this.pos.x <= -2500) controller.left = false
     if(this.pos.x >= 2500) controller.right = false
     if(this.pos.y <= -2500) controller.up = false

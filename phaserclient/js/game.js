@@ -215,7 +215,7 @@ this.socket.emit("hitbox",{swordPos:{x:x1,y:y1},hitPos:{x:position[0],y:position
 if(this.ready && !this.dead) {
 if(!this.socket.connected) {
   //alert("pog")
-document.write("you got killed lmao refresh to rejoin")
+document.write("<h1>You died</h1><br><button onclick=\"location.reload()\"><h1>Respawn</h1></button>")
 this.dead = true
 }
 }
