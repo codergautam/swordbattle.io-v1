@@ -6,7 +6,8 @@ class Player {
     this.kills = 0
     this.speed = 5
     this.mouseDown = false
-    this.angle = 0
+    this.mousePos = {}
+    this.hitbox = {}
   }
 
   move(controller) {

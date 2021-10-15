@@ -48,6 +48,7 @@ function create() {
   //enemies array
   this.enemyPlayers = []
   this.enemySwords = []
+  this.dots = []
 
   //arrow keys
   this.cursors = this.input.keyboard.createCursorKeys();
@@ -137,6 +138,9 @@ function create() {
     delete this.enemySwords.find(enemySword => enemySword.id == id)
     delete this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id)
   })
+  this.socket.on("hitbox", (hitbox) => {
+   // this.add.circle(hitbox.hitPos.x, hitbox.hitPos.y, 10, 0x00FFFF)
+  })
 }
 
 function update() {
@@ -186,7 +190,20 @@ function update() {
   }
   if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
+  //me tryna do collisions lmao
+function movePointAtAngle (point, angle, distance) {
+    return [
+        point[0] + (Math.sin(angle) * distance),
+        point[1] - (Math.cos(angle) * distance)
+    ];
+}
+  var x1 = this.meSword.x
+  var y1 = this.meSword.y
 
+  var position = movePointAtAngle([x1,y1], this.meSword.angle*Math.PI/180, 50)
+
+  //yes i know this is hackable im too lazy pls dont create a hack if you do then you have no life im a child ok
+this.socket.emit("hitbox",{swordPos:{x:x1,y:y1},hitPos:{x:position[0],y:position[1]}})
 
   //background movement
   this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);

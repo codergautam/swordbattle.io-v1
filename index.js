@@ -41,7 +41,7 @@ io.on('connection', (socket) => {
 
   socket.on('mousePos', (mousePos) => {
     if(players.hasOwnProperty(socket.id)) {
-    players[socket.id].mouse = mousePos
+    players[socket.id].mousePos = mousePos
     socket.broadcast.emit("mousePos", socket.id, mousePos)
     } else {
       socket.emit("refresh")
@@ -66,6 +66,15 @@ io.on('connection', (socket) => {
      } else {
        socket.emit("refresh")
      }
+  })
+
+  socket.on("hitbox", (hitbox) => {
+    if(players.hasOwnProperty(socket.id)) {
+      players[socket.id].hitbox = hitbox
+      socket.emit("hitbox", hitbox)
+    } else {
+      socket.emit("refresh")
+    }
   })
 
   socket.on('disconnect', () => {
