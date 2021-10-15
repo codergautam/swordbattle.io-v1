@@ -7,7 +7,9 @@ class Player {
     this.speed = 5
     this.mouseDown = false
     this.mousePos = {}
-    this.hitbox = {}
+    this.hitbox = {swordPos:{x:undefined,y:undefined},hitPos:{x:undefined,y:undefined}}
+    this.size = 75
+    this.radius = this.calcRadius()
   }
 
   move(controller) {
@@ -16,6 +18,9 @@ class Player {
     if(controller.right) this.pos.x += this.speed
     if(controller.left) this.pos.x -= this.speed
     return this
+  }
+  calcRadius() {
+    return this.size / 2
   }
 }
 

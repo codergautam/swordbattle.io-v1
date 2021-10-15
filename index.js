@@ -1,6 +1,7 @@
 const express = require('express');
 const http = require('http');
 const { Server } = require("socket.io");
+var collide = require('line-circle-collision')
 
 const app = express();
 const server = http.createServer(app);
@@ -50,8 +51,23 @@ io.on('connection', (socket) => {
 
   socket.on('mouseDown', (down) => {
      if(players.hasOwnProperty(socket.id)) {
-    players[socket.id].mouseDown = down;
+       var player =  players[socket.id]
+    player.mouseDown = down;
     socket.broadcast.emit("down", socket.id, down)
+    //collision v1
+    Object.values(players).forEach(enemy => {
+      if(enemy.id != player.id) {
+    var circle = [enemy.pos.x, enemy.pos.y]
+        radius = enemy.radius
+        a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
+        b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
+        var hit = collide(a, b, circle, radius)
+        if(hit) {
+          var socketById = io.sockets.sockets.get(enemy.id);
+          socketById.disconnect()
+        }
+      }
+    })
      } else {
        socket.emit("refresh")
      }

@@ -190,7 +190,7 @@ function update() {
   }
   if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
-  //me tryna do collisions lmao
+
 function movePointAtAngle (point, angle, distance) {
     return [
         point[0] + (Math.sin(angle) * distance),
@@ -204,7 +204,11 @@ function movePointAtAngle (point, angle, distance) {
 
   //yes i know this is hackable im too lazy pls dont create a hack if you do then you have no life im a child ok
 this.socket.emit("hitbox",{swordPos:{x:x1,y:y1},hitPos:{x:position[0],y:position[1]}})
-
+//better health/killing/respawning coming soon :D
+if(this.ready) {
+if(!this.socket.connected) document.write("you got killed lmao refresh to rejoin")
+this.ready = false
+}
   //background movement
   this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
