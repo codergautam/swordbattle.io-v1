@@ -49,7 +49,7 @@ function create() {
   this.enemyPlayers = []
   this.enemySwords = []
   this.dots = []
-
+  this.dead = false
   //arrow keys
   this.cursors = this.input.keyboard.createCursorKeys();
 
@@ -102,7 +102,9 @@ function create() {
   })
 
   this.socket.on("move", (id, pos) => {
+   
     if (!this.ready) return
+     //console.log(pos)
     var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item
     var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
 
@@ -114,6 +116,7 @@ function create() {
   })
 
   this.socket.on("mousePos", (id, mousePos) => {
+    if(!this.ready) return
     var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item
     var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
 
@@ -133,10 +136,14 @@ function create() {
 
   })
   this.socket.on("playerLeave", (id) => {
+    try {
     this.enemySwords.find(enemySword => enemySword.id == id).item.destroy()
     this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item.destroy()
     delete this.enemySwords.find(enemySword => enemySword.id == id)
     delete this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id)
+    } catch(e) {
+      console.log(e)
+    }
   })
   this.socket.on("hitbox", (hitbox) => {
    // this.add.circle(hitbox.hitPos.x, hitbox.hitPos.y, 10, 0x00FFFF)
@@ -205,9 +212,12 @@ function movePointAtAngle (point, angle, distance) {
   //yes i know this is hackable im too lazy pls dont create a hack if you do then you have no life im a child ok
 this.socket.emit("hitbox",{swordPos:{x:x1,y:y1},hitPos:{x:position[0],y:position[1]}})
 //better health/killing/respawning coming soon :D
-if(this.ready) {
-if(!this.socket.connected) document.write("you got killed lmao refresh to rejoin")
-this.ready = false
+if(this.ready && !this.dead) {
+if(!this.socket.connected) {
+  alert("pog")
+document.write("you got killed lmao refresh to rejoin")
+this.dead = true
+}
 }
   //background movement
   this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);

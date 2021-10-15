@@ -34,7 +34,7 @@ io.on('connection', (socket) => {
 
   if(allPlayers && allPlayers.length > 0) {
     socket.emit("players", allPlayers)
-    console.log(allPlayers)
+    //console.log(allPlayers)
   }
    
 
@@ -76,7 +76,7 @@ io.on('connection', (socket) => {
   socket.on('move', (controller) => {
      if(players.hasOwnProperty(socket.id)) {
     players[socket.id] = players[socket.id].move(controller)
-
+   // console.log(socket.id + " => "+players[socket.id].pos.x+", "+players[socket.id].pos.y)
     socket.emit("myPos", players[socket.id].pos)
     socket.broadcast.emit("move", socket.id, players[socket.id].pos)
      } else {
