@@ -104,7 +104,7 @@ function create() {
   this.socket.on("move", (id, pos) => {
    
     if (!this.ready) return
-     //console.log(pos)
+     console.log(pos)
     var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item
     var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
 
@@ -214,7 +214,7 @@ this.socket.emit("hitbox",{swordPos:{x:x1,y:y1},hitPos:{x:position[0],y:position
 //better health/killing/respawning coming soon :D
 if(this.ready && !this.dead) {
 if(!this.socket.connected) {
-  alert("pog")
+  //alert("pog")
 document.write("you got killed lmao refresh to rejoin")
 this.dead = true
 }
