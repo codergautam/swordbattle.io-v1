@@ -131,7 +131,7 @@ function create() {
     enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
   })
   this.socket.on("down", (id, down) => {
-
+if(!this.ready) return
     this.enemySwords.find(enemySword => enemySword.id == id).down = down
 
   })

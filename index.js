@@ -22,11 +22,12 @@ Object.filter = (obj, predicate) =>
 var players = {}
 
 io.on('connection', (socket) => {
-  console.log('a user connected\n'+socket.id);
+  //console.log('a user connected -> '+socket.id);
 
 
   socket.on('go', async () => {
     players[socket.id] = new Player(socket.id)
+    console.log("player joined -> "+socket.id)
     socket.broadcast.emit("new", players[socket.id])
 
   var allPlayers = Object.values(players)
@@ -67,6 +68,7 @@ io.on('connection', (socket) => {
         var hit = collide(a, b, circle, radius)
         if(hit) {
           var socketById = io.sockets.sockets.get(enemy.id);
+          console.log(socket.id + " ---X> " + enemy.id)
           socketById.disconnect()
         }
       }
@@ -98,6 +100,7 @@ io.on('connection', (socket) => {
 
   socket.on('disconnect', () => {
     players = Object.filter(players, player => player.id != socket.id)
+    console.log("player left/killed -> "+socket.id)
     socket.broadcast.emit("playerLeave", socket.id)
   })
 });
