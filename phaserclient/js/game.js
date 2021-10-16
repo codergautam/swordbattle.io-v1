@@ -85,6 +85,13 @@ function create() {
       id: player.id,
       down: false
     }
+    var enemySword = this.enemyPlayers[this.enemyPlayers.length-1].item 
+    var enemyPlayer = this.enemySwords[this.enemySwords.length-1].item
+    console.log(player)
+    enemySword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height ) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+    enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
+    enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
+   
 
   }
   this.socket.on("players", (players) => {
