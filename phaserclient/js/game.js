@@ -13,8 +13,8 @@ function viewport() {
 
 var config = {
   type: Phaser.AUTO,
-  width: viewport().width - 10,
-  height: viewport().height - 10,
+  width: viewport().width ,
+  height: viewport().height,
   scene: {
     preload: preload,
     create: create,
@@ -36,7 +36,7 @@ function preload() {
 
 function create() {
   //background
-  this.background = this.add.tileSprite(0, 0, viewport().width - 10, viewport().height - 10, 'background').setOrigin(0).setScrollFactor(0, 0);
+  this.background = this.add.tileSprite(0, 0, viewport().width , viewport().height , 'background').setOrigin(0).setScrollFactor(0, 0);
   this.background.fixedToCamera = true;
 
   //player 
@@ -121,7 +121,7 @@ function create() {
     var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
 
 
-    enemySword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height - 10) / 2), mousePos.x - ((mousePos.viewport.width - 10) / 2)) * 180 / Math.PI + 45;
+    enemySword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height ) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
     if (this.enemySwords.find(enemySword => enemySword.id == id).down) {
 
       enemySword.angle -= 30
@@ -184,7 +184,7 @@ function update() {
 
   var mousePos = this.input
 
-  this.meSword.angle = Math.atan2(mousePos.y - ((viewport().height - 10) / 2), mousePos.x - ((viewport().width - 10) / 2)) * 180 / Math.PI + 45;
+  this.meSword.angle = Math.atan2(mousePos.y - ((viewport().height ) / 2), mousePos.x - ((viewport().width ) / 2)) * 180 / Math.PI + 45;
 
   if (this.mouseDown) this.meSword.angle -= 30
   this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
