@@ -107,40 +107,32 @@ function create() {
     this.mePlayer.x = pos.x
     this.mePlayer.y = pos.y
   })
+  this.socket.on("player", (player) => {
+    //update player
+    if(!this.ready) return
 
-  this.socket.on("move", (id, pos) => {
-   
-    if (!this.ready) return
-     console.log(pos)
-    var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item
-    var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
+    var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == player.id).item
+    var enemySword = this.enemySwords.find(enemySword => enemySword.id == player.id).item
 
-    enemyPlayer.x = pos.x
-    enemyPlayer.y = pos.y
+    //update pos
+    enemyPlayer.x = player.pos.x
+    enemyPlayer.y = player.pos.y
 
     enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
     enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
-  })
 
-  this.socket.on("mousePos", (id, mousePos) => {
-    if(!this.ready) return
-    var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item
-    var enemySword = this.enemySwords.find(enemySword => enemySword.id == id).item
-
-
+    //update sword
+    var mousePos = player.mousePos
     enemySword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height ) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
-    if (this.enemySwords.find(enemySword => enemySword.id == id).down) {
+    if (this.enemySwords.find(enemySword => enemySword.id == player.id).down) {
 
       enemySword.angle -= 30
     }
 
     enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
     enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
-  })
-  this.socket.on("down", (id, down) => {
-if(!this.ready) return
-    this.enemySwords.find(enemySword => enemySword.id == id).down = down
 
+    this.enemySwords.find(enemySword => enemySword.id == player.id).down = player.mouseDown
   })
   this.socket.on("playerLeave", (id) => {
     try {
@@ -151,9 +143,6 @@ if(!this.ready) return
     } catch(e) {
       console.log(e)
     }
-  })
-  this.socket.on("hitbox", (hitbox) => {
-   // this.add.circle(hitbox.hitPos.x, hitbox.hitPos.y, 10, 0x00FFFF)
   })
 }
 

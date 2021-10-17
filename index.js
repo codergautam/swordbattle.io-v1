@@ -22,6 +22,7 @@ Object.filter = (obj, predicate) =>
 var players = {}
 
 io.on('connection', (socket) => {
+  console.log(Object.keys(players).length)
   //console.log('a user connected -> '+socket.id);
 
 
@@ -35,7 +36,6 @@ io.on('connection', (socket) => {
 
   if(allPlayers && allPlayers.length > 0) {
     socket.emit("players", allPlayers)
-    //console.log(allPlayers)
   }
    
 
@@ -44,7 +44,6 @@ io.on('connection', (socket) => {
   socket.on('mousePos', (mousePos) => {
     if(players.hasOwnProperty(socket.id)) {
     players[socket.id].mousePos = mousePos
-    socket.broadcast.emit("mousePos", socket.id, mousePos)
     } else {
       socket.emit("refresh")
     }
@@ -56,7 +55,7 @@ io.on('connection', (socket) => {
        var player =  players[socket.id]
        if(player.mouseDown == down) return
     player.mouseDown = down;
-    socket.broadcast.emit("down", socket.id, down)
+    
     //collision v1
     if(player.mouseDown)
     Object.values(players).forEach(enemy => {
@@ -79,14 +78,15 @@ io.on('connection', (socket) => {
   })
 
   socket.on('move', (controller) => {
+    try { 
      if(players.hasOwnProperty(socket.id)) {
     players[socket.id] = players[socket.id].move(controller)
-   // console.log(socket.id + " => "+players[socket.id].pos.x+", "+players[socket.id].pos.y)
-    socket.emit("myPos", players[socket.id].pos)
-    socket.broadcast.emit("move", socket.id, players[socket.id].pos)
      } else {
        socket.emit("refresh")
      }
+    } catch(e) {
+      console.log(e)
+    }
   })
 
   socket.on("hitbox", (hitbox) => {
@@ -104,14 +104,23 @@ io.on('connection', (socket) => {
     socket.broadcast.emit("playerLeave", socket.id)
   })
 });
-/*
+
 //tick 120 times per second
 setInterval(async () => {
+  var playersarray = Object.values(players)
   var sockets= await io.fetchSockets()
-  sockets.forEach(socket => {
+  playersarray.forEach(player => {
+    
     //do something
+    sockets.forEach(socket=> {
+      if(player.id != socket.id) {
+        socket.emit("player", player)
+      } else {
+        socket.emit("myPos", player.pos) 
+      }
+    })
   });
-}, 1000/120) */
+}, 1000/120) 
 
 server.listen(3000, () => {
   console.log('server started');
