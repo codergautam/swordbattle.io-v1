@@ -1,25 +1,15 @@
-function viewport() {
-    var e = window,
-        a = 'inner';
-    if (!('innerWidth' in window)) {
-        a = 'client';
-        e = document.documentElement || document.body;
-    }
-    return {
-        width: e[a + 'Width'],
-        height: e[a + 'Height']
-    }
-}
+
 
 var config = {
     type: Phaser.AUTO,
-    width: viewport().width,
-    height: viewport().height,
+    width: window.innerWidth,
+    height: window.innerHeight,
     scene: {
         preload: preload,
         create: create,
         update: update
     },
+    
     backgroundColor: "#FFFFFF"
 };
 
@@ -36,7 +26,7 @@ function preload() {
 
 function create() {
     //background
-    this.background = this.add.tileSprite(0, 0, viewport().width, viewport().height, 'background').setOrigin(0).setScrollFactor(0, 0);
+    this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
     this.background.fixedToCamera = true;
 
     //player 
@@ -201,7 +191,7 @@ var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
     var mousePos2 = {
-        viewport: viewport(),
+        viewport: {width: window.innerWidth, height: window.innerHeight},
         x: mousePos.x,
         y: mousePos.y
     }
@@ -245,7 +235,27 @@ var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
     this.playerCount.scrollFactorY = 0
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+  
 }
+
+function resize() {
+  var canvas = document.querySelector("canvas");
+  var windowWidth = window.innerWidth;
+  var windowHeight = window.innerHeight;
+  var windowRatio = windowWidth / windowHeight;
+  var gameRatio = game.config.width / game.config.height;
+  if(windowRatio < gameRatio){
+      canvas.style.width = windowWidth + "px";
+      canvas.style.height = (windowWidth / gameRatio) + "px";
+  }
+  else{
+      canvas.style.width = (windowHeight * gameRatio) + "px";
+      canvas.style.height = windowHeight + "px";
+  }
+}
+
+window.addEventListener('resize', resize); 
+
 
 
 //for debugging on the school chromebooks they fricking banned dev console
