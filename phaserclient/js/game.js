@@ -54,6 +54,8 @@ function create() {
     this.cursors = this.input.keyboard.createCursorKeys();
 
     //camera follow
+    
+    this.cameras.main.setBounds(-2500, -2500, 5000, 5000);
     this.cameras.main.startFollow(this.mePlayer);
 
     //go packet
@@ -152,6 +154,7 @@ function create() {
 }
 
 function update() {
+  console.log(this.mePlayer.x+", "+this.mePlayer.y)
     var controller = {
         left: false,
         up: false,
@@ -184,8 +187,14 @@ function update() {
     if (this.mouseDown) old += 30
 
     var mousePos = this.input
-
-    this.meSword.angle = Math.atan2(mousePos.y - ((viewport().height) / 2), mousePos.x - ((viewport().width) / 2)) * 180 / Math.PI + 45;
+function getRelativePositionToCanvas(gameObject, camera) {
+  return {
+    x: (gameObject.x - camera.worldView.x) * camera.zoom,
+    y: (gameObject.y - camera.worldView.y) * camera.zoom
+  }
+}
+var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
+    this.meSword.angle = Math.atan2(mousePos.y - (relativePos.y), mousePos.x - (relativePos.x)) * 180 / Math.PI + 45;
 
     if (this.mouseDown) this.meSword.angle -= 30
     this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
