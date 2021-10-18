@@ -22,7 +22,7 @@ Object.filter = (obj, predicate) =>
 var players = {}
 
 io.on('connection', (socket) => {
-  console.log(Object.keys(players).length)
+  //console.log(Object.keys(players).length)
   //console.log('a user connected -> '+socket.id);
 
 
