@@ -24,9 +24,6 @@ Object.filter = (obj, predicate) =>
 var players = {}
 
 io.on('connection', (socket) => {
-    //console.log(Object.keys(players).length)
-    //console.log('a user connected -> '+socket.id);
-
 
     socket.on('go', async () => {
         players[socket.id] = new Player(socket.id)
@@ -36,19 +33,12 @@ io.on('connection', (socket) => {
         var allPlayers = Object.values(players)
         allPlayers = allPlayers.filter(player => player.id != socket.id)
 
-        if (allPlayers && allPlayers.length > 0) {
-            socket.emit("players", allPlayers)
-        }
-
-
+        if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers)
     })
 
     socket.on('mousePos', (mousePos) => {
-        if (players.hasOwnProperty(socket.id)) {
-            players[socket.id].mousePos = mousePos
-        } else {
-            socket.emit("refresh")
-        }
+        if (players.hasOwnProperty(socket.id)) players[socket.id].mousePos = mousePos
+        else socket.emit("refresh")  
     })
 
     socket.on('mouseDown', (down) => {
@@ -74,9 +64,8 @@ io.on('connection', (socket) => {
                         }
                     }
                 })
-        } else {
-            socket.emit("refresh")
-        }
+        } else socket.emit("refresh")
+        
     })
 
     socket.on('move', (controller) => {
