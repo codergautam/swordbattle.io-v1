@@ -6,7 +6,7 @@ class Player {
     this.kills = 0
     this.speed = 300
     this.mouseDown = false
-    this.mousePos = {x:0,y:0,viewport:{width:1920,height:1080}}
+    this.mousePos = {x:0,y:0,relativePos:{x:0,y:0}}
     this.hitbox = {swordPos:{x:undefined,y:undefined},hitPos:{x:undefined,y:undefined}}
     this.size = 75
     this.radius = this.calcRadius()

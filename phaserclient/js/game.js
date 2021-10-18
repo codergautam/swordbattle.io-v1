@@ -79,8 +79,8 @@ function create() {
         }
         var enemySword = this.enemyPlayers[this.enemyPlayers.length - 1].item
         var enemyPlayer = this.enemySwords[this.enemySwords.length - 1].item
-        console.log(player)
-        enemySword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+        
+        enemySword.angle = Math.atan2(player.mousePos.y - player.mousePos.relativePos.y, player.mousePos.x - player.mousePos.relativePos.x) * 180 / Math.PI + 45;
         enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
         enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
 
@@ -115,7 +115,7 @@ function create() {
 
         //update sword
         var mousePos = player.mousePos
-        enemySword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+        enemySword.angle = Math.atan2(mousePos.y - (mousePos.relativePos.y), mousePos.x - (mousePos.relativePos.x)) * 180 / Math.PI + 45;
         if (this.enemySwords.find(enemySword => enemySword.id == player.id).down) {
 
             enemySword.angle -= 30
@@ -144,7 +144,6 @@ function create() {
 }
 
 function update() {
-  console.log(this.mePlayer.x+", "+this.mePlayer.y)
     var controller = {
         left: false,
         up: false,
@@ -191,7 +190,7 @@ var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
     var mousePos2 = {
-        viewport: {width: window.innerWidth, height: window.innerHeight},
+        relativePos: {x: relativePos.x, y: relativePos.y},
         x: mousePos.x,
         y: mousePos.y
     }
