@@ -110,7 +110,7 @@ function create() {
     this.socket.on("player", (player) => {
         //update player
         if (!this.ready) return
-
+      try {
         var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == player.id).item
         var enemySword = this.enemySwords.find(enemySword => enemySword.id == player.id).item
 
@@ -133,6 +133,9 @@ function create() {
         enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
 
         this.enemySwords.find(enemySword => enemySword.id == player.id).down = player.mouseDown
+      } catch(e) {
+        console.log(e)
+      }
     })
     this.socket.on("playerLeave", (id) => {
         try {
