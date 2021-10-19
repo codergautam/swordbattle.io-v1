@@ -288,7 +288,7 @@ function update() {
 
     //playercount
     if (this.playerCount) this.playerCount.destroy()
-    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round((this.sys.game.loop.actualFps + Number.EPSILON) * 100) / 100, {
+    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps), {
         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
     }).setFontSize(20);
     this.playerCount.scrollFactorX = 0
