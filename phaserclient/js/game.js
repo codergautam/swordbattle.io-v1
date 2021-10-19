@@ -87,6 +87,9 @@ function preload() {
 }
 
 function create() {
+  this.canvas = {width: window.innerWidth, height:window.innerHeight}
+
+
     //background
     this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
     this.background.fixedToCamera = true;
@@ -111,6 +114,15 @@ function create() {
     
     this.cameras.main.startFollow(this.mePlayer);
 
+///
+  const resize = ()=>{
+    this.canvas = {width: window.innerWidth, height:window.innerHeight}
+    game.scale.resize(this.canvas.width, this.canvas.height)
+        this.background.width = this.canvas.width
+        this.background.height = this.canvas.height
+  }
+        
+    window.addEventListener("resize", resize, false);
     //go packet
     this.socket.emit("go")
 
@@ -244,14 +256,14 @@ function update() {
 
     var mousePos = this.input
 
-    this.meSword.angle = Math.atan2(mousePos.y - (window.innerHeight / 2), mousePos.x - (window.innerWidth / 2)) * 180 / Math.PI + 45;
+    this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 
     if (this.mouseDown) this.meSword.angle -= 30
     this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
     var mousePos2 = {
-        viewport: {width: window.innerWidth, height: window.innerHeight},
+        viewport: {width: this.canvas.width, height: this.canvas.height},
         x: mousePos.x,
         y: mousePos.y
     }

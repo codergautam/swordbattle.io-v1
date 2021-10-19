@@ -39,6 +39,8 @@ io.on('connection', (socket) => {
     socket.on('mousePos', (mousePos) => {
         if (players.hasOwnProperty(socket.id)) players[socket.id].mousePos = mousePos
         else socket.emit("refresh")  
+
+        console.log(mousePos.x +" , "+mousePos.y )
     })
 
     socket.on('mouseDown', (down) => {
