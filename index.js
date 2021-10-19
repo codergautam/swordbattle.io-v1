@@ -98,6 +98,7 @@ io.on('connection', (socket) => {
 
 //tick 120 times per second
 setInterval(async () => {
+ 
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
@@ -107,6 +108,7 @@ setInterval(async () => {
             else socket.emit("me", player)
         })
     });
+    
 }, 1000 / 120)
 
 server.listen(3000, () => {

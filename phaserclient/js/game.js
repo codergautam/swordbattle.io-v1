@@ -106,7 +106,6 @@ function create() {
 
     //camera follow
     
-    this.cameras.main.setBounds(-2500, -2500, 5000, 5000);
     this.cameras.main.startFollow(this.mePlayer);
 
     //go packet
@@ -137,7 +136,7 @@ function create() {
           bar: new HealthBar(this, player.pos.x, player.pos.y+50)
         }
 
-        enemy.sword.angle = Math.atan2(player.mousePos.y - player.mousePos.relativePos.y, player.mousePos.x - player.mousePos.relativePos.x) * 180 / Math.PI + 45;
+        enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height ) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
         enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
         enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
@@ -174,7 +173,7 @@ function create() {
 
         //update sword
         var mousePos = player.mousePos
-        enemy.sword.angle = Math.atan2(mousePos.y - (mousePos.relativePos.y), mousePos.x - (mousePos.relativePos.x)) * 180 / Math.PI + 45;
+        enemy.sword.angle =  Math.atan2(mousePos.y - ((mousePos.viewport.height ) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
         if (enemy.down) {
             enemy.sword.angle -= 30
         }
@@ -236,21 +235,15 @@ function update() {
     if (this.mouseDown) old += 30
 
     var mousePos = this.input
-function getRelativePositionToCanvas(gameObject, camera) {
-  return {
-    x: (gameObject.x - camera.worldView.x) * camera.zoom,
-    y: (gameObject.y - camera.worldView.y) * camera.zoom
-  }
-}
-var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
-    this.meSword.angle = Math.atan2(mousePos.y - (relativePos.y), mousePos.x - (relativePos.x)) * 180 / Math.PI + 45;
+
+    this.meSword.angle = Math.atan2(mousePos.y - (window.innerHeight / 2), mousePos.x - (window.innerWidth / 2)) * 180 / Math.PI + 45;
 
     if (this.mouseDown) this.meSword.angle -= 30
     this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
     var mousePos2 = {
-        relativePos: {x: relativePos.x, y: relativePos.y},
+        viewport: {width: window.innerWidth, height: window.innerWidth},
         x: mousePos.x,
         y: mousePos.y
     }
@@ -287,7 +280,7 @@ var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
 
     //playercount
     if (this.playerCount) this.playerCount.destroy()
-    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString(), {
+    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ this.sys.game.loop.actualFps, {
         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
     }).setFontSize(20);
     this.playerCount.scrollFactorX = 0
