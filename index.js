@@ -58,9 +58,13 @@ io.on('connection', (socket) => {
                         b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
+                          //hit
+                          enemy.health -= 10
+                          if(enemy.health <= 0) {
                             var socketById = io.sockets.sockets.get(enemy.id);
                             console.log(socket.id + " ---X> " + enemy.id)
                             socketById.disconnect()
+                          }
                         }
                     }
                 })
@@ -100,7 +104,7 @@ setInterval(async () => {
         //do something
         sockets.forEach(socket => {
             if (player.id != socket.id) socket.emit("player", player)
-            else socket.emit("myPos", player.pos)
+            else socket.emit("me", player)
         })
     });
 }, 1000 / 120)

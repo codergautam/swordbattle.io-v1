@@ -1,5 +1,67 @@
 
 
+class HealthBar {
+
+  constructor (game, x, y)
+  {
+      this.bar = new Phaser.GameObjects.Graphics(game);
+
+      this.x = x;
+      this.y = y;
+      this.value = 100;
+      this.p = 76 / 100;
+
+      game.add.existing(this.bar);
+  }
+
+  setHealth (amount)
+  {
+      this.value = amount;
+
+      if (this.value < 0)
+      {
+          this.value = 0;
+      }
+
+      this.draw();
+
+      return (this.value === 0);
+  }
+
+  draw ()
+  {
+      this.bar.clear();
+
+      //  BG
+      this.bar.fillStyle(0x000000);
+      this.bar.fillRect(this.x, this.y, 80, 16);
+
+      //  Health
+
+      this.bar.fillStyle(0xffffff);
+      this.bar.fillRect(this.x + 2, this.y + 2, 76, 12);
+
+      if (this.value < 30)
+      {
+          this.bar.fillStyle(0xff0000);
+      }
+      else
+      {
+          this.bar.fillStyle(0x00ff00);
+      }
+
+      var d = Math.floor(this.p * this.value);
+
+      this.bar.fillRect(this.x + 2, this.y + 2, d, 12);
+  }
+
+  destroy ()
+  {
+    this.bar.destroy()
+  }
+
+}
+
 var config = {
     type: Phaser.AUTO,
     width: window.innerWidth,
@@ -28,6 +90,7 @@ function create() {
     //background
     this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
     this.background.fixedToCamera = true;
+    this.scene = new Phaser.Scenes.SceneManager(game)
 
     //player 
     this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
@@ -36,9 +99,7 @@ function create() {
     this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
 
     //enemies array
-    this.enemyPlayers = []
-    this.enemySwords = []
-    this.dots = []
+    this.enemies = []
     this.dead = false
     //arrow keys
     this.cursors = this.input.keyboard.createCursorKeys();
@@ -68,23 +129,19 @@ function create() {
     //server -> client
     const addPlayer = (player) => {
 
-        this.enemyPlayers[this.enemyPlayers.length] = {
-            item: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25),
-            id: player.id
+        var enemy = {
+          id: player.id,
+           down: false,
+          sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25), 
+          player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25),
+          bar: new HealthBar(this, player.pos.x, player.pos.y+50)
         }
-        this.enemySwords[this.enemySwords.length] = {
-            item: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25),
-            id: player.id,
-            down: false
-        }
-        var enemySword = this.enemyPlayers[this.enemyPlayers.length - 1].item
-        var enemyPlayer = this.enemySwords[this.enemySwords.length - 1].item
-        
-        enemySword.angle = Math.atan2(player.mousePos.y - player.mousePos.relativePos.y, player.mousePos.x - player.mousePos.relativePos.x) * 180 / Math.PI + 45;
-        enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
-        enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
 
+        enemy.sword.angle = Math.atan2(player.mousePos.y - player.mousePos.relativePos.y, player.mousePos.x - player.mousePos.relativePos.x) * 180 / Math.PI + 45;
+        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
+        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
+        this.enemies.push(enemy)
     }
     this.socket.on("players", (players) => {
         players.forEach(player => addPlayer(player))
@@ -95,52 +152,55 @@ function create() {
         addPlayer(player)
         this.ready = true
     })
-    this.socket.on("myPos", (pos) => {
-        this.mePlayer.x = pos.x
-        this.mePlayer.y = pos.y
+    this.socket.on("me", (player) => {
+        this.mePlayer.x = player.pos.x
+        this.mePlayer.y = player.pos.y
     })
     this.socket.on("player", (player) => {
         //update player
         if (!this.ready) return
       try {
-        var enemyPlayer = this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == player.id).item
-        var enemySword = this.enemySwords.find(enemySword => enemySword.id == player.id).item
-
+        var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
+        enemy.bar.setHealth(player.health);
+        enemy.bar.x = player.pos.x - (enemy.player.width / 7)
+        enemy.bar.y = player.pos.y - (enemy.player.height / 5)
+        enemy.bar.draw()
         //update pos
-        enemyPlayer.x = player.pos.x
-        enemyPlayer.y = player.pos.y
+        enemy.player.x = player.pos.x
+        enemy.player.y = player.pos.y
 
-        enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
-        enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
+        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
+        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
         //update sword
         var mousePos = player.mousePos
-        enemySword.angle = Math.atan2(mousePos.y - (mousePos.relativePos.y), mousePos.x - (mousePos.relativePos.x)) * 180 / Math.PI + 45;
-        if (this.enemySwords.find(enemySword => enemySword.id == player.id).down) {
-
-            enemySword.angle -= 30
+        enemy.sword.angle = Math.atan2(mousePos.y - (mousePos.relativePos.y), mousePos.x - (mousePos.relativePos.x)) * 180 / Math.PI + 45;
+        if (enemy.down) {
+            enemy.sword.angle -= 30
         }
 
-        enemySword.x = enemyPlayer.x + enemyPlayer.width / 6 * Math.cos(enemySword.angle * Math.PI / 180)
-        enemySword.y = enemyPlayer.y + enemyPlayer.width / 6 * Math.sin(enemySword.angle * Math.PI / 180)
+        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
+        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
-        this.enemySwords.find(enemySword => enemySword.id == player.id).down = player.mouseDown
+        enemy.down = player.mouseDown
       } catch(e) {
         console.log(e)
       }
     })
     this.socket.on("playerLeave", (id) => {
-        try {
+      try {
+        var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id)
 
-            this.enemySwords.find(enemySword => enemySword.id == id).item.destroy()
-            this.enemyPlayers.find(enemyPlayer => enemyPlayer.id == id).item.destroy()
+        enemy.player.destroy()
+        enemy.sword.destroy()
+        enemy.bar.destroy()
+ 
+          this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1)
 
-            this.enemySwords.splice(this.enemySwords.findIndex(enemySword => enemySword.id == id), 1)
-            this.enemyPlayers.splice(this.enemyPlayers.findIndex(enemyPlayer => enemyPlayer.id == id), 1)
-        } catch (e) {
-            console.log(e)
-        }
-    })
+      } catch (e) {
+          console.log(e)
+      }
+  })
 }
 
 function update() {
@@ -227,7 +287,7 @@ var relativePos = getRelativePositionToCanvas(this.mePlayer, this.cameras.main)
 
     //playercount
     if (this.playerCount) this.playerCount.destroy()
-    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemyPlayers).length + 1).toString(), {
+    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString(), {
         fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
     }).setFontSize(20);
     this.playerCount.scrollFactorX = 0
