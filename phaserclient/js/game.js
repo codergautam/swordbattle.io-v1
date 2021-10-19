@@ -98,6 +98,9 @@ function create() {
     //sword
     this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
 
+    //bar
+    this.meBar = new HealthBar(this, 0,0)
+
     //enemies array
     this.enemies = []
     this.dead = false
@@ -154,6 +157,11 @@ function create() {
     this.socket.on("me", (player) => {
         this.mePlayer.x = player.pos.x
         this.mePlayer.y = player.pos.y
+
+        this.meBar.setHealth(player.health)
+        this.meBar.x = player.pos.x - (this.mePlayer.width / 7)
+        this.meBar.y = player.pos.y - (this.mePlayer.height / 5)
+        this.meBar.draw()
     })
     this.socket.on("player", (player) => {
         //update player
@@ -290,23 +298,7 @@ function update() {
   
 }
 
-function resize() {
-  var canvas = document.querySelector("canvas");
-  var windowWidth = window.innerWidth;
-  var windowHeight = window.innerHeight;
-  var windowRatio = windowWidth / windowHeight;
-  var gameRatio = game.config.width / game.config.height;
-  if(windowRatio < gameRatio){
-      canvas.style.width = windowWidth + "px";
-      canvas.style.height = (windowWidth / gameRatio) + "px";
-  }
-  else{
-      canvas.style.width = (windowHeight * gameRatio) + "px";
-      canvas.style.height = windowHeight + "px";
-  }
-}
 
-window.addEventListener('resize', resize); 
 
 
 
