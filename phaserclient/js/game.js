@@ -251,7 +251,7 @@ function update() {
     this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
 
     var mousePos2 = {
-        viewport: {width: window.innerWidth, height: window.innerWidth},
+        viewport: {width: window.innerWidth, height: window.innerHeight},
         x: mousePos.x,
         y: mousePos.y
     }
