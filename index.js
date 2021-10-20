@@ -1,3 +1,4 @@
+
 const express = require('express');
 const http = require('http');
 const {
@@ -62,6 +63,7 @@ io.on('connection', (socket) => {
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
                           //hit
+                          enemy.lastHit = Date.now()
                           enemy.health -= 10
                           if(enemy.health <= 0) {
                             var socketById = io.sockets.sockets.get(enemy.id);
@@ -105,7 +107,11 @@ setInterval(async () => {
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
-        //do something
+      if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < 100)) {
+        //regen
+        player.lastRegen = Date.now()
+        player.health += 1
+      }
         sockets.forEach(socket => {
             if (player.id != socket.id) socket.emit("player", player)
             else socket.emit("me", player)
