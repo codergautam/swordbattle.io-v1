@@ -2,17 +2,18 @@
 <html>
 <head>
     <script src="https://cdn.jsdelivr.net/npm/phaser@3.55.2/dist/phaser-arcade-physics.min.js"></script>
-    <style>
-        * {
-            margin: 0;
-            padding: 0;
-        }
-    
+<style>
+    body {
+        overflow: hidden;
+        padding: 0px;
+        margin: 0px;
+      }
         </style>
 </head>
 <body>
+    <div id="game"></div>
 <script src="/socket.io/socket.io.js"></script>
-    <script src="/js/game.js">
+    <script src="/js/game.js" type="module">
     </script>
 
 </body>
