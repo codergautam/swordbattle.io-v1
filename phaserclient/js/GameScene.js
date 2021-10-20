@@ -86,6 +86,8 @@ class GameScene extends Phaser.Scene {
         var enemy = {
           id: player.id,
            down: false,
+           toMove: {x: undefined, y: undefined},
+           playerObj: undefined,
           sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25), 
           player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25),
           bar: new HealthBar(this, player.pos.x, player.pos.y+50),
@@ -125,20 +127,13 @@ class GameScene extends Phaser.Scene {
         if (!this.ready) return
       try {
         var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
+        enemy.playerObj = player
         enemy.bar.setHealth(player.health);
-        enemy.bar.x = player.pos.x - (enemy.player.width / 7)
-        enemy.bar.y = player.pos.y - (enemy.player.height / 5)
-        enemy.bar.draw()
 
-        enemy.nameTag.x = player.pos.x - (enemy.nameTag.width / 2)
-        enemy.nameTag.y = player.pos.y - 90
 
         //update pos
-        enemy.player.x = player.pos.x
-        enemy.player.y = player.pos.y
-
-        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
-        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
+        enemy.toMove.x = player.pos.x
+        enemy.toMove.y = player.pos.y
 
         //update sword
         var mousePos = player.mousePos
@@ -147,8 +142,6 @@ class GameScene extends Phaser.Scene {
             enemy.sword.angle -= 30
         }
 
-        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
-        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
         enemy.down = player.mouseDown
       } catch(e) {
@@ -187,15 +180,19 @@ class GameScene extends Phaser.Scene {
 
     if (this.cursors.up.isDown || wKey.isDown) {
         controller.up = true
+       
     }
     if (this.cursors.down.isDown || sKey.isDown) {
         controller.down = true
+        
     }
     if (this.cursors.right.isDown || dKey.isDown) {
         controller.right = true
+        
     }
     if (this.cursors.left.isDown || aKey.isDown) {
         controller.left = true
+        
     }
 
     this.socket.emit("move", controller)
@@ -241,6 +238,25 @@ class GameScene extends Phaser.Scene {
             x: position[0],
             y: position[1]
         }
+    })
+    var fps = this.sys.game.loop.actualFps
+    this.enemies.forEach(enemy => {
+
+      if(enemy.player.x < enemy.toMove.x) enemy.player.x+=enemy.playerObj.speed / fps
+      if (enemy.player.x > enemy.toMove.x) enemy.player.x-=enemy.playerObj.speed / fps
+      if(enemy.player.y < enemy.toMove.y) enemy.player.y+=enemy.playerObj.speed / fps
+      if(enemy.player.y > enemy.toMove.y) enemy.player.y -= enemy.playerObj.speed / fps
+
+              
+        enemy.bar.x = enemy.player.x - (enemy.player.width / 7)
+        enemy.bar.y = enemy.player.y - (enemy.player.height / 5)
+        enemy.bar.draw()
+
+        enemy.nameTag.x = enemy.player.x - (enemy.nameTag.width / 2)
+        enemy.nameTag.y = enemy.player.y - 90
+
+        enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
+        enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
     })
     //better health/killing/respawning coming soon :D
     if (this.ready && !this.dead && !this.socket.connected) {
