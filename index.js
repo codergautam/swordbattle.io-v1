@@ -27,6 +27,7 @@ var players = {}
 io.on('connection', (socket) => {
 
     socket.on('go', async (name) => {
+      if(!name) return
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
         console.log("player joined -> " + socket.id)
