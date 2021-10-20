@@ -20,11 +20,17 @@ class Player {
     var since =( Date.now() - this.lastMove ) / 1000
     
     var go = since * this.speed
+    var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false
     if(this.pos.x >= 2500) controller.right = false
     if(this.pos.y <= -2500) controller.up = false
     if(this.pos.y >= 2500) controller.down = false
+
+    if(controller.up || controller.down) diagnol += 1
+    if(controller.right || controller.left) diagnol += 1
+
+    if(diagnol == 0) go = 0.707 * go
 
     if(controller.up) this.pos.y -= go
     if(controller.down) this.pos.y += go

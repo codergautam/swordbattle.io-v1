@@ -1,5 +1,3 @@
-
-
 class HealthBar {
 
     constructor (game, x, y)
