@@ -11,8 +11,8 @@ class GameScene extends Phaser.Scene {
 
  create() {
   this.canvas = {width: window.innerWidth, height:window.innerHeight}
-
-
+  
+  this.tps = 0
     //background
     this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
     this.background.fixedToCamera = true;
@@ -76,6 +76,9 @@ class GameScene extends Phaser.Scene {
             this.socket.emit("mouseDown", false)
         }
     }, this);
+    this.socket.on("tps", (tps)=> {
+      this.tps = tps
+    })
 
     //server -> client
     const addPlayer = (player) => {
@@ -246,7 +249,7 @@ class GameScene extends Phaser.Scene {
     }
 
     //playercount
-    this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps))
+    this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps)+"\nTick Speed: "+Math.round((this.tps/60)*100)+"%")
 
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);

@@ -103,8 +103,14 @@ io.on('connection', (socket) => {
 });
 
 //tick 120 times per second
+var secondStart = Date.now()
+var tps = 0;
 setInterval(async () => {
- 
+    if(Date.now() - secondStart >= 1000) {
+      io.sockets.emit("tps", tps)
+      secondStart = Date.now()
+      tps = 0
+    }
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
@@ -118,8 +124,9 @@ setInterval(async () => {
             else socket.emit("me", player)
         })
     });
+    tps += 1
     
-}, 1000 / 120)
+}, 1000 / 60)
 
 server.listen(3000, () => {
     console.log('server started');
