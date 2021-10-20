@@ -19,6 +19,8 @@ class GameScene extends Phaser.Scene {
 
     //player 
     this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
+    this.goTo = {x: undefined, y: undefined}
+    this.myObj = undefined
 
     //killcounter
       this.killCount = this.add.text(window.innerWidth / 1.5, 0, 'Kills: 0', {
@@ -111,16 +113,18 @@ class GameScene extends Phaser.Scene {
         this.ready = true
     })
     this.socket.on("me", (player) => {
-        this.mePlayer.x = player.pos.x
-        this.mePlayer.y = player.pos.y
-
-        this.killCount.setText("Kills: "+player.kills)
-
-
+        if(!this.myObj) {
+            this.mePlayer.x = player.pos.x
+            this.mePlayer.y = player.pos.y
+        } else {
+        this.goTo.x = player.pos.x
+        this.goTo.y = player.pos.y
+        }
         this.meBar.setHealth(player.health)
-        this.meBar.x = player.pos.x - (this.mePlayer.width / 7)
-        this.meBar.y = player.pos.y - (this.mePlayer.height / 5)
-        this.meBar.draw()
+        this.killCount.setText("Kills: "+player.kills)
+        this.myObj = player
+
+
     })
     this.socket.on("player", (player) => {
         //update player
@@ -243,8 +247,8 @@ class GameScene extends Phaser.Scene {
     this.enemies.forEach(enemy => {
 
       if(enemy.player.x < enemy.toMove.x) enemy.player.x+=enemy.playerObj.speed / fps
-      if (enemy.player.x > enemy.toMove.x) enemy.player.x-=enemy.playerObj.speed / fps
-      if(enemy.player.y < enemy.toMove.y) enemy.player.y+=enemy.playerObj.speed / fps
+      if (enemy.player.x > enemy.toMove.x) enemy.player.x-=enemy.playerObj.speed / fps 
+      if(enemy.player.y < enemy.toMove.y) enemy.player.y+=enemy.playerObj.speed / fps 
       if(enemy.player.y > enemy.toMove.y) enemy.player.y -= enemy.playerObj.speed / fps
 
               
@@ -258,6 +262,17 @@ class GameScene extends Phaser.Scene {
         enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
         enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
     })
+    if(this.goTo.x < this.mePlayer.x) this.mePlayer.x-=this.myObj.speed / fps
+    if (this.goTo.x > this.mePlayer.x) this.mePlayer.x+=this.myObj.speed/ fps 
+    if(this.goTo.y < this.mePlayer.y) this.mePlayer.y-=this.myObj.speed/ fps 
+    if(this.goTo.y > this.mePlayer.y) this.mePlayer.y += this.myObj.speed / fps
+       
+        this.meBar.x = this.mePlayer.x - (this.mePlayer.width / 7)
+        this.meBar.y = this.mePlayer.y - (this.mePlayer.height / 5)
+        this.meBar.draw()
+
+        this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
+        this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
     //better health/killing/respawning coming soon :D
     if (this.ready && !this.dead && !this.socket.connected) {
         document.write("<h1>You died</h1><br><button onclick=\"location.reload()\"><h1>Respawn</h1></button>")

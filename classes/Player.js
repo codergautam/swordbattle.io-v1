@@ -33,6 +33,8 @@ class Player {
     if(controller.right || controller.left) diagnol += 1
 
     if(diagnol == 0) go = 0.707 * go
+    
+    go = Math.round(go)
 
     if(controller.up) this.pos.y -= go
     if(controller.down) this.pos.y += go
