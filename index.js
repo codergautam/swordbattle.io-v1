@@ -66,6 +66,7 @@ io.on('connection', (socket) => {
                           enemy.lastHit = Date.now()
                           enemy.health -= 10
                           if(enemy.health <= 0) {
+                            player.kills += 1
                             var socketById = io.sockets.sockets.get(enemy.id);
                             console.log(socket.id + " ---X> " + enemy.id)
                             socketById.disconnect()

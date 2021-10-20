@@ -20,6 +20,20 @@ class GameScene extends Phaser.Scene {
     //player 
     this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
 
+    //killcounter
+      this.killCount = this.add.text(window.innerWidth / 1.5, 0, 'Kills: 0', {
+        fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+    }).setFontSize(40);
+        this.killCount.scrollFactorX = 0
+    this.killCount.scrollFactorY = 0
+
+    //player+fpscounter
+        this.playerCount = this.add.text(0, 0, 'Players: 0' +"\nFPS: 0", {
+        fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+    }).setFontSize(20);
+        this.playerCount.scrollFactorX = 0
+    this.playerCount.scrollFactorY = 0
+
     //sword
     this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
 
@@ -42,6 +56,7 @@ class GameScene extends Phaser.Scene {
     this.game.scale.resize(this.canvas.width, this.canvas.height)
         this.background.width = this.canvas.width
         this.background.height = this.canvas.height
+        this.killCount.x = window.innerWidth / 1.5
   }
         
     window.addEventListener("resize", resize, true);
@@ -93,6 +108,9 @@ class GameScene extends Phaser.Scene {
     this.socket.on("me", (player) => {
         this.mePlayer.x = player.pos.x
         this.mePlayer.y = player.pos.y
+
+        this.killCount.setText("Kills: "+player.kills)
+
 
         this.meBar.setHealth(player.health)
         this.meBar.x = player.pos.x - (this.mePlayer.width / 7)
@@ -228,12 +246,8 @@ class GameScene extends Phaser.Scene {
     }
 
     //playercount
-    if (this.playerCount) this.playerCount.destroy()
-    this.playerCount = this.add.text(0, 0, 'Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps), {
-        fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-    }).setFontSize(20);
-    this.playerCount.scrollFactorX = 0
-    this.playerCount.scrollFactorY = 0
+    this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps))
+
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
   
