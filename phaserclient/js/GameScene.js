@@ -300,8 +300,8 @@ class GameScene extends Phaser.Scene {
             if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
             if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
 
-           if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
-           if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
+          // if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
+          // if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
 
             enemy.bar.x = enemy.player.x - (enemy.player.width / 7)
             enemy.bar.y = enemy.player.y - (enemy.player.height / 5)
@@ -326,8 +326,8 @@ class GameScene extends Phaser.Scene {
         if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
         if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
 
-        if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
-        if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
+      //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
+      //  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
         
         this.meBar.x = this.mePlayer.x - (this.mePlayer.width / 7)
         this.meBar.y = this.mePlayer.y - (this.mePlayer.height / 5)
