@@ -42,7 +42,7 @@ io.on('connection', (socket) => {
     socket.on('mousePos', (mousePos) => {
         if (players.hasOwnProperty(socket.id)) players[socket.id].mousePos = mousePos
         else socket.emit("refresh")  
-
+        
         //console.log(mousePos.x +" , "+mousePos.y )
     })
 
@@ -54,24 +54,45 @@ io.on('connection', (socket) => {
             player.mouseDown = down;
 
             //collision v1
+                                                                        //hit cooldown
             if (player.mouseDown&& Date.now() - player.lastDamageDealt > (1000/7)) { 
                 Object.values(players).forEach(enemy => {
+                    //loop through all enemies, make sure the enemy isnt the player itself
                     if (enemy.id != player.id) {
+
+                        //get the values needed for line-circle-collison
                         var circle = [enemy.pos.x, enemy.pos.y]
                         radius = enemy.radius
                         a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
                         b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
+                        //check if enemy and player colliding
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
-                          //hit
+                          //if colliding
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
                           enemy.health -= 10
+
                           if(enemy.health <= 0) {
+                              //enemy has 0 or less than 0 health, time to kill
+
+                              //increment killcount by 1
                             player.kills += 1
+                            
+                            //tell clients that this enemy died
                             var socketById = io.sockets.sockets.get(enemy.id);
-                            console.log(socket.id + " ---X> " + enemy.id)
+                            socketById.emit("youDied", {killedBy: player.name, timeSurvived: Date.now() - enemy.joinTime})
+                            socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
+
+                            //delete the enemy
+                            delete players[enemy.id]   
+                            
+                            //disconnect the socket
                             socketById.disconnect()
+                            
+                            //log a message
+                            console.log("player died -> "+enemy.id)
+                            
                           }
                         }
                     }
@@ -103,29 +124,36 @@ io.on('connection', (socket) => {
     })
 
     socket.on('disconnect', () => {
-        players = Object.filter(players, player => player.id != socket.id)
-        console.log("player left/killed -> " + socket.id)
+        if(!Object.keys(players).includes(socket.id)) return
+        delete players[socket.id]
+        console.log("player left -> " + socket.id)
         socket.broadcast.emit("playerLeave", socket.id)
     })
 });
 
-//tick 120 times per second
+//tick
 var secondStart = Date.now()
 var tps = 0;
 setInterval(async () => {
+
+    //emit tps to clients
     if(Date.now() - secondStart >= 1000) {
       io.sockets.emit("tps", tps)
       secondStart = Date.now()
       tps = 0
     }
+
+    //health regen
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
       if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < 100)) {
-        //regen
+        //if its been 5 seconds since player got hit, regen then every 100 ms
         player.lastRegen = Date.now()
         player.health += 1
       }
+
+      //emit player data to all clients
         sockets.forEach(socket => {
             if (player.id != socket.id) socket.emit("player", player)
             else socket.emit("me", player)

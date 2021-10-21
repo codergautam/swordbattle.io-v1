@@ -11,6 +11,7 @@ class Player {
     this.lastDamageDealt = Date.now()
     this.kills = 0
     this.speed = 300
+    this.joinTime = Date.now()
     this.lastHit = Date.now()
     this.lastRegen = Date.now()
     this.mouseDown = false
