@@ -9,7 +9,7 @@ class GameScene extends Phaser.Scene {
         this.load.image("player", "/assets/images/player.png")
         this.load.image("sword", "/assets/images/sword.png")
         this.load.image('background', '/assets/images/background.jpeg');
-
+        this.load.image('coin', '/assets/images/coin.png');
         this.socket = io()
         this.ready = false;
     }
@@ -32,7 +32,10 @@ class GameScene extends Phaser.Scene {
         this.background.fixedToCamera = true;
 
         //player 
+        
+        
         this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
+        
         this.goTo = {
             x: undefined,
             y: undefined
@@ -59,6 +62,9 @@ class GameScene extends Phaser.Scene {
         //bar
         this.meBar = new HealthBar(this, 0, 0)
 
+        //coins array
+        this.coins = []
+
         //enemies array
         this.enemies = []
         this.dead = false
@@ -69,7 +75,7 @@ class GameScene extends Phaser.Scene {
 
         this.cameras.main.startFollow(this.mePlayer);
 
-        ///
+        ///resize dynamicly
         const resize = () => {
             this.canvas = {
                 width: window.innerWidth,
@@ -82,6 +88,7 @@ class GameScene extends Phaser.Scene {
         }
 
         window.addEventListener("resize", resize, true);
+
         //go packet
         this.socket.emit("go", this.name)
 
@@ -107,7 +114,7 @@ class GameScene extends Phaser.Scene {
 
         this.graphics.lineStyle(1, 0xffff00, 1)
 
-        this.graphics.strokeRoundedRect(-2504, -2504, 5000, 5000, 0);
+        this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
         //server -> client
         const addPlayer = (player) => {
            
@@ -169,11 +176,11 @@ class GameScene extends Phaser.Scene {
                 this.goTo.x = player.pos.x
                 this.goTo.y = player.pos.y
             }
+            this.mePlayer.setScale(player.scale)
             this.meBar.setHealth(player.health)
+            this.meSword.setScale(player.scale)
             this.killCount.setText("Kills: " + player.kills)
             this.myObj = player
-
-
         })
         this.socket.on("player", (player) => {
             //update player
@@ -193,16 +200,35 @@ class GameScene extends Phaser.Scene {
                 if (enemy.down) {
                     enemy.sword.angle -= 30
                 }
-
+                enemy.player.setScale(player.scale)
+                enemy.sword.setScale(player.scale)
                 enemy.down = player.mouseDown
             } catch (e) {
                 console.log(e)
             }
         })
-
-
         this.socket.on("playerLeave", removePlayer)
         this.socket.on("playerDied", removePlayer)
+
+        this.socket.on("coins", (coinsArr) => {
+            coinsArr.forEach((coin) => {
+                if(this.coins.filter(e => e.id == coin.id).length == 0) {
+                    this.coins.push(
+                    {
+                        id: coin.id,
+                        item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100)
+                    }
+                    )
+                    console.log(this.coins[0].item.width)
+                }
+            })
+
+           var remove = this.coins.filter(e=>coinsArr.filter(b => e.id == b.id).length == 0)
+           remove.forEach((coin) => {
+               coin.item.destroy()
+           })
+           this.coins = this.coins.filter(e=>coinsArr.filter(b => e.id == b.id).length == 1)
+        })
 
         this.socket.on("youDied", (data) => {
             this.died(data)
@@ -268,8 +294,7 @@ class GameScene extends Phaser.Scene {
 
         var fps = this.sys.game.loop.actualFps
    
-        console.log(this.enemies)
-        var difference = function (a, b) { return Math.abs(a - b); }
+        //var difference = function (a, b) { return Math.abs(a - b); }
         this.enemies.forEach(enemy => {
           if(enemy.playerObj) {
             var speed = enemy.playerObj.speed / fps

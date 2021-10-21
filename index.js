@@ -11,6 +11,7 @@ const server = http.createServer(app);
 const io = new Server(server);
 
 const Player = require("./classes/Player")
+const Coin = require("./classes/Coin")
 
 app.use('/', express.static('phaserclient'));
 app.use('/kaboomclient', express.static('kaboomclient'));
@@ -23,6 +24,9 @@ Object.filter = (obj, predicate) =>
     .reduce((res, key) => (res[key] = obj[key], res), {});
 
 var players = {}
+var coins = [];
+
+var maxCoins = 100;
 
 io.on('connection', (socket) => {
 
@@ -64,7 +68,7 @@ io.on('connection', (socket) => {
                         var circle = [enemy.pos.x, enemy.pos.y]
                         enemy.calcRadius()
                         enemy.calcHitbox()
-                        radius = enemy.radius /4
+                        radius = enemy.radius *enemy.scale
 
                         a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
                         b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
@@ -112,6 +116,15 @@ io.on('connection', (socket) => {
             if (players.hasOwnProperty(socket.id)) {
                 var player = players[socket.id]
                 players[socket.id] = player.move(controller)
+
+                touching  = coins.filter(coin => coin.touchingPlayer(player))
+               
+                touching.forEach((coin) => {
+                    player.coins ++
+                    player.scale += 0.01
+                    var index = coins.findIndex(e=>e.id == coin.id)
+                    coins.splice(index, 1)
+                })
            
             }
             else socket.emit("refresh")
@@ -131,8 +144,9 @@ io.on('connection', (socket) => {
 //tick
 var secondStart = Date.now()
 var tps = 0;
-setInterval(async () => {
 
+setInterval(async () => {
+    if(coins.length < maxCoins) coins.push(new Coin())
     //emit tps to clients
     if(Date.now() - secondStart >= 1000) {
       io.sockets.emit("tps", tps)
@@ -155,6 +169,8 @@ setInterval(async () => {
             if (player.id != socket.id) socket.emit("player", player)
             else socket.emit("me", player)
         })
+
+        io.sockets.emit("coins", coins)
     });
     tps += 1
     

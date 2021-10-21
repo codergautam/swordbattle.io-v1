@@ -1,12 +1,13 @@
-function getRandomIntegerFromRange(min, max) {
-  return Math.random(min) + Math.floor(Math.random() * (max - min + 1));
+
+function getRandomInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
 }
 class Player { 
   constructor(id, name) {
     this.id = id
     this.name = name
     this.health = 100
-    this.pos = {x: getRandomIntegerFromRange(-250,250), y: getRandomIntegerFromRange(-250,250)}
+    this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
     this.lastPos = this.pos
     this.lastDamageDealt = Date.now()
     this.kills = 0
@@ -18,6 +19,7 @@ class Player {
     this.mousePos = {x:0,y:0,viewport:{width:1920,height:1080}}
     this.hitbox = {swordPos:{x:undefined,y:undefined},hitPos:{x:undefined,y:undefined}}
     this.size = 300
+    this.scale = 0.25
     this.radius = this.calcRadius()
     this.lastMove = Date.now()
   }
@@ -76,8 +78,8 @@ class Player {
     sword.x = this.pos.x + (this.size / 6 * Math.cos(angle * Math.PI / 180))
     sword.y = this.pos.y + (this.size/ 6 * Math.sin(angle * Math.PI / 180))
   this.hitbox.swordPos = sword;
-
-  var hitArr = movePointAtAngle([sword.x, sword.y], angle * Math.PI / 180, 50)
+console.log(this.radius*this.scale)
+  var hitArr = movePointAtAngle([sword.x, sword.y], angle * Math.PI / 180, (this.radius*this.scale)*1.5)
  this.hitbox.hitPos.x = hitArr[0]
  this.hitbox.hitPos.y = hitArr[1]
 
