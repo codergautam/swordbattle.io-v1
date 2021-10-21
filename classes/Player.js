@@ -61,6 +61,13 @@ class Player {
     return this
   }
   calcHitbox() {
+    function movePointAtAngle(point, angle, distance) {
+      return [
+          point[0] + (Math.sin(angle) * distance),
+          point[1] - (Math.cos(angle) * distance)
+      ];
+  }
+
     var angle = Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
     
     if (this.mouseDown) angle -= 30
@@ -69,6 +76,12 @@ class Player {
     sword.x = this.pos.x + (this.size / 6 * Math.cos(angle * Math.PI / 180))
     sword.y = this.pos.y + (this.size/ 6 * Math.sin(angle * Math.PI / 180))
   this.hitbox.swordPos = sword;
+
+  var hitArr = movePointAtAngle([sword.x, sword.y], angle * Math.PI / 180, 50)
+ this.hitbox.hitPos.x = hitArr[0]
+ this.hitbox.hitPos.y = hitArr[1]
+
+
   }
   calcRadius() {
     return this.size / 2

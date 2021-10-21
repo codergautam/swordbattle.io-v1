@@ -266,23 +266,6 @@ class GameScene extends Phaser.Scene {
         }
         if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
-
-        function movePointAtAngle(point, angle, distance) {
-            return [
-                point[0] + (Math.sin(angle) * distance),
-                point[1] - (Math.cos(angle) * distance)
-            ];
-        }
-        var x1 = this.meSword.x
-        var y1 = this.meSword.y
-
-        var position = movePointAtAngle([x1, y1], this.meSword.angle * Math.PI / 180, 50)
-
-        //yes i know this is hackable im too lazy pls dont create a hack if you do then you have no life
-        this.socket.emit("hitbox", {
-                x: position[0],
-                y: position[1]
-        })
         var fps = this.sys.game.loop.actualFps
    
         console.log(this.enemies)
