@@ -94,7 +94,9 @@ class GameScene extends Phaser.Scene {
           player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25),
           bar: new HealthBar(this, player.pos.x, player.pos.y+50),
           nameTag: this.add.text(player.pos.x, player.pos.y-90, player.name, {
-            fontFamily: 'serif', fill: '#000000', fontSize: '25px'})
+            fontFamily: 'serif', fill: '#000000', fontSize: '25px'}),
+
+        actualPos: this.add.circle(player.pos.x, player.pos.y, 10,0xff66ff)
         }
 
         enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height ) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
@@ -261,6 +263,9 @@ class GameScene extends Phaser.Scene {
 
         enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
         enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
+
+        enemy.actualPos.x = enemy.toMove.x
+        enemy.actualPos.y = enemy.toMove.y
     })
     if(this.goTo.x < this.mePlayer.x) this.mePlayer.x-=this.myObj.speed / fps
     if (this.goTo.x > this.mePlayer.x) this.mePlayer.x+=this.myObj.speed/ fps 
