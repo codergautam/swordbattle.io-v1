@@ -49,6 +49,11 @@ class Player {
     if(controller.right) this.pos.x += go
     if(controller.left) this.pos.x -= go
 
+    if(this.pos.x <= -2500) this.pos.x = -2500
+    if(this.pos.x >= 2500) this.pos.x = 2500
+    if(this.pos.y <= -2500) this.pos.y = -2500
+    if(this.pos.y >= 2500) this.pos.y = 2500
+
     if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
     this.lastMove = Date.now()
