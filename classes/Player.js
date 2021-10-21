@@ -17,7 +17,7 @@ class Player {
     this.mouseDown = false
     this.mousePos = {x:0,y:0,viewport:{width:1920,height:1080}}
     this.hitbox = {swordPos:{x:undefined,y:undefined},hitPos:{x:undefined,y:undefined}}
-    this.size = 75
+    this.size = 300
     this.radius = this.calcRadius()
     this.lastMove = Date.now()
   }
@@ -59,6 +59,16 @@ class Player {
     this.lastMove = Date.now()
     
     return this
+  }
+  calcHitbox() {
+    var angle = Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
+    
+    if (this.mouseDown) angle -= 30
+   
+    var sword = {x: 0, y: 0}
+    sword.x = this.pos.x + (this.size / 6 * Math.cos(angle * Math.PI / 180))
+    sword.y = this.pos.y + (this.size/ 6 * Math.sin(angle * Math.PI / 180))
+  this.hitbox.swordPos = sword;
   }
   calcRadius() {
     return this.size / 2

@@ -62,9 +62,14 @@ io.on('connection', (socket) => {
 
                         //get the values needed for line-circle-collison
                         var circle = [enemy.pos.x, enemy.pos.y]
-                        radius = enemy.radius
+                        enemy.calcRadius()
+                        enemy.calcHitbox()
+                        radius = enemy.radius /4
+
                         a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
                         b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
+                       
+                        player.calcHitbox()
                         //check if enemy and player colliding
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
@@ -91,7 +96,7 @@ io.on('connection', (socket) => {
                             socketById.disconnect()
                             
                             //log a message
-                            console.log("player died -> "+enemy.id)
+                            console.log(player )
                             
                           }
                         }
@@ -117,7 +122,7 @@ io.on('connection', (socket) => {
 
     socket.on("hitbox", (hitbox) => {
         if (players.hasOwnProperty(socket.id)) {
-            players[socket.id].hitbox = hitbox
+            players[socket.id].hitbox.hitPos = hitbox
             socket.emit("hitbox", hitbox)
         } else socket.emit("refresh")
         

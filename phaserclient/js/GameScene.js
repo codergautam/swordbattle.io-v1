@@ -249,11 +249,13 @@ class GameScene extends Phaser.Scene {
         var mousePos = this.input
 
         this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
-
+        
         if (this.mouseDown) this.meSword.angle -= 30
+        
         this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
         this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
-
+        
+        
         var mousePos2 = {
             viewport: {
                 width: this.canvas.width,
@@ -278,18 +280,13 @@ class GameScene extends Phaser.Scene {
 
         //yes i know this is hackable im too lazy pls dont create a hack if you do then you have no life
         this.socket.emit("hitbox", {
-            swordPos: {
-                x: x1,
-                y: y1
-            },
-            hitPos: {
                 x: position[0],
                 y: position[1]
-            }
         })
         var fps = this.sys.game.loop.actualFps
    
         console.log(this.enemies)
+        var difference = function (a, b) { return Math.abs(a - b); }
         this.enemies.forEach(enemy => {
 
             if (enemy.player.x < enemy.toMove.x) enemy.player.x += enemy.playerObj.speed / fps
@@ -297,6 +294,8 @@ class GameScene extends Phaser.Scene {
             if (enemy.player.y < enemy.toMove.y) enemy.player.y += enemy.playerObj.speed / fps
             if (enemy.player.y > enemy.toMove.y) enemy.player.y -= enemy.playerObj.speed / fps
 
+           if(difference(enemy.player.x, enemy.toMove.x) < 10) enemy.player.x = enemy.toMove.x
+            if(difference(enemy.player.y, enemy.toMove.y) < 10) enemy.player.y = enemy.toMove.y
 
             enemy.bar.x = enemy.player.x - (enemy.player.width / 7)
             enemy.bar.y = enemy.player.y - (enemy.player.height / 5)
@@ -314,6 +313,9 @@ class GameScene extends Phaser.Scene {
         if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= this.myObj.speed / fps
         if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += this.myObj.speed / fps
 
+        if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
+        if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
+        
         this.meBar.x = this.mePlayer.x - (this.mePlayer.width / 7)
         this.meBar.y = this.mePlayer.y - (this.mePlayer.height / 5)
         this.meBar.draw()
