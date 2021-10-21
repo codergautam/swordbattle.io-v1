@@ -285,7 +285,7 @@ class GameScene extends Phaser.Scene {
     }
 
     //playercount
-    this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps)+"\nTick Speed: "+Math.round((this.tps/60)*100)+"%")
+    this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString()+"\nFPS: "+ Math.round(this.sys.game.loop.actualFps)+"\nTick Speed: "+Math.round((this.tps/45)*100)+"%")
 
     //background movement
     this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);

@@ -4,6 +4,8 @@ class Player {
     this.name = name
     this.health = 100
     this.pos = {x: 0, y: 0}
+    this.lastPos = this.pos
+    this.lastDamageDealt = Date.now()
     this.kills = 0
     this.speed = 300
     this.lastHit = Date.now()
@@ -21,6 +23,7 @@ class Player {
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
     var since =( Date.now() - this.lastMove ) / 1000
     
+    
     var go = since * this.speed
     var diagnol = 0;
 
@@ -33,16 +36,19 @@ class Player {
     if(controller.right || controller.left) diagnol += 1
 
     if(diagnol == 0) go = 0.707 * go
-    
+
     go = Math.round(go)
+    var last = {x: this.pos.x, y: this.pos.y}
 
     if(controller.up) this.pos.y -= go
     if(controller.down) this.pos.y += go
     if(controller.right) this.pos.x += go
     if(controller.left) this.pos.x -= go
 
-    this.lastMove = Date.now()
+    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
+    this.lastMove = Date.now()
+    
     return this
   }
   calcRadius() {

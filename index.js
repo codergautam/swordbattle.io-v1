@@ -54,7 +54,7 @@ io.on('connection', (socket) => {
             player.mouseDown = down;
 
             //collision v1
-            if (player.mouseDown)
+            if (player.mouseDown&& Date.now() - player.lastDamageDealt > (1000/7)) { 
                 Object.values(players).forEach(enemy => {
                     if (enemy.id != player.id) {
                         var circle = [enemy.pos.x, enemy.pos.y]
@@ -64,6 +64,7 @@ io.on('connection', (socket) => {
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
                           //hit
+                          player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
                           enemy.health -= 10
                           if(enemy.health <= 0) {
@@ -75,13 +76,18 @@ io.on('connection', (socket) => {
                         }
                     }
                 })
+            }
         } else socket.emit("refresh")
         
     })
 
     socket.on('move', (controller) => {
         try {
-            if (players.hasOwnProperty(socket.id)) players[socket.id] = players[socket.id].move(controller)
+            if (players.hasOwnProperty(socket.id)) {
+                var player = players[socket.id]
+                players[socket.id] = player.move(controller)
+           
+            }
             else socket.emit("refresh")
         } catch (e) {
             console.log(e)
@@ -127,7 +133,7 @@ setInterval(async () => {
     });
     tps += 1
     
-}, 1000 / 30)
+}, 1000 / 45)
 
 server.listen(3000, () => {
     console.log('server started');
