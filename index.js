@@ -122,6 +122,7 @@ io.on('connection', (socket) => {
 
     socket.on("hitbox", (hitbox) => {
         if (players.hasOwnProperty(socket.id)) {
+            if(!hitbox.hasOwnProperty("x") || !hitbox.hasOwnProperty("y")) return
             players[socket.id].hitbox.hitPos = hitbox
             socket.emit("hitbox", hitbox)
         } else socket.emit("refresh")
