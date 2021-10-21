@@ -1,9 +1,12 @@
+function getRandomIntegerFromRange(min, max) {
+  return Math.random(min) + Math.floor(Math.random() * (max - min + 1));
+}
 class Player { 
   constructor(id, name) {
     this.id = id
     this.name = name
     this.health = 100
-    this.pos = {x: 0, y: 0}
+    this.pos = {x: getRandomIntegerFromRange(-250,250), y: getRandomIntegerFromRange(-250,250)}
     this.lastPos = this.pos
     this.lastDamageDealt = Date.now()
     this.kills = 0
