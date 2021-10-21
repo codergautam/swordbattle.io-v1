@@ -288,11 +288,13 @@ class GameScene extends Phaser.Scene {
         console.log(this.enemies)
         var difference = function (a, b) { return Math.abs(a - b); }
         this.enemies.forEach(enemy => {
-
-            if (enemy.player.x < enemy.toMove.x) enemy.player.x += enemy.playerObj.speed / fps
-            if (enemy.player.x > enemy.toMove.x) enemy.player.x -= enemy.playerObj.speed / fps
-            if (enemy.player.y < enemy.toMove.y) enemy.player.y += enemy.playerObj.speed / fps
-            if (enemy.player.y > enemy.toMove.y) enemy.player.y -= enemy.playerObj.speed / fps
+            var speed = enemy.playerObj.speed / fps
+            if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
+            
+            if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
+            if (enemy.player.x > enemy.toMove.x) enemy.player.x -= speed
+            if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
+            if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
 
            if(difference(enemy.player.x, enemy.toMove.x) < 10) enemy.player.x = enemy.toMove.x
             if(difference(enemy.player.y, enemy.toMove.y) < 10) enemy.player.y = enemy.toMove.y
@@ -308,10 +310,17 @@ class GameScene extends Phaser.Scene {
             enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
 
         })
-        if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= this.myObj.speed / fps
-        if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += this.myObj.speed / fps
-        if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= this.myObj.speed / fps
-        if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += this.myObj.speed / fps
+        if(this.myObj) {
+        var speed = this.myObj.speed / fps
+        } else {
+            var speed = 300 / fps
+        }
+        if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
+
+        if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
+        if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += speed
+        if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
+        if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
 
         if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
         if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
