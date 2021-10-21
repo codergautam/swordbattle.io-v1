@@ -102,6 +102,12 @@ class GameScene extends Phaser.Scene {
             this.tps = tps
         })
 
+        //boundary
+        this.graphics = this.add.graphics()
+
+        this.graphics.lineStyle(1, 0xffff00, 1)
+
+        this.graphics.strokeRoundedRect(-2504, -2504, 5000, 5000, 0);
         //server -> client
         const addPlayer = (player) => {
            
