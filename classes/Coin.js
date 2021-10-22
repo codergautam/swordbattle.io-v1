@@ -15,7 +15,7 @@ function getRandomInt(min, max) {
     }
     touchingPlayer(player) {
         const checkCollision = (p1x, p1y, r1, p2x, p2y, r2) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2)
-        return checkCollision(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, player.calcRadius()*player.scale)
+        return checkCollision(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, player.radius*player.scale)
     }
 
   }

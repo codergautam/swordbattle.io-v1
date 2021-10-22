@@ -35,7 +35,7 @@ class GameScene extends Phaser.Scene {
         
         this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
         this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
-        
+
         this.goTo = {
             x: undefined,
             y: undefined
@@ -181,6 +181,8 @@ class GameScene extends Phaser.Scene {
             this.mePlayer.setScale(player.scale)
             this.meBar.setHealth(player.health)
             this.meSword.setScale(player.scale)
+
+            //this.meLine.setTo(0, 0, 250, 250)
             this.killCount.setText("Kills: " + player.kills)
             this.myObj = player
         })
@@ -221,7 +223,7 @@ class GameScene extends Phaser.Scene {
                         item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100)
                     }
                     )
-                    console.log(this.coins[0].item.width)
+                    
                 }
             })
 
@@ -245,6 +247,7 @@ class GameScene extends Phaser.Scene {
             right: false,
             down: false
         }
+
 
         var wKey = this.input.keyboard.addKey('W');
         var aKey = this.input.keyboard.addKey('A');
@@ -358,9 +361,14 @@ class GameScene extends Phaser.Scene {
 
         //playercount
         this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 45) * 100) + "%")
-
+        this.playerCount.x = 0
+        this.playerCount.y = 0
         //background movement
+
+        
+
         this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+
 
     }
 }

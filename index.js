@@ -4,7 +4,6 @@ const http = require('http');
 const {
     Server
 } = require("socket.io");
-var collide = require('line-circle-collision')
 
 const app = express();
 const server = http.createServer(app);
@@ -65,19 +64,9 @@ io.on('connection', (socket) => {
                     if (enemy.id != player.id) {
 
                         //get the values needed for line-circle-collison
-                        var circle = [enemy.pos.x, enemy.pos.y]
-                       
-                        
-                        player.calcHitbox()
-                        radius = enemy.radius *enemy.scale
-
-                        a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
-                        b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
-                       
                         
                         //check if enemy and player colliding
-                        var hit = collide(a, b, circle, radius)
-                        if (hit) {
+                        if (player.hittingPlayer(enemy)) {
                           //if colliding
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
@@ -100,8 +89,6 @@ io.on('connection', (socket) => {
                             //disconnect the socket
                             socketById.disconnect()
                             
-                            //log a message
-                            console.log(player )
                             
                           }
                         }
@@ -121,7 +108,7 @@ io.on('connection', (socket) => {
                 touching  = coins.filter(coin => coin.touchingPlayer(player))
                
                 touching.forEach((coin) => {
-                    player.coins ++
+                    player.coins += 1
                     player.scale += 0.01
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
