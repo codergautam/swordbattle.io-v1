@@ -33,7 +33,7 @@ class GameScene extends Phaser.Scene {
 
         //player 
         
-        
+        this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
         this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
         
         this.goTo = {
@@ -57,7 +57,7 @@ class GameScene extends Phaser.Scene {
         this.playerCount.scrollFactorY = 0
 
         //sword
-        this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
+        
 
         //bar
         this.meBar = new HealthBar(this, 0, 0)
@@ -135,10 +135,12 @@ class GameScene extends Phaser.Scene {
                     fontSize: '25px'
                 })
             }
-
+         
+                var factor = (100/(player.scale*100))*1.5
+       
             enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
-            enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
-            enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
+            enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
+            enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
             this.enemies.push(enemy)
         }
@@ -278,9 +280,6 @@ class GameScene extends Phaser.Scene {
         
         if (this.mouseDown) this.meSword.angle -= 30
         
-        this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
-        this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
-        
         
         var mousePos2 = {
             viewport: {
@@ -317,9 +316,13 @@ class GameScene extends Phaser.Scene {
 
             enemy.nameTag.x = enemy.player.x - (enemy.nameTag.width / 2)
             enemy.nameTag.y = enemy.player.y - 90
-
-            enemy.sword.x = enemy.player.x + enemy.player.width / 6 * Math.cos(enemy.sword.angle * Math.PI / 180)
-            enemy.sword.y = enemy.player.y + enemy.player.width / 6 * Math.sin(enemy.sword.angle * Math.PI / 180)
+          if(enemy.playerObj) {
+            var factor = (100/(enemy.playerObj.scale*100))*1.5
+          } else {
+              var factor = 6
+          }
+            enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
+            enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
         })
         if(this.myObj) {
@@ -340,9 +343,13 @@ class GameScene extends Phaser.Scene {
         this.meBar.x = this.mePlayer.x - (this.mePlayer.width / 7)
         this.meBar.y = this.mePlayer.y - (this.mePlayer.height / 5)
         this.meBar.draw()
-
-        this.meSword.x = this.mePlayer.x + this.mePlayer.width / 6 * Math.cos(this.meSword.angle * Math.PI / 180)
-        this.meSword.y = this.mePlayer.y + this.mePlayer.width / 6 * Math.sin(this.meSword.angle * Math.PI / 180)
+        if(this.myObj) { 
+        var factor1 = (100/(this.myObj.scale*100))*1.5
+        } else {
+            var factor1 = 6
+        }
+        this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180)
+        this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180)
         //better health/killing/respawning coming soon :D
         if (this.ready && !this.dead && !this.socket.connected) {
             document.write("<h1>You disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")

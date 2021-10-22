@@ -75,8 +75,9 @@ class Player {
     if (this.mouseDown) angle -= 30
    
     var sword = {x: 0, y: 0}
-    sword.x = this.pos.x + (this.size / 6 * Math.cos(angle * Math.PI / 180))
-    sword.y = this.pos.y + (this.size/ 6 * Math.sin(angle * Math.PI / 180))
+    var factor = (100/(this.scale*100))*1.5
+    sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180))
+    sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180))
   this.hitbox.swordPos = sword;
 console.log(this.radius*this.scale)
   var hitArr = movePointAtAngle([sword.x, sword.y], angle * Math.PI / 180, (this.radius*this.scale)*1.5)
