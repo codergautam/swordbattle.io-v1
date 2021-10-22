@@ -24,7 +24,8 @@ class Player {
     this.lastMove = Date.now()
   }
 
-  move(controller) {
+  move(controller, players) {
+    var players = Object.values(players)
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
     var since =( Date.now() - this.lastMove ) / 1000
@@ -56,6 +57,9 @@ class Player {
     if(this.pos.y <= -2500) this.pos.y = -2500
     if(this.pos.y >= 2500) this.pos.y = 2500
 
+   // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
+    if(players.filter(player=> player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
+    
     if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
     this.lastMove = Date.now()
@@ -88,6 +92,10 @@ console.log(this.radius*this.scale)
   }
   calcRadius() {
     return this.size / 2
+  }
+  touchingPlayer(player) {
+          const checkCollision = (p1x, p1y, r1, p2x, p2y, r2) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2)
+        return checkCollision(this.pos.x, this.pos.y, this.radius*this.scale, player.pos.x, player.pos.y, player.radius*player.scale)
   }
 }
 

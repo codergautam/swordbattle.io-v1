@@ -66,14 +66,15 @@ io.on('connection', (socket) => {
 
                         //get the values needed for line-circle-collison
                         var circle = [enemy.pos.x, enemy.pos.y]
-                        enemy.calcRadius()
-                        enemy.calcHitbox()
+                       
+                        
+                        player.calcHitbox()
                         radius = enemy.radius *enemy.scale
 
                         a = [player.hitbox.swordPos.x, player.hitbox.swordPos.y]
                         b = [player.hitbox.hitPos.x, player.hitbox.hitPos.y]
                        
-                        player.calcHitbox()
+                        
                         //check if enemy and player colliding
                         var hit = collide(a, b, circle, radius)
                         if (hit) {
@@ -115,7 +116,7 @@ io.on('connection', (socket) => {
         try {
             if (players.hasOwnProperty(socket.id)) {
                 var player = players[socket.id]
-                players[socket.id] = player.move(controller)
+                players[socket.id] = player.move(controller, players)
 
                 touching  = coins.filter(coin => coin.touchingPlayer(player))
                
