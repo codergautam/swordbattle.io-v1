@@ -2,7 +2,8 @@ class HealthBar {
 
     constructor (game, x, y)
     {
-        this.bar = new Phaser.GameObjects.Graphics(game);
+
+        this.bar = new Phaser.GameObjects.Graphics(game).setDepth(99);
   
         this.x = x;
         this.y = y;

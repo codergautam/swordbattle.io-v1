@@ -33,9 +33,9 @@ class GameScene extends Phaser.Scene {
 
         //player 
         
-        this.meSword = this.add.image(400, 100, "sword").setScale(0.25)
-        this.mePlayer = this.add.image(400, 100, "player").setScale(0.25)
-
+        this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50)
+        this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51)
+        this.swordAnim = {go: false, added: 0}
         this.goTo = {
             x: undefined,
             y: undefined
@@ -45,14 +45,14 @@ class GameScene extends Phaser.Scene {
         //killcounter
         this.killCount = this.add.text(window.innerWidth / 1.5, 0, 'Kills: 0', {
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-        }).setFontSize(40);
+        }).setFontSize(40).setDepth(101);
         this.killCount.scrollFactorX = 0
         this.killCount.scrollFactorY = 0
 
         //player+fpscounter
-        this.playerCount = this.add.text(0, 0, 'Players: 0' + "\nFPS: 0", {
+        this.playerCount = this.add.text(this.cameras.main.worldView.x*this.cameras.main.zoom, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-        }).setFontSize(20);
+        }).setFontSize(20).setDepth(101);
         this.playerCount.scrollFactorX = 0
         this.playerCount.scrollFactorY = 0
 
@@ -72,7 +72,7 @@ class GameScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //camera follow
-
+        //this.cameras.main.setZoom(0.5)
         this.cameras.main.startFollow(this.mePlayer);
 
         ///resize dynamicly
@@ -133,12 +133,15 @@ class GameScene extends Phaser.Scene {
                     fontFamily: 'serif',
                     fill: '#000000',
                     fontSize: '25px'
-                })
+                }).setDepth(100),
+                swordAnim: {go: false, added: 0}
             }
          
                 var factor = (100/(player.scale*100))*1.5
        
             enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+            
+            
             enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
             enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
@@ -201,9 +204,21 @@ class GameScene extends Phaser.Scene {
                 //update sword
                 var mousePos = player.mousePos
                 enemy.sword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
-                if (enemy.down) {
-                    enemy.sword.angle -= 30
+
+                if (enemy.down) enemy.swordAnim.go = true
+                else enemy.swordAnim.go = false
+
+                
+                if(enemy.swordAnim.go) {
+        
+                    if(enemy.swordAnim.added < 30) enemy.swordAnim.added += 5
+                    enemy.sword.angle -= enemy.swordAnim.added
+                } else if(enemy.swordAnim.added >0) {
+                     enemy.swordAnim.added -= 5
+                    enemy.sword.angle -= enemy.swordAnim.added
                 }
+               
+                
                 enemy.player.setScale(player.scale)
                 enemy.sword.setScale(player.scale)
                 enemy.down = player.mouseDown
@@ -220,7 +235,7 @@ class GameScene extends Phaser.Scene {
                     this.coins.push(
                     {
                         id: coin.id,
-                        item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100)
+                        item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20)
                     }
                     )
                     
@@ -273,15 +288,29 @@ class GameScene extends Phaser.Scene {
 
         this.socket.emit("move", controller)
 
-        //sword rotation
+        //sword 
+
+               
+
         var old = this.meSword.angle
-        if (this.mouseDown) old += 30
+        //if (this.mouseDown) old += 30
 
         var mousePos = this.input
 
         this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
         
-        if (this.mouseDown) this.meSword.angle -= 30
+         //sword animation
+        if (this.mouseDown) this.swordAnim.go = true
+        else this.swordAnim.go = false
+        
+        if(this.swordAnim.go) {
+
+            if(this.swordAnim.added < 30) this.swordAnim.added += 5
+            this.meSword.angle -= this.swordAnim.added
+        } else if(this.swordAnim.added >0) {
+             this.swordAnim.added -= 5
+            this.meSword.angle -= this.swordAnim.added
+        }
         
         
         var mousePos2 = {
@@ -353,9 +382,11 @@ class GameScene extends Phaser.Scene {
         }
         this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180)
         this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180)
-        //better health/killing/respawning coming soon :D
+
+
+        
         if (this.ready && !this.dead && !this.socket.connected) {
-            document.write("<h1>You disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
+            document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
             this.dead = true
         }
 
