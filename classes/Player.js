@@ -12,7 +12,7 @@ class Player {
     this.lastPos = this.pos
     this.lastDamageDealt = Date.now()
     this.kills = 0
-    this.speed = 300
+    this.speed = 500
     this.joinTime = Date.now()
     this.lastHit = Date.now()
     this.lastRegen = Date.now()
@@ -23,7 +23,34 @@ class Player {
     this.radius = this.size / 2
     this.lastMove = Date.now()
   }
+  moveWithMouse(players) {
+/*
+    var players = Object.values(players)
+  //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
+  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
+    var since =( Date.now() - this.lastMove ) / 1000
+    
+    
+    var go = since * this.speed * 2
+ 
+    var last = {x: this.pos.x, y: this.pos.y}
+var pos =  this.movePointAtAngle([this.pos.x, this.pos.y],this.calcSwordAngle()*Math.PI/180+70, go)
+this.pos.x = pos[0]
+this.pos.y = pos[1]
 
+    if(this.pos.x <= -2500) this.pos.x = -2500
+    if(this.pos.x >= 2500) this.pos.x = 2500
+    if(this.pos.y <= -2500) this.pos.y = -2500
+    if(this.pos.y >= 2500) this.pos.y = 2500
+
+   // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
+    if(players.filter(player=> player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
+    
+    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
+
+    this.lastMove = Date.now()
+*/
+  }
   move(controller, players) {
     var players = Object.values(players)
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
@@ -66,18 +93,19 @@ class Player {
     
     return this
   }
-  hittingPlayer(player) {
-    function movePointAtAngle(point, angle, distance) {
-      return [
-          point[0] + (Math.sin(angle) * distance),
-          point[1] - (Math.cos(angle) * distance)
-      ];
+  movePointAtAngle(point, angle, distance) {
+    return [
+        point[0] + (Math.sin(angle) * distance),
+        point[1] - (Math.cos(angle) * distance)
+    ];
   }
+  hittingPlayer(player) {
+
+  
   var deep = 0;
   [0,5,10,15,20,25,30].forEach((increment) => {
 
-    var angle = Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
-    
+    var angle = this.calcSwordAngle()
     angle -= increment
    
     var sword = {x: 0, y: 0}
@@ -85,8 +113,8 @@ class Player {
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180))
     sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180))
 
-  var tip = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale))
-  var base = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-0.8)
+  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale))
+  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-0.8)
 
                           //get the values needed for line-circle-collison
                           var circle = [player.pos.x, player.pos.y]
@@ -103,6 +131,9 @@ class Player {
   touchingPlayer(player) {
           const checkCollision = (p1x, p1y, r1, p2x, p2y, r2) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2)
         return checkCollision(this.pos.x, this.pos.y, (this.radius*this.scale)*0.5, player.pos.x, player.pos.y, (player.radius*player.scale)*0.5)
+  }
+  calcSwordAngle() {
+    return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
   }
 }
 

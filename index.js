@@ -45,7 +45,7 @@ io.on('connection', (socket) => {
     socket.on('mousePos', (mousePos) => {
         if (players.hasOwnProperty(socket.id)) players[socket.id].mousePos = mousePos
         else socket.emit("refresh")  
-        
+       
         //console.log(mousePos.x +" , "+mousePos.y )
     })
 
@@ -146,6 +146,7 @@ setInterval(async () => {
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
+     //   player.moveWithMouse(players)
       if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < 100)) {
         //if its been 5 seconds since player got hit, regen then every 100 ms
         player.lastRegen = Date.now()

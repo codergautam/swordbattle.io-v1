@@ -60,7 +60,7 @@ class GameScene extends Phaser.Scene {
         
 
         //bar
-        this.meBar = new HealthBar(this, 0, 0)
+        this.meBar = new HealthBar(this, 0, 0, 16, 80)
 
         //coins array
         this.coins = []
@@ -183,6 +183,7 @@ class GameScene extends Phaser.Scene {
             }
             this.mePlayer.setScale(player.scale)
             this.meBar.setHealth(player.health)
+            
             this.meSword.setScale(player.scale)
 
             //this.meLine.setTo(0, 0, 250, 250)
@@ -341,9 +342,13 @@ class GameScene extends Phaser.Scene {
 
           // if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
           // if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
+        if(enemy.playerObj) var scale = enemy.playerObj.scale
+        else var scale = 0.25
+          enemy.bar.width = (enemy.player.height*scale / 0.9375)
+          enemy.bar.height = (enemy.player.height*scale*0.213)
+          enemy.bar.x = enemy.player.x  - enemy.bar.width / 2
+          enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2)
 
-            enemy.bar.x = enemy.player.x - (enemy.player.width / 7)
-            enemy.bar.y = enemy.player.y - (enemy.player.height / 5)
             enemy.bar.draw()
 
             enemy.nameTag.x = enemy.player.x - (enemy.nameTag.width / 2)
@@ -360,7 +365,7 @@ class GameScene extends Phaser.Scene {
         if(this.myObj) {
         var speed = this.myObj.speed / fps
         } else {
-            var speed = 300 / fps
+            var speed = 500 / fps
         }
       //  if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
 
@@ -371,9 +376,14 @@ class GameScene extends Phaser.Scene {
 
       //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
       //  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
-        
-        this.meBar.x = this.mePlayer.x - (this.mePlayer.width / 7)
-        this.meBar.y = this.mePlayer.y - (this.mePlayer.height / 5)
+      var myObj = this.myObj
+  
+        if(!myObj) myObj = {scale: 0.25}
+
+        this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375)
+        this.meBar.height = (this.mePlayer.height*myObj.scale*0.213)
+        this.meBar.x = this.mePlayer.x  - this.meBar.width / 2
+        this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2)
         this.meBar.draw()
         if(this.myObj) { 
         var factor1 = (100/(this.myObj.scale*100))*1.5
