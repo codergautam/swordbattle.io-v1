@@ -110,7 +110,7 @@ enemy.doKnockback(player)
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    player.scale += 0.1
+                    player.scale += 0.001
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
                 })
