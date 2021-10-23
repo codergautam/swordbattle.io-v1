@@ -108,7 +108,7 @@ this.pos.y = pos[1]
 
   
   var deep = 0;
-  [0,5,10,15,20,25,30].forEach((increment) => {
+  [0,5,10,15,25,30,35,40,45, 50].forEach((increment) => {
 
     var angle = this.calcSwordAngle()
     angle -= increment

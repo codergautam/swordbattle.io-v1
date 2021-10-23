@@ -110,7 +110,7 @@ enemy.doKnockback(player)
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    player.scale += 0.01
+                    player.scale += 0.1
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
                 })
@@ -164,7 +164,7 @@ setInterval(async () => {
     });
     tps += 1
     
-}, 1000 / 30)
+}, 1000 / 20)
 
 server.listen(3000, () => {
     console.log('server started');

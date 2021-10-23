@@ -394,14 +394,14 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
         if(enemy.playerObj) var scale = enemy.playerObj.scale
         else var scale = 0.25
           enemy.bar.width = (enemy.player.height*scale / 0.9375)
-          enemy.bar.height = (enemy.player.height*scale*0.213)
+          enemy.bar.height = (enemy.player.height*scale*0.150)
           enemy.bar.x = enemy.player.x  - enemy.bar.width / 2
           enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2)
 
             enemy.bar.draw()
-
-            enemy.nameTag.x = enemy.player.x - (enemy.nameTag.width / 2)
-            enemy.nameTag.y = enemy.player.y - 90
+            enemy.nameTag.setFontSize(100*scale)
+            enemy.nameTag.x = enemy.player.x  - enemy.nameTag.width / 2
+            enemy.nameTag.y = enemy.player.y - (enemy.player.height*scale) - enemy.nameTag.height
           if(enemy.playerObj) {
             var factor = (100/(enemy.playerObj.scale*100))*1.5
           } else {
@@ -458,7 +458,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
         if(!myObj) myObj = {scale: 0.25}
 
         this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375)
-        this.meBar.height = (this.mePlayer.height*myObj.scale*0.213)
+        this.meBar.height = (this.mePlayer.height*myObj.scale*0.200)
         this.meBar.x = this.mePlayer.x  - this.meBar.width / 2
         this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2)
         this.meBar.draw()
