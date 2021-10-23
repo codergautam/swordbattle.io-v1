@@ -99,6 +99,11 @@ this.pos.y = pos[1]
         point[1] - (Math.cos(angle) * distance)
     ];
   }
+  doKnockback(player) {
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI, 100)
+    this.pos.x = pos[0]
+    this.pos.y = pos[1]
+  }
   hittingPlayer(player) {
 
   

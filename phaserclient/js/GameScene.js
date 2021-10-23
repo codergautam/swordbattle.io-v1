@@ -10,6 +10,24 @@ class GameScene extends Phaser.Scene {
         this.load.image("sword", "/assets/images/sword.png")
         this.load.image('background', '/assets/images/background.jpeg');
         this.load.image('coin', '/assets/images/coin.png');
+        
+        var width = this.cameras.main.width;
+        var height = this.cameras.main.height;
+        this.loadingText = this.make.text({
+            x: width / 2,
+            y: height / 2 - 50,
+            text: 'Loading...',
+            style: {
+                font: '90px monospace',
+                fill: '#ffffff'
+            }
+        });
+        this.loadingText.setOrigin(0.5, 0.5);
+    
+        
+
+        
+
         this.socket = io()
         this.ready = false;
     }
@@ -21,6 +39,8 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
+
+        this.loadingText.destroy()
         this.canvas = {
             width: window.innerWidth,
             height: window.innerHeight
@@ -28,7 +48,7 @@ class GameScene extends Phaser.Scene {
 
         this.tps = 0
         //background
-        this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
+        this.background = this.add.tileSprite(-5000, -2500, window.innerWidth/0.1, window.innerHeight/0.1, 'background').setOrigin(0).setScrollFactor(0, 0).setDepth(1);
         this.background.fixedToCamera = true;
 
         //player 
@@ -72,9 +92,16 @@ class GameScene extends Phaser.Scene {
         this.cursors = this.input.keyboard.createCursorKeys();
 
         //camera follow
-        //this.cameras.main.setZoom(0.5)
+        this.cameras.main.setZoom(1)
+        
+        
+        this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.innerWidth, window.innerHeight);
+        this.cameras.main.ignore([ this.killCount, this.playerCount ]);
+        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background])
         this.cameras.main.startFollow(this.mePlayer);
 
+
+        
         ///resize dynamicly
         const resize = () => {
             this.canvas = {
@@ -82,8 +109,10 @@ class GameScene extends Phaser.Scene {
                 height: window.innerHeight
             }
             this.game.scale.resize(this.canvas.width, this.canvas.height)
-            this.background.width = this.canvas.width
-            this.background.height = this.canvas.height
+            this.UICam.x = this.cameras.main.x
+            this.UICam.y = this.cameras.main.y
+
+
             this.killCount.x = window.innerWidth / 1.5
         }
 
@@ -110,7 +139,7 @@ class GameScene extends Phaser.Scene {
         })
 
         //boundary
-        this.graphics = this.add.graphics()
+        this.graphics = this.add.graphics().setDepth(4)
 
         this.graphics.lineStyle(1, 0xffff00, 1)
 
@@ -126,9 +155,9 @@ class GameScene extends Phaser.Scene {
                     y: undefined
                 },
                 playerObj: undefined,
-                sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25),
-                player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25),
-                bar: new HealthBar(this, player.pos.x, player.pos.y + 50),
+                sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25).setDepth(49),
+                player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25).setDepth(49),
+                bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
                 nameTag: this.add.text(player.pos.x, player.pos.y - 90, player.name, {
                     fontFamily: 'serif',
                     fill: '#000000',
@@ -145,6 +174,8 @@ class GameScene extends Phaser.Scene {
             enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
             enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
+          
+            this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
             this.enemies.push(enemy)
         }
 
@@ -183,11 +214,19 @@ class GameScene extends Phaser.Scene {
             }
             this.mePlayer.setScale(player.scale)
             this.meBar.setHealth(player.health)
+           // if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
+            if(!(this.cameras.main.zoom <= 0.15)) {
+            if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale)
+            if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8))
+            else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8))
             
+            else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3))
+
+            }
             this.meSword.setScale(player.scale)
 
             //this.meLine.setTo(0, 0, 250, 250)
-            this.killCount.setText("Kills: " + player.kills)
+            this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins)
             this.myObj = player
         })
         this.socket.on("player", (player) => {
@@ -239,6 +278,7 @@ class GameScene extends Phaser.Scene {
                         item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20)
                     }
                     )
+                    this.UICam.ignore(this.coins.at(-1).item)
                     
                 }
             })

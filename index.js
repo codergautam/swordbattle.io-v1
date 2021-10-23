@@ -1,4 +1,3 @@
-
 const express = require('express');
 const http = require('http');
 const {
@@ -25,7 +24,7 @@ Object.filter = (obj, predicate) =>
 var players = {}
 var coins = [];
 
-var maxCoins = 100;
+var maxCoins = 1000;
 
 io.on('connection', (socket) => {
 
@@ -71,6 +70,9 @@ io.on('connection', (socket) => {
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
                           enemy.health -= 10
+                          
+                        
+                        enemy.doKnockback(player)
 
                           if(enemy.health <= 0) {
                               //enemy has 0 or less than 0 health, time to kill
@@ -109,7 +111,7 @@ io.on('connection', (socket) => {
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    player.scale += 0.01
+                    player.scale += 0.001
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
                 })
