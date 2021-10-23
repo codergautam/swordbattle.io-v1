@@ -163,7 +163,8 @@ class GameScene extends Phaser.Scene {
                     fill: '#000000',
                     fontSize: '25px'
                 }).setDepth(100),
-                swordAnim: {go: false, added: 0}
+                swordAnim: {go: false, added: 0},
+                toAngle: 0
             }
          
                 var factor = (100/(player.scale*100))*1.5
@@ -243,25 +244,12 @@ class GameScene extends Phaser.Scene {
 
                 //update sword
                 var mousePos = player.mousePos
-                enemy.sword.angle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+                enemy.toAngle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
 
-                if (enemy.down) enemy.swordAnim.go = true
-                else enemy.swordAnim.go = false
-
-                
-                if(enemy.swordAnim.go) {
-        
-                    if(enemy.swordAnim.added < 30) enemy.swordAnim.added += 5
-                    enemy.sword.angle -= enemy.swordAnim.added
-                } else if(enemy.swordAnim.added >0) {
-                     enemy.swordAnim.added -= 5
-                    enemy.sword.angle -= enemy.swordAnim.added
-                }
-               
-                
                 enemy.player.setScale(player.scale)
                 enemy.sword.setScale(player.scale)
                 enemy.down = player.mouseDown
+
             } catch (e) {
                 console.log(e)
             }
@@ -344,6 +332,7 @@ class GameScene extends Phaser.Scene {
         if (this.mouseDown) this.swordAnim.go = true
         else this.swordAnim.go = false
         
+        
         if(this.swordAnim.go) {
 
             if(this.swordAnim.added < 30) this.swordAnim.added += 5
@@ -367,6 +356,18 @@ class GameScene extends Phaser.Scene {
         var fps = this.sys.game.loop.actualFps
    
         //var difference = function (a, b) { return Math.abs(a - b); }
+            function lerp (start, end, amt){
+  return (1-amt)*start+amt*end
+}
+const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+function repeat(t, m) {
+  return clamp(t - Math.floor(t / m) * m, 0, m);
+}
+
+function lerpTheta(a, b, t) {
+  const dt = repeat(b - a, 360);
+  return lerp(a, a + (dt > 180 ? dt - 360 : dt), t);
+}
         this.enemies.forEach(enemy => {
           if(enemy.playerObj) {
             var speed = enemy.playerObj.speed / fps
@@ -374,11 +375,19 @@ class GameScene extends Phaser.Scene {
             var speed = 300 / fps
           }
            // if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
-            
+    /*        no lerp
             if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
             if (enemy.player.x > enemy.toMove.x) enemy.player.x -= speed
             if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
             if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
+            */
+            //yes lerp
+
+if(enemy.toMove.x ) {
+        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x, 0.1)
+enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
+}
+
 
           // if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
           // if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
@@ -398,9 +407,30 @@ class GameScene extends Phaser.Scene {
           } else {
               var factor = 6
           }
+
+         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.1)
+                         if (enemy.down) enemy.swordAnim.go = true
+                else enemy.swordAnim.go = false
+
+                
+                if(enemy.swordAnim.go) {
+        
+                    if(enemy.swordAnim.added < 30) {
+                    enemy.swordAnim.added += 5
+                    enemy.sword.angle -= enemy.swordAnim.added
+                    }
+                    
+                    
+                } else if(enemy.swordAnim.added >0) {
+                     enemy.swordAnim.added -= 5
+                  //  enemy.sword.angle -= enemy.swordAnim.added
+                }
+               
             enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
             enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
+
+                
         })
         if(this.myObj) {
         var speed = this.myObj.speed / fps
@@ -408,12 +438,19 @@ class GameScene extends Phaser.Scene {
             var speed = 500 / fps
         }
       //  if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
-
+/* without lerp
         if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
         if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += speed
         if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
         if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
+        */
+        //with lerp
 
+if(this.goTo.x ) {
+        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, 0.1)
+this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
+}
+//console.log(this.mePlayer.x, this.mePlayer.y)
       //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
       //  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
       var myObj = this.myObj
