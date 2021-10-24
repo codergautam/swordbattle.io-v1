@@ -10,7 +10,7 @@ class Player {
     this.coins = 0
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
     this.kills = 0
-    this.speed = 500
+    this.speed = 700
     this.scale = 0.25
     this.damage = 10
 
@@ -144,10 +144,11 @@ this.pos.y = pos[1]
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
   }
   updateValues() {
-    var oldMax = this.maxHealth
+    const convert = (num, val, newNum) => (newNum * val) / num
     this.maxHealth = this.scale * 400
-    this.health += this.maxHealth - oldMax
     this.damage = 40 * this.scale
+    this.speed = 710 - (convert(0.25, 1, this.scale) * 10)
+    console.log(this.speed)
   }
 }
 

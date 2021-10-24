@@ -84,7 +84,9 @@ enemy.doKnockback(player)
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
 
                             //drop their coins
-                            for(var i=0; i < enemy.coins; i++){
+                            const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+                            //cant drop more than 1k coins (for lag reasons)
+                            for(var i=0; i < clamp(enemy.coins, 5, 1000); i++){
                                 r = enemy.radius * enemy.scale * Math.sqrt(Math.random())
                                 theta = Math.random() * 2 * Math.PI
                                 x = enemy.pos.x + r * Math.cos(theta)
@@ -162,7 +164,7 @@ setInterval(async () => {
       if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < player.maxHealth)) {
         //if its been 5 seconds since player got hit, regen then every 100 ms
         player.lastRegen = Date.now()
-        player.health += 1
+        player.health += (player.health / 100)
       }
 
       //emit player data to all clients
