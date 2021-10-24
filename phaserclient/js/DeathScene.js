@@ -19,7 +19,7 @@ class DeathScene extends Phaser.Scene {
 
     create() {
 
-        this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0);
+        this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.innerWidth / 2, 0, 'You died', {
             fontSize: '64px',
             fill: '#000000'

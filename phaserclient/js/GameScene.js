@@ -76,6 +76,13 @@ class GameScene extends Phaser.Scene {
         this.playerCount.scrollFactorX = 0
         this.playerCount.scrollFactorY = 0
 
+        //leaderboard
+        this.leaderboard = this.add.text(window.innerWidth, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
+            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
+        }).setFontSize(20).setDepth(101);
+        this.playerCount.scrollFactorX = 0
+        this.playerCount.scrollFactorY = 0       
+
         //sword
         
 
@@ -96,7 +103,7 @@ class GameScene extends Phaser.Scene {
         
         
         this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.innerWidth, window.innerHeight);
-        this.cameras.main.ignore([ this.killCount, this.playerCount ]);
+        this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
         this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background])
         this.cameras.main.startFollow(this.mePlayer);
 
@@ -115,7 +122,7 @@ class GameScene extends Phaser.Scene {
             this.UICam.y = this.cameras.main.y
 
             
-            this.killCount.x = window.innerWidth / 1.5
+            
         } catch(e) {
             console.log(e)
         }
@@ -146,7 +153,7 @@ class GameScene extends Phaser.Scene {
         //boundary
         this.graphics = this.add.graphics().setDepth(4)
 
-        this.graphics.lineStyle(1, 0xffff00, 1)
+        this.graphics.lineStyle(10, 0xffff00, 1)
 
         this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
         //server -> client
@@ -481,15 +488,33 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
             document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
             this.dead = true
         }
+        //leaderboard
+        if(!this.myObj) return
+        
+        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj"))
+        enemies.push({playerObj: this.myObj})
+       try {
+        var sorted = enemies.sort((a,b) =>{console.log(a.playerObj.coins, b.playerObj.coins);return a.playerObj.coins - b.playerObj.coins;}).reverse().slice(0,10)
+        console.log(sorted)
+        var text = ""
+        sorted.forEach((entry, i) => {
+            if(!entry.playerObj) return
+            var playerObj = entry.playerObj
+            text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`
+        })
+        this.leaderboard.setText(text)
+        this.leaderboard.x = window.innerWidth - this.leaderboard.width
+        this.killCount.x = (window.innerWidth) - this.leaderboard.width - this.killCount.width 
 
+    } catch(e) {
+        //we shall try next frame
+    }
         //playercount
         this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 45) * 100) + "%")
         this.playerCount.x = 0
         this.playerCount.y = 0
-        //background movement
-
         
-
+        //background movement
         this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
 
