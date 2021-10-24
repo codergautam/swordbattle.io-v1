@@ -70,7 +70,7 @@ io.on('connection', (socket) => {
                           //if colliding
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
-                          enemy.health -= 10
+                          enemy.health -= player.damage
 enemy.doKnockback(player)
                           if(enemy.health <= 0) {
                               //enemy has 0 or less than 0 health, time to kill
@@ -122,6 +122,8 @@ enemy.doKnockback(player)
                     player.scale += 0.001
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
+
+                    player.updateValues()
                 })
            
             }
@@ -157,7 +159,7 @@ setInterval(async () => {
     var sockets = await io.fetchSockets()
     playersarray.forEach(player => {
      //   player.moveWithMouse(players)
-      if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < 100)) {
+      if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < player.maxHealth)) {
         //if its been 5 seconds since player got hit, regen then every 100 ms
         player.lastRegen = Date.now()
         player.health += 1

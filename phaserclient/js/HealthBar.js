@@ -7,6 +7,8 @@ class HealthBar {
   
         this.x = x;
         this.y = y;
+
+        this.maxValue = 100;
         this.value = 100;
         
         this.height = height
@@ -17,12 +19,9 @@ class HealthBar {
   
     setHealth (amount)
     {
-        this.value = amount;
   
-        if (this.value < 0)
-        {
-            this.value = 0;
-        }
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+        this.value = clamp(amount, 0, this.maxValue)
   
         this.draw();
   
@@ -51,7 +50,7 @@ class HealthBar {
             this.bar.fillStyle(0x00ff00);
         }
 
-        var d = Math.floor((this.width-4) * (this.value/100));
+        var d = Math.floor((this.width-4) * (this.value/this.maxValue));
   
         this.bar.fillRect(this.x + 2, this.y + 2, d, this.height-4);
     }

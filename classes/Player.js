@@ -9,17 +9,20 @@ class Player {
     this.health = 100
     this.coins = 0
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
-    this.lastPos = this.pos
-    this.lastDamageDealt = Date.now()
     this.kills = 0
     this.speed = 500
+    this.scale = 0.25
+    this.damage = 10
+
+    this.maxHealth = 100
+    this.lastPos = this.pos
+    this.lastDamageDealt = Date.now()
     this.joinTime = Date.now()
     this.lastHit = Date.now()
     this.lastRegen = Date.now()
     this.mouseDown = false
     this.mousePos = {x:0,y:0,viewport:{width:1920,height:1080}}
     this.size = 300
-    this.scale = 0.25
     this.radius = this.size / 2
     this.lastMove = Date.now()
   }
@@ -139,6 +142,12 @@ this.pos.y = pos[1]
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
+  }
+  updateValues() {
+    var oldMax = this.maxHealth
+    this.maxHealth = this.scale * 400
+    this.health += this.maxHealth - oldMax
+    this.damage = 40 * this.scale
   }
 }
 

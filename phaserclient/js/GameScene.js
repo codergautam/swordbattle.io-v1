@@ -5,24 +5,27 @@ class GameScene extends Phaser.Scene {
         this.callback = callback
     }
 
-    preload() {
+    preload() {    
+                
+        var width = this.cameras.main.width;
+        var height = this.cameras.main.height;
+
+            this.loadingText = this.make.text({
+        x: width / 2,
+        y: height / 2 - 50,
+        text: 'Loading...',
+        style: {
+            font: '90px monospace',
+            fill: '#ffffff'
+        }
+    });
+
+    this.loadingText.setOrigin(0.5, 0.5);
         this.load.image("player", "/assets/images/player.png")
         this.load.image("sword", "/assets/images/sword.png")
         this.load.image('background', '/assets/images/background.jpeg');
         this.load.image('coin', '/assets/images/coin.png');
         
-        var width = this.cameras.main.width;
-        var height = this.cameras.main.height;
-        this.loadingText = this.make.text({
-            x: width / 2,
-            y: height / 2 - 50,
-            text: 'Loading...',
-            style: {
-                font: '90px monospace',
-                fill: '#ffffff'
-            }
-        });
-        this.loadingText.setOrigin(0.5, 0.5);
     
         
 
@@ -39,8 +42,8 @@ class GameScene extends Phaser.Scene {
     }
 
     create() {
-
-        this.loadingText.destroy()
+this.loadingText.destroy()
+        
         this.canvas = {
             width: window.innerWidth,
             height: window.innerHeight
@@ -48,7 +51,8 @@ class GameScene extends Phaser.Scene {
 
         this.tps = 0
         //background
-        this.background = this.add.tileSprite(-5000, -2500, window.innerWidth/0.1, window.innerHeight/0.1, 'background').setOrigin(0).setScrollFactor(0, 0).setDepth(1);
+        this.background = this.add.tileSprite(-2500, -2500, 5000, 5000, 'background').setOrigin(0).setDepth(2);
+        this.void = this.add.rectangle(-5000, -5000, 10000, 10000, 0x006400).setOrigin(0).setDepth(1);
         this.background.fixedToCamera = true;
 
         //player 
@@ -104,7 +108,7 @@ class GameScene extends Phaser.Scene {
         
         this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.innerWidth, window.innerHeight);
         this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
-        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background])
+        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
         this.cameras.main.startFollow(this.mePlayer);
 
 
@@ -212,10 +216,18 @@ class GameScene extends Phaser.Scene {
             players.forEach(player => addPlayer(player))
 
             this.ready = true
+          
+            if(!this.ready) {
+                this.ready = true
+          
+            }
         })
         this.socket.on("new", (player) => {
             addPlayer(player)
+            if(!this.ready) {
             this.ready = true
+           
+            }
         })
         this.socket.on("me", (player) => {
             if (!this.myObj) {
@@ -226,6 +238,7 @@ class GameScene extends Phaser.Scene {
                 this.goTo.y = player.pos.y
             }
             this.mePlayer.setScale(player.scale)
+            this.meBar.maxValue = player.maxHealth
             this.meBar.setHealth(player.health)
            // if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
             if(!(this.cameras.main.zoom <= 0.15)) {
@@ -248,6 +261,7 @@ class GameScene extends Phaser.Scene {
             try {
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
                 enemy.playerObj = player
+                enemy.bar.maxValue = player.maxHealth
                 enemy.bar.setHealth(player.health);
 
                 //update pos
@@ -444,11 +458,7 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
 
                 
         })
-        if(this.myObj) {
-        var speed = this.myObj.speed / fps
-        } else {
-            var speed = 500 / fps
-        }
+     
       //  if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
 /* without lerp
         if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
@@ -494,8 +504,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
         var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj"))
         enemies.push({playerObj: this.myObj})
        try {
-        var sorted = enemies.sort((a,b) =>{console.log(a.playerObj.coins, b.playerObj.coins);return a.playerObj.coins - b.playerObj.coins;}).reverse().slice(0,10)
-        console.log(sorted)
+        var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10)
         var text = ""
         sorted.forEach((entry, i) => {
             if(!entry.playerObj) return
@@ -515,7 +524,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
         this.playerCount.y = 0
         
         //background movement
-        this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+      //  this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
 
     }
