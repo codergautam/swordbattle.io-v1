@@ -34,7 +34,7 @@ class GameScene extends Phaser.Scene {
 
     died(data) {
         this.dead = true
-        data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills})
+        data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
         this.callback(data)
     }
 
@@ -104,16 +104,21 @@ class GameScene extends Phaser.Scene {
         
         ///resize dynamicly
         const resize = () => {
+            try {
             this.canvas = {
                 width: window.innerWidth,
                 height: window.innerHeight
             }
             this.game.scale.resize(this.canvas.width, this.canvas.height)
+           
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
-
+            
             this.killCount.x = window.innerWidth / 1.5
+        } catch(e) {
+            console.log(e)
+        }
         }
 
         window.addEventListener("resize", resize, true);

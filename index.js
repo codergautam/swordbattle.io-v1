@@ -83,6 +83,15 @@ enemy.doKnockback(player)
                             socketById.emit("youDied", {killedBy: player.name, timeSurvived: Date.now() - enemy.joinTime})
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
 
+                            //drop their coins
+                            for(var i=0; i < enemy.coins; i++){
+                                r = enemy.radius * enemy.scale * Math.sqrt(Math.random())
+                                theta = Math.random() * 2 * Math.PI
+                                x = enemy.pos.x + r * Math.cos(theta)
+                                y = enemy.pos.y + r * Math.sin(theta)
+
+                                coins.push(new Coin({x: x, y: y}))
+                            }
                             //delete the enemy
                             delete players[enemy.id]   
                             

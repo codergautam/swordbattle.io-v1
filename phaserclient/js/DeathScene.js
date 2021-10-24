@@ -32,8 +32,7 @@ class DeathScene extends Phaser.Scene {
         this.lastUpdateTime = Date.now() 
 
         this.displayKills = (this.data.kills == 1 ? 1 : 0);
-        this.killUpdateDelay = 2000 / this.data.kills
-        this.lastUpdateKills = Date.now() 
+        this.displayCoins = 0
 
         this.stats = this.add.text(window.innerWidth / 2, window.innerHeight / 2, 'Killed by: '+this.data.killedBy+`\nSurvived Time: 0s\nKills: ${this.displayKills}`, {
             fontSize: '48px',
@@ -76,8 +75,13 @@ class DeathScene extends Phaser.Scene {
             this.displayTime += 1000
             
         }
+        if(this.displayCoins < this.data.coins) {
+            this.displayCoins += 1
+            
+        }
 
-        this.stats.setText(`Killed by: ${this.data.killedBy}\nSurvived Time: ${msToTime(this.displayTime)}\nKills: ${this.displayKills}`)
+
+        this.stats.setText(`Killed by: ${this.data.killedBy}\nSurvived Time: ${msToTime(this.displayTime)}\nCoins: ${this.displayCoins}\nKills: ${this.displayKills}`)
         const resize = () => {
             this.game.scale.resize(window.innerWidth, window.innerHeight)
             this.background.width = window.innerWidth

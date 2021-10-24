@@ -6,11 +6,11 @@ function getRandomInt(min, max) {
     return '_' + Math.random().toString(36).substr(2, 9);
   };
   class Coin { 
-    constructor() {
+    constructor(pos = {x: getRandomInt(-2500,2500), y: getRandomInt(-2500,2500)}) {
       this.id = ID()
       this.size = 25
       this.radius = ((1.59 *this.size) / 2)
-      this.pos = {x: getRandomInt(-2500,2500), y: getRandomInt(-2500,2500)}
+      this.pos = pos
       
     }
     touchingPlayer(player) {
