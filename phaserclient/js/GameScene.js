@@ -418,12 +418,8 @@ function lerpTheta(a, b, t) {
             //yes lerp
 
 if(enemy.toMove.x ) {
-  //60 fps 0.1
-  //45 0.15
-  //30 fps 0.20
- 
-        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x, 0.1)
-enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
+        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/1000)
+enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/1000)
 }
 
 
@@ -446,8 +442,10 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
               var factor = 6
           }
 
-         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.1)
-                         if (enemy.down) enemy.swordAnim.go = true
+         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, fps/1000)
+                         if (enemy.down) {
+                             enemy.swordAnim.go = true
+                            enemy.swordAnim.added = 0}
                 else enemy.swordAnim.go = false
 
                 
@@ -481,8 +479,9 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
         //with lerp
 
 if(this.goTo.x ) {
-        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, 0.1)
-this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
+    
+        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/1000)
+this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
 }
 //console.log(this.mePlayer.x, this.mePlayer.y)
       //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x

@@ -121,8 +121,8 @@ this.pos.y = pos[1]
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180))
     sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180))
 
-  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale))
-  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-0.8)
+  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*0.3)
+  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-0.6)
 
                           //get the values needed for line-circle-collison
                           var circle = [player.pos.x, player.pos.y]

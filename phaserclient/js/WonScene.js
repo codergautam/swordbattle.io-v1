@@ -14,12 +14,11 @@ class WonScene extends Phaser.Scene {
         this.callback = callback
     }
     preload() {
-        this.load.image('background', '/assets/images/background.jpeg');
     }
 
     create() {
 
-        this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.background = this.add.rectangle(0, 0, window.innerHeight, window.innerWidth, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.innerWidth / 2, 0, 'You won!', {
             fontSize: '64px',
             fill: '#000000'
@@ -76,7 +75,7 @@ class WonScene extends Phaser.Scene {
             
         }
         if(this.displayCoins < this.data.coins) {
-            this.displayCoins += 1
+            this.displayCoins += 1000
             
         }
 

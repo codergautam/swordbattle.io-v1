@@ -14,12 +14,11 @@ class DeathScene extends Phaser.Scene {
         this.callback = callback
     }
     preload() {
-        this.load.image('background', '/assets/images/background.jpeg');
     }
 
     create() {
 
-        this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.background = this.add.rectangle(0, 0, window.innerHeight, window.innerWidth, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.innerWidth / 2, 0, 'You died', {
             fontSize: '64px',
             fill: '#000000'
@@ -64,7 +63,7 @@ class DeathScene extends Phaser.Scene {
         this.text.setFontSize(window.innerWidth / 10)
         this.stats.setFontSize(window.innerWidth / 20)
         this.btntext.setFontSize(window.innerWidth / 25)
-        if (this.text.y < window.innerHeight / 4) this.text.y += 10
+        if (this.text.y < window.innerHeight / 4.5) this.text.y += 10
 
         if(this.displayKills < this.data.kills ) {
             this.displayKills += 1
@@ -87,7 +86,7 @@ class DeathScene extends Phaser.Scene {
             this.background.width = window.innerWidth
             this.background.height = window.innerHeight
             this.text.x = window.innerWidth / 2
-            this.text.y = window.innerHeight / 4
+            this.text.y = window.innerHeight / 4.5
             this.stats.x = window.innerWidth / 2
             this.stats.y = window.innerHeight / 2
             
