@@ -504,7 +504,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y, 0.1)
         })
         this.leaderboard.setText(text)
         this.leaderboard.x = window.innerWidth - this.leaderboard.width
-        this.killCount.x = (window.innerWidth) - this.leaderboard.width - this.killCount.width 
+        this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
 
     } catch(e) {
         //we shall try next frame
