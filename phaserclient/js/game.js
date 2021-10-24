@@ -1,6 +1,7 @@
 import TitleScene from './TitleScene.js';
 import GameScene from './GameScene.js';
 import DeathScene from './DeathScene.js';
+import WonScene from './WonScene.js';
 
 
 
@@ -21,10 +22,16 @@ var config = {
 var game = new Phaser.Game(config);
 
 var deathScene = new DeathScene()
+var winScene = new WonScene()
 
 var gameScene = new GameScene((data) => {
-    deathScene.data = data
+    if(data.win) {
+        winScene.data = data.data
+        gameScene.scene.start('win')
+    } else {
+    deathScene.data = data.data
     gameScene.scene.start('death')
+    }
 })
 
 var titleScene = new TitleScene((name) => {
@@ -35,6 +42,7 @@ var titleScene = new TitleScene((name) => {
 game.scene.add('title', titleScene)
 game.scene.add('game', gameScene)
 game.scene.add('death', deathScene)
+game.scene.add('win', winScene)
 
 game.scene.start('title')
 

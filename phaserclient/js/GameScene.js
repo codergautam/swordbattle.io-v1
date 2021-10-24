@@ -38,7 +38,12 @@ class GameScene extends Phaser.Scene {
     died(data) {
         this.dead = true
         data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
-        this.callback(data)
+        this.callback({win:false, data: data})
+    }
+    win(data) {
+this.dead = true  
+data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
+this.callback({win: true, data:data})
     }
 
     create() {
@@ -306,6 +311,9 @@ this.loadingText.destroy()
 
         this.socket.on("youDied", (data) => {
             this.died(data)
+        })
+        this.socket.on("youWon", (data) => {
+            this.win(data)
         })
     }
 

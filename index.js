@@ -121,12 +121,28 @@ enemy.doKnockback(player)
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    player.scale += 0.001
+                    if(player.scale > 7.5) var increase = 0.0001
+                    else if(player.scale > 5) var increase = 0.0005
+                    else var increase = 0.001
+                    player.scale += increase
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
 
                     player.updateValues()
                 })
+
+                if(player.scale >= 10) {
+                    //yay you have conquered the map!
+                    var socketById = io.sockets.sockets.get(player.id);
+                    socketById.emit("youWon", {timeSurvived: Date.now() - player.joinTime})
+                    socketById.broadcast.emit("playerDied",player.id)
+
+                    //delete the player
+                    delete players[player.id]   
+                    
+                    //disconnect the player
+                    socketById.disconnect()
+                }
            
             }
             else socket.emit("refresh")

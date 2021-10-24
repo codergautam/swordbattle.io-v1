@@ -148,7 +148,6 @@ this.pos.y = pos[1]
     this.maxHealth = this.scale * 400
     this.damage = 40 * this.scale
     this.speed = 710 - (convert(0.25, 1, this.scale) * 10)
-    console.log(this.speed)
   }
 }
 
