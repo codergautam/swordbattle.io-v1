@@ -418,6 +418,10 @@ function lerpTheta(a, b, t) {
             //yes lerp
 
 if(enemy.toMove.x ) {
+  //60 fps 0.1
+  //45 0.15
+  //30 fps 0.20
+ 
         enemy.player.x = lerp(enemy.player.x, enemy.toMove.x, 0.1)
 enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, 0.1)
 }

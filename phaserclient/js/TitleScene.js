@@ -4,7 +4,7 @@ class TitleScene extends Phaser.Scene {
     this.callback = callback
   }
  preload() {
-  this.load.image('background', '/assets/images/background.jpeg');
+  this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "textbox.html");
 
 }
@@ -29,7 +29,9 @@ function getCookie(cname) {
 
 //actual code
 
-  this.background = this.add.tileSprite(0, 0, window.innerWidth, window.innerHeight, 'background').setOrigin(0).setScrollFactor(0, 0).setScale(2);
+  this.background = this.add.image(0, 0, 'opening').setOrigin(0).setScrollFactor(0, 0).setScale(2);
+  this.background.displayHeight = window.innerHeight
+  this.background.displayWidth = window.innerWidth
   this.text = this.add.text(window.innerWidth/2, 0, 'Sword.io', {
     fontSize: '64px',
     fill: '#000000'
