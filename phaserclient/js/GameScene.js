@@ -171,7 +171,9 @@ this.loadingText.destroy()
         this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
         //server -> client
         const addPlayer = (player) => {
-           
+           if (this.enemies.filter(e => e.id === player.id).length > 0) return
+  /* vendors contains the element we're looking for */
+
             var enemy = {
                 id: player.id,
                 down: false,
@@ -203,11 +205,7 @@ this.loadingText.destroy()
           
             this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
             this.enemies.push(enemy)
-            this.enemies = this.enemies.filter((thing, index, self) =>
-  index === self.findIndex((t) => (
-    t.id === thing.id
-  ))
-)
+
         }
 
         const removePlayer = (id) => {
@@ -330,7 +328,7 @@ this.loadingText.destroy()
            this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
         })
 
-        this.socket.on("coin", (coin) => {
+        this.socket.on("coin", (coin) => {            
             addCoin(coin)
         })
 
