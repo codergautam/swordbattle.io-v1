@@ -114,7 +114,7 @@ this.pos.y = pos[1]
 
   
   var deep = 0;
-  var angles = [0,5,10,15,25,30,35,40,45, 50]
+  var angles = [-5,0,5,10,15,25,30,35,40,45, 50,55]
 
   for (const increment of angles) {
 
@@ -126,8 +126,8 @@ this.pos.y = pos[1]
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180))
     sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180))
 
-  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*1.1)
-  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-0.9)
+  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale))
+  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5)
 
                           //get the values needed for line-circle-collison
                        
@@ -148,7 +148,7 @@ return false
   updateValues() {
     const convert = (num, val, newNum) => (newNum * val) / num
     this.maxHealth = this.scale * 400
-    this.damage = 40 * this.scale
+    this.damage = 80 * this.scale
     this.speed = 720 - (convert(0.25, 1, this.scale) * 20)
 
     this.power = convert(0.25, 200, this.scale)

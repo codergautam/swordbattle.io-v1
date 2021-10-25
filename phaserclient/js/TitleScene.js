@@ -5,7 +5,7 @@ class TitleScene extends Phaser.Scene {
   }
  preload() {
   this.load.image('opening', '/assets/images/opening.png');
-  this.load.html("form", "textbox.html");
+  this.load.html("form", "/textbox.html");
 
 }
 
@@ -37,8 +37,11 @@ function getCookie(cname) {
     fill: '#000000'
   }).setOrigin(0.5);
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
-  
+  try {
   this.nameBox.getChildByName("name").value = getCookie("oldName")
+  } catch(e) {
+    document.write("Something went wrong..\n\nProbably due to some kind of proxy enforced by your school or administrator")
+  }
   this.done = false
 }
 

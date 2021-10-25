@@ -33,6 +33,7 @@ io.on('connection', (socket) => {
       if(!name) return
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
+         players[socket.id].updateValues()
         console.log("player joined -> " + socket.id)
         socket.broadcast.emit("new", players[socket.id])
 
@@ -206,6 +207,11 @@ setInterval(async () => {
     tps += 1
     
 }, 1000 / 30)
+
+app.all((req, res)=> {
+    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
+    console.log(fullUrl)
+})
 
 server.listen(3000, () => {
     console.log('server started');

@@ -203,6 +203,11 @@ this.loadingText.destroy()
           
             this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
             this.enemies.push(enemy)
+            this.enemies = this.enemies.filter((thing, index, self) =>
+  index === self.findIndex((t) => (
+    t.id === thing.id
+  ))
+)
         }
 
         const removePlayer = (id) => {
@@ -296,6 +301,7 @@ this.loadingText.destroy()
         //coins
 
         const addCoin = coin => {
+          if(this.dead) return
             this.coins.push(
                 {
                     id: coin.id,
@@ -303,6 +309,7 @@ this.loadingText.destroy()
                     state: {collected: false, collectedBy: undefined, time: 0}
                 }
                 )
+
                 this.UICam.ignore(this.coins[this.coins.length - 1].item)
         }
 
@@ -439,8 +446,8 @@ function lerpTheta(a, b, t) {
             //yes lerp
 
 if(enemy.toMove.x ) {
-        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/1000)
-enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/1000)
+        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/500)
+enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
 }
 
 
@@ -510,8 +517,8 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/1000)
 
 if(this.goTo.x ) {
     
-        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/1000)
-this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
+        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/500)
+this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
 }
 //console.log(this.mePlayer.x, this.mePlayer.y)
       //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
@@ -572,9 +579,14 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
                     var x = this.mePlayer.x
                     var y = this.mePlayer.y
                 } else {
+                  try {
                     var player = this.enemies.find(el => el.id == coin.state.collectedBy)
                     var x = player.player.x
                     var y = player.player.y
+                  } catch(e) {
+                    console.log(e)
+                    return
+                  }
                 }
                     coin.item.x = lerp(coin.item.x, x, ((6 - (Math.log2(fps) - Math.log2(1.875))) / 10)*2)
                     coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
