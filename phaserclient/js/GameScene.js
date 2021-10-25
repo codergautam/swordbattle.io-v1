@@ -100,6 +100,7 @@ this.loadingText.destroy()
 
         //coins array
         this.coins = []
+       // this.lastMove = Date.now()
 
         //enemies array
         this.enemies = []
@@ -288,25 +289,36 @@ this.loadingText.destroy()
         this.socket.on("playerLeave", removePlayer)
         this.socket.on("playerDied", removePlayer)
 
+
+        //coins
+
+        const addCoin = coin => {
+            this.coins.push(
+                {
+                    id: coin.id,
+                    item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20),
+                    state: {collected: false, collectedBy: undefined}
+                }
+                )
+                this.UICam.ignore(this.coins[this.coins.length - 1].item)
+        }
+
         this.socket.on("coins", (coinsArr) => {
             coinsArr.forEach((coin) => {
                 if(this.coins.filter(e => e.id == coin.id).length == 0) {
-                    this.coins.push(
-                    {
-                        id: coin.id,
-                        item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20)
-                    }
-                    )
-                    this.UICam.ignore(this.coins.at(-1).item)
-                    
+                    addCoin(coin)
                 }
             })
 
-           var remove = this.coins.filter(e=>coinsArr.filter(b => e.id == b.id).length == 0)
+           var remove = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 0)
            remove.forEach((coin) => {
                coin.item.destroy()
            })
-           this.coins = this.coins.filter(e=>coinsArr.filter(b => e.id == b.id).length == 1)
+           this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
+        })
+
+        this.socket.on("coin", (coin) => {
+            addCoin(coin)
         })
 
         this.socket.on("youDied", (data) => {
@@ -314,6 +326,9 @@ this.loadingText.destroy()
         })
         this.socket.on("youWon", (data) => {
             this.win(data)
+        })
+        this.socket.on("collected", (coinId, playerId) => {
+            if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId}
         })
     }
 
@@ -350,7 +365,7 @@ this.loadingText.destroy()
         }
 
         this.socket.emit("move", controller)
-
+       // this.lastMove = Date.now()
         //sword 
 
                
@@ -468,9 +483,18 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/1000)
 
                 
         })
+ 
+    /*    if(this.myObj) {
+            var speed = this.myObj.speed / fps
+        } else {
+            var speed = 700 /fps
+        }
+        
+   
+         //console.log(speed)
      
-      //  if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
-/* without lerp
+        if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
+ //without lerp
         if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
         if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += speed
         if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
@@ -534,6 +558,29 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
         this.playerCount.x = 0
         this.playerCount.y = 0
         
+        if(!this.myObj) return
+        const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
+        this.coins.forEach((coin) => {
+            if(coin.state.collected) {
+                if(coin.state.collectedBy == this.myObj.id) {
+                    var x = this.mePlayer.x
+                    var y = this.mePlayer.y
+                } else {
+                    var player = this.enemies.find(el => el.id == coin.state.collectedBy)
+                    var x = player.player.x
+                    var y = player.player.y
+                }
+                    coin.item.x = lerp(coin.item.x, x, (6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
+                    coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
+
+                    if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3) {
+                        coin.item.destroy()
+                        this.coins = this.coins.filter((el) => el.id != coin.id)
+                    }
+                
+            }
+        })
+
         //background movement
       //  this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 

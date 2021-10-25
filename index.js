@@ -40,6 +40,7 @@ io.on('connection', (socket) => {
         allPlayers = allPlayers.filter(player => player.id != socket.id)
 
         if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers)
+        socket.emit("coins", coins)
     })
 
     socket.on('mousePos', (mousePos) => {
@@ -93,6 +94,7 @@ enemy.doKnockback(player)
                                 y = enemy.pos.y + r * Math.sin(theta)
 
                                 coins.push(new Coin({x: x, y: y}))
+                                io.sockets.emit("coin", coins[coins.length -1])
                             }
                             //delete the enemy
                             delete players[enemy.id]   
@@ -129,6 +131,7 @@ enemy.doKnockback(player)
                     coins.splice(index, 1)
 
                     player.updateValues()
+                    io.sockets.emit("collected", coin.id, player.id)
                 })
 
                 if(player.scale >= 10) {
@@ -161,15 +164,23 @@ enemy.doKnockback(player)
 
 //tick
 var secondStart = Date.now()
+var lastCoinSend = Date.now()
 var tps = 0;
 
 setInterval(async () => {
-    if(coins.length < maxCoins) coins.push(new Coin())
+    if(coins.length < maxCoins) { 
+        coins.push(new Coin())
+        io.sockets.emit("coin", coins[coins.length - 1])
+    }
     //emit tps to clients
     if(Date.now() - secondStart >= 1000) {
       io.sockets.emit("tps", tps)
       secondStart = Date.now()
       tps = 0
+    }
+    if(Date.now() - lastCoinSend >= 10000) {
+        io.sockets.emit("coins", coins)
+        lastCoinSend = Date.now()
     }
 
     //health regen
@@ -189,7 +200,7 @@ setInterval(async () => {
             else socket.emit("me", player)
         })
 
-        io.sockets.emit("coins", coins)
+
     });
     tps += 1
     

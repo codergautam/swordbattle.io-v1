@@ -1,4 +1,4 @@
-
+const intersects = require("intersects")
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -14,8 +14,10 @@ function getRandomInt(min, max) {
       
     }
     touchingPlayer(player) {
-        const checkCollision = (p1x, p1y, r1, p2x, p2y, r2) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2)
-        return checkCollision(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, player.radius*player.scale)
+      const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
+      var rex = distance(player.pos.x, player.pos.y, player.lastPos.x, player.lastPos.y)
+      var rey = player.radius * player.scale * 2
+        return intersects.circleEllipse(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, rex, rey)
     }
 
   }
