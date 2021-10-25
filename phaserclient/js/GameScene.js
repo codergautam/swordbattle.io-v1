@@ -297,7 +297,7 @@ this.loadingText.destroy()
                 {
                     id: coin.id,
                     item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20),
-                    state: {collected: false, collectedBy: undefined}
+                    state: {collected: false, collectedBy: undefined, time: 0}
                 }
                 )
                 this.UICam.ignore(this.coins[this.coins.length - 1].item)
@@ -328,7 +328,7 @@ this.loadingText.destroy()
             this.win(data)
         })
         this.socket.on("collected", (coinId, playerId) => {
-            if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId}
+            if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
         })
     }
 
@@ -572,8 +572,8 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
                 }
                     coin.item.x = lerp(coin.item.x, x, ((6 - (Math.log2(fps) - Math.log2(1.875))) / 10)*2)
                     coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
-
-                    if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3) {
+                    coin.state.time += 1
+                    if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3 || coin.state.time > 7) {
                         coin.item.destroy()
                         this.coins = this.coins.filter((el) => el.id != coin.id)
                     }
