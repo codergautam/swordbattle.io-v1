@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
                                 y = enemy.pos.y + r * Math.sin(theta)
 
                                 coins.push(new Coin({x: x, y: y}))
-                                io.sockets.emit("coin", coins[coins.length -1])
+                                socket.broadcast.emit("coin", coins[coins.length -1])
                             }
                             //delete the enemy
                             delete players[enemy.id]   
@@ -124,10 +124,10 @@ io.on('connection', (socket) => {
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    if(player.scale > 7.5) var increase = 0.001
-                    else if(player.scale > 5) var increase = 0.005
-                    else var increase = 0.0001
-                    player.scale += increase*100
+                    if(player.scale > 7.5) var increase = 0.01
+                    else if(player.scale > 5) var increase = 0.05
+                    else var increase = 0.001
+                    player.scale += increase
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
 

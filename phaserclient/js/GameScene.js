@@ -307,6 +307,7 @@ this.loadingText.destroy()
         }
 
         this.socket.on("coins", (coinsArr) => {
+           
             coinsArr.forEach((coin) => {
                 if(this.coins.filter(e => e.id == coin.id).length == 0) {
                     addCoin(coin)
@@ -314,7 +315,9 @@ this.loadingText.destroy()
             })
 
            var remove = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 0)
+           console.log(remove)
            remove.forEach((coin) => {
+               
                coin.item.destroy()
            })
            this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
