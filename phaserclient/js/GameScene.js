@@ -36,6 +36,9 @@ class GameScene extends Phaser.Scene {
     }
 
     died(data) {
+        this.children.list.forEach((b) => {
+            b.destroy()
+        })
         this.dead = true
         data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
         this.callback({win:false, data: data})

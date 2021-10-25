@@ -117,15 +117,14 @@ enemy.doKnockback(player)
             if (players.hasOwnProperty(socket.id)) {
                 var player = players[socket.id]
                 players[socket.id] = player.move(controller, players)
-                if(player.lastPos.x == player.pos.x && player.lastPos.y == player.pos.y) return
                 
                 touching  = coins.filter(coin => coin.touchingPlayer(player))
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    if(player.scale > 7.5) var increase = 0.0001
-                    else if(player.scale > 5) var increase = 0.0005
-                    else var increase = 0.001
+                    if(player.scale > 7.5) var increase = 0.005
+                    else if(player.scale > 5) var increase = 0.001
+                    else var increase = 0.0005
                     player.scale += increase
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
