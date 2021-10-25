@@ -570,7 +570,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/1000)
                     var x = player.player.x
                     var y = player.player.y
                 }
-                    coin.item.x = lerp(coin.item.x, x, (6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
+                    coin.item.x = lerp(coin.item.x, x, ((6 - (Math.log2(fps) - Math.log2(1.875))) / 10)*2)
                     coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
 
                     if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3) {
