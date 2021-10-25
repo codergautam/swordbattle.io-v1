@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
                                 x = enemy.pos.x + r * Math.cos(theta)
                                 y = enemy.pos.y + r * Math.sin(theta)
 
-                                coins.push(new Coin({x: clamp(-2500, 2500, x) , y: clamp(-2500, 2500,max)}))
+                                coins.push(new Coin({x: clamp(-2500, 2500, x) , y: clamp(-2500, 2500,y)}))
                                 socket.broadcast.emit("coin", coins[coins.length -1])
                             }
                             //delete the enemy
