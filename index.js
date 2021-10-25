@@ -16,7 +16,7 @@ app.use('/', express.static('phaserclient'));
 app.use('/kaboomclient', express.static('kaboomclient'));
 app.use('/assets', express.static('assets'));
 app.use('/classes', express.static('classes'));
-
+           const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Object.filter = (obj, predicate) =>
     Object.keys(obj)
     .filter(key => predicate(obj[key]))
@@ -86,7 +86,7 @@ io.on('connection', (socket) => {
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
 
                             //drop their coins
-                            const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+                 
                             //cant drop more than 1k coins (for lag reasons)
                             for(var i=0; i < clamp(enemy.coins, 5, 1000); i++){
                                 r = enemy.radius * enemy.scale * Math.sqrt(Math.random())
@@ -94,7 +94,7 @@ io.on('connection', (socket) => {
                                 x = enemy.pos.x + r * Math.cos(theta)
                                 y = enemy.pos.y + r * Math.sin(theta)
 
-                                coins.push(new Coin({x: x, y: y}))
+                                coins.push(new Coin({x: clamp(-2500, 2500, x) , y: clamp(-2500, 2500,max)}))
                                 socket.broadcast.emit("coin", coins[coins.length -1])
                             }
                             //delete the enemy
