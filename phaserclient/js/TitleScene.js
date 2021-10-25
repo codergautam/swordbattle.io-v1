@@ -63,8 +63,8 @@ function getCookie(cname) {
     
     const resize = ()=>{
       this.game.scale.resize(window.innerWidth, window.innerHeight)
-      this.background.width = window.innerWidth
-      this.background.height = window.innerHeight
+      this.background.displayWidth = window.innerWidth
+      this.background.displayHeight = window.innerHeight
       this.text.x = window.innerWidth / 2
       this.text.y = window.innerHeight / 3
       this.nameBox.x = window.innerWidth / 2

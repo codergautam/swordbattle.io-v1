@@ -72,7 +72,7 @@ io.on('connection', (socket) => {
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
                           enemy.health -= player.damage
-enemy.doKnockback(player)
+
                           if(enemy.health <= 0) {
                               //enemy has 0 or less than 0 health, time to kill
 
@@ -103,6 +103,8 @@ enemy.doKnockback(player)
                             socketById.disconnect()
                             
                             
+                          } else {
+                            enemy.doKnockback(player)
                           }
                         }
                     }
@@ -122,10 +124,10 @@ enemy.doKnockback(player)
                
                 touching.forEach((coin) => {
                     player.coins += 1
-                    if(player.scale > 7.5) var increase = 0.005
-                    else if(player.scale > 5) var increase = 0.001
-                    else var increase = 0.0005
-                    player.scale += increase
+                    if(player.scale > 7.5) var increase = 0.001
+                    else if(player.scale > 5) var increase = 0.005
+                    else var increase = 0.0001
+                    player.scale += increase*100
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
 
@@ -203,7 +205,7 @@ setInterval(async () => {
     });
     tps += 1
     
-}, 1000 / 20)
+}, 1000 / 30)
 
 server.listen(3000, () => {
     console.log('server started');

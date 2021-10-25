@@ -14,6 +14,9 @@ class Player {
     this.scale = 0.25
     this.damage = 10
 
+    this.resistance = 20
+    this.power = 200
+
     this.maxHealth = 100
     this.lastPos = this.pos
     this.lastDamageDealt = Date.now()
@@ -103,7 +106,7 @@ this.pos.y = pos[1]
     ];
   }
   doKnockback(player) {
-    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI, 100)
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI , player.power-this.resistance)
     this.pos.x = pos[0]
     this.pos.y = pos[1]
   }
@@ -146,7 +149,10 @@ return false
     const convert = (num, val, newNum) => (newNum * val) / num
     this.maxHealth = this.scale * 400
     this.damage = 40 * this.scale
-    this.speed = 710 - (convert(0.25, 1, this.scale) * 10)
+    this.speed = 720 - (convert(0.25, 1, this.scale) * 20)
+
+    this.power = convert(0.25, 200, this.scale)
+    this.resistance = convert(0.25, 20, this.scale)
   }
 }
 
