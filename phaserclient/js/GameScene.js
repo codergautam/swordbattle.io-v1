@@ -21,21 +21,24 @@ class GameScene extends Phaser.Scene {
     });
 
     this.loadingText.setOrigin(0.5, 0.5);
+    
         this.load.image("player", "/assets/images/player.png")
         this.load.image("sword", "/assets/images/sword.png")
         this.load.image('background', '/assets/images/background.jpeg');
         this.load.image('coin', '/assets/images/coin.png');
-        
-    
-        
 
-        
+        this.load.audio('coin', '/assets/sound/coin.m4a')
+        this.load.audio('damage', '/assets/sound/damage.mp3')
+        this.load.audio('hit', '/assets/sound/hitenemy.wav')
+        this.load.audio('winSound', '/assets/sound/win.m4a')
+        this.load.audio('loseSound', '/assets/sound/lost.mp3')
 
         this.socket = io()
         this.ready = false;
     }
 
     died(data) {
+        this.loseSound.play()
         this.children.list.forEach((b) => {
             b.destroy()
         })
@@ -44,12 +47,30 @@ class GameScene extends Phaser.Scene {
         this.callback({win:false, data: data})
     }
     win(data) {
+        this.winSound.play()
 this.dead = true  
 data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
 this.callback({win: true, data:data})
     }
 
     create() {
+        this.openingBgm.stop()
+        var config =  {
+            mute: false,
+            volume: 1,
+            rate: 1,
+            detune: 0,
+            seek: 0,
+            loop: false,
+            delay: 0
+        }
+    
+
+        this.coin = this.sound.add('coin', config)
+        this.damage = this.sound.add('damage', config)
+        this.hit = this.sound.add('hit', config)
+        this.winSound = this.sound.add('winSound', config)
+        this.loseSound = this.sound.add('loseSound', config)
 this.loadingText.destroy()
         
         this.canvas = {
@@ -347,6 +368,12 @@ this.loadingText.destroy()
         this.socket.on("playerLeave", removePlayer)
         this.socket.on("playerDied", removePlayer)
 
+        this.socket.on("dealHit", (playerId) => {
+            this.hit.play()
+        })
+        this.socket.on("takeHit", (playerId) => {
+            this.damage.play()
+        })
 
         //coins
 
@@ -391,6 +418,7 @@ this.loadingText.destroy()
             this.win(data)
         })
         this.socket.on("collected", (coinId, playerId) => {
+            if(this.myObj && this.myObj.id == playerId) this.coin.play() 
             if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
         })
     }

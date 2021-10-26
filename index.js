@@ -69,6 +69,9 @@ io.on('connection', (socket) => {
                         
                         //check if enemy and player colliding
                         if (player.hittingPlayer(enemy)) {
+                            var socketById = io.sockets.sockets.get(enemy.id);
+                            socket.emit("dealHit", enemy.id)
+                            socketById.emit("takeHit", socket.id)
                           //if colliding
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
@@ -81,7 +84,7 @@ io.on('connection', (socket) => {
                             player.kills += 1
                             
                             //tell clients that this enemy died
-                            var socketById = io.sockets.sockets.get(enemy.id);
+                            
                             socketById.emit("youDied", {killedBy: player.name, timeSurvived: Date.now() - enemy.joinTime})
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
 
