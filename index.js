@@ -68,15 +68,16 @@ io.on('connection', (socket) => {
                         //get the values needed for line-circle-collison
                         
                         //check if enemy and player colliding
-                        if (player.hittingPlayer(enemy)) {
+                        if (player.hittingPlayer(enemy) && Date.now() - enemy.joinTime >= 5000) {
                             var socketById = io.sockets.sockets.get(enemy.id);
                             socket.emit("dealHit", enemy.id)
                             socketById.emit("takeHit", socket.id)
                           //if colliding
                           player.lastDamageDealt = Date.now()
                           enemy.lastHit = Date.now()
+                          var oldHealth = enemy.health
                           enemy.health -= player.damage
-
+                          if(enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth) enemy.health = enemy.health*0.1
                           if(enemy.health <= 0) {
                               //enemy has 0 or less than 0 health, time to kill
 
@@ -129,8 +130,8 @@ io.on('connection', (socket) => {
                 touching.forEach((coin) => {
                     player.coins += 1
                     if(player.scale > 7.5) var increase = 0.01
-                    else if(player.scale > 5) var increase = 0.05
-                    else var increase = 0.001
+                    else if(player.scale > 5) var increase = 0.001
+                    else var increase = 0.0005
                     player.scale += increase
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
