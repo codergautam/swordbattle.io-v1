@@ -111,9 +111,9 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     if(this.text.y < window.innerHeight/3) this.text.y += 10
 
 
-    this.nameBox.x = window.innerWidth / 2 - (this.btnrect.width) * 0.9 + (window.innerWidth*0.05)
+    this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
-    this.btntext.x = window.innerWidth / 2 - this.btntext.width / 7
+    this.btntext.x = window.innerWidth / 2 
     this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
     this.btnrect.width = this.btntext.width + 10 
     this.btnrect.height = this.btntext.height + 10
