@@ -93,7 +93,17 @@ this.loadingText.destroy()
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
         }).setFontSize(20).setDepth(101);
         this.playerCount.scrollFactorX = 0
-        this.playerCount.scrollFactorY = 0       
+        this.playerCount.scrollFactorY = 0
+        
+        //minimap
+        this.miniGraphics = this.add.graphics().setDepth(100)
+        this.miniGraphics.x = window.innerWidth - 205
+        this.miniGraphics.y = window.innerHeight - 205
+        this.miniGraphics.lineStyle(5, 0xffff00, 1)
+        this.miniGraphics.strokeRoundedRect(0, 0, 192,  192, 0)
+        this.cameras.main.ignore(this.miniGraphics)
+        
+        this.miniMap = {square:  this.miniGraphics, people: []}
 
         //sword
         
@@ -134,6 +144,8 @@ this.loadingText.destroy()
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
+            this.miniGraphics.x = window.innerWidth - 205
+            this.miniGraphics.y = window.innerHeight - 205
             
             
         } catch(e) {
@@ -206,6 +218,16 @@ this.loadingText.destroy()
             this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
             this.enemies.push(enemy)
 
+            var circle = this.add.circle(0, 0, 10, 0xFF0000)
+            this.cameras.main.ignore(circle)
+            circle.setDepth(98)
+             this.miniMap.people.push(
+                 {
+                     id: player.id,
+                     circle: circle
+                 }
+             )
+
         }
 
         const removePlayer = (id) => {
@@ -218,6 +240,10 @@ this.loadingText.destroy()
                 enemy.nameTag.destroy()
 
                 this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1)
+
+                var miniMapPlayer = this.miniMap.people.find(x => x.id === id)
+                miniMapPlayer.circle.destroy()
+                this.miniMap.people = this.miniMap.people.filter(p => p.id != id)
 
             } catch (e) {
                 console.log(e)
@@ -266,6 +292,25 @@ this.loadingText.destroy()
             //this.meLine.setTo(0, 0, 250, 250)
             this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins)
             this.myObj = player
+
+            //minimap
+            if(!this.miniMap.people.find(x => x.id === player.id)) {
+                var circle = this.add.circle(0, 0, 10, 0xFFFFFF)
+                this.cameras.main.ignore(circle)
+                circle.setDepth(99)
+                 this.miniMap.people.push(
+                     {
+                         id: player.id,
+                         circle: circle
+                     }
+                 )
+            }
+
+            var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
+            
+            miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
+            miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
+            miniMapPlayer.circle.radius = 20*player.scale
         })
         this.socket.on("player", (player) => {
             //update player
@@ -287,6 +332,13 @@ this.loadingText.destroy()
                 enemy.player.setScale(player.scale)
                 enemy.sword.setScale(player.scale)
                 enemy.down = player.mouseDown
+
+                //minimap
+                var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
+            
+                miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
+                miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
+                miniMapPlayer.circle.radius = 20 * player.scale
 
             } catch (e) {
                 console.log(e)
