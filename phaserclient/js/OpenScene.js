@@ -33,6 +33,7 @@ class OpenScene extends Phaser.Scene {
     update() {
         this.text.x = (window.innerWidth / 2)
         this.text.y = (window.innerHeight / 2)
+        this.text.setFontSize(window.innerWidth * 128 / 1920)
         if(!this.go) {
         if(this.text.alpha < 1) this.text.setAlpha(this.text.alpha + 0.01)
         } else {

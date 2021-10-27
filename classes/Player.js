@@ -106,9 +106,10 @@ this.pos.y = pos[1]
     ];
   }
   doKnockback(player) {
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI , player.power-this.resistance)
-    this.pos.x = pos[0]
-    this.pos.y = pos[1]
+    this.pos.x = clamp(-2500, 2500,pos[0])
+    this.pos.y = clamp(-2500, 2500, pos[1])
   }
   hittingPlayer(player) {
 

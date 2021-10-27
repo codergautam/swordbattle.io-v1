@@ -645,7 +645,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         //we shall try next frame
     }
         //playercount
-        this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 45) * 100) + "%")
+        this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 30) * 100) + "%")
         this.playerCount.x = 0
         this.playerCount.y = 0
         
