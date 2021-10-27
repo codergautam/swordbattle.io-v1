@@ -138,7 +138,7 @@ io.on('connection', (socket) => {
                     if(player.scale > 7.5) var increase = 0.01
                     else if(player.scale > 5) var increase = 0.001
                     else var increase = 0.0005
-                    player.scale += increase*200
+                    player.scale += increase
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
 
