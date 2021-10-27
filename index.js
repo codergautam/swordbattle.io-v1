@@ -93,6 +93,7 @@ io.on('connection', (socket) => {
                             
                             socketById.emit("youDied", {killedBy: player.name, timeSurvived: Date.now() - enemy.joinTime})
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
+                            console.log("player died -> " + socket.id)
 
                             //drop their coins
                  
