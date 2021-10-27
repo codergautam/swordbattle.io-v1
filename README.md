@@ -2,7 +2,9 @@
 
 ### My idea
 I remember a few years ago I was just getting into programming and I was decently good at scratch. I had an idea for a scratch game called sword.io which was basically 2 people 1v1ing with swords. I made the game and it was probably one of my best scratch games. 
+
 ![Sword.io Screenshot](https://i.imgur.com/JXlhHOo.png)
+
 Anyway when I saw that Kajam was going to start. I wanted to make an actual online multiplayer version of this game. I was going to use kaboom.js for it. 
 
 ### Process
