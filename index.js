@@ -36,6 +36,7 @@ io.on('connection', (socket) => {
 
     socket.on('go', async (name) => {
       if(!name) return
+      if(players[socket.id]) return
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
          players[socket.id].updateValues()
@@ -93,7 +94,6 @@ io.on('connection', (socket) => {
                             
                             socketById.emit("youDied", {killedBy: player.name, timeSurvived: Date.now() - enemy.joinTime})
                             socketById.broadcast.emit("playerDied",enemy.id, {killedBy: player.name})
-                            console.log("player died -> " + socket.id)
 
                             //drop their coins
                  
@@ -104,7 +104,7 @@ io.on('connection', (socket) => {
                                 x = enemy.pos.x + r * Math.cos(theta)
                                 y = enemy.pos.y + r * Math.sin(theta)
 
-                                coins.push(new Coin({x: clamp(x, -2500, 2500) , y: clamp(y, -2500, 2500)}))
+                                coins.push(new Coin({x: clamp(x,-2500, 2500) , y: clamp(y, -2500, 2500)}))
                                 socketById.broadcast.emit("coin", coins[coins.length -1])
                             }
                             //delete the enemy

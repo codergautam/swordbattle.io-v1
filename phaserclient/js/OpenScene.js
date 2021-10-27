@@ -24,7 +24,19 @@ class OpenScene extends Phaser.Scene {
             fill: '#FFFFFF'
         }).setOrigin(0.5);
         this.text.setAlpha(0)
-
+        ///resize dynamicly
+        const resize = () => {
+            try {
+            this.game.scale.resize(window.innerWidth, window.innerHeight)
+            this.background.height = window.innerHeight
+            this.background.width = window.innerWidth
+            
+            
+        } catch(e) {
+            console.log(e)
+        }
+        }
+        window.addEventListener("resize", resize, true)
         this.input.on("pointerdown", event => {
             this.go = true
         });

@@ -10,17 +10,7 @@ class GameScene extends Phaser.Scene {
         var width = this.cameras.main.width;
         var height = this.cameras.main.height;
 
-            this.loadingText = this.make.text({
-        x: width / 2,
-        y: height / 2 - 50,
-        text: 'Loading...',
-        style: {
-            font: '90px monospace',
-            fill: '#ffffff'
-        }
-    });
-
-    this.loadingText.setOrigin(0.5, 0.5);
+   
     
         this.load.image("player", "/assets/images/player.png")
         this.load.image("sword", "/assets/images/sword.png")
@@ -71,7 +61,6 @@ this.callback({win: true, data:data})
         this.hit = this.sound.add('hit', config)
         this.winSound = this.sound.add('winSound', config)
         this.loseSound = this.sound.add('loseSound', config)
-this.loadingText.destroy()
         
         this.canvas = {
             width: window.innerWidth,
@@ -399,7 +388,6 @@ this.loadingText.destroy()
             })
 
            var remove = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 0)
-           console.log(remove)
            remove.forEach((coin) => {
                
                coin.item.destroy()
