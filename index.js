@@ -82,7 +82,7 @@ io.on('connection', (socket) => {
                           enemy.lastHit = Date.now()
                           var oldHealth = enemy.health
                           enemy.health -= player.damage
-                          if(enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth) enemy.health = enemy.health*0.1
+                          if(enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth) enemy.health = enemy.maxHealth*0.1
                           if(enemy.health <= 0) {
                               //enemy has 0 or less than 0 health, time to kill
 
@@ -137,7 +137,7 @@ io.on('connection', (socket) => {
                     if(player.scale > 7.5) var increase = 0.01
                     else if(player.scale > 5) var increase = 0.001
                     else var increase = 0.0005
-                    player.scale += increase
+                    player.scale += increase*200
                     var index = coins.findIndex(e=>e.id == coin.id)
                     coins.splice(index, 1)
 
