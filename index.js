@@ -218,11 +218,6 @@ setInterval(async () => {
     
 }, 1000 / 30)
 
-app.all((req, res)=> {
-    var fullUrl = req.protocol + '://' + req.get('host') + req.originalUrl;
-    console.log(fullUrl)
-})
-
 server.listen(3000, () => {
     console.log('server started');
 });

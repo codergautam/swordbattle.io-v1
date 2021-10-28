@@ -150,7 +150,7 @@ return false
     const convert = (num, val, newNum) => (newNum * val) / num
     this.maxHealth = this.scale * 400
     this.damage = 80 * this.scale
-    this.speed = 720 - (convert(0.25, 1, this.scale) * 20)
+    this.speed = 740 - (convert(0.25, 1, this.scale) * 40)
 
     this.power = convert(0.25, 200, this.scale)
     this.resistance = convert(0.25, 20, this.scale)
