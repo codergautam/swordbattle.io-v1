@@ -7,10 +7,10 @@ const {
 
 const app = express();
 const server = http.createServer(app);
+
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
-    const noOriginHeader = req.headers.origin === undefined;
-    callback(null, noOriginHeader);
+    callback(null, req.headers.origin === undefined);
   }
   });
 
@@ -33,6 +33,11 @@ var coins = [];
 var maxCoins = 100;
 
 io.on('connection', (socket) => {
+  //prevent idot sedated from botting
+if(socket.handshake.xdomain) {
+   console.log(socket.id +" kicked for xdomain")
+  socket.disconnect()
+}
 
     socket.on('go', async (name) => {
       if(!name) return
@@ -107,8 +112,13 @@ io.on('connection', (socket) => {
                                 coins.push(new Coin({x: clamp(x,-2500, 2500) , y: clamp(y, -2500, 2500)}))
                                 socketById.broadcast.emit("coin", coins[coins.length -1])
                             }
+                            
+                            //log a message
+                            console.log("player died -> "+enemy.id)
+                            
                             //delete the enemy
                             delete players[enemy.id]   
+
                             
                             //disconnect the socket
                             socketById.disconnect()
@@ -126,6 +136,7 @@ io.on('connection', (socket) => {
     })
 
     socket.on('move', (controller) => {
+      if(!controller) return
         try {
             if (players.hasOwnProperty(socket.id)) {
                 var player = players[socket.id]
@@ -187,6 +198,7 @@ setInterval(async () => {
     //emit tps to clients
     if(Date.now() - secondStart >= 1000) {
       io.sockets.emit("tps", tps)
+      console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
       secondStart = Date.now()
       tps = 0
     }

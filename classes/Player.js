@@ -147,10 +147,11 @@ return false
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
   }
   updateValues() {
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num
     this.maxHealth = this.scale * 400
     this.damage = 80 * this.scale
-    this.speed = 740 - (convert(0.25, 1, this.scale) * 40)
+    this.speed = clamp(740 - (convert(0.25, 1, this.scale) * 40),200,700)
 
     this.power = convert(0.25, 200, this.scale)
     this.resistance = convert(0.25, 20, this.scale)
