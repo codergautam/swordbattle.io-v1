@@ -12,16 +12,16 @@ class GameScene extends Phaser.Scene {
 
    
     
-        this.load.image("player", "/assets/images/player.png")
-        this.load.image("sword", "/assets/images/sword.png")
+        this.load.image("player", "/assets/images/player.png");
+        this.load.image("sword", "/assets/images/sword.png");
         this.load.image('background', '/assets/images/background.jpeg');
         this.load.image('coin', '/assets/images/coin.png');
 
-        this.load.audio('coin', '/assets/sound/coin.m4a')
-        this.load.audio('damage', '/assets/sound/damage.mp3')
-        this.load.audio('hit', '/assets/sound/hitenemy.wav')
-        this.load.audio('winSound', '/assets/sound/win.m4a')
-        this.load.audio('loseSound', '/assets/sound/lost.mp3')
+        this.load.audio('coin', '/assets/sound/coin.m4a');
+        this.load.audio('damage', '/assets/sound/damage.mp3');
+        this.load.audio('hit', '/assets/sound/hitenemy.wav');
+        this.load.audio('winSound', '/assets/sound/win.m4a');
+        this.load.audio('loseSound', '/assets/sound/lost.mp3');
 
         this.socket = io()
         this.ready = false;
@@ -30,7 +30,7 @@ class GameScene extends Phaser.Scene {
     died(data) {
         this.loseSound.play()
         this.children.list.forEach((b) => {
-            b.destroy()
+            b.destroy();
         })
         this.dead = true
         data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
@@ -164,9 +164,26 @@ this.callback({win: true, data:data})
         }
 
         window.addEventListener("resize", resize, true);
-
+        function makeid(length) {
+            var result           = '';
+            var characters       = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+            var charactersLength = characters.length;
+            for ( var i = 0; i < length; i++ ) {
+              result += characters.charAt(Math.floor(Math.random() * 
+         charactersLength));
+           }
+           return result;
+        }
+        function token() {
+            var token = ""
+            token += makeid(5)
+            token+= Date.now()
+            token+='A'
+            token+=Math.random().toString().concat("0".repeat(3)).substr(2,3)
+            return token
+        }
         //go packet
-        this.socket.emit("go", this.name)
+        this.socket.emit("go", this.name, token())
 
         //mouse down
         this.input.on('pointerdown', function (pointer) {

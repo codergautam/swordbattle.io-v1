@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "build": "npx webpack",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node index.js"
+    "start": "npx webpack && node index.js"
   },
   "keywords": [],
   "author": "",
@@ -14,6 +15,11 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.5.0",
     "intersects": "^2.7.2",
+    "javascript-obfuscator": "^3.0.0",
     "socket.io": "^4.2.0"
+  },
+  "devDependencies": {
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.9.1"
   }
 }

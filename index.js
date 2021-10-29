@@ -5,9 +5,10 @@ const {
     Server
 } = require("socket.io");
 const rateLimit = require("express-rate-limit");
-
+const fs = require('fs')
 const app = express();
 const server = http.createServer(app);
+var JavaScriptObfuscator = require('javascript-obfuscator');
 var bannedIps = ["78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240", "23.227.140.172", "35.232.36.77"];
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
@@ -22,7 +23,42 @@ const io = new Server(server,   {
 const Player = require("./classes/Player")
 const Coin = require("./classes/Coin")
 
-app.use('/', express.static('phaserclient'));
+var mainjs = fs.readFileSync('./dist/main.js').toString()
+
+mainjs = JavaScriptObfuscator.obfuscate(mainjs,
+    {
+        compact: false,
+        controlFlowFlattening: false,
+        controlFlowFlatteningThreshold: 1,
+        numbersToExpressions: true,
+        simplify: true,
+        stringArrayShuffle: true,
+        splitStrings: false,
+        renameGlobals: true,
+        renameProperties: false,
+        deadCodeInjection: true,
+        deadCodeInjectionThreshold: 0.2,
+        numbersToExpressions: false,
+        stringArrayThreshold: 1
+    }
+).getObfuscatedCode();
+
+
+
+
+app.use('/:file', (req, res,next) => {
+    var file = req.params.file
+    
+    if(file == 'main.js') {
+        res.set('Content-Type', 'text/javascript')
+        res.send(mainjs)
+    } else if(['index.html', 'textbox.html'].includes(file)) {
+        res.sendFile(__dirname + '/dist/'+file)
+    } else {
+    next()
+    }
+});
+
 app.use('/kaboomclient', express.static('kaboomclient'));
 app.use('/assets', express.static('assets'));
 app.use('/classes', express.static('classes'));
@@ -36,7 +72,9 @@ var players = {}
 var coins = [];
 
 var maxCoins = 100;
-
+app.get('/', (req,res) => {
+    res.sendFile(__dirname+'/dist/index.html')
+})
 app.get("/ipban", (req,res) => {
     
  var token = req.query.token == process.env.TOKEN
@@ -67,19 +105,22 @@ app.get("/iplist", async (req,res) => {
 io.on('connection', (socket) => {
     console.log(socket.handshake.headers)
     socket.ip = socket.handshake.headers['x-forwarded-for']
-    if(!socket.ip) socket.disconnect()
+    if(!socket.ip) socket.ip = "None."
     
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
    console.log(socket.id +" kicked for xdomain")
   socket.disconnect()
 }
-
-    socket.on('go', async (name) => {
-       
+function validateToken(token) {
+    var date = token.substring(5,token.length -4)
+    return Date.now() - date < 2500 
+}
+    socket.on('go', async (name, token) => {
+        if(!token) return
       if(!name) return
+      if(!validateToken(token)) return
       if(players[socket.id]) return
-        console.log(socket.ip.toString())
         if(bannedIps.includes(socket.ip.toString())) {
             console.log(name +" BANNED DUE TO IP BAN")
             socket.disconnect()
@@ -96,8 +137,7 @@ if(socket.handshake.xdomain) {
 
         if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers)
         socket.emit("coins", coins)
-        
-        console.log(name +" joined successfully with IP "+socket.ip)
+    
         
     })
 
