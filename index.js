@@ -38,15 +38,18 @@ var coins = [];
 var maxCoins = 100;
 
 app.get("/ipban", (req,res) => {
- var token = req.query.token === process.env.TOKEN
+    
+ var token = req.query.token == process.env.TOKEN
  if(token) {
      bannedIps.push(req.query.ip)
      res.send(bannedIps.toString())
+ } else {
+     res.send("idot")
  }
 })
 
 app.get("/iplist", async (req,res) => {
-    console.log(req.query.token)
+   console.log(process.env.TOKEN)
  var token = req.query.token === process.env.TOKEN
  if(token) {
      var txt = ""
@@ -56,6 +59,8 @@ app.get("/iplist", async (req,res) => {
      })
      res.send(txt)
      
+ } else {
+      res.send("idot")
  }
 })
 
