@@ -8,7 +8,7 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 const server = http.createServer(app);
-
+var bannedIps = [];
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
     callback(null, req.headers.origin === undefined);
@@ -36,6 +36,14 @@ var players = {}
 var coins = [];
 
 var maxCoins = 100;
+
+app.get("ipban", (req,res) => {
+ var token = req.query.token === process.env.TOKEN
+ if(token) {
+     bannedIps.push(req.query.ip)
+     res.send(bannedIps.toString())
+ }
+})
 
 io.on('connection', (socket) => {
   //prevent idot sedated from botting
