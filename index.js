@@ -37,11 +37,24 @@ var coins = [];
 
 var maxCoins = 100;
 
-app.get("ipban", (req,res) => {
+app.get("/ipban", (req,res) => {
  var token = req.query.token === process.env.TOKEN
  if(token) {
      bannedIps.push(req.query.ip)
      res.send(bannedIps.toString())
+ }
+})
+
+app.get("/iplist", async (req,res) => {
+ var token = req.query.token === process.env.TOKEN
+ if(token) {
+     var txt = ""
+     players.forEach((player) => {
+        var socket = io.sockets.sockets.get(player.id);
+         txt += player.name+" - "+socket.ip+"<br>"
+     })
+     res.send(txt)
+     
  }
 })
 
