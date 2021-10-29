@@ -66,8 +66,8 @@ app.get("/iplist", async (req,res) => {
 
 io.on('connection', (socket) => {
     console.log(socket.handshake.headers)
-    socket.ip = socket.handshake.headers['X-FORWARDED-FOR']
-    console.log(socket.ip.toString())
+    socket.ip = socket.handshake.headers['x-forwarded-for']
+    if(!socket.ip) socket.disconnect()
     
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
