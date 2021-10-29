@@ -46,6 +46,8 @@ app.get("ipban", (req,res) => {
 })
 
 io.on('connection', (socket) => {
+    socket.ip = socket.conn.remoteAddress
+    
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
    console.log(socket.id +" kicked for xdomain")
@@ -53,8 +55,14 @@ if(socket.handshake.xdomain) {
 }
 
     socket.on('go', async (name) => {
+       
       if(!name) return
       if(players[socket.id]) return
+        
+        if(bannedIps.includes(socket.ip.toString())) {
+            console.log(name +" BANNED DUE TO IP BAN")
+            return
+        }
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
          players[socket.id].updateValues()
@@ -66,6 +74,9 @@ if(socket.handshake.xdomain) {
 
         if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers)
         socket.emit("coins", coins)
+        
+        console.log(name +" joined successfully with IP "+socket.ip)
+        
     })
 
     socket.on('mousePos', (mousePos) => {
