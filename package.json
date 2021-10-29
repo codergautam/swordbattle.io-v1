@@ -12,6 +12,7 @@
   "license": "ISC",
   "dependencies": {
     "express": "^4.17.1",
+    "express-rate-limit": "^5.5.0",
     "intersects": "^2.7.2",
     "socket.io": "^4.2.0"
   }
