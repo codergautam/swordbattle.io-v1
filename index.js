@@ -8,7 +8,7 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 const server = http.createServer(app);
-var bannedIps = ["78.58.116.9"];
+var bannedIps = ["78.58.116.9", "73.222.174.240"];
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
     callback(null, req.headers.origin === undefined);
@@ -66,6 +66,7 @@ app.get("/iplist", async (req,res) => {
 
 io.on('connection', (socket) => {
     socket.ip = socket.handshake.headers['X-FORWARDED-FOR']
+    console.log(socket.ip.toString())
     
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
@@ -77,9 +78,10 @@ if(socket.handshake.xdomain) {
        
       if(!name) return
       if(players[socket.id]) return
-        
+        console.log(socket.ip.toString())
         if(bannedIps.includes(socket.ip.toString())) {
             console.log(name +" BANNED DUE TO IP BAN")
+            socket.disconnect()
             return
         }
          name = name.substring(0, 16)
