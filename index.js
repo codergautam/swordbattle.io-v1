@@ -18,7 +18,7 @@ const io = new Server(server,   {
     windowMs: 15 * 60 * 1000, // 15 minutes
     max: 100 // limit each IP to 100 requests per windowMs
   });
-  app.use(limiter)
+  app.use("/", limiter)
 const Player = require("./classes/Player")
 const Coin = require("./classes/Coin")
 
