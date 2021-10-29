@@ -241,6 +241,8 @@ var lastCoinSend = Date.now()
 var tps = 0;
 
 setInterval(async () => {
+    const used = process.memoryUsage().heapUsed / 1024 / 1024;
+console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
     if(coins.length < maxCoins) { 
         coins.push(new Coin())
         io.sockets.emit("coin", coins[coins.length - 1])
