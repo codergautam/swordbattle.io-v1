@@ -65,6 +65,7 @@ app.get("/iplist", async (req,res) => {
 })
 
 io.on('connection', (socket) => {
+    console.log(socket.handshake.headers)
     socket.ip = socket.handshake.headers['X-FORWARDED-FOR']
     console.log(socket.ip.toString())
     
