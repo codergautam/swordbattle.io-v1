@@ -46,6 +46,7 @@ app.get("/ipban", (req,res) => {
 })
 
 app.get("/iplist", async (req,res) => {
+    console.log(req.query.token)
  var token = req.query.token === process.env.TOKEN
  if(token) {
      var txt = ""
