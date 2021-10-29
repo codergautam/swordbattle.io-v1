@@ -9,7 +9,7 @@ const fs = require('fs')
 const app = express();
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
-var bannedIps = ["78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240", "23.227.140.172", "35.232.36.77"];
+
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
     callback(null, req.headers.origin === undefined);
@@ -47,13 +47,12 @@ mainjs = JavaScriptObfuscator.obfuscate(mainjs,
 
 
 app.use('/:file', (req, res,next) => {
-    var file = req.params.file
     
-    if(file == 'main.js') {
+    if(req.params.file == 'main.js') {
         res.set('Content-Type', 'text/javascript')
         res.send(mainjs)
-    } else if(['index.html', 'textbox.html'].includes(file)) {
-        res.sendFile(__dirname + '/dist/'+file)
+    } else if(['index.html', 'textbox.html'].includes(req.params.file)) {
+        res.sendFile(__dirname + '/dist/'+req.params.file)
     } else {
     next()
     }
@@ -75,41 +74,11 @@ var maxCoins = 100;
 app.get('/', (req,res) => {
     res.sendFile(__dirname+'/dist/index.html')
 })
-app.get("/ipban", (req,res) => {
-    
- var token = req.query.token == process.env.TOKEN
- if(token) {
-     bannedIps.push(req.query.ip)
-     res.send(bannedIps.toString())
- } else {
-     res.send("idot")
- }
-})
-
-
-app.get("/iplist", async (req,res) => {
- var token = req.query.token == process.env.TOKEN
- if(token) {
-     var txt = ""
-     players.forEach((player) => {
-        var socket = io.sockets.sockets.get(player.id);
-         txt += player.name+" - "+socket.ip+"<br>"
-     })
-     res.send(txt)
-     
- } else {
-      res.send("idot")
- }
-})
 
 io.on('connection', (socket) => {
-    console.log(socket.handshake.headers)
-    socket.ip = socket.handshake.headers['x-forwarded-for']
-    if(!socket.ip) socket.ip = "None."
     
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
-   console.log(socket.id +" kicked for xdomain")
   socket.disconnect()
 }
 function validateToken(token) {
@@ -121,11 +90,6 @@ function validateToken(token) {
       if(!name) return
       if(!validateToken(token)) return
       if(players[socket.id]) return
-        if(bannedIps.includes(socket.ip.toString())) {
-            console.log(name +" BANNED DUE TO IP BAN")
-            socket.disconnect()
-            return
-        }
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
          players[socket.id].updateValues()
