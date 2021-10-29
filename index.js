@@ -9,6 +9,7 @@ const fs = require('fs')
 const app = express();
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
+var bannedIps = ["23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240", "199.48.94.81"]
 
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
@@ -77,6 +78,9 @@ app.get('/', (req,res) => {
 
 io.on('connection', (socket) => {
     socket.connectTime = Date.now()
+    socket.ip = socket.handshake.headers['x-forwarded-for']
+
+    if(bannedIps.includes(socket.ip)) socket.disconnect()
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
   socket.disconnect()
