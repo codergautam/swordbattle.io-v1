@@ -76,7 +76,7 @@ app.get('/', (req,res) => {
 })
 
 io.on('connection', (socket) => {
-    
+    socket.connectTime = Date.now()
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
   socket.disconnect()
@@ -86,10 +86,11 @@ function validateToken(token) {
     return Date.now() - date < 2500 
 }
     socket.on('go', async (name, token) => {
-        if(!token) return
-      if(!name) return
-      if(!validateToken(token)) return
-      if(players[socket.id]) return
+        if(!token) return socket.disconnect()
+      if(!name) return socket.disconnect()
+      if(!validateToken(token)) return socket.disconnect()
+      if(players[socket.id]) return socket.disconnect()
+
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
          players[socket.id].updateValues()
@@ -101,6 +102,8 @@ function validateToken(token) {
 
         if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers)
         socket.emit("coins", coins)
+
+        socket.joined = true;
     
         
     })
@@ -113,7 +116,7 @@ function validateToken(token) {
     })
 
     socket.on('mouseDown', (down) => {
-
+        
         if (players.hasOwnProperty(socket.id)) {
             var player = players[socket.id]
             if (player.mouseDown == down) return
@@ -261,6 +264,10 @@ console.log(`The script uses approximately ${Math.round(process.memoryUsage().he
     //health regen
     var playersarray = Object.values(players)
     var sockets = await io.fetchSockets()
+
+    sockets.forEach((b) => {
+        if(!b.joined && Date.now()-b.joinTime > 5000) b.disconnect()
+    })
     playersarray.forEach(player => {
      //   player.moveWithMouse(players)
       if((Date.now() - player.lastHit > 5000) && (Date.now() - player.lastRegen > 100) && (player.health < player.maxHealth)) {
