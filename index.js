@@ -8,7 +8,7 @@ const rateLimit = require("express-rate-limit");
 
 const app = express();
 const server = http.createServer(app);
-var bannedIps = ["78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240"];
+var bannedIps = ["78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240", "23.227.140.172"];
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
     callback(null, req.headers.origin === undefined);
