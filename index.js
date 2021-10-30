@@ -11,6 +11,8 @@ var cors = require('cors')
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 var bannedIps = ["209.205.218.44","23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240"]
+const axios = require('axios').default;
+var safeIp = [];
 
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
@@ -77,11 +79,29 @@ app.get('/', (req,res) => {
     res.sendFile(__dirname+'/dist/index.html')
 })
 
-io.on('connection', (socket) => {
+io.on('connection', async (socket) => {
     socket.connectTime = Date.now()
-    socket.ip = socket.handshake.headers['x-forwarded-for']
-
+    socket.ip = socket.handshake.headers['x-forwarded-for'].toString()
+    
+    if( !socket.ip || !safeIp.includes(socket.ip) ) {
     if(bannedIps.includes(socket.ip)) socket.disconnect()
+    else {
+        console.log(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`)
+        axios.get(
+            `https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`
+        ).then((d) => {
+            var json = d.data
+            console.log(json)
+        if(json.status == "ok" && json[socket.ip].type == "VPN") {
+            //uh oh, looks like someones on a vpn
+            bannedIps.push(socket.ip)
+            socket.disconnect()
+        } else if(json.status == "ok" && json[socket.ip].type != "VPN") {
+            safeIp.push(socket.ip)
+        }
+    })
+    }
+}
   //prevent idot sedated from botting
 if(socket.handshake.xdomain) {
   socket.disconnect()
