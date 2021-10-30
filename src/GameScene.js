@@ -173,9 +173,9 @@ this.callback({win: true, data:data})
         }
         function token() {
             var token = ""
-            token += makeid(5)
+            token += makeid(6)
             token+= Date.now()
-            token+='A'
+            token+='B'
             token+=Math.random().toString().concat("0".repeat(3)).substr(2,3)
             return token
         }

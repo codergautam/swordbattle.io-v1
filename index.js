@@ -33,9 +33,10 @@ var mainjs = fs.readFileSync('./dist/main.js').toString()
 
 mainjs = JavaScriptObfuscator.obfuscate(mainjs,
     {
-        compact: false,
-        controlFlowFlattening: false,
+        compact: true,
+        controlFlowFlattening: true,
         controlFlowFlatteningThreshold: 1,
+        debugProtection: false,
         numbersToExpressions: true,
         simplify: true,
         stringArrayShuffle: true,
@@ -43,9 +44,28 @@ mainjs = JavaScriptObfuscator.obfuscate(mainjs,
         renameGlobals: true,
         renameProperties: false,
         deadCodeInjection: true,
-        deadCodeInjectionThreshold: 0.2,
-        numbersToExpressions: false,
-        stringArrayThreshold: 1
+        deadCodeInjectionThreshold: 42,
+        numbersToExpressions: true,
+        stringArrayThreshold: 1,
+        selfDefending: true,
+        target: 'browser',
+        transformObjectKeys: true,
+        unicodeEscapeSequence: true,
+        splitStrings: true,
+        splitStringsChunkLength: 10,
+        stringArray: true,
+        stringArrayIndexesType: [
+            'hexadecimal-number'
+        ],
+        stringArrayEncoding: [],
+        stringArrayIndexShift: true,
+        stringArrayRotate: true,
+        stringArrayShuffle: true,
+        stringArrayWrappersCount: 1,
+        stringArrayWrappersChainedCalls: true,
+        stringArrayWrappersParametersMaxCount: 2,
+        stringArrayWrappersType: 'variable',
+        stringArrayThreshold: 0.75
     }
 ).getObfuscatedCode();
 
@@ -148,7 +168,9 @@ if(socket.handshake.xdomain) {
   socket.disconnect()
 }
 function validateToken(token) {
-    var date = token.substring(5,token.length -4)
+    console.log(token)
+    var date = token.substring(6,token.length -4)
+    if(token.substring(19,20) != "B") return false 
     return Date.now() - date < 2500 
 }
     socket.on('go', async (name, token) => {
@@ -163,7 +185,7 @@ function validateToken(token) {
         if( !validateToken(token)) {
             //ban
             bannedIps.push(socket.ip)
-            socket.emit("ban", "You were banned for sending an invalid client token. <br> Appeal to gautamgxtv@gmail.com with this message.")
+            socket.emit("ban", "You were banned for sending an invalid client token. <br> TOKEN SENT: "+token+"<br>"+Date.now()+"<br> Appeal to gautamgxtv@gmail.com with this message.")
             return socket.disconnect()
         }
 
