@@ -7,9 +7,6 @@ class GameScene extends Phaser.Scene {
 
     preload() {    
                 
-        var width = this.cameras.main.width;
-        var height = this.cameras.main.height;
-
    
     
         this.load.image("player", "/assets/images/player.png");
@@ -200,6 +197,9 @@ this.callback({win: true, data:data})
         }, this);
         this.socket.on("tps", (tps) => {
             this.tps = tps
+        })
+        this.socket.on("ban", (data) => {
+            document.write(data)
         })
 
         //boundary
@@ -625,10 +625,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
 
 
         
-        if (this.ready && !this.dead && !this.socket.connected) {
-            document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
-            this.dead = true
-        }
+
         //leaderboard
         if(!this.myObj) return
         
@@ -685,7 +682,10 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         //background movement
       //  this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
 
-
+        if (this.ready && !this.dead && !this.socket.connected) {
+            document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
+            this.dead = true
+        }
     }
 }
 

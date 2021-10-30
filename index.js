@@ -1,6 +1,7 @@
 
 const express = require('express');
 const http = require('http');
+require('dotenv').config()
 const {
     Server
 } = require("socket.io");
@@ -25,7 +26,8 @@ const io = new Server(server,   {
   });
   app.use("/", limiter)
 const Player = require("./classes/Player")
-const Coin = require("./classes/Coin")
+const Coin = require("./classes/Coin");
+const e = require('express');
 
 var mainjs = fs.readFileSync('./dist/main.js').toString()
 
@@ -79,22 +81,61 @@ app.get('/', (req,res) => {
     res.sendFile(__dirname+'/dist/index.html')
 })
 
+app.get('/ipcheck/:token', (req,res) => {
+
+    if(process.env.TOKEN == req.params.token) {
+        var txt = ""
+        if(Object.values(players).length < 1) return res.send("len 0")
+        Object.values(players).forEach((player) => {
+           var socket = io.sockets.sockets.get(player.id);
+            txt += player.name+" - "+socket.ip+"<br>"
+        })
+        res.send(txt)
+    } else {
+        res.send("idot hackrs")
+    }
+})
+app.get("/ipban/:token", (req,res) => {
+    
+    var token = req.params.token == process.env.TOKEN
+    if(token) {
+        bannedIps.push(req.query.ip)
+        res.send(bannedIps.toString())
+    } else {
+        res.send("idot")
+    }
+   })
+   app.get("/ipunban/:token", (req,res) => {
+    
+    var token = req.params.token == process.env.TOKEN
+    if(token) {
+        if(bannedIps.includes(req.query.ip)) bannedIps = bannedIps.filter(b=>b!=req.query.ip)
+        res.send(bannedIps.toString())
+    } else {
+        res.send("idot")
+    }
+   })
+
 io.on('connection', async (socket) => {
-    socket.connectTime = Date.now()
-    socket.ip = socket.handshake.headers['x-forwarded-for'].toString()
+    socket.joinTime = Date.now()
+    socket.ip = socket.handshake.headers['x-forwarded-for']
     
     if( !socket.ip || !safeIp.includes(socket.ip) ) {
-    if(bannedIps.includes(socket.ip)) socket.disconnect()
+    if(bannedIps.includes(socket.ip)) {
+        socket.emit("ban", "You are banned. Appeal to gautamgxtv@gmail.com")
+        socket.disconnect()
+    }
     else {
         console.log(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`)
         axios.get(
             `https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`
         ).then((d) => {
             var json = d.data
-            console.log(json)
         if(json.status == "ok" && json[socket.ip].type == "VPN") {
             //uh oh, looks like someones on a vpn
             bannedIps.push(socket.ip)
+            socket.emit("ban", "VPNs are not allowed. Sorry!")
+            console.log("\n\n"+socket.id+" BANNED FOR VPN!!!\n\n")
             socket.disconnect()
         } else if(json.status == "ok" && json[socket.ip].type != "VPN") {
             safeIp.push(socket.ip)
@@ -111,10 +152,12 @@ function validateToken(token) {
     return Date.now() - date < 2500 
 }
     socket.on('go', async (name, token) => {
-        if(!token) return socket.disconnect()
-      if(!name) return socket.disconnect()
-      if(!validateToken(token)) return socket.disconnect()
-      if(players[socket.id]) return socket.disconnect()
+        if(!token || !name || !validateToken(token) || players[socket.id]) {
+            //ban
+            bannedIps.push(socket.ip)
+            socket.emit("ban", "You were banned for invalid packets/cheating. Appeal to gautamgxtv@gmail.com")
+            return socket.disconnect()
+        }
 
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
