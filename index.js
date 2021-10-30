@@ -10,7 +10,7 @@ const app = express();
 var cors = require('cors')
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
-var bannedIps = ["209.205.218.44","23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240"]
+var bannedIps = ["34.133.168.193","209.205.218.44","23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240"]
 const axios = require('axios').default;
 var safeIp = [];
 
@@ -85,7 +85,7 @@ io.on('connection', async (socket) => {
     
     if( !socket.ip || !safeIp.includes(socket.ip) ) {
     if(bannedIps.includes(socket.ip)) socket.disconnect()
-    else {
+    else {x
         console.log(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`)
         axios.get(
             `https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`
