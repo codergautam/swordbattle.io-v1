@@ -7,6 +7,7 @@ const {
 const rateLimit = require("express-rate-limit");
 const fs = require('fs')
 const app = express();
+var cors = require('cors')
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 var bannedIps = ["209.205.218.44","23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240"]
@@ -44,7 +45,7 @@ mainjs = JavaScriptObfuscator.obfuscate(mainjs,
     }
 ).getObfuscatedCode();
 
-
+app.use(cors())
 
 
 app.use('/:file', (req, res,next) => {
