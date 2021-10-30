@@ -122,7 +122,7 @@ io.on('connection', async (socket) => {
     
     if( !socket.ip || !safeIp.includes(socket.ip) ) {
     if(bannedIps.includes(socket.ip)) {
-        socket.emit("ban", "You are banned. Appeal to gautamgxtv@gmail.com")
+        socket.emit("ban", "You are banned. Appeal to gautamgxtv@gmail.com<br><br>BANNED IP: "+socket.ip)
         socket.disconnect()
     }
     else {
@@ -152,10 +152,18 @@ function validateToken(token) {
     return Date.now() - date < 2500 
 }
     socket.on('go', async (name, token) => {
-        if(!token || !name || !validateToken(token) || players[socket.id]) {
+        if(!token || !name) {
+            socket.emit("ban", "You were kicked for not sending a name/token. Send this message to gautamgxtv@gmail.com with this message")
+            return socket.disconnect()
+        }
+        if(players[socket.id]) {
+            socket.emit("ban", "You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. ")
+            return socket.disconnect()
+        }
+        if( !validateToken(token)) {
             //ban
             bannedIps.push(socket.ip)
-            socket.emit("ban", "You were banned for invalid packets/cheating. Appeal to gautamgxtv@gmail.com")
+            socket.emit("ban", "You were banned for sending an invalid client token. <br> Appeal to gautamgxtv@gmail.com with this message.")
             return socket.disconnect()
         }
 
