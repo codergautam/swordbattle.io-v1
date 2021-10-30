@@ -103,14 +103,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   this.returnKey.on("down", event => {
     go()
   });
+
   
-}
-
- update() {
-   this.text.setFontSize( window.innerWidth / 10)
-    if(this.text.y < window.innerHeight/3) this.text.y += 10
-
-
+  const resize = ()=>{
+    this.game.scale.resize(window.innerWidth, window.innerHeight)
+    this.text.setFontSize( window.innerWidth / 10)
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
     this.btntext.x = window.innerWidth / 2 
@@ -121,18 +118,23 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.btnrect.y = this.btntext.y - (this.btntext.height/2) - 5
     this.btnrect.width = this.btntext.width + 10
     this.btnrect.height = this.btntext.height + 10
+    this.background.displayWidth = window.innerWidth
+    this.background.displayHeight = window.innerHeight
+    this.text.x = window.innerWidth / 2
+    this.text.y = window.innerHeight / 3
+
+  }
+        
+    window.addEventListener("resize", resize, false);
+
+    resize()
+}
+
+ update() {
+
+    if(this.text.y < window.innerHeight/3) this.text.y += 10
 
 
-    const resize = ()=>{
-      this.game.scale.resize(window.innerWidth, window.innerHeight)
-      this.background.displayWidth = window.innerWidth
-      this.background.displayHeight = window.innerHeight
-      this.text.x = window.innerWidth / 2
-      this.text.y = window.innerHeight / 3
-
-    }
-          
-      window.addEventListener("resize", resize, false);
 
 }
 }
