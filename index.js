@@ -9,7 +9,7 @@ const fs = require('fs')
 const app = express();
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
-var bannedIps = ["23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240", "199.48.94.81"]
+var bannedIps = ["23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240",]
 
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
@@ -237,7 +237,6 @@ function validateToken(token) {
     socket.on('disconnect', () => {
         if(!Object.keys(players).includes(socket.id)) return
         delete players[socket.id]
-        console.log("player left -> " + socket.id)
         socket.broadcast.emit("playerLeave", socket.id)
     })
 });
@@ -248,7 +247,6 @@ var lastCoinSend = Date.now()
 var tps = 0;
 
 setInterval(async () => {
-console.log(`The script uses approximately ${Math.round(process.memoryUsage().heapUsed / 1024 / 1024 * 100) / 100} MB`);
     if(coins.length < maxCoins) { 
         coins.push(new Coin())
         io.sockets.emit("coin", coins[coins.length - 1])
@@ -256,7 +254,7 @@ console.log(`The script uses approximately ${Math.round(process.memoryUsage().he
     //emit tps to clients
     if(Date.now() - secondStart >= 1000) {
       io.sockets.emit("tps", tps)
-      console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
+      //console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
       secondStart = Date.now()
       tps = 0
     }
