@@ -85,7 +85,7 @@ io.on('connection', async (socket) => {
     
     if( !socket.ip || !safeIp.includes(socket.ip) ) {
     if(bannedIps.includes(socket.ip)) socket.disconnect()
-    else {x
+    else {
         console.log(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`)
         axios.get(
             `https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`
