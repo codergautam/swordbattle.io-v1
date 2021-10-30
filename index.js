@@ -9,7 +9,7 @@ const fs = require('fs')
 const app = express();
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
-var bannedIps = ["23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240",]
+var bannedIps = ["209.205.218.44","23.227.141.157", "78.58.116.9", "73.222.174.240", "78.58.116.96", "34.135.84.39", "73.222.174.240",]
 
 const io = new Server(server,   {
   allowRequest: (req, callback) => {
