@@ -98,6 +98,7 @@ this.callback({win: true, data:data})
         this.killCount.scrollFactorY = 0
 
         //player+fpscounter
+        try { 
         this.playerCount = this.add.text(this.cameras.main.worldView.x*this.cameras.main.zoom, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
         }).setFontSize(20).setDepth(101);
@@ -110,7 +111,9 @@ this.callback({win: true, data:data})
         }).setFontSize(20).setDepth(101);
         this.playerCount.scrollFactorX = 0
         this.playerCount.scrollFactorY = 0
-        
+    } catch(e) {
+        console.log(e)
+    }
         //minimap
         this.miniGraphics = this.add.graphics().setDepth(100)
         this.miniGraphics.x = window.innerWidth - 205
@@ -571,9 +574,13 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
           enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2)
 
             enemy.bar.draw()
+            try {
             enemy.nameTag.setFontSize(100*scale)
             enemy.nameTag.x = enemy.player.x  - enemy.nameTag.width / 2
             enemy.nameTag.y = enemy.player.y - (enemy.player.height*scale) - enemy.nameTag.height
+            } catch(e) {
+                console.log(e)
+            }
           if(enemy.playerObj) {
             var factor = (100/(enemy.playerObj.scale*100))*1.5
           } else {
@@ -674,10 +681,13 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         //we shall try next frame
     }
         //playercount
+        try {
         this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 30) * 100) + "%")
         this.playerCount.x = 0
         this.playerCount.y = 0
-        
+        } catch(e) {
+            console.log(e)
+        }
         if(!this.myObj) return
         const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
         this.coins.forEach((coin) => {

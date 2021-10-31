@@ -71,7 +71,6 @@ mainjs = JavaScriptObfuscator.obfuscate(mainjs,
 
 app.use(cors())
 
-
 app.use('/:file', (req, res,next) => {
     
     if(req.params.file == 'main.js') {
