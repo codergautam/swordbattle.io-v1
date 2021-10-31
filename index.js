@@ -30,7 +30,7 @@ const Coin = require("./classes/Coin");
 const e = require('express');
 
 var mainjs = fs.readFileSync('./dist/main.js').toString()
-var obfuscate = true;
+var obfuscate = false;
 if(obfuscate) {
 mainjs = JavaScriptObfuscator.obfuscate(mainjs,
     {
