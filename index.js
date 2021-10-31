@@ -30,7 +30,8 @@ const Coin = require("./classes/Coin");
 const e = require('express');
 
 var mainjs = fs.readFileSync('./dist/main.js').toString()
-
+var obfuscate = true;
+if(obfuscate) {
 mainjs = JavaScriptObfuscator.obfuscate(mainjs,
     {
         compact: true,
@@ -68,6 +69,7 @@ mainjs = JavaScriptObfuscator.obfuscate(mainjs,
         stringArrayThreshold: 0.75
     }
 ).getObfuscatedCode();
+}
 
 app.use(cors())
 
@@ -166,29 +168,21 @@ io.on('connection', async (socket) => {
 if(socket.handshake.xdomain) {
   socket.disconnect()
 }
-function validateToken(token) {
-    var date = token.substring(6,token.length -5)
-    if(token.substring(19,20) != "B") return false 
-    return Date.now() - date - 43021 < 5000 
-}
-    socket.on('go', async (name, token, captchatoken) => {
+
+    socket.on('go', async (name, captchatoken) => {
         if(!captchatoken) {
             socket.emit("ban", "You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug.")
             return socket.disconnect()
         }
-        if(!token || !name) {
-            socket.emit("ban", "You were kicked for not sending a name/token. Send this message to gautamgxtv@gmail.com with this message")
+        if(!name) {
+            socket.emit("ban", "You were kicked for not sending a name. ")
             return socket.disconnect()
         }
         if(players[socket.id]) {
             socket.emit("ban", "You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. ")
             return socket.disconnect()
         }
-        if( !validateToken(token)) {
-            //ban
-            socket.emit("ban", "You were kicked for sending an invalid client token. <br> TOKEN SENT: "+token+"<br>"+Date.now()+"<br><br> If you aren't hacking, please send this message to gautamgxtv@gmail.com IMMEDIATELY.")
-            return socket.disconnect()
-        }
+
         var send = {
             secret: process.env.CAPTCHASECRET,
             response: captchatoken,
