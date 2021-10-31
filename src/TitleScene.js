@@ -54,7 +54,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
      }
 }.bind(this));
 
-  this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ? "" : window.localStorage.getItem("oldName")
+  this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : ""
 
   
   this.done = false
