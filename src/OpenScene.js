@@ -14,6 +14,7 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback
     }
     preload() {
+        this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
     }
 
     create() {
