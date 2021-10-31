@@ -168,12 +168,15 @@ if(socket.handshake.xdomain) {
   socket.disconnect()
 }
 function validateToken(token) {
-    console.log(token)
     var date = token.substring(6,token.length -5)
     if(token.substring(19,20) != "B") return false 
     return Date.now() - date - 43021 < 5000 
 }
-    socket.on('go', async (name, token) => {
+    socket.on('go', async (name, token, captchatoken) => {
+        if(!captchatoken) {
+            socket.emit("ban", "You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug.")
+            return socket.disconnect()
+        }
         if(!token || !name) {
             socket.emit("ban", "You were kicked for not sending a name/token. Send this message to gautamgxtv@gmail.com with this message")
             return socket.disconnect()
@@ -187,7 +190,25 @@ function validateToken(token) {
             socket.emit("ban", "You were kicked for sending an invalid client token. <br> TOKEN SENT: "+token+"<br>"+Date.now()+"<br><br> If you aren't hacking, please send this message to gautamgxtv@gmail.com IMMEDIATELY.")
             return socket.disconnect()
         }
+        var send = {
+            secret: process.env.CAPTCHASECRET,
+            response: captchatoken,
+            remoteip: socket.ip
+        }
+        
 
+        axios.post('https://www.google.com/recaptcha/api/siteverify?'+new URLSearchParams(send)).then((f) => {
+            f = f.data
+            if(!f.success) {
+                socket.emit("ban", "Error while verifying captcha<br>"+f["error-codes"].toString())
+                socket.disconnect()
+                return
+            }
+            if(f.score < 0.3) {
+                socket.emit("ban", `Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact gautamgxtv@gmail.com`)
+                socket.disconnect()
+                return
+            }
          name = name.substring(0, 16)
         players[socket.id] = new Player(socket.id, name)
          players[socket.id].updateValues()
@@ -201,7 +222,7 @@ function validateToken(token) {
         socket.emit("coins", coins)
 
         socket.joined = true;
-    
+        })
         
     })
 

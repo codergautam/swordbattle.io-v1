@@ -43,6 +43,13 @@ this.callback({win: true, data:data})
     }
 
     create() {
+
+        //recaptcha
+
+        grecaptcha.ready(() =>{
+            grecaptcha.execute('6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt', {action: 'join'}).then((thetoken) => {
+
+            this.readyt = true
         this.openingBgm.stop()
         var config =  {
             mute: false,
@@ -197,7 +204,7 @@ this.callback({win: true, data:data})
             return token
         }
         //go packet
-        this.socket.emit("go", this.name, token())
+        this.socket.emit("go", this.name, token(), thetoken)
 
         //mouse down
         this.input.on('pointerdown', function (pointer) {
@@ -443,9 +450,12 @@ this.callback({win: true, data:data})
             if(this.myObj && this.myObj.id == playerId) this.coin.play() 
             if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
         })
+    })
+    })
     }
 
     update() {
+        if(!this.readyt) return
        
         var controller = {
             left: false,
