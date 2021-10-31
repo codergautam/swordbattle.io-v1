@@ -6,12 +6,12 @@ class TitleScene extends Phaser.Scene {
  preload() {
   this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "/textbox.html");
-  this.load.audio('opening', '/assets/sound/opening.mp3')
-
+  this.load.audio('openingsound', '/assets/sound/opening.mp3')
+  document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 }
 
  create() {
-  this.music = this.sound.add('opening', {
+  this.music = this.sound.add('openingsound', {
     mute: false,
     volume: 1,
     rate: 1,
@@ -21,29 +21,14 @@ class TitleScene extends Phaser.Scene {
     delay: 0
 });
 this.music.play()
-//cookie get function
-function getCookie(cname) {
-  let name = cname + "=";
-  let decodedCookie = decodeURIComponent(document.cookie);
-  let ca = decodedCookie.split(';');
-  for(let i = 0; i <ca.length; i++) {
-    let c = ca[i];
-    while (c.charAt(0) == ' ') {
-      c = c.substring(1);
-    }
-    if (c.indexOf(name) == 0) {
-      return c.substring(name.length, c.length);
-    }
-  }
-  return "";
-}
 
-//actual code
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S)
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D)
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
+
+
   this.background = this.add.image(0, 0, 'opening').setOrigin(0).setScrollFactor(0, 0).setScale(2);
   this.background.displayHeight = window.innerHeight
   this.background.displayWidth = window.innerWidth
@@ -51,8 +36,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     fontSize: '64px',
     fill: '#000000'
   }).setOrigin(0.5);
+  
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
   this.input.keyboard.on('keydown', function (event) {
+
+    if(this.nameBox.getChildByName('name') && this.nameBox.getChildByName('name').value.length >= 16) return
    	if(event.key == 'a'){
    		this.nameBox.getChildByName('name').value+=event.key;
    	}else if(event.key == 's'){
@@ -65,11 +53,10 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
        this.nameBox.getChildByName('name').value+=event.key;
      }
 }.bind(this));
-  try {
-  this.nameBox.getChildByName("name").value = getCookie("oldName")
-  } catch(e) {
-    document.write("Something went wrong..\n\nProbably due to some kind of proxy enforced by your school or administrator")
-  }
+
+  this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ? "" : window.localStorage.getItem("oldName")
+
+  
   this.done = false
 
   this.btnrect = this.add.rectangle(0, 0, 0, 0, 0x00FF00);
@@ -81,18 +68,20 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   this.btnrect.y = this.btntext.y - (this.btntext.height/2) - 5
   this.btnrect.width = this.btntext.width + 10
   this.btnrect.height = this.btntext.height + 10
-  //this.stats.y -= this.stats.height
+ 
   const go = () => {
-    let name = this.nameBox.getChildByName("name");
+    let name = this.nameBox.getChildByName("name")
+
+  // let name ={value: "hi"}
     if(!name) return
     else if(name.value == "") return
     else if(this.done) return
     else {
       this.done = true
-      document.cookie = "oldName="+name.value;
-      this.nameBox.destroy()
-      
+      window.localStorage.setItem("oldName", name.value)
       this.callback(name.value, this.music)
+      this.nameBox.destroy()
+
     }
   }
 
@@ -111,7 +100,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
     this.btntext.x = window.innerWidth / 2 
-    this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
+   this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
+   //this.btntext.y =  window.innerHeight / 1.7 + 10
     this.btnrect.width = this.btntext.width + 10 
     this.btnrect.height = this.btntext.height + 10
     this.btnrect.x = this.btntext.x - (this.btntext.width/2) - 5
@@ -128,6 +118,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     window.addEventListener("resize", resize, false);
 
     resize()
+    
 }
 
  update() {
