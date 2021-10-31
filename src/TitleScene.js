@@ -96,7 +96,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   
   const resize = ()=>{
     this.game.scale.resize(window.innerWidth, window.innerHeight)
-    this.text.setFontSize( window.innerWidth / 10)
+  
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
     this.btntext.x = window.innerWidth / 2 
@@ -122,7 +122,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 }
 
  update() {
-
+  this.text.setFontSize( window.innerWidth / 10)
     if(this.text.y < window.innerHeight/3) this.text.y += 10
 
 
