@@ -478,7 +478,7 @@ this.callback({win: true, data:data})
         var aKey = this.input.keyboard.addKey('A');
         var sKey = this.input.keyboard.addKey('S');
         var dKey = this.input.keyboard.addKey('D');
-        
+        try {
         this.key = this.mobile ?  this.joyStick.createCursorKeys() : this.cursors
         if (this.key.up.isDown || wKey.isDown ) {
             controller.up = true
@@ -496,9 +496,11 @@ this.callback({win: true, data:data})
             controller.left = true
 
         }
-        
-        this.socket.emit("move", controller)
     
+        this.socket.emit("move", controller)
+        } catch(e) {
+            console.log(e)
+        }
        // this.lastMove = Date.now()
         //sword 
 
@@ -520,10 +522,10 @@ this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.
         
         if(this.swordAnim.go) {
 
-            if(this.swordAnim.added < 30) this.swordAnim.added += 5
+            if(this.swordAnim.added < 50) this.swordAnim.added += 10
             this.meSword.angle -= this.swordAnim.added
         } else if(this.swordAnim.added >0) {
-             this.swordAnim.added -= 5
+             this.swordAnim.added -= 10
             this.meSword.angle -= this.swordAnim.added
         }
         
@@ -595,28 +597,24 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
             var factor = (100/(enemy.playerObj.scale*100))*1.5
           } else {
               var factor = 6
-          }
+          }         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5)
 
-         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, fps/1000)
                          if (enemy.down) {
                              enemy.swordAnim.go = true
-                            enemy.swordAnim.added = 0}
-                else enemy.swordAnim.go = false
+                            if(!enemy.swordAnim.added) enemy.swordAnim.added = 0
+                        } else enemy.swordAnim.go = false
 
-                
-                if(enemy.swordAnim.go) {
-        
-                    if(enemy.swordAnim.added < 30) {
-                    enemy.swordAnim.added += 5
-                    enemy.sword.angle -= enemy.swordAnim.added
-                    }
-                    
-                    
-                } else if(enemy.swordAnim.added >0) {
-                     enemy.swordAnim.added -= 5
-                  //  enemy.sword.angle -= enemy.swordAnim.added
+                if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
+                    enemy.swordAnim.added += 10
                 }
+
+                if(!enemy.swordAnim.go  && enemy.swordAnim.added > 0) {
+                    enemy.swordAnim.added -= 10
+
+                }
+                enemy.sword.angle -= enemy.swordAnim.added
                
+
             enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
             enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
