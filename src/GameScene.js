@@ -20,6 +20,8 @@ class GameScene extends Phaser.Scene {
         this.load.audio('winSound', '/assets/sound/win.m4a');
         this.load.audio('loseSound', '/assets/sound/lost.mp3');
 
+  //      this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
+        
         this.socket = io()
         this.ready = false;
     }
@@ -112,8 +114,22 @@ this.callback({win: true, data:data})
         
         this.miniMap = {square:  this.miniGraphics, people: []}
 
-        //sword
-        
+        //
+        //joystick
+        /*
+        this.joyStick = this.plugins
+        .get("rexvirtualjoystickplugin")
+        .add(this, {
+          x: 400,
+          y: 300,
+          radius: 100,
+          base: this.add.circle(0, 0, 100, 0x888888),
+          thumb: this.add.circle(0, 0, 50, 0xcccccc)
+          // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+          // forceMin: 16,
+          // enable: true
+        })
+        */
 
         //bar
         this.meBar = new HealthBar(this, 0, 0, 16, 80)
@@ -174,9 +190,10 @@ this.callback({win: true, data:data})
         function token() {
             var token = ""
             token += makeid(6)
-            token+= Date.now()
+            token+= Date.now()- 43021
             token+='B'
             token+=Math.random().toString().concat("0".repeat(3)).substr(2,3)
+            token+=2
             return token
         }
         //go packet

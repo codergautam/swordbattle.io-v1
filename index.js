@@ -169,9 +169,9 @@ if(socket.handshake.xdomain) {
 }
 function validateToken(token) {
     console.log(token)
-    var date = token.substring(6,token.length -4)
+    var date = token.substring(6,token.length -5)
     if(token.substring(19,20) != "B") return false 
-    return Date.now() - date < 2500 
+    return Date.now() - date - 43021 < 5000 
 }
     socket.on('go', async (name, token) => {
         if(!token || !name) {
@@ -184,8 +184,7 @@ function validateToken(token) {
         }
         if( !validateToken(token)) {
             //ban
-            bannedIps.push(socket.ip)
-            socket.emit("ban", "You were banned for sending an invalid client token. <br> TOKEN SENT: "+token+"<br>"+Date.now()+"<br> Appeal to gautamgxtv@gmail.com with this message.")
+            socket.emit("ban", "You were kicked for sending an invalid client token. <br> TOKEN SENT: "+token+"<br>"+Date.now()+"<br><br> If you aren't hacking, please send this message to gautamgxtv@gmail.com IMMEDIATELY.")
             return socket.disconnect()
         }
 
@@ -362,7 +361,10 @@ setInterval(async () => {
     var sockets = await io.fetchSockets()
 
     sockets.forEach((b) => {
-        if(!b.joined && Date.now()-b.joinTime > 5000) b.disconnect()
+        if(!b.joined && Date.now()-b.joinTime > 5000) {
+            b.emit("ban", "You have been kicked for not joining. This is likely due to slow wifi or a hack.")
+            b.disconnect()
+        } 
     })
     playersarray.forEach(player => {
      //   player.moveWithMouse(players)
