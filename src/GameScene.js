@@ -7,7 +7,7 @@ class GameScene extends Phaser.Scene {
 
     preload() {    
                 
-   
+        document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
     
         this.load.image("player", "/assets/images/player.png");
         this.load.image("sword", "/assets/images/sword.png");

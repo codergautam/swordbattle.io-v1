@@ -4,6 +4,7 @@ class TitleScene extends Phaser.Scene {
     this.callback = callback
   }
  preload() {
+  document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 100;
   this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "/textbox.html");
   this.load.audio('openingsound', '/assets/sound/opening.mp3')
