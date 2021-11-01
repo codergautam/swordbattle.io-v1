@@ -29,7 +29,16 @@ const io = new Server(server, {
     callback(null, req.headers.origin === undefined);
   },
 });
-console.log('FFFFF');
+console.log
+var production = false;
+if (production) {
+  const rateLimit = require('express-rate-limit');
+  const limiter = rateLimit({
+    windowMs: 15 * 60 * 1000, // 15 minutes
+    max: 100, // limit each IP to 100 requests per windowMs
+  });
+  app.use('/', limiter);
+}
 
 var mainjs = fs.readFileSync('./dist/main.js').toString();
 var obfuscate = false;
