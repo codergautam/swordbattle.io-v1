@@ -16,7 +16,7 @@ var config = {
         createContainer: true
     },
     scale: {
-        mode:Phaser.Scale.NONE,
+        mode:Phaser.Scale.RESIZE,
     }
 };
 
