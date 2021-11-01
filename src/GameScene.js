@@ -175,7 +175,7 @@ this.callback({win: true, data:data})
                 height: window.innerHeight
             }
             this.game.scale.resize(this.canvas.width, this.canvas.height)
-            this.joyStick.y = window.innerHeight - 150
+            if(this.mobile) this.joyStick.y = window.innerHeight - 150
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
