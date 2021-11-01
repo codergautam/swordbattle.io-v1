@@ -22,7 +22,6 @@ var bannedIps = [
   '34.135.84.39',
   '73.222.174.240',
 ];
-var safeIp = [];
 
 const io = new Server(server, {
   allowRequest: (req, callback) => {
@@ -145,33 +144,15 @@ io.on('connection', async (socket) => {
   socket.joinTime = Date.now();
   socket.ip = socket.handshake.headers['x-forwarded-for'];
 
-  if (!socket.ip || !safeIp.includes(socket.ip)) {
-    if (bannedIps.includes(socket.ip)) {
-      socket.emit(
-        'ban',
-        'You are banned. Appeal to gautamgxtv@gmail.com<br><br>BANNED IP: ' +
-          socket.ip
-      );
-      socket.disconnect();
-    } else {
-      console.log(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`);
-      axios
-        .get(`https://proxycheck.io/v2/${socket.ip}?vpn=1&asn=1`)
-        .then((d) => {
-          var json = d.data;
-          if (json.status == 'ok' && json[socket.ip].type == 'VPN') {
-            //uh oh, looks like someones on a vpn
-            bannedIps.push(socket.ip);
-            socket.emit('ban', 'VPNs are not allowed. Sorry!');
-            console.log('\n\n' + socket.id + ' BANNED FOR VPN!!!\n\n');
-            socket.disconnect();
-          } else if (json.status == 'ok' && json[socket.ip].type != 'VPN') {
-            safeIp.push(socket.ip);
-          }
-        });
-    }
+  if (bannedIps.includes(socket.ip)) {
+    socket.emit(
+      'ban',
+      'You are banned. Appeal to gautamgxtv@gmail.com<br><br>BANNED IP: ' +
+        socket.ip
+    );
+    socket.disconnect();
   }
-  //prevent idot sedated from botting
+
   if (socket.handshake.xdomain) {
     socket.disconnect();
   }
