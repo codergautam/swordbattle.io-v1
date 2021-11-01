@@ -29,8 +29,8 @@ const io = new Server(server, {
     callback(null, req.headers.origin === undefined);
   },
 });
-console.log
-var production = false;
+
+var production = true;
 if (production) {
   const rateLimit = require('express-rate-limit');
   const limiter = rateLimit({
