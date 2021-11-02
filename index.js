@@ -79,15 +79,16 @@ app.use('/:file', (req, res, next) => {
   if (req.params.file == 'main.js') {
     res.set('Content-Type', 'text/javascript');
     res.send(mainjs);
-  } else if (['index.html', 'textbox.html', 'main.js.map', 'phaser.js'].includes(req.params.file)) {
+  } else if (['index.html', 'textbox.html', 'main.js.map'].includes(req.params.file)) {
     res.sendFile(__dirname + '/dist/' + req.params.file);
   } else {
     next();
   }
 });
 
-
+app.use('/kaboomclient', express.static('kaboomclient'));
 app.use('/assets', express.static('assets'));
+app.use('/classes', express.static('classes'));
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
@@ -266,13 +267,11 @@ setInterval(async () => {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
-  /*
   if (Object.values(players).filter(p => p.ai).length < maxAiPlayers) {
     var id = uuidv4()
     players[id] = new AiPlayer(id)
     io.sockets.emit('new', players[id])
   }
-  */
   //emit tps to clients
   if (Date.now() - secondStart >= 1000) {
     io.sockets.emit('tps', tps);
