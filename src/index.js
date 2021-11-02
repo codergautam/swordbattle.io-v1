@@ -4,9 +4,6 @@ import DeathScene from './DeathScene.js';
 import WonScene from './WonScene.js';
 import OpenScene from './OpenScene.js';
 
-
-
-
 var config = {
     type: Phaser.AUTO,
     width: window.innerWidth,

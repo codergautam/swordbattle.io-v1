@@ -8,7 +8,7 @@ const config = {
     filename: 'main.js',
   },
   devtool: 'source-map',
-  mode: 'production',
+  mode: 'development',
 };
 
 module.exports = config;
