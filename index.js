@@ -8,20 +8,14 @@ var cors = require('cors');
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 const axios = require('axios').default;
+const moderation = require("./moderation")
+const { v4: uuidv4 } = require('uuid');
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
+const AiPlayer = require('./classes/AiPlayer');
 
-var bannedIps = [
-  '34.133.168.193',
-  '209.205.218.44',
-  '23.227.141.157',
-  '78.58.116.9',
-  '73.222.174.240',
-  '78.58.116.96',
-  '34.135.84.39',
-  '73.222.174.240',
-];
+
 
 const io = new Server(server, {
   allowRequest: (req, callback) => {
@@ -38,6 +32,8 @@ if (production) {
   });
   app.use('/', limiter);
 }
+
+moderation.start(app)
 
 var mainjs = fs.readFileSync('./dist/main.js').toString();
 var obfuscate = false;
@@ -83,7 +79,7 @@ app.use('/:file', (req, res, next) => {
   if (req.params.file == 'main.js') {
     res.set('Content-Type', 'text/javascript');
     res.send(mainjs);
-  } else if (['index.html', 'textbox.html'].includes(req.params.file)) {
+  } else if (['index.html', 'textbox.html', 'main.js.map'].includes(req.params.file)) {
     res.sendFile(__dirname + '/dist/' + req.params.file);
   } else {
     next();
@@ -103,48 +99,19 @@ var players = {};
 var coins = [];
 
 var maxCoins = 100;
+var maxAiPlayers = 5;
+
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
 
-app.get('/ipcheck/:token', (req, res) => {
-  if (process.env.TOKEN == req.params.token) {
-    var txt = '';
-    if (Object.values(players).length < 1) return res.send('len 0');
-    Object.values(players).forEach((player) => {
-      var socket = io.sockets.sockets.get(player.id);
-      txt += player.name + ' - ' + socket.ip + '<br>';
-    });
-    res.send(txt);
-  } else {
-    res.send('idot hackrs');
-  }
-});
-app.get('/ipban/:token', (req, res) => {
-  var token = req.params.token == process.env.TOKEN;
-  if (token) {
-    bannedIps.push(req.query.ip);
-    res.send(bannedIps.toString());
-  } else {
-    res.send('idot');
-  }
-});
-app.get('/ipunban/:token', (req, res) => {
-  var token = req.params.token == process.env.TOKEN;
-  if (token) {
-    if (bannedIps.includes(req.query.ip))
-      bannedIps = bannedIps.filter((b) => b != req.query.ip);
-    res.send(bannedIps.toString());
-  } else {
-    res.send('idot');
-  }
-});
+
 
 io.on('connection', async (socket) => {
   socket.joinTime = Date.now();
   socket.ip = socket.handshake.headers['x-forwarded-for'];
 
-  if (bannedIps.includes(socket.ip)) {
+  if (moderation.bannedIps.includes(socket.ip)) {
     socket.emit(
       'ban',
       'You are banned. Appeal to gautamgxtv@gmail.com<br><br>BANNED IP: ' +
@@ -230,85 +197,12 @@ io.on('connection', async (socket) => {
 
     //console.log(mousePos.x +" , "+mousePos.y )
   });
-
+  
   socket.on('mouseDown', (down) => {
     if (players.hasOwnProperty(socket.id)) {
       var player = players[socket.id];
       if (player.mouseDown == down) return;
-      player.mouseDown = down;
-
-      //collision v1
-      //hit cooldown
-      if (player.mouseDown && Date.now() - player.lastDamageDealt > 1000 / 7) {
-        Object.values(players).forEach((enemy) => {
-          //loop through all enemies, make sure the enemy isnt the player itself
-          if (enemy.id != player.id) {
-            //get the values needed for line-circle-collison
-
-            //check if enemy and player colliding
-            if (
-              player.hittingPlayer(enemy) &&
-              Date.now() - enemy.joinTime >= 5000
-            ) {
-              var socketById = io.sockets.sockets.get(enemy.id);
-              socket.emit('dealHit', enemy.id);
-              socketById.emit('takeHit', socket.id);
-              //if colliding
-              player.lastDamageDealt = Date.now();
-              enemy.lastHit = Date.now();
-              var oldHealth = enemy.health;
-              enemy.health -= player.damage;
-              if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
-                enemy.health = enemy.maxHealth * 0.1;
-              if (enemy.health <= 0) {
-                //enemy has 0 or less than 0 health, time to kill
-
-                //increment killcount by 1
-                player.kills += 1;
-
-                //tell clients that this enemy died
-
-                socketById.emit('youDied', {
-                  killedBy: player.name,
-                  timeSurvived: Date.now() - enemy.joinTime,
-                });
-                socketById.broadcast.emit('playerDied', enemy.id, {
-                  killedBy: player.name,
-                });
-
-                //drop their coins
-
-                //cant drop more than 1k coins (for lag reasons)
-                for (var i = 0; i < clamp(enemy.coins, 5, 1000); i++) {
-                  r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
-                  theta = Math.random() * 2 * Math.PI;
-                  x = enemy.pos.x + r * Math.cos(theta);
-                  y = enemy.pos.y + r * Math.sin(theta);
-
-                  coins.push(
-                    new Coin({
-                      x: clamp(x, -2500, 2500),
-                      y: clamp(y, -2500, 2500),
-                    })
-                  );
-                  socketById.broadcast.emit('coin', coins[coins.length - 1]);
-                }
-
-                //log a message
-                console.log('player died -> ' + enemy.id);
-
-                //delete the enemy
-                delete players[enemy.id];
-
-                //disconnect the socket
-                socketById.disconnect();
-              } else {
-                enemy.doKnockback(player);
-              }
-            }
-          }
-        });
-      }
+      players = player.down(down, players, io)
     } else socket.emit('refresh');
   });
 
@@ -367,9 +261,16 @@ var lastCoinSend = Date.now();
 var tps = 0;
 
 setInterval(async () => {
+  moderation.players = players
+  moderation.io = io
   if (coins.length < maxCoins) {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
+  }
+  if (Object.values(players).filter(p => p.ai).length < maxAiPlayers) {
+    var id = uuidv4()
+    players[id] = new AiPlayer(id)
+    io.sockets.emit('new', players[id])
   }
   //emit tps to clients
   if (Date.now() - secondStart >= 1000) {

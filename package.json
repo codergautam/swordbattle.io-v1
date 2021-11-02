@@ -20,7 +20,8 @@
     "intersects": "^2.7.2",
     "javascript-obfuscator": "^3.0.0",
     "potato-detection": "^1.0.2",
-    "socket.io": "^4.2.0"
+    "socket.io": "^4.2.0",
+    "uuid": "^8.3.2"
   },
   "devDependencies": {
     "webpack": "^5.61.0",

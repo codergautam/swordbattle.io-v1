@@ -365,7 +365,9 @@ this.callback({win: true, data:data})
             //update player
             if (!this.ready) return
             try {
+               
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
+                if(!enemy)  console.log(player)
                 enemy.playerObj = player
                 enemy.bar.maxValue = player.maxHealth
                 enemy.bar.setHealth(player.health);
@@ -434,8 +436,14 @@ this.callback({win: true, data:data})
            this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
         })
 
-        this.socket.on("coin", (coin) => {            
+        this.socket.on("coin", (coin) => {      
+            if(Array.isArray(coin)) {
+                coin.forEach((x) => {
+                    addCoin(x)
+                })
+            } else {      
             addCoin(coin)
+            }
         })
 
         this.socket.on("youDied", (data) => {
