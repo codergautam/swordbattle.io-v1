@@ -267,11 +267,13 @@ setInterval(async () => {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
+  /*
   if (Object.values(players).filter(p => p.ai).length < maxAiPlayers) {
     var id = uuidv4()
     players[id] = new AiPlayer(id)
     io.sockets.emit('new', players[id])
   }
+  */
   //emit tps to clients
   if (Date.now() - secondStart >= 1000) {
     io.sockets.emit('tps', tps);
