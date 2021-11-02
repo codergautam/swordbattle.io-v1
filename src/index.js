@@ -3,7 +3,7 @@ import GameScene from './GameScene.js';
 import DeathScene from './DeathScene.js';
 import WonScene from './WonScene.js';
 import OpenScene from './OpenScene.js';
-
+      alert("pog")
 var config = {
     type: Phaser.AUTO,
     width: window.innerWidth,

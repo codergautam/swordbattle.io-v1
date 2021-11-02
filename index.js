@@ -79,27 +79,15 @@ app.use('/:file', (req, res, next) => {
   if (req.params.file == 'main.js') {
     res.set('Content-Type', 'text/javascript');
     res.send(mainjs);
-  } else if (['index.html', 'textbox.html', 'main.js.map'].includes(req.params.file)) {
+  } else if (['index.html', 'textbox.html', 'main.js.map', 'phaser.js'].includes(req.params.file)) {
     res.sendFile(__dirname + '/dist/' + req.params.file);
   } else {
     next();
   }
 });
 
-app.use('/assets/:dir/:file', (req,res,next) => {
-  if(['images', 'sound'].includes(req.params.dir)) {
-    try {
-   res.sendFile(__dirname+'/dist/assets/'+req.params.dir+'/'+req.params.file)
-    } catch(e) {
-res.header(404)
-res.send("Not found")
-    }
-  } else {
-    next();
-  }
-})
 
-
+app.use('/assets', express.static('assets'));
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
