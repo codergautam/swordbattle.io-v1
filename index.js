@@ -86,9 +86,20 @@ app.use('/:file', (req, res, next) => {
   }
 });
 
-app.use('/kaboomclient', express.static('kaboomclient'));
-app.use('/assets', express.static('assets'));
-app.use('/classes', express.static('classes'));
+app.use('/assets/:dir/:file', (req,res,next) => {
+  if(['images', 'sound'].includes(req.params.dir)) {
+    try {
+   res.sendFile(__dirname+'/dist/assets/'+req.params.dir+'/'+req.params.file)
+    } catch(e) {
+res.header(404)
+res.send("Not found")
+    }
+  } else {
+    next();
+  }
+})
+
+
 const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
