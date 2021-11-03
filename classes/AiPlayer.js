@@ -33,7 +33,7 @@ class AiPlayer extends Player {
       if(tPos.x < this.pos.x) controller.right = true
       if(tPos.y > this.pos.y) controller.down = true
       if(tPos.y < this.pos.y) controller.up = true
-console.log(tpos.x, this.pos.x)
+console.log(tPos.x, this.pos.x)
       return controller
     }
     getEntities(players, coins) {
