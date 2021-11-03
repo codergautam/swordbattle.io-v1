@@ -10,6 +10,7 @@ var JavaScriptObfuscator = require('javascript-obfuscator');
 const axios = require('axios').default;
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
+var recaptcha = false
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
@@ -125,7 +126,23 @@ io.on('connection', async (socket) => {
   }
 
   socket.on('go', async (name, captchatoken) => {
-    if (!captchatoken) {
+    function ready() {
+              name = name.substring(0, 16);
+        players[socket.id] = new Player(socket.id, name);
+        players[socket.id].updateValues();
+        console.log('player joined -> ' + socket.id);
+        socket.broadcast.emit('new', players[socket.id]);
+
+        var allPlayers = Object.values(players);
+        allPlayers = allPlayers.filter((player) => player.id != socket.id);
+
+        if (allPlayers && allPlayers.length > 0)
+          socket.emit('players', allPlayers);
+        socket.emit('coins', coins);
+
+        socket.joined = true;
+    }
+    if (!captchatoken && !recaptcha) {
       socket.emit(
         'ban',
         'You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug.'
@@ -149,8 +166,8 @@ io.on('connection', async (socket) => {
       response: captchatoken,
       remoteip: socket.ip,
     };
-
-    axios
+  if(recaptcha) {
+      axios
       .post(
         'https://www.google.com/recaptcha/api/siteverify?' +
           new URLSearchParams(send)
@@ -173,21 +190,10 @@ io.on('connection', async (socket) => {
           socket.disconnect();
           return;
         }
-        name = name.substring(0, 16);
-        players[socket.id] = new Player(socket.id, name);
-        players[socket.id].updateValues();
-        console.log('player joined -> ' + socket.id);
-        socket.broadcast.emit('new', players[socket.id]);
+        ready();
 
-        var allPlayers = Object.values(players);
-        allPlayers = allPlayers.filter((player) => player.id != socket.id);
-
-        if (allPlayers && allPlayers.length > 0)
-          socket.emit('players', allPlayers);
-        socket.emit('coins', coins);
-
-        socket.joined = true;
       });
+  } else ready()
   });
 
   socket.on('mousePos', (mousePos) => {
