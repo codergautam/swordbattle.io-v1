@@ -160,7 +160,7 @@ return false
   down(down, players, io) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     this.mouseDown = down;
-    return this.checkCollisions(player, io)
+    return this.checkCollisions(players, io)
   }
   checkCollisions(players, io) {
     //hit cooldown
