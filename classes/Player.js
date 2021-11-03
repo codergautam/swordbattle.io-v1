@@ -112,6 +112,42 @@ this.pos.y = pos[1]
     this.pos.x = clamp(pos[0], -2500, 2500)
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
+  collectCoins(players, coins, io) {
+            touching = coins.filter((coin) => coin.touchingPlayer(this));
+
+        touching.forEach((coin) => {
+          this.coins += 1;
+          if (this.scale > 7.5) var increase = 0.01;
+          else if (this.scale > 5) var increase = 0.001;
+          else var increase = 0.0005;
+          this.scale += increase;
+          var index = coins.findIndex((e) => e.id == coin.id);
+          coins.splice(index, 1);
+
+          this.updateValues();
+          io.sockets.emit('collected', coin.id, this.id);
+        });
+
+        if (this.scale >= 10) {
+          //yay you have conquered the map!
+          if(!this.ai) {
+          var socketById = io.sockets.sockets.get(this.id);
+          socketById.emit('youWon', {
+            timeSurvived: Date.now() - this.joinTime,
+          });
+          socketById.broadcast.emit('playerDied', this.id);
+          } else {
+io.sockets.emit('playerDied', this.id)
+          }
+
+          //delete the player
+          delete players[this.id];
+
+          //disconnect the player
+          if(!this.ai) socketById.disconnect();
+        }
+      return [players, coins]
+  }
   hittingPlayer(player) {
 
   

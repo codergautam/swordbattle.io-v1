@@ -218,37 +218,8 @@ io.on('connection', async (socket) => {
       if (players.hasOwnProperty(socket.id)) {
         var player = players[socket.id];
         players[socket.id] = player.move(controller, players);
-
-        touching = coins.filter((coin) => coin.touchingPlayer(player));
-
-        touching.forEach((coin) => {
-          player.coins += 1;
-          if (player.scale > 7.5) var increase = 0.01;
-          else if (player.scale > 5) var increase = 0.001;
-          else var increase = 0.0005;
-          player.scale += increase;
-          var index = coins.findIndex((e) => e.id == coin.id);
-          coins.splice(index, 1);
-
-          player.updateValues();
-          io.sockets.emit('collected', coin.id, player.id);
-        });
-
-        if (player.scale >= 10) {
-          //yay you have conquered the map!
-          var socketById = io.sockets.sockets.get(player.id);
-          socketById.emit('youWon', {
-            timeSurvived: Date.now() - player.joinTime,
-          });
-          socketById.broadcast.emit('playerDied', player.id);
-
-          //delete the player
-          delete players[player.id];
-
-          //disconnect the player
-          socketById.disconnect();
-        }
-      } else socket.emit('refresh');
+       var s = player.collectCoins(players, coins, io)
+      }
     } catch (e) {
       console.log(e);
     }
@@ -305,6 +276,11 @@ setInterval(async () => {
   });
   playersarray.forEach((player) => {
     //   player.moveWithMouse(players)
+    if(player.ai) {
+     var f= player.tick(players, coins, io)
+     players = f[0]
+     coins = f[1]
+    }
     if (
       Date.now() - player.lastHit > 5000 &&
       Date.now() - player.lastRegen > 100 &&
