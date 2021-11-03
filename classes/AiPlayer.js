@@ -12,7 +12,8 @@ class AiPlayer extends Player {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
       if(!this.target || !this.entityExists(this.target, this.getEntities(players, coins))) this.target = this.getClosestEntity(this.getEntities(players, coins))
       if(this.target) {
-        if(this.target.type==="player" && Date.now() - this.lastHit < 100) {
+        if(this.target.type==="player" && Date.now() - this.lastHit > 100) {
+          this.lastHit = Date.now()
          var f = this.down(!this.mouseDown, players, coins, io)
          players = f[0]
          coins = f[1]
