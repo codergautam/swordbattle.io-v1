@@ -22,7 +22,7 @@ class GameScene extends Phaser.Scene {
 
        
 
-        this.socket = io()
+
         this.ready = false;
     }
 
@@ -190,6 +190,7 @@ this.callback({win: true, data:data})
 
          window.addEventListener("resize", resize, true);
         //go packet
+        this.socket = io()
         this.socket.emit("go", this.name, thetoken)
 
         //mouse down
