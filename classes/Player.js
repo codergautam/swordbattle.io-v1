@@ -113,7 +113,7 @@ this.pos.y = pos[1]
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
   collectCoins(players, coins, io) {
-            touching = coins.filter((coin) => coin.touchingPlayer(this));
+           var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
           this.coins += 1;
