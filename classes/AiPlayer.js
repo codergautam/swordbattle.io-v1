@@ -44,7 +44,7 @@ class AiPlayer extends Player {
     }
     getClosestEntity(entities) {
       const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y); 
-      return entities.sort((a,b)=>distanceFromThis(a)-distanceFromThis(b))[0]
+      return entities.sort((a,b)=>distanceFromThis(a.pos)-distanceFromThis(b.pos))[0]
     }
 }
 
