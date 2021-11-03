@@ -311,7 +311,7 @@ setInterval(async () => {
 
     //emit player data to all clients
     sockets.forEach((socket) => {
-      if (player.id != socket.id) socket.emit('player', player);
+      if (player.id != socket.id) socket.emit('player', player.getSendObj());
       else socket.emit('me', player);
     });
   });

@@ -243,6 +243,9 @@ return false
     }
     return players
   }
+  getSendObj() {
+    return {id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}
+  }
 }
 
 module.exports = Player
