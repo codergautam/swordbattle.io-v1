@@ -9,7 +9,7 @@ class AiPlayer extends Player {
     }
     tick(players, coins, io) {
 
-      if(!this.target || this.entityExists(this.target, this.getEntities(players, coins))) this.target = this.getClosestEntity(this.getEntities(players, coins))
+      if(!this.target || !this.entityExists(this.target, this.getEntities(players, coins))) this.target = this.getClosestEntity(this.getEntities(players, coins))
       if(this.target) {
         var controller = this.getController()
         players[this.id] = this.move(controller, players)
@@ -33,7 +33,7 @@ class AiPlayer extends Player {
       if(tPos.x < this.pos.x) controller.left = true
       if(tPos.y > this.pos.y) controller.down = true
       if(tPos.y < this.pos.y) controller.up = true
-console.log(tPos.y, this.pos.y)
+
       return controller
     }
     getEntities(players, coins) {
