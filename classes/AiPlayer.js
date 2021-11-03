@@ -11,6 +11,7 @@ class AiPlayer extends Player {
 
       if(!this.target || !this.entityExists(this.target, this.getEntities(players, coins))) this.target = this.getClosestEntity(this.getEntities(players, coins))
       if(this.target) {
+        if(this.target.type==="player") console.log(this.target.name)
         var controller = this.getController()
         players[this.id] = this.move(controller, players)
         var f = this.collectCoins(players, coins, io)
