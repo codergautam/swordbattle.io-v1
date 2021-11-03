@@ -497,7 +497,7 @@ this.callback({win: true, data:data})
 
                
 
-        var old = this.meSword.angle
+       if(this.meSword.angle) var old = this.meSword.angle
         //if (this.mouseDown) old += 30
 if(!this.mobile) {
         var mousePos = this.input
@@ -529,7 +529,7 @@ this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.
             x: mousePos.x,
             y: mousePos.y
         }
-        if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
+        if (!old || this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
         var fps = this.sys.game.loop.actualFps
    
