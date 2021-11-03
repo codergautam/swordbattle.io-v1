@@ -158,12 +158,12 @@ return false
     this.resistance = convert(0.25, 20, this.scale)
   }
   down(down, players, io) {
-    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     this.mouseDown = down;
     return this.checkCollisions(players, io)
   }
   checkCollisions(players, io) {
     //hit cooldown
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
