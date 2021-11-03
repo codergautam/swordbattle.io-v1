@@ -37,14 +37,23 @@ class AiPlayer extends Player {
       return controller
     }
     getEntities(players, coins) {
-      return coins
+      players = Object.values(players).filter(p=>p.id!== this.id)
+      var entities = players.concat(coins)
+      return entities
     }
     entityExists(entity, entities) {
       return entities.filter(f=>f.id == entity.id).length > 0
     }
     getClosestEntity(entities) {
       const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y); 
-      return entities.sort((a,b)=>distanceFromThis(a.pos)-distanceFromThis(b.pos))[0]
+      var closest = entities.sort((a,b)=>distanceFromThis(a.pos)-distanceFromThis(b.pos))[0]
+      if(closest.hasOwnProperty("joinTime")) {
+        closest = closest.getSendObj()
+        closest.type = "player"
+      } else {
+        closest.type ="coin"
+      }
+      return closest
     }
 }
 
