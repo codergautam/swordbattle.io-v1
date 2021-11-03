@@ -193,11 +193,11 @@ return false
     this.power = convert(0.25, 200, this.scale)
     this.resistance = convert(0.25, 20, this.scale)
   }
-  down(down, players, io) {
+  down(down, players, coins, io) {
     this.mouseDown = down;
-    return this.checkCollisions(players, io)
+    return this.checkCollisions(players, coins, io)
   }
-  checkCollisions(players, io) {
+  checkCollisions(players, coins, io) {
     //hit cooldown
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
@@ -279,7 +279,7 @@ return false
         }
       });
     }
-    return players
+    return [players, coins]
   }
   getSendObj() {
     return {id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}

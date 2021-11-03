@@ -208,7 +208,9 @@ io.on('connection', async (socket) => {
     if (players.hasOwnProperty(socket.id)) {
       var player = players[socket.id];
       if (player.mouseDown == down) return;
-      players = player.down(down, players, io)
+      var f = player.down(down, players, coins, io)
+      players = f[0]
+       coins = f[1]
     } else socket.emit('refresh');
   });
 
