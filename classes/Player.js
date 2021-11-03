@@ -160,22 +160,24 @@ return false
   down(down, players, io) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     this.mouseDown = down;
-
-    //collision v1
+    return this.checkCollisions(player, io)
+  }
+  checkCollisions(players, io) {
     //hit cooldown
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
         if (enemy.id != this.id) {
           //get the values needed for line-circle-collison
-
           //check if enemy and player colliding
+
           if (
             this.hittingPlayer(enemy) &&
             Date.now() - enemy.joinTime >= 5000
           ) {
             var socketById = io.sockets.sockets.get(enemy.id);
-            if(!enemy.ai) socket.emit('dealHit', enemy.id);
+            var socket = io.sockets.sockets.get(this.id);
+            if(!this.ai) socket.emit('dealHit', enemy.id);
             if(!enemy.ai) socketById.emit('takeHit', socket.id);
             //if colliding
             this.lastDamageDealt = Date.now();
