@@ -30,8 +30,8 @@ class AiPlayer extends Player {
       var tPos = this.target.pos
       if(tPos.x > this.pos.x) controller.right = true
       if(tPos.x < this.pos.x) controller.left = true
-      if(tPos.y > this.pos.y) controller.up = true
-      if(tPos.y < this.pos.y) controller.down = true
+      if(tPos.y > this.pos.y) controller.down = true
+      if(tPos.y < this.pos.y) controller.up = true
 
       return controller
     }
