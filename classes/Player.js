@@ -246,10 +246,10 @@ return false
               //drop their coins
               var drop = []
               for (var i = 0; i < clamp(enemy.coins, 5, enemy.coins); i++) {
-                r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
-                theta = Math.random() * 2 * Math.PI;
-                x = enemy.pos.x + r * Math.cos(theta);
-                y = enemy.pos.y + r * Math.sin(theta);
+                var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
+                var theta = Math.random() * 2 * Math.PI;
+                var x = enemy.pos.x + r * Math.cos(theta);
+                var y = enemy.pos.y + r * Math.sin(theta);
 
                 coins.push(
                   new Coin({
