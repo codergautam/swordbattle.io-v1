@@ -219,6 +219,8 @@ io.on('connection', async (socket) => {
         var player = players[socket.id];
         players[socket.id] = player.move(controller, players);
        var s = player.collectCoins(players, coins, io)
+       players = s[0]
+       coins = s[1]
       }
     } catch (e) {
       console.log(e);
