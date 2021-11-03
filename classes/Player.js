@@ -1,5 +1,5 @@
 var intersects = require("intersects")
-const Coin = require("./Coins.js")
+const Coin = require("./Coin.js")
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
