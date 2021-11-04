@@ -200,15 +200,14 @@ return false
   }
   checkCollisions(coins, io) {
     //hit cooldown
-    if(PlayerList.deadPlayers.includes(this.id)) return coins
+
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
-        if (enemy && enemy.id != this.id) {
+        if (enemy && enemy.id != this.id && !PlayerList.deadPlayers.includes(enemy.id)) {
           //get the values needed for line-circle-collison
           //check if enemy and player colliding
-
           if (
             this.hittingPlayer(enemy) &&
             Date.now() - enemy.joinTime >= 5000

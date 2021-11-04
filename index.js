@@ -17,7 +17,6 @@ const Coin = require('./classes/Coin');
 const AiPlayer = require('./classes/AiPlayer');
 const PlayerList = require('./classes/PlayerList')
 
-
 const io = new Server(server, {
   allowRequest: (req, callback) => {
     callback(null, req.headers.origin === undefined);
