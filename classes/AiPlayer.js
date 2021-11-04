@@ -7,10 +7,13 @@ class AiPlayer extends Player {
         this.ai = true;
         this.target = undefined;
         this.lastHit = Date.now()
+        this.mousePos.viewport.width = 1000
+        this.mousePos.viewport.height = 1000
+        
     }
     tick(players, coins, io) {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
-      if(!this.target || !this.entityExists(this.target, this.getEntities(players, coins))) this.target = this.getClosestEntity(this.getEntities(players, coins))
+ this.target = this.getClosestEntity(this.getEntities(players, coins))
       if(this.target) {
         if(this.target.type==="player" && Date.now() - this.lastHit > 100) {
           this.lastHit = Date.now()
