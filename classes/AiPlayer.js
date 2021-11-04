@@ -17,7 +17,7 @@ class AiPlayer extends Player {
         console.log("DEAD TICKED")
       } else {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
- this.target = this.getClosestEntity(this.getEntities(coins))
+if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins))
       if(this.target) {
         if(this.target.type==="player" && Date.now() - this.lastHit > 100) {
           this.lastHit = Date.now()

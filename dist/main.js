@@ -1360,9 +1360,6 @@ __webpack_require__.r(__webpack_exports__);
 
 
 
-
-
-
 var config = {
     type: Phaser.AUTO,
     width: window.innerWidth,
