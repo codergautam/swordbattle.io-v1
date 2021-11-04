@@ -10,7 +10,7 @@ class Player {
     this.id = id
     this.name = name
     this.health = 100
-    this.coins = 0
+    this.coins = 10
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
     this.kills = 0
     this.speed = 700
