@@ -248,7 +248,7 @@ setInterval(async () => {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
-  if (Object.values(PlayerList.players).filter(p => p.ai).length < maxAiPlayers) {
+  if (Object.values(PlayerList.players).filter(p => p && p.ai).length < maxAiPlayers) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
     PlayerList.setPlayer(id, theAi)
@@ -280,6 +280,7 @@ setInterval(async () => {
     }
   });
   playersarray.forEach((player) => {
+    if(player) {
     //   player.moveWithMouse(players)
     if(player.ai) {
      coins = player.tick(coins, io)
@@ -300,6 +301,7 @@ setInterval(async () => {
       if (player.id != socket.id) socket.emit('player', player.getSendObj());
       else socket.emit('me', player);
     });
+  }
   });
   tps += 1;
 }, 1000 / 30);

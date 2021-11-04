@@ -10,8 +10,10 @@ class PlayerList {
   }
   static deletePlayer(id) {
     if(this.players.hasOwnProperty(id)) {
-       delete this.players[id]
-       
+      this.players[id] = null
+      delete this.players[id]
+      this.deadPlayers.push(id)
+     //  console.log("kjifjgkjifjgkjifjgkjifjgkjifjgkjifjgkjifjgkjifjgvvvvvvvvvvv")
     }
   }
   static has(id) {

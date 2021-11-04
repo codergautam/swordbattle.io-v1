@@ -94,7 +94,7 @@ this.pos.y = pos[1]
     if(this.pos.y >= 2500) this.pos.y = 2500
 
    // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
-    if(players.filter(player=> player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
+    if(players.filter(player=> player && player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
     
     if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
@@ -204,7 +204,7 @@ return false
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
-        if (enemy.id != this.id) {
+        if (enemy && enemy.id != this.id) {
           //get the values needed for line-circle-collison
           //check if enemy and player colliding
 

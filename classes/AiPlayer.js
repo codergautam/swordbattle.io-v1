@@ -13,6 +13,9 @@ class AiPlayer extends Player {
         
     }
     tick(coins, io) {
+      if(PlayerList.deadPlayers.includes(this.id)) {
+        console.log("DEAD TICKED")
+      } else {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
  this.target = this.getClosestEntity(this.getEntities(coins))
       if(this.target) {
@@ -26,8 +29,9 @@ const lerp = (x, y, a) => x * (1 - a) + y * a;
          this.move(controller)
         coins = this.collectCoins(coins, io)
       }
-      return coins
       
+      }
+      return coins
     }
     getController() {
       var controller = {
@@ -46,7 +50,7 @@ const lerp = (x, y, a) => x * (1 - a) + y * a;
       return controller
     }
     getEntities(coins) {
-      var players = Object.values(PlayerList.players).filter(p=>p.id !== this.id)
+      var players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id)
       var entities = players.concat(coins)
       return entities
     }
