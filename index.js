@@ -129,7 +129,7 @@ io.on('connection', async (socket) => {
         var thePlayer = new Player(socket.id, name);
         thePlayer.updateValues();
         PlayerList.setPlayer(socket.id, thePlayer)
-        console.log('player joined -> ' + socket.id);
+        console.log('player joined -> ' + name);
         socket.broadcast.emit('new', thePlayer);
 
         var allPlayers = Object.values(PlayerList.players);

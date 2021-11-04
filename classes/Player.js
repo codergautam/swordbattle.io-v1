@@ -266,7 +266,7 @@ return false
                 io.sockets.emit('coin', drop)
               }
               //log a message
-              console.log(this.id+' killed ' + enemy.id);
+              console.log(this.name+' killed ' + enemy.name);
 
               //delete the enemy
               PlayerList.deletePlayer(enemy.id)
