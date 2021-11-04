@@ -250,6 +250,7 @@ setInterval(async () => {
   if (Object.values(PlayerList.players).filter(p => p && p.ai).length < maxAiPlayers) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
+    console.log("AI Player Joined -> "+id)
     PlayerList.setPlayer(id, theAi)
     io.sockets.emit('new', theAi)
   }
