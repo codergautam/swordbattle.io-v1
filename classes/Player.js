@@ -200,6 +200,7 @@ return false
   }
   checkCollisions(coins, io) {
     //hit cooldown
+    if(PlayerList.deadPlayers.includes(this.id)) return coins
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(PlayerList.players).forEach((enemy) => {
