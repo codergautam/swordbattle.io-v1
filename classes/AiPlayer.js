@@ -15,7 +15,6 @@ class AiPlayer extends Player {
     tick(coins, io) {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id)
-
       } else {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
 if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins))

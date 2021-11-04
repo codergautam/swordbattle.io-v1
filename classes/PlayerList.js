@@ -22,6 +22,9 @@ class PlayerList {
   static updatePlayer(player) {
     this.players[player.id] = player
   }
+  static clean() {
+    this.players = this.players.filter(p => !this.deadPlayers.includes(p.id))
+  }
 }
 PlayerList.players = {}
 PlayerList.deadPlayers = []

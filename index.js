@@ -242,6 +242,7 @@ var lastCoinSend = Date.now();
 var tps = 0;
 
 setInterval(async () => {
+  PlayerList.clean()
   moderation.io = io
   if (coins.length < maxCoins) {
     coins.push(new Coin());
