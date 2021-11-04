@@ -23,7 +23,11 @@ class PlayerList {
     this.players[player.id] = player
   }
   static clean() {
-    this.players = this.players.filter(p => !this.deadPlayers.includes(p.id))
+    Object.filter = (obj, predicate) => 
+    Object.keys(obj)
+          .filter( key => predicate(obj[key]) )
+          .reduce( (res, key) => (res[key] = obj[key], res), {} );
+    this.players = Object.filter(this.players,(p => !this.deadPlayers.includes(p.id)))
   }
 }
 PlayerList.players = {}
