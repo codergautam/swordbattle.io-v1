@@ -50,7 +50,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       return controller
     }
     getEntities(coins) {
-      var players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id)
+      var players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id && Date.now() - p.joinTime > 10000)
       var entities = players.concat(coins)
       return entities
     }
