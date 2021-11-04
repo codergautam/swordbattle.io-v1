@@ -142,9 +142,11 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {    
-                
+         try {       
         document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
-    
+         } catch(e) {
+             console.log(e)
+         }
         this.load.image("player", "/assets/images/player.png");
         this.load.image("sword", "/assets/images/sword.png");
         this.load.image('background', '/assets/images/background.jpeg');
@@ -633,7 +635,7 @@ this.callback({win: true, data:data})
 
                
 
-        var old = this.meSword.angle
+       if(this.meSword.angle) var old = this.meSword.angle
         //if (this.mouseDown) old += 30
 if(!this.mobile) {
         var mousePos = this.input
@@ -665,7 +667,7 @@ this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.
             x: mousePos.x,
             y: mousePos.y
         }
-        if (this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
+        if (!old || this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
         var fps = this.sys.game.loop.actualFps
    
@@ -862,6 +864,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
 }
 
 /* harmony default export */ const __WEBPACK_DEFAULT_EXPORT__ = (GameScene);
+
 
 /***/ }),
 

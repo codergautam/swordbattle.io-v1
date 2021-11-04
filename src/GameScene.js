@@ -6,9 +6,11 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {    
-                
+         try {       
         document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
-    
+         } catch(e) {
+             console.log(e)
+         }
         this.load.image("player", "/assets/images/player.png");
         this.load.image("sword", "/assets/images/sword.png");
         this.load.image('background', '/assets/images/background.jpeg');

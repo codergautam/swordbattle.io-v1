@@ -8,7 +8,6 @@ var cors = require('cors');
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 const axios = require('axios').default;
-
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
 
@@ -206,8 +205,13 @@ io.on('connection', async (socket) => {
           socket.disconnect();
           return;
         }
+       
+        
         name = name.substring(0, 16);
-        players[socket.id] = new Player(socket.id, name);
+        axios.get("https://www.purgomalum.com/service/json?text="+name).then((r) => {
+
+       
+        players[socket.id] = new Player(socket.id,  r.data.result);
         players[socket.id].updateValues();
         console.log('player joined -> ' + socket.id);
         socket.broadcast.emit('new', players[socket.id]);
@@ -220,6 +224,7 @@ io.on('connection', async (socket) => {
         socket.emit('coins', coins);
 
         socket.joined = true;
+      })
       });
   });
 
