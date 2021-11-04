@@ -1,4 +1,5 @@
 var intersects = require("intersects")
+const PlayerList = require("./PlayerList")
 const Coin = require("./Coin.js")
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -59,8 +60,8 @@ this.pos.y = pos[1]
     this.lastMove = Date.now()
 */
   }
-  move(controller, players) {
-    var players = Object.values(players)
+  move(controller) {
+    var players = Object.values(PlayerList.players)
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
     var since =( Date.now() - this.lastMove ) / 1000
@@ -98,8 +99,7 @@ this.pos.y = pos[1]
     if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
     this.lastMove = Date.now()
-    
-    return this
+    PlayerList.updatePlayer(this)
   }
   movePointAtAngle(point, angle, distance) {
     return [
@@ -113,7 +113,7 @@ this.pos.y = pos[1]
     this.pos.x = clamp(pos[0], -2500, 2500)
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
-  collectCoins(players, coins, io) {
+  collectCoins(coins, io) {
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
@@ -142,12 +142,12 @@ io.sockets.emit('playerDied', this.id)
           }
 
           //delete the player
-          delete players[this.id];
+          PlayerList.deletePlayer(this.id)
 
           //disconnect the player
           if(!this.ai) socketById.disconnect();
         }
-      return [players, coins]
+      return coins
   }
   hittingPlayer(player) {
 
@@ -194,15 +194,15 @@ return false
     this.power = convert(0.25, 200, this.scale)
     this.resistance = convert(0.25, 20, this.scale)
   }
-  down(down, players, coins, io) {
+  down(down, coins, io) {
     this.mouseDown = down;
-    return this.checkCollisions(players, coins, io)
+    return this.checkCollisions(coins, io)
   }
-  checkCollisions(players, coins, io) {
+  checkCollisions(coins, io) {
     //hit cooldown
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
-      Object.values(players).forEach((enemy) => {
+      Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
         if (enemy.id != this.id) {
           //get the values needed for line-circle-collison
@@ -269,7 +269,7 @@ return false
               console.log('player died -> ' + enemy.id);
 
               //delete the enemy
-              delete players[enemy.id];
+              PlayerList.deletePlayer(enemy.id)
 
               //disconnect the socket
               if(!enemy.ai) socketById.disconnect();
@@ -280,7 +280,7 @@ return false
         }
       });
     }
-    return [players, coins]
+    return coins
   }
   getSendObj() {
     return {id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}

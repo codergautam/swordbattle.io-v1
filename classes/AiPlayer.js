@@ -1,4 +1,5 @@
 const Player = require("./Player")
+const PlayerList = require("./PlayerList")
 
 class AiPlayer extends Player {
     constructor(id) {
@@ -11,25 +12,21 @@ class AiPlayer extends Player {
         this.mousePos.viewport.height = 1000
         
     }
-    tick(players, coins, io) {
+    tick(coins, io) {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
- this.target = this.getClosestEntity(this.getEntities(players, coins))
+ this.target = this.getClosestEntity(this.getEntities(coins))
       if(this.target) {
         if(this.target.type==="player" && Date.now() - this.lastHit > 100) {
           this.lastHit = Date.now()
-         var f = this.down(!this.mouseDown, players, coins, io)
-         players = f[0]
-         coins = f[1]
+         coins = this.down(!this.mouseDown, coins, io)
         } 
         this.mousePos.x = this.mousePos.viewport.width / 2 + (this.target.pos.x - this.pos.x)
         this.mousePos.y = this.mousePos.viewport.height / 2 + (this.target.pos.y - this.pos.y)
         var controller = this.getController()
-        players[this.id] = this.move(controller, players)
-        var f = this.collectCoins(players, coins, io)
-        players = f[0]
-        coins = f[1]
+         this.move(controller)
+        coins = this.collectCoins(coins, io)
       }
-      return [players, coins]
+      return coins
       
     }
     getController() {
@@ -48,8 +45,8 @@ const lerp = (x, y, a) => x * (1 - a) + y * a;
 
       return controller
     }
-    getEntities(players, coins) {
-      players = Object.values(players).filter(p=>p.id!== this.id)
+    getEntities(coins) {
+      var players = Object.values(PlayerList.players).filter(p=>p.id !== this.id)
       var entities = players.concat(coins)
       return entities
     }

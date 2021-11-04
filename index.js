@@ -11,12 +11,11 @@ const axios = require('axios').default;
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
 var recaptcha = false
-var deadAi = []
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
 const AiPlayer = require('./classes/AiPlayer');
-
+const PlayerList = require('./classes/PlayerList')
 
 
 const io = new Server(server, {
@@ -97,7 +96,6 @@ Object.filter = (obj, predicate) =>
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
-var players = {};
 var coins = [];
 
 var maxCoins = 100;
@@ -129,12 +127,13 @@ io.on('connection', async (socket) => {
   socket.on('go', async (name, captchatoken) => {
     function ready() {
               name = name.substring(0, 16);
-        players[socket.id] = new Player(socket.id, name);
-        players[socket.id].updateValues();
+        var thePlayer = new Player(socket.id, name);
+        thePlayer.updateValues();
+        PlayerList.setPlayer(socket.id, thePlayer)
         console.log('player joined -> ' + socket.id);
-        socket.broadcast.emit('new', players[socket.id]);
+        socket.broadcast.emit('new', thePlayer);
 
-        var allPlayers = Object.values(players);
+        var allPlayers = Object.values(PlayerList.players);
         allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
         if (allPlayers && allPlayers.length > 0)
@@ -154,7 +153,7 @@ io.on('connection', async (socket) => {
       socket.emit('ban', 'You were kicked for not sending a name. ');
       return socket.disconnect();
     }
-    if (players[socket.id]) {
+    if (PlayerList.has(socket.id)) {
       socket.emit(
         'ban',
         'You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. '
@@ -198,32 +197,33 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('mousePos', (mousePos) => {
-    if (players.hasOwnProperty(socket.id))
-      players[socket.id].mousePos = mousePos;
+    if (PlayerList.has(socket.id)) {
+     var thePlayer = PlayerList.getPlayer(socket.id)
+     thePlayer.mousePos = mousePos;
+     PlayerList.updatePlayer(thePlayer)
+     
+    }
     else socket.emit('refresh');
 
     //console.log(mousePos.x +" , "+mousePos.y )
   });
   
   socket.on('mouseDown', (down) => {
-    if (players.hasOwnProperty(socket.id)) {
-      var player = players[socket.id];
+    if (PlayerList.has(socket.id)) {
+      var player = PlayerList.getPlayer(socket.id);
       if (player.mouseDown == down) return;
-      var f = player.down(down, players, coins, io)
-      players = f[0]
-       coins = f[1]
+       coins = player.down(down, coins, io)
+       PlayerList.updatePlayer(player)
     } else socket.emit('refresh');
   });
 
   socket.on('move', (controller) => {
     if (!controller) return;
     try {
-      if (players.hasOwnProperty(socket.id)) {
-        var player = players[socket.id];
-        players[socket.id] = player.move(controller, players);
-       var s = player.collectCoins(players, coins, io)
-       players = s[0]
-       coins = s[1]
+      if (PlayerList.has(socket.id)) {
+        var player = PlayerList.getPlayer(socket.id);
+        player.move(controller);
+        coins = player.collectCoins(coins, io)
       }
     } catch (e) {
       console.log(e);
@@ -231,8 +231,8 @@ io.on('connection', async (socket) => {
   });
 
   socket.on('disconnect', () => {
-    if (!Object.keys(players).includes(socket.id)) return;
-    delete players[socket.id];
+    if (!PlayerList.has(socket.id)) return;
+    PlayerList.deletePlayer(socket.id)
     socket.broadcast.emit('playerLeave', socket.id);
   });
 });
@@ -243,16 +243,16 @@ var lastCoinSend = Date.now();
 var tps = 0;
 
 setInterval(async () => {
-  moderation.players = players
   moderation.io = io
   if (coins.length < maxCoins) {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
-  if (Object.values(players).filter(p => p.ai).length < maxAiPlayers) {
+  if (Object.values(PlayerList.players).filter(p => p.ai).length < maxAiPlayers) {
     var id = uuidv4()
-    players[id] = new AiPlayer(id)
-    io.sockets.emit('new', players[id])
+    var theAi = new AiPlayer(id)
+    PlayerList.setPlayer(id, theAi)
+    io.sockets.emit('new', theAi)
   }
   //emit tps to clients
   if (Date.now() - secondStart >= 1000) {
@@ -267,7 +267,7 @@ setInterval(async () => {
   }
 
   //health regen
-  var playersarray = Object.values(players);
+  var playersarray = Object.values(PlayerList.players);
   var sockets = await io.fetchSockets();
 
   sockets.forEach((b) => {
@@ -282,9 +282,7 @@ setInterval(async () => {
   playersarray.forEach((player) => {
     //   player.moveWithMouse(players)
     if(player.ai) {
-     var f= player.tick(players, coins, io)
-     players = f[0]
-     coins = f[1]
+     coins = player.tick(coins, io)
     }
     if (
       Date.now() - player.lastHit > 5000 &&
@@ -295,6 +293,7 @@ setInterval(async () => {
       player.lastRegen = Date.now();
       player.health += player.health / 100;
     }
+    PlayerList.updatePlayer(player)
 
     //emit player data to all clients
     sockets.forEach((socket) => {
