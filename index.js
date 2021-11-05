@@ -8,6 +8,7 @@ var cors = require('cors');
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 const axios = require('axios').default;
+
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
 var recaptcha = false
@@ -143,7 +144,7 @@ io.on('connection', async (socket) => {
 
         socket.joined = true;
     }
-    if (!captchatoken && !recaptcha) {
+    if (!captchatoken && recaptcha) {
       socket.emit(
         'ban',
         'You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug.'
@@ -191,7 +192,24 @@ io.on('connection', async (socket) => {
           socket.disconnect();
           return;
         }
-        ready();
+        name = name.substring(0, 16);
+        axios.get("https://www.purgomalum.com/service/json?text="+name).then((r) => {
+
+       
+        players[socket.id] = new Player(socket.id,  r.data.result);
+        players[socket.id].updateValues();
+        console.log('player joined -> ' + socket.id);
+        socket.broadcast.emit('new', players[socket.id]);
+
+        var allPlayers = Object.values(players);
+        allPlayers = allPlayers.filter((player) => player.id != socket.id);
+
+        if (allPlayers && allPlayers.length > 0)
+          socket.emit('players', allPlayers);
+        socket.emit('coins', coins);
+
+        socket.joined = true;
+      })
 
       });
   } else ready()
@@ -285,10 +303,10 @@ setInterval(async () => {
   var sockets = await io.fetchSockets();
 
   sockets.forEach((b) => {
-    if (!b.joined && Date.now() - b.joinTime > 5000) {
+    if (!b.joined && Date.now() - b.joinTime > 10000) {
       b.emit(
         'ban',
-        'You have been kicked for not joining. This is likely due to slow wifi or a hack.'
+        'You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your pc.'
       );
       b.disconnect();
     }

@@ -7,9 +7,11 @@ class GameScene extends Phaser.Scene {
     }
 
     preload() {    
-                
+         try {       
         document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
-    
+         } catch(e) {
+             console.log(e)
+         }
         this.load.image("player", "/assets/images/player.png");
         this.load.image("sword", "/assets/images/sword.png");
         this.load.image('background', '/assets/images/background.jpeg');
@@ -23,7 +25,7 @@ class GameScene extends Phaser.Scene {
 
        
 
-        this.socket = io()
+
         this.ready = false;
     }
 
@@ -191,6 +193,7 @@ this.callback({win: true, data:data})
 
          window.addEventListener("resize", resize, true);
         //go packet
+        this.socket = io()
         this.socket.emit("go", this.name, thetoken)
 
         //mouse down
@@ -513,6 +516,7 @@ if(this.meSword.angle) var old = this.meSword.angle
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
 
+
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
          //sword animation
         if (this.mouseDown) this.swordAnim.go = true
@@ -537,6 +541,7 @@ this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.
             x: mousePos.x,
             y: mousePos.y
         }
+
         if (old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
         var fps = this.sys.game.loop.actualFps
