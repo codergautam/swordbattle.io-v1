@@ -1,4 +1,5 @@
 import HealthBar from './HealthBar.js'
+
 class GameScene extends Phaser.Scene {
     constructor(callback) {
         super()
@@ -246,6 +247,7 @@ this.callback({win: true, data:data})
                     y: undefined
                 },
                 playerObj: undefined,
+                lastTick: Date.now(),
                 sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25).setDepth(49),
                 player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25).setDepth(49),
                 bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
@@ -281,26 +283,26 @@ this.callback({win: true, data:data})
              )
 
         }
-
-        const removePlayer = (id) => {
+        this.removePlayer = (id) => {
             try {
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id)
-
+        
                 enemy.player.destroy()
                 enemy.sword.destroy()
                 enemy.bar.destroy()
                 enemy.nameTag.destroy()
-
+        
                 this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1)
-
+        
                 var miniMapPlayer = this.miniMap.people.find(x => x.id === id)
                 miniMapPlayer.circle.destroy()
                 this.miniMap.people = this.miniMap.people.filter(p => p.id != id)
-
+        
             } catch (e) {
                 console.log(e)
             }
         }
+
 
         this.socket.on("players", (players) => {
             players.forEach(player => addPlayer(player))
@@ -368,7 +370,12 @@ this.callback({win: true, data:data})
             //update player
             if (!this.ready) return
             try {
+               
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
+                if(!enemy) return
+
+                enemy.lastTick = Date.now()
+
                 enemy.playerObj = player
                 enemy.bar.maxValue = player.maxHealth
                 enemy.bar.setHealth(player.health);
@@ -396,8 +403,8 @@ this.callback({win: true, data:data})
                 console.log(e)
             }
         })
-        this.socket.on("playerLeave", removePlayer)
-        this.socket.on("playerDied", removePlayer)
+        this.socket.on("playerLeave", this.removePlayer)
+        this.socket.on("playerDied", this.removePlayer)
 
         this.socket.on("dealHit", (playerId) => {
             this.hit.play()
@@ -437,8 +444,14 @@ this.callback({win: true, data:data})
            this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
         })
 
-        this.socket.on("coin", (coin) => {            
+        this.socket.on("coin", (coin) => {      
+            if(Array.isArray(coin)) {
+                coin.forEach((x) => {
+                    addCoin(x)
+                })
+            } else {      
             addCoin(coin)
+            }
         })
 
         this.socket.on("youDied", (data) => {
@@ -498,15 +511,12 @@ this.callback({win: true, data:data})
         //sword 
 
                
+if(this.meSword.angle) var old = this.meSword.angle
 
-       if(this.meSword.angle) var old = this.meSword.angle
-        //if (this.mouseDown) old += 30
-if(!this.mobile) {
-        var mousePos = this.input
-} else {
+if(!this.mobile) var mousePos = this.input
+else var mousePos = this.gamePoint
 
-    var mousePos = this.gamePoint
-}
+
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
          //sword animation
         if (this.mouseDown) this.swordAnim.go = true
@@ -531,7 +541,8 @@ this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.
             x: mousePos.x,
             y: mousePos.y
         }
-        if (!old || this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
+
+        if (old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
         var fps = this.sys.game.loop.actualFps
    
@@ -549,11 +560,7 @@ function lerpTheta(a, b, t) {
   return lerp(a, a + (dt > 180 ? dt - 360 : dt), t);
 }
         this.enemies.forEach(enemy => {
-          if(enemy.playerObj) {
-            var speed = enemy.playerObj.speed / fps
-          } else {
-            var speed = 300 / fps
-          }
+            if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy)
            // if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
     /*        no lerp
             if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
@@ -664,22 +671,26 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         //leaderboard
         if(!this.myObj) return
         
-        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj"))
+        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj") && a.playerObj)
+
         enemies.push({playerObj: this.myObj})
        try {
         var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10)
         var text = ""
         sorted.forEach((entry, i) => {
             if(!entry.playerObj) return
+            if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj)
             var playerObj = entry.playerObj
             text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`
         })
+
         this.leaderboard.setText(text)
         this.leaderboard.x = window.innerWidth - this.leaderboard.width
         this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
 
     } catch(e) {
         //we shall try next frame
+        console.log(e)
     }
         //playercount
         try {

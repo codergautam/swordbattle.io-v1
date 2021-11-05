@@ -26,7 +26,7 @@ class DeathScene extends Phaser.Scene {
 
         this.displayTime = 0;
         this.displayKills = 0;
-        console.log(this.data.timeSurvived)
+
         this.timeUpdateDelay = 5000 / this.data.timeSurvived
         this.lastUpdateTime = Date.now() 
 
