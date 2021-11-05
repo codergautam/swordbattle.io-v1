@@ -244,6 +244,8 @@ var lastCoinSend = Date.now();
 var tps = 0;
 
 setInterval(async () => {
+  //const used = process.memoryUsage().heapUsed / 1024 / 1024;
+//console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
   PlayerList.clean()
   moderation.io = io
   if (coins.length < maxCoins) {
@@ -259,7 +261,7 @@ setInterval(async () => {
   if(normalPlayers > maxAiPlayers) aiNeeded = 0
   if(aiNeeded > maxAiPlayers) aiNeeded = maxAiPlayers
 
-  if (aiPlayers < aiNeeded && getRandomInt(0,300) == 5) {
+  if (aiPlayers < aiNeeded && getRandomInt(0,200) == 5) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
     console.log("AI Player Joined -> "+theAi.name)
@@ -299,7 +301,7 @@ setInterval(async () => {
     }
     if (
       Date.now() - player.lastHit > 5000 &&
-      Date.now() - player.lastRegen > 100 &&
+      Date.now() - player.lastRegen > 20 &&
       player.health < player.maxHealth
     ) {
       //if its been 5 seconds since player got hit, regen then every 100 ms

@@ -40,7 +40,7 @@ class DeathScene extends Phaser.Scene {
 
         this.displayTime = 0;
         this.displayKills = 0;
-        console.log(this.data.timeSurvived)
+
         this.timeUpdateDelay = 5000 / this.data.timeSurvived
         this.lastUpdateTime = Date.now() 
 
@@ -134,6 +134,7 @@ __webpack_require__.r(__webpack_exports__);
 /* harmony export */   "default": () => (__WEBPACK_DEFAULT_EXPORT__)
 /* harmony export */ });
 /* harmony import */ var _HealthBar_js__WEBPACK_IMPORTED_MODULE_0__ = __webpack_require__(/*! ./HealthBar.js */ "./src/HealthBar.js");
+
 
 class GameScene extends Phaser.Scene {
     constructor(callback) {
@@ -379,6 +380,7 @@ this.callback({win: true, data:data})
                     y: undefined
                 },
                 playerObj: undefined,
+                lastTick: Date.now(),
                 sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25).setDepth(49),
                 player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25).setDepth(49),
                 bar: new _HealthBar_js__WEBPACK_IMPORTED_MODULE_0__["default"](this, player.pos.x, player.pos.y + 55),
@@ -414,26 +416,26 @@ this.callback({win: true, data:data})
              )
 
         }
-
-        const removePlayer = (id) => {
+        this.removePlayer = (id) => {
             try {
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id)
-
+        
                 enemy.player.destroy()
                 enemy.sword.destroy()
                 enemy.bar.destroy()
                 enemy.nameTag.destroy()
-
+        
                 this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1)
-
+        
                 var miniMapPlayer = this.miniMap.people.find(x => x.id === id)
                 miniMapPlayer.circle.destroy()
                 this.miniMap.people = this.miniMap.people.filter(p => p.id != id)
-
+        
             } catch (e) {
                 console.log(e)
             }
         }
+
 
         this.socket.on("players", (players) => {
             players.forEach(player => addPlayer(player))
@@ -504,6 +506,9 @@ this.callback({win: true, data:data})
                
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
                 if(!enemy) return
+
+                enemy.lastTick = Date.now()
+
                 enemy.playerObj = player
                 enemy.bar.maxValue = player.maxHealth
                 enemy.bar.setHealth(player.health);
@@ -531,8 +536,8 @@ this.callback({win: true, data:data})
                 console.log(e)
             }
         })
-        this.socket.on("playerLeave", removePlayer)
-        this.socket.on("playerDied", removePlayer)
+        this.socket.on("playerLeave", this.removePlayer)
+        this.socket.on("playerDied", this.removePlayer)
 
         this.socket.on("dealHit", (playerId) => {
             this.hit.play()
@@ -686,11 +691,7 @@ function lerpTheta(a, b, t) {
   return lerp(a, a + (dt > 180 ? dt - 360 : dt), t);
 }
         this.enemies.forEach(enemy => {
-          if(enemy.playerObj) {
-            var speed = enemy.playerObj.speed / fps
-          } else {
-            var speed = 300 / fps
-          }
+            if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy)
            // if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
     /*        no lerp
             if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
@@ -802,7 +803,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         if(!this.myObj) return
         
         var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj") && a.playerObj)
-        console.log(enemies)
+
         enemies.push({playerObj: this.myObj})
        try {
         var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10)
@@ -813,7 +814,7 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
             var playerObj = entry.playerObj
             text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`
         })
-        console.log(text)
+
         this.leaderboard.setText(text)
         this.leaderboard.x = window.innerWidth - this.leaderboard.width
         this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
