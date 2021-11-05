@@ -31,7 +31,9 @@ class DeathScene extends Phaser.Scene {
     }
 
     create() {
-
+        this.lerp = function (start, end, amt){
+            return (1-amt)*start+amt*end
+          }
         this.background = this.add.rectangle(0, 0, window.innerWidth, window.innerHeight, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.innerWidth / 2, 0, 'You died', {
             fontSize: '64px',
@@ -85,11 +87,10 @@ class DeathScene extends Phaser.Scene {
         }
 
         if(this.displayTime < this.data.timeSurvived) {
-            this.displayTime += 1000
-            
+            this.displayTime = Math.round(this.lerp(this.displayTime, this.data.timeSurvived, 0.1))
         }
         if(this.displayCoins < this.data.coins) {
-            this.displayCoins += 1
+            this.displayCoins = Math.round(this.lerp(this.displayCoins, this.data.coins, 0.1))
             
         }
 

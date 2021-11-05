@@ -319,7 +319,7 @@ setInterval(async () => {
     }
     if (
       Date.now() - player.lastHit > 5000 &&
-      Date.now() - player.lastRegen > 20 &&
+      Date.now() - player.lastRegen > 75 &&
       player.health < player.maxHealth
     ) {
       //if its been 5 seconds since player got hit, regen then every 100 ms
