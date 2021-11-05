@@ -503,7 +503,7 @@ this.callback({win: true, data:data})
             try {
                
                 var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
-                if(!enemy)  console.log(player)
+                if(!enemy) return
                 enemy.playerObj = player
                 enemy.bar.maxValue = player.maxHealth
                 enemy.bar.setHealth(player.health);
@@ -801,22 +801,26 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         //leaderboard
         if(!this.myObj) return
         
-        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj"))
+        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj") && a.playerObj)
+        console.log(enemies)
         enemies.push({playerObj: this.myObj})
        try {
         var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10)
         var text = ""
         sorted.forEach((entry, i) => {
             if(!entry.playerObj) return
+            if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj)
             var playerObj = entry.playerObj
             text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`
         })
+        console.log(text)
         this.leaderboard.setText(text)
         this.leaderboard.x = window.innerWidth - this.leaderboard.width
         this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
 
     } catch(e) {
         //we shall try next frame
+        console.log(e)
     }
         //playercount
         try {

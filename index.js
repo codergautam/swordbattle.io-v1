@@ -22,7 +22,9 @@ const io = new Server(server, {
     callback(null, req.headers.origin === undefined);
   },
 });
-
+function getRandomInt(min, max) {
+  return min + Math.floor(Math.random() * (max - min + 1));
+}
 var production = true;
 if (production) {
   const rateLimit = require('express-rate-limit');
@@ -89,7 +91,7 @@ app.use('/:file', (req, res, next) => {
 app.use('/kaboomclient', express.static('kaboomclient'));
 app.use('/assets', express.static('assets'));
 app.use('/classes', express.static('classes'));
-const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+
 Object.filter = (obj, predicate) =>
   Object.keys(obj)
     .filter((key) => predicate(obj[key]))
@@ -98,7 +100,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 100;
-var maxAiPlayers = 5;
+var maxAiPlayers = 9;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
@@ -248,7 +250,16 @@ setInterval(async () => {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
-  if (Object.values(PlayerList.players).filter(p => p && p.ai).length < maxAiPlayers) {
+  var aiNeeded = 0
+  var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length
+  var aiPlayers = Object.keys(PlayerList.players).length
+  
+  aiNeeded = maxAiPlayers + 1 - normalPlayers
+ // console.log(aiNeeded)
+  if(normalPlayers > maxAiPlayers) aiNeeded = 0
+  if(aiNeeded > maxAiPlayers) aiNeeded = maxAiPlayers
+
+  if (aiPlayers < aiNeeded && getRandomInt(0,300) == 5) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
     console.log("AI Player Joined -> "+theAi.name)
@@ -299,6 +310,7 @@ setInterval(async () => {
 
     //emit player data to all clients
     sockets.forEach((socket) => {
+      if(!player.getSendObj()) console.log("gg")
       if (player.id != socket.id) socket.emit('player', player.getSendObj());
       else socket.emit('me', player);
     });

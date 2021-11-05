@@ -10,7 +10,7 @@ class Player {
     this.id = id
     this.name = name
     this.health = 100
-    this.coins = 10
+    this.coins = 0
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
     this.kills = 0
     this.speed = 700
@@ -246,7 +246,7 @@ return false
               }
               //drop their coins
               var drop = []
-              for (var i = 0; i < clamp(enemy.coins, 5, enemy.coins); i++) {
+              for (var i = 0; i < clamp(enemy.coins, 5, 2000); i++) {
                 var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
                 var theta = Math.random() * 2 * Math.PI;
                 var x = enemy.pos.x + r * Math.cos(theta);
