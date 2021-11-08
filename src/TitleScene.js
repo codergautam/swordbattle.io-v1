@@ -102,7 +102,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   }
 
   this.btnrect.setInteractive().on('pointerdown', (pointer, localX, localY, event) => {
-      go()
+       if(this.promo && this.promo.visible) {
+       } else go()
   });
   this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   this.returnKey.on("down", event => {
@@ -118,11 +119,12 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
     if(this.showPromo) {
+      /*
               const convert = (num, val, newNum) => (newNum * val) / num
        this.promo.getChildByName("iframe").width = convert(1366, 560, window.innerWidth)
        this.promo.getChildByName("iframe").height = convert(1366, 560, window.innerWidth)  *0.5625
        this.promo.x = (window.innerWidth / 2)
-       this.promo.y =  (window.innerHeight / 2)
+       this.promo.y =  (window.innerHeight / 2)*/
     }
     this.btntext.x = window.innerWidth / 2 
    this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
