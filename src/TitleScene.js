@@ -41,7 +41,12 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
      if(this.showPromo) {
+
        this.promo = this.add.dom(0, 0).createFromCache("promo")
+
+              const convert = (num, val, newNum) => (newNum * val) / num
+       this.promo.getChildByName("iframe").width = convert(1366, 560, window.innerWidth)
+       this.promo.getChildByName("iframe").height = convert(1366, 560, window.innerWidth)  *0.5625
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
        this.promo.getChildByName("close").onclick = () => {
@@ -113,6 +118,9 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
     if(this.showPromo) {
+              const convert = (num, val, newNum) => (newNum * val) / num
+       this.promo.getChildByName("iframe").width = convert(1366, 560, window.innerWidth)
+       this.promo.getChildByName("iframe").height = convert(1366, 560, window.innerWidth)  *0.5625
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
     }
