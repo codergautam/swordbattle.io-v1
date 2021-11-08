@@ -101,7 +101,9 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   });
   this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
   this.returnKey.on("down", event => {
-    go()
+   if(this.promo) {
+     this.promo.destroy()
+   } else go()
   });
 
   
