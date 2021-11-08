@@ -82,7 +82,7 @@ app.use('/:file', (req, res, next) => {
   if (req.params.file == 'main.js') {
     res.set('Content-Type', 'text/javascript');
     res.send(mainjs);
-  } else if (['index.html', 'textbox.html', 'main.js.map'].includes(req.params.file)) {
+  } else if (['index.html', 'textbox.html', 'main.js.map', 'promo.html'].includes(req.params.file)) {
     res.sendFile(__dirname + '/dist/' + req.params.file);
   } else {
     next();

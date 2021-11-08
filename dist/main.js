@@ -1050,6 +1050,7 @@ class TitleScene extends Phaser.Scene {
   document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 100;
   this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "/textbox.html");
+  this.load.html("promo", "/promo.html");
   this.load.audio('openingsound', '/assets/sound/opening.mp3')
   document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 }
@@ -1082,9 +1083,10 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   }).setOrigin(0.5);
   
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
+      this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
   this.input.keyboard.on('keydown', function (event) {
 
-    if(this.nameBox.getChildByName('name') && this.nameBox.getChildByName('name').value.length >= 16) return
+    if(this.nameBox.getChildByName('name') && (this.nameBox.getChildByName('name').value.length >= 16 ||this.nameBox.getChildByName('name')  === document.activeElement)) return
    	if(event.key == 'a'){
    		this.nameBox.getChildByName('name').value+=event.key;
    	}else if(event.key == 's'){
@@ -1404,7 +1406,9 @@ var titleScene = new _TitleScene_js__WEBPACK_IMPORTED_MODULE_0__["default"]((nam
     gameScene.name = name
     gameScene.openingBgm = music
     titleScene.scene.start('game')
+    titleScene.showProm = false
 })
+titleScene.showProm = true
 var openScene = new _OpenScene_js__WEBPACK_IMPORTED_MODULE_4__["default"]()
 game.scene.add('title', titleScene)
 game.scene.add('game', gameScene)
