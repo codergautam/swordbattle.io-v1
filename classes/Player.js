@@ -230,7 +230,8 @@ return false
               this.kills += 1;
 
               //tell clients that this enemy died
-              if(!enemy.ai) {
+              if(!enemy.ai && socketById) {
+                
               socketById.emit('youDied', {
                 killedBy: this.name,
                 timeSurvived: Date.now() - enemy.joinTime,
