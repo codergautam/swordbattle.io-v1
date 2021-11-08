@@ -11,7 +11,7 @@ const axios = require('axios').default;
 
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
-var recaptcha = true
+var recaptcha = false
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
