@@ -1087,7 +1087,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
        this.promo = this.add.dom(0, 0).createFromCache("promo")
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
+       this.promo.getChildByName("close").onclick = () => {
+         this.promo.destroy()
+       }
      }
+
   this.input.keyboard.on('keydown', function (event) {
 
     if(this.nameBox.getChildByName('name') && (this.nameBox.getChildByName('name').value.length >= 16 ||this.nameBox.getChildByName('name')  === document.activeElement)) return
