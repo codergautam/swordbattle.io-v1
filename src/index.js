@@ -36,9 +36,9 @@ var titleScene = new TitleScene((name, music) => {
     gameScene.name = name
     gameScene.openingBgm = music
     titleScene.scene.start('game')
-    titleScene.showProm = false
+    titleScene.showPromo = false
 })
-titleScene.showProm = true
+titleScene.showPromo = true
 var openScene = new OpenScene()
 game.scene.add('title', titleScene)
 game.scene.add('game', gameScene)

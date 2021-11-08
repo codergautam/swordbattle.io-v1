@@ -1084,6 +1084,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
      if(this.showPromo) {
+       alert("yagdgigjoskdj")
        const convert = (num, val, newNum) => (newNum * val) / num
        this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
        this.promo.getChildByName("iframe").width = convert(1280, 560, window.innerWidth)
@@ -1417,9 +1418,9 @@ var titleScene = new _TitleScene_js__WEBPACK_IMPORTED_MODULE_0__["default"]((nam
     gameScene.name = name
     gameScene.openingBgm = music
     titleScene.scene.start('game')
-    titleScene.showProm = false
+    titleScene.showPromo = false
 })
-titleScene.showProm = true
+titleScene.showPromo = true
 var openScene = new _OpenScene_js__WEBPACK_IMPORTED_MODULE_4__["default"]()
 game.scene.add('title', titleScene)
 game.scene.add('game', gameScene)
