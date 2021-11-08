@@ -43,8 +43,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
      if(this.showPromo) {
        const convert = (num, val, newNum) => (newNum * val) / num
        this.promo = this.add.dom(0, 0).createFromCache("promo")
-       this.promo.x = this.promo.getChildByName("iframe").width / 2+ (window.innerWidth / 2)
-       this.promo.y = this.promo.getChildByName("iframe").height / 2 + (window.innerHeight / 2)
+       this.promo.x = (this.promo.width / 2)+ (window.innerWidth / 2)
+       this.promo.y = (this.promo.height / 2) + (window.innerHeight / 2)
      }
   this.input.keyboard.on('keydown', function (event) {
 
