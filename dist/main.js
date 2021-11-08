@@ -1085,9 +1085,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
      if(this.showPromo) {
        const convert = (num, val, newNum) => (newNum * val) / num
-       this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
-       this.promo.getChildByName("iframe").width = convert(1280, 560, window.innerWidth)
-       this.promo.getChildByName("iframe").height = convert(720, 315, window.innerWidth)
+       this.promo = this.add.dom(0, 0).createFromCache("promo")
      }
   this.input.keyboard.on('keydown', function (event) {
 
@@ -1152,11 +1150,6 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.nameBox.y = window.innerHeight / 1.8
     if(this.showPromo) {
        const convert = (num, val, newNum) => (newNum * val) / num
-
-           this.promo.getChildByName("iframe").width = convert(1280, 640, window.innerWidth)
-       this.promo.getChildByName("iframe").height = convert(720, 360, window.innerWidth)
-             this.promo.x = window.innerWidth / 2 - (this.promo.getChildByName("iframe").width /2)
-       this.promo.y = window.innerHeight / 2 - ( this.promo.getChildByName("iframe").height /2)
     }
     this.btntext.x = window.innerWidth / 2 
    this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
