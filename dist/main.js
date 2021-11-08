@@ -1099,7 +1099,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
   this.input.keyboard.on('keydown', function (event) {
 
-    if(this.nameBox.getChildByName('name') && (this.nameBox.getChildByName('name').value.length >= 16 ||this.nameBox.getChildByName('name')  === document.activeElement)) return
+    if(this.nameBox.getChildByName('name') && (this.nameBox.getChildByName('name').value.length >= 16 ||this.nameBox.getChildByName('name')  !== document.activeElement)) return
    	if(event.key == 'a'){
    		this.nameBox.getChildByName('name').value+=event.key;
    	}else if(event.key == 's'){
