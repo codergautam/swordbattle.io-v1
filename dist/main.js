@@ -1086,7 +1086,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
      if(this.showPromo) {
        this.promo = this.add.dom(0, 0).createFromCache("promo")
        this.promo.getChildByName("iframe").width = window.innerWidth / 2
-       this.promo.getChildByName("iframe").height = window.innerHeight / 2
+       this.promo.getChildByName("iframe").height = (window.innerWidth / 2) * 0.5625
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
      }
@@ -1153,7 +1153,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     this.nameBox.y = window.innerHeight / 1.8
     if(this.showPromo) {
        this.promo.getChildByName("iframe").width = window.innerWidth / 2
-       this.promo.getChildByName("iframe").height = window.innerHeight / 2
+       this.promo.getChildByName("iframe").height = (window.innerWidth / 2 ) *0.5625
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
     }
