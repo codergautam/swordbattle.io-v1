@@ -214,8 +214,8 @@ return false
           ) {
             var socketById = io.sockets.sockets.get(enemy.id);
             var socket = io.sockets.sockets.get(this.id);
-            if(!this.ai) socket.emit('dealHit', enemy.id);
-            if(!enemy.ai) socketById.emit('takeHit', this.id);
+            if(!this.ai && socket) socket.emit('dealHit', enemy.id);
+            if(!enemy.ai && socketById) socketById.emit('takeHit', this.id);
             //if colliding
             this.lastDamageDealt = Date.now();
             enemy.lastHit = Date.now();
