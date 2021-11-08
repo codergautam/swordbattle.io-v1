@@ -261,7 +261,7 @@ return false
                 );
                 drop.push(coins[coins.length - 1])
               }
-              if(!enemy.ai) {
+              if(!enemy.ai && socketById) {
               socketById.broadcast.emit('coin', drop);
               } else {
                 io.sockets.emit('coin', drop)
@@ -273,7 +273,7 @@ return false
               PlayerList.deletePlayer(enemy.id)
 
               //disconnect the socket
-              if(!enemy.ai) socketById.disconnect();
+              if(!enemy.ai && socketById) socketById.disconnect();
             } else {
               enemy.doKnockback(this);
             }
