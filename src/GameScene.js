@@ -511,7 +511,7 @@ this.callback({win: true, data:data})
         //sword 
 
                
-if(this.meSword.angle) var old = this.meSword.angle
+if(this.meSword) var old = this.meSword.angle
 
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
