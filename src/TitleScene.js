@@ -112,8 +112,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
            this.promo.getChildByName("iframe").width = convert(1280, 640, window.innerWidth)
        this.promo.getChildByName("iframe").height = convert(720, 360, window.innerWidth)
-             this.promo.x = window.innerWidth / 2 
-       this.promo.y = window.innerHeight / 2 
+             this.promo.x = window.innerWidth / 2 - (this.promo.getChildByName("iframe").width /2)
+       this.promo.y = window.innerHeight / 2 - ( this.promo.getChildByName("iframe").height /2)
     }
     this.btntext.x = window.innerWidth / 2 
    this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
