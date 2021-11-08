@@ -1052,7 +1052,7 @@ class TitleScene extends Phaser.Scene {
   this.load.html("form", "/textbox.html");
   this.load.html("promo", "/promo.html");
   this.load.audio('openingsound', '/assets/sound/opening.mp3')
-  document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
+ // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 }
 
  create() {
@@ -1083,7 +1083,12 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   }).setOrigin(0.5);
   
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
-      this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
+     if(this.showPromo) {
+       const convert = (num, val, newNum) => (newNum * val) / num
+       this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
+       this.promo.getChildByName("iframe").width = convert(1280, 560, window.innerWidth)
+       this.promo.getChildByName("iframe").height = convert(720, 315, window.innerWidth)
+     }
   this.input.keyboard.on('keydown', function (event) {
 
     if(this.nameBox.getChildByName('name') && (this.nameBox.getChildByName('name').value.length >= 16 ||this.nameBox.getChildByName('name')  === document.activeElement)) return
@@ -1145,6 +1150,12 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   
     this.nameBox.x = window.innerWidth / 2
     this.nameBox.y = window.innerHeight / 1.8
+    if(this.showPromo) {
+      this.promo.x = window.innerWidth / 2
+       this.promo.y = window.innerHeight / 2
+           this.promo.getChildByName("iframe").width = convert(1280, 560, window.innerWidth)
+       this.promo.getChildByName("iframe").height = convert(720, 315, window.innerWidth)
+    }
     this.btntext.x = window.innerWidth / 2 
    this.btntext.y =  window.innerHeight / 1.7 + this.nameBox.height 
    //this.btntext.y =  window.innerHeight / 1.7 + 10
