@@ -11,7 +11,7 @@ const axios = require('axios').default;
 
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
-var recaptcha = false
+var recaptcha = true
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
@@ -128,11 +128,13 @@ io.on('connection', async (socket) => {
 
   socket.on('go', async (name, captchatoken) => {
     function ready() {
-              name = name.substring(0, 16);
-        var thePlayer = new Player(socket.id, name);
-        thePlayer.updateValues();
-        PlayerList.setPlayer(socket.id, thePlayer)
-        console.log('player joined -> ' + name);
+      name = name.substring(0, 16);
+        axios.get("https://www.purgomalum.com/service/json?text="+name).then((r) => {
+
+       var thePlayer = new Player(socket.id,  r.data.result)
+       thePlayer.updateValues()
+         PlayerList.setPlayer(socket.id, thePlayer)
+        console.log('player joined -> ' + socket.id);
         socket.broadcast.emit('new', thePlayer);
 
         var allPlayers = Object.values(PlayerList.players);
@@ -143,6 +145,8 @@ io.on('connection', async (socket) => {
         socket.emit('coins', coins);
 
         socket.joined = true;
+      })
+
     }
     if (!captchatoken && recaptcha) {
       socket.emit(
@@ -192,25 +196,7 @@ io.on('connection', async (socket) => {
           socket.disconnect();
           return;
         }
-        name = name.substring(0, 16);
-        axios.get("https://www.purgomalum.com/service/json?text="+name).then((r) => {
-
-       
-        players[socket.id] = new Player(socket.id,  r.data.result);
-        players[socket.id].updateValues();
-        console.log('player joined -> ' + socket.id);
-        socket.broadcast.emit('new', players[socket.id]);
-
-        var allPlayers = Object.values(players);
-        allPlayers = allPlayers.filter((player) => player.id != socket.id);
-
-        if (allPlayers && allPlayers.length > 0)
-          socket.emit('players', allPlayers);
-        socket.emit('coins', coins);
-
-        socket.joined = true;
-      })
-
+  ready()
       });
   } else ready()
   });
