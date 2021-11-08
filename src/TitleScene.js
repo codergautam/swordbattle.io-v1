@@ -41,6 +41,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   
   this.nameBox = this.add.dom(window.innerWidth/2, window.innerHeight/1.7 ).createFromCache("form");
      if(this.showPromo) {
+       alert("yagdgigjoskdj")
        const convert = (num, val, newNum) => (newNum * val) / num
        this.promo = this.add.dom(window.innerWidth/2, window.innerHeight/2).createFromCache("promo")
        this.promo.getChildByName("iframe").width = convert(1280, 560, window.innerWidth)
