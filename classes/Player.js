@@ -120,6 +120,7 @@ this.pos.y = pos[1]
           this.coins += 1;
           if (this.scale > 7.5) var increase = 0.00025;
           else if (this.scale > 5) var increase = 0.0005;
+          else if (this.scale > 2.5) var increase = 0.0008;
           else var increase = 0.001;
           this.scale += increase;
           var index = coins.findIndex((e) => e.id == coin.id);
