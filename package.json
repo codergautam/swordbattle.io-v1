@@ -1,0 +1,30 @@
+{
+  "name": "sword.io",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "build": "webpack --config webpack.config.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js --unhandled-rejections=strict"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.24.0",
+    "cors": "^2.8.5",
+    "dotenv": "^10.0.0",
+    "express": "^4.17.1",
+    "express-rate-limit": "^5.5.0",
+    "intersects": "^2.7.2",
+    "javascript-obfuscator": "^3.0.0",
+    "potato-detection": "^1.0.2",
+    "socket.io": "^4.2.0",
+    "uuid": "^8.3.2"
+  },
+  "devDependencies": {
+    "webpack": "^5.61.0",
+    "webpack-cli": "^4.9.1"
+  }
+}

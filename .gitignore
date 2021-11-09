@@ -1,0 +1,47 @@
+<<<<<<< HEAD
+node_modules/
+.env
+# Compiled source #
+###################
+.breakpoints
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+out/
+
+# Packages #
+############
+# it's better to unpack these files and commit the raw source
+# git has its own built in compression methods
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+
+# Logs and databases #
+######################
+*.log
+*.sql
+*.sqlite
+
+# OS generated files #
+######################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+node_modules/
+.env
+.DS_Store
+package-lock.json
