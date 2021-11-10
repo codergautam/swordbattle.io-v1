@@ -26,12 +26,12 @@ const io = new Server(server, {
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
-var production = true;
+var production = false;
 if (production) {
   const rateLimit = require('express-rate-limit');
   const limiter = rateLimit({
-    windowMs: 5 * 60 * 1000, // 5 minutes
-    max: 100, // limit each IP to 100 requests per windowMs
+    windowMs: 60 * 1000, // 1 second
+    max: 25, // limit each IP to 100 requests per second
   });
   app.use('/', limiter);
 }
