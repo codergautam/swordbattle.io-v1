@@ -8,7 +8,8 @@ var cors = require('cors');
 const server = http.createServer(app);
 var JavaScriptObfuscator = require('javascript-obfuscator');
 const axios = require('axios').default;
-
+const Filter = require("purgomalum-swear-filter")
+var filter = new Filter()
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
 var recaptcha = true
@@ -129,9 +130,9 @@ io.on('connection', async (socket) => {
   socket.on('go', async (name, captchatoken) => {
     function ready() {
       name = name.substring(0, 16);
-        axios.get("https://www.purgomalum.com/service/json?text="+name).then((r) => {
+      filter.clean(name).then((r) => {
 
-       var thePlayer = new Player(socket.id,  r.data.result)
+       var thePlayer = new Player(socket.id,  r)
        thePlayer.updateValues()
          PlayerList.setPlayer(socket.id, thePlayer)
         console.log('player joined -> ' + socket.id);
@@ -140,11 +141,13 @@ io.on('connection', async (socket) => {
         var allPlayers = Object.values(PlayerList.players);
         allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
-        if (allPlayers && allPlayers.length > 0)
-          socket.emit('players', allPlayers);
+        if (allPlayers && allPlayers.length > 0) socket.emit('players', allPlayers);
         socket.emit('coins', coins);
 
         socket.joined = true;
+      }).catch((e) => {
+        socket.emit("ban", e)
+        socket.disconnect()
       })
 
     }
