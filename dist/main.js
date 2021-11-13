@@ -650,6 +650,7 @@ else var mousePos = this.gamePoint
 
 
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
+this.mePlayer.angle = this.meSword.angle + 45
          //sword animation
         if (this.mouseDown) this.swordAnim.go = true
         else this.swordAnim.go = false
@@ -730,6 +731,7 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
           } else {
               var factor = 6
           }         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5)
+          enemy.player.angle = enemy.sword.angle + 45
 
                          if (enemy.down) {
                              enemy.swordAnim.go = true
