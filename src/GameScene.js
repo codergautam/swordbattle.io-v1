@@ -13,7 +13,7 @@ class GameScene extends Phaser.Scene {
              console.log(e)
          }
         this.ready = false;
-        this.loadrect = this.add.rectangle(0,0, window.innerWidth*2, window.innerHeight*2, 0x006400).setDepth(200)
+        this.loadrect = this.add.rectangle(0,0, window.visualViewport.width*2, window.visualViewport.height*2, 0x006400).setDepth(200)
     }
 
     died(data) {
@@ -61,8 +61,8 @@ this.callback({win: true, data:data})
         this.loseSound = this.sound.add('loseSound', config)
         
         this.canvas = {
-            width: window.innerWidth,
-            height: window.innerHeight
+            width: window.visualViewport.width,
+            height: window.visualViewport.height
         }
 
         this.tps = 0
@@ -83,7 +83,7 @@ this.callback({win: true, data:data})
         this.myObj = undefined
 
         //killcounter
-        this.killCount = this.add.text(window.innerWidth / 1.5, 0, 'Kills: 0', {
+        this.killCount = this.add.text(window.visualViewport.width / 1.5, 0, 'Kills: 0', {
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
         }).setFontSize(40).setDepth(101);
         this.killCount.scrollFactorX = 0
@@ -98,7 +98,7 @@ this.callback({win: true, data:data})
         this.playerCount.scrollFactorY = 0
 
         //leaderboard
-        this.leaderboard = this.add.text(window.innerWidth, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
+        this.leaderboard = this.add.text(window.visualViewport.width, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
             fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
         }).setFontSize(20).setDepth(101);
         this.playerCount.scrollFactorX = 0
@@ -108,8 +108,8 @@ this.callback({win: true, data:data})
     }
         //minimap
         this.miniGraphics = this.add.graphics().setDepth(100)
-        this.miniGraphics.x = window.innerWidth - 205
-        this.miniGraphics.y = window.innerHeight - 205
+        this.miniGraphics.x = window.visualViewport.width - 205
+        this.miniGraphics.y = window.visualViewport.height - 205
         this.miniGraphics.lineStyle(5, 0xffff00, 1)
         this.miniGraphics.strokeRoundedRect(0, 0, 192,  192, 0)
         this.cameras.main.ignore(this.miniGraphics)
@@ -123,7 +123,7 @@ this.callback({win: true, data:data})
         .get("rexvirtualjoystickplugin")
         .add(this, {
           x: 150,
-          y: window.innerHeight - 150,
+          y: window.visualViewport.height - 150,
           radius: 100,
           base: this.add.circle(0, 0, 100, 0x888888),
           thumb: this.add.circle(0, 0, 50, 0xcccccc)
@@ -150,27 +150,27 @@ this.callback({win: true, data:data})
         this.cameras.main.setZoom(1)
         
         
-        this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.innerWidth, window.innerHeight);
+        this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.visualViewport.width, window.visualViewport.height);
         this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
         this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
         this.cameras.main.startFollow(this.mePlayer);
 
 
-        
+        this.input.addPointer(3);
         ///resize dynamicly
         const resize = () => {
             try {
             this.canvas = {
-                width: window.innerWidth,
-                height: window.innerHeight
+                width: window.visualViewport.width,
+                height: window.visualViewport.height
             }
             this.game.scale.resize(this.canvas.width, this.canvas.height)
-            if(this.mobile) this.joyStick.y = window.innerHeight - 150
+            if(this.mobile) this.joyStick.y = window.visualViewport.height - 150
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
-            this.miniGraphics.x = window.innerWidth - 205
-            this.miniGraphics.y = window.innerHeight - 205
+            this.miniGraphics.x = window.visualViewport.width - 205
+            this.miniGraphics.y = window.visualViewport.height - 205
             
             
         } catch(e) {
@@ -188,6 +188,7 @@ this.callback({win: true, data:data})
         this.input.on('pointerdown', function (pointer) {
             if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return
             if (!this.mouseDown) {
+                this.gamePoint = {x: pointer.x, y: pointer.y}
                 this.mouseDown = true
                 this.socket.emit("mouseDown", true)
 
@@ -197,6 +198,7 @@ this.callback({win: true, data:data})
             
             if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return
             if (this.mouseDown) {
+                this.gamePoint = {x: pointer.x, y: pointer.y}
                 this.mouseDown = false
                 this.socket.emit("mouseDown", false)
             }
@@ -312,7 +314,6 @@ this.callback({win: true, data:data})
             if(this.loadrect.visible) this.loadrect.destroy()
 
             if(this.mePlayer.texture.key+"Player" != player.skin) {
-                console.log(player.skin)
                 this.mePlayer.setTexture(player.skin+"Player")
                 this.meSword.setTexture(player.skin+"Sword")
             }
@@ -511,9 +512,11 @@ if(this.meSword) var old = this.meSword.angle
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
 
+console.log(mousePos)
+
 
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
-this.mePlayer.angle = this.meSword.angle + 45
+this.mePlayer.angle = this.meSword.angle + 45 +180
          //sword animation
         if (this.mouseDown) this.swordAnim.go = true
         else this.swordAnim.go = false
@@ -538,7 +541,7 @@ this.mePlayer.angle = this.meSword.angle + 45
             y: mousePos.y
         }
 
-        if (old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
+        if (this.socket && old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
 
         var fps = this.sys.game.loop.actualFps
    
@@ -594,7 +597,7 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
           } else {
               var factor = 6
           }         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5)
-          enemy.player.angle = enemy.sword.angle + 45
+          enemy.player.angle = enemy.sword.angle + 45 + 180
 
                          if (enemy.down) {
                              enemy.swordAnim.go = true
@@ -682,8 +685,8 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         })
 
         this.leaderboard.setText(text)
-        this.leaderboard.x = window.innerWidth - this.leaderboard.width
-        this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
+        this.leaderboard.x = window.visualViewport.width - this.leaderboard.width
+        this.killCount.x = (window.visualViewport.width*0.9) - this.leaderboard.width - this.killCount.width
 
     } catch(e) {
         //we shall try next frame
