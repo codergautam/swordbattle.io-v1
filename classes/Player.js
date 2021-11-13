@@ -192,7 +192,9 @@ return false
   updateValues() {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num
+    var percent = this.health / this.maxHealth
     this.maxHealth = this.scale * 400
+    this.health = percent * this.maxHealth
     this.damage = 80 * this.scale
     this.speed = clamp(740 - (convert(0.25, 1, this.scale) * 40),200,700)
 
