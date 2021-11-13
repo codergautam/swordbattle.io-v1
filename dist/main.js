@@ -149,21 +149,8 @@ class GameScene extends Phaser.Scene {
          } catch(e) {
              console.log(e)
          }
-        this.load.image("player", "/assets/images/player.png");
-        this.load.image("sword", "/assets/images/sword.png");
-        this.load.image('background', '/assets/images/background.jpeg');
-        this.load.image('coin', '/assets/images/coin.png');
-
-        this.load.audio('coin', '/assets/sound/coin.m4a');
-        this.load.audio('damage', '/assets/sound/damage.mp3');
-        this.load.audio('hit', '/assets/sound/hitenemy.wav');
-        this.load.audio('winSound', '/assets/sound/win.m4a');
-        this.load.audio('loseSound', '/assets/sound/lost.mp3');
-
-       
-
-
         this.ready = false;
+        this.loadrect = this.add.rectangle(0,0, window.innerWidth*2, window.innerHeight*2, 0x006400).setDepth(200)
     }
 
     died(data) {
@@ -385,8 +372,8 @@ this.callback({win: true, data:data})
                 },
                 playerObj: undefined,
                 lastTick: Date.now(),
-                sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25).setDepth(49),
-                player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25).setDepth(49),
+                sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
+                player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
                 bar: new _HealthBar_js__WEBPACK_IMPORTED_MODULE_0__["default"](this, player.pos.x, player.pos.y + 55),
                 nameTag: this.add.text(player.pos.x, player.pos.y - 90, player.name, {
                     fontFamily: 'serif',
@@ -459,6 +446,14 @@ this.callback({win: true, data:data})
             }
         })
         this.socket.on("me", (player) => {
+            if(this.loadrect.visible) this.loadrect.destroy()
+
+            if(this.mePlayer.texture.key+"Player" != player.skin) {
+                console.log(player.skin)
+                this.mePlayer.setTexture(player.skin+"Player")
+                this.meSword.setTexture(player.skin+"Sword")
+            }
+
             if (!this.myObj) {
                 this.mePlayer.x = player.pos.x
                 this.mePlayer.y = player.pos.y
@@ -986,6 +981,18 @@ class OpenScene extends Phaser.Scene {
     }
     preload() {
         this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
+        this.load.image("playerPlayer", "/assets/images/player.png");
+        this.load.image("playerSword", "/assets/images/sword.png");
+        this.load.image("devilPlayer", "/assets/images/devilPlayer.png");
+        this.load.image("devilSword", "/assets/images/devilSword.png");
+        this.load.image('background', '/assets/images/background.jpeg');
+        this.load.image('coin', '/assets/images/coin.png');
+
+        this.load.audio('coin', '/assets/sound/coin.m4a');
+        this.load.audio('damage', '/assets/sound/damage.mp3');
+        this.load.audio('hit', '/assets/sound/hitenemy.wav');
+        this.load.audio('winSound', '/assets/sound/win.m4a');
+        this.load.audio('loseSound', '/assets/sound/lost.mp3');
     }
 
     create() {

@@ -17,6 +17,10 @@ class Player {
     this.scale = 0.25
     this.damage = 10
 
+    if(["devil"].includes(name.toLowerCase())) {
+      this.skin = name.toLowerCase()
+    } else this.skin = "player"
+
     this.resistance = 20
     this.power = 200
 
@@ -285,7 +289,7 @@ return false
     return coins
   }
   getSendObj() {
-    return {id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}
+    return {skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}
   }
 }
 
