@@ -360,7 +360,7 @@ this.callback({win: true, data:data})
             
             miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
             miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-            miniMapPlayer.circle.radius = 20*player.scale
+            miniMapPlayer.circle.radius = ( 300 / 48)*player.scale 
         })
         this.socket.on("player", (player) => {
             //update player
@@ -393,7 +393,7 @@ this.callback({win: true, data:data})
             
                 miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
                 miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-                miniMapPlayer.circle.radius = 20 * player.scale
+                miniMapPlayer.circle.radius = (300 / 48 * player.scale)
 
             } catch (e) {
                 console.log(e)

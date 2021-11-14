@@ -102,7 +102,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 100;
-var maxAiPlayers = 9;
+var maxAiPlayers = 19;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
@@ -268,7 +268,7 @@ setInterval(async () => {
   if(normalPlayers > maxAiPlayers) aiNeeded = 0
   if(aiNeeded > maxAiPlayers) aiNeeded = maxAiPlayers
 
-  if (aiPlayers < aiNeeded && getRandomInt(0,200) == 5) {
+  if (aiPlayers < aiNeeded && getRandomInt(0,100) == 5) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
     console.log("AI Player Joined -> "+theAi.name)
