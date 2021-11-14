@@ -109,6 +109,20 @@ app.get('/', (req, res) => {
 });
 
 
+var oldlevels = [
+  {coins: 10, scale: 0.3},
+  {coins: 100, scale: 0.5},
+  {coins: 1000, scale: 1}
+]
+var levels = []
+oldlevels.forEach((level, index)  =>{
+  if(index == 0) levels.push(Object.assign({start: 0},level)) 
+  else {
+    levels.push(Object.assign({start: levels[index - 1].coins + levels[index - 1].start}, level))
+  }
+})
+
+
 
 io.on('connection', async (socket) => {
   socket.joinTime = Date.now();
@@ -231,7 +245,8 @@ io.on('connection', async (socket) => {
       if (PlayerList.has(socket.id)) {
         var player = PlayerList.getPlayer(socket.id);
         player.move(controller);
-        coins = player.collectCoins(coins, io)
+
+        coins = player.collectCoins(coins, io, levels)
       }
     } catch (e) {
       console.log(e);
@@ -304,7 +319,7 @@ setInterval(async () => {
     if(player) {
     //   player.moveWithMouse(players)
     if(player.ai) {
-     coins = player.tick(coins, io)
+     coins = player.tick(coins, io, levels)
     }
     if (
       Date.now() - player.lastHit > 5000 &&

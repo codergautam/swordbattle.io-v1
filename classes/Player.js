@@ -10,6 +10,7 @@ class Player {
     this.id = id
     this.name = name
     this.health = 100
+    this.level = 1
     this.coins = 0
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)}
     this.kills = 0
@@ -117,15 +118,20 @@ this.pos.y = pos[1]
     this.pos.x = clamp(pos[0], -2500, 2500)
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
-  collectCoins(coins, io) {
+  collectCoins(coins, io, levels) {
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
           this.coins += 1;
-          if (this.scale > 7.5) var increase = 0.00005;
-          else if (this.scale > 2.5) var increase = 0.0001;
-          else var increase = 0.0002;
-          this.scale += increase;
+
+          if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
+            //lvl up!
+            
+            var lvl = levels[this.level-1]
+            this.level += 1
+            this.scale = lvl.scale
+          }
+
           var index = coins.findIndex((e) => e.id == coin.id);
           coins.splice(index, 1);
 

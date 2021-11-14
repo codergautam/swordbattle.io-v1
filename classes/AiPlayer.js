@@ -14,7 +14,7 @@ class AiPlayer extends Player {
         this.mousePos.viewport.height = 1000
         
     }
-    tick(coins, io) {
+    tick(coins, io, levels) {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id)
       } else {
@@ -37,7 +37,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       }
       var controller = this.getController()
       this.move(controller)
-     coins = this.collectCoins(coins, io)
+     coins = this.collectCoins(coins, io, levels)
       }
       return coins
     }
