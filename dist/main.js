@@ -330,11 +330,11 @@ this.callback({win: true, data:data})
             this.miniMap.scaleFactor = convert(1189, 96, window.visualViewport.width)
             this.miniGraphics.x = window.visualViewport.width - ((this.miniMap.scaleFactor * 2) + padding)
             this.miniGraphics.y = window.visualViewport.height - ((this.miniMap.scaleFactor * 2) + padding)
-            this.miniMap.square.width = 3
+            this.miniGraphics.displayWidth = 3
 
             var padding = (this.canvas.width / 2)
             this.lvlBar.x = padding / 2
-            console.log(this.miniMap.square)
+            
             this.lvlBar.width = this.canvas.width - padding
             this.lvlBar.height = this.canvas.height / 30
             this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40)
