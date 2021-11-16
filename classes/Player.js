@@ -194,7 +194,7 @@ return false
     var percent = this.health / this.maxHealth
     this.maxHealth = this.scale * 400
     this.health = percent * this.maxHealth
-    this.damage = 80 * this.scale
+    this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale )
     this.speed = clamp(740 - (convert(0.25, 1, this.scale) * 40),200,700)
 
     this.power = convert(0.25, 200, this.scale)
