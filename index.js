@@ -102,7 +102,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 100;
-var maxAiPlayers = 19;
+var maxAiPlayers = 4;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
