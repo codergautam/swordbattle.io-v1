@@ -1,6 +1,9 @@
 var intersects = require("intersects")
 const PlayerList = require("./PlayerList")
 const Coin = require("./Coin.js")
+const { Worker } = require('worker_threads');
+const CoinList = require("./CoinList");
+
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -112,14 +115,34 @@ this.pos.y = pos[1]
         point[1] - (Math.cos(angle) * distance)
     ];
   }
+  async dropCoins() {
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+  var drop = []
+
+  for (var i = 0; i < clamp(this.coins * 0.8, 10, 2000); i++) {
+    var r = this.radius * this.scale * Math.sqrt(Math.random());
+    var theta = Math.random() * 2 * Math.PI;
+    var x = this.pos.x + r * Math.cos(theta);
+    var y = this.pos.y + r * Math.sin(theta);
+  
+    drop.push(new Coin({
+        x: clamp(x, -2500, 2500),
+        y: clamp(y, -2500, 2500),
+      }))
+  }
+
+  CoinList.addCoins(drop)
+  return drop
+  }
   doKnockback(player) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI , player.power-this.resistance)
     this.pos.x = clamp(pos[0], -2500, 2500)
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
-  collectCoins(coins, io, levels) {
-           var touching = coins.filter((coin) => coin.touchingPlayer(this));
+  collectCoins(io, levels) {
+   
+           var touching = CoinList.coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
           this.coins += 1;
@@ -132,8 +155,7 @@ this.pos.y = pos[1]
             this.scale = lvl.scale
           }
 
-          var index = coins.findIndex((e) => e.id == coin.id);
-          coins.splice(index, 1);
+          CoinList.deleteCoin(coin.id)
 
           this.updateValues();
           io.sockets.emit('collected', coin.id, this.id);
@@ -157,7 +179,6 @@ io.sockets.emit('playerDied', this.id)
           //disconnect the player
           if(!this.ai) socketById.disconnect();
         }
-      return coins
   }
   hittingPlayer(player) {
 
@@ -206,13 +227,13 @@ return false
     this.power = convert(0.25, 200, this.scale)
     this.resistance = convert(0.25, 20, this.scale)
   }
-  down(down, coins, io) {
+  down(down, io) {
     this.mouseDown = down;
-    return this.checkCollisions(coins, io)
+    this.checkCollisions(io)
   }
-  checkCollisions(coins, io) {
+  checkCollisions(io) {
     //hit cooldown
-
+    var worker = undefined;
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
       Object.values(PlayerList.players).forEach((enemy) => {
@@ -258,26 +279,15 @@ return false
                 });
               }
               //drop their coins
-              var drop = []
-              for (var i = 0; i < clamp(enemy.coins, 10, 5000); i++) {
-                var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
-                var theta = Math.random() * 2 * Math.PI;
-                var x = enemy.pos.x + r * Math.cos(theta);
-                var y = enemy.pos.y + r * Math.sin(theta);
 
-                coins.push(
-                  new Coin({
-                    x: clamp(x, -2500, 2500),
-                    y: clamp(y, -2500, 2500),
-                  })
-                );
-                drop.push(coins[coins.length - 1])
-              }
+              enemy.dropCoins().then((drop) => {
               if(!enemy.ai && socketById) {
               socketById.broadcast.emit('coin', drop);
               } else {
                 io.sockets.emit('coin', drop)
               }
+            })
+            
               //log a message
               console.log(this.name+' killed ' + enemy.name);
 
@@ -286,6 +296,7 @@ return false
 
               //disconnect the socket
               if(!enemy.ai && socketById) socketById.disconnect();
+            
             } else {
               enemy.doKnockback(this);
             }
@@ -293,7 +304,6 @@ return false
         }
       });
     }
-    return coins
   }
   getSendObj() {
     return {skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos}

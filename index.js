@@ -18,6 +18,7 @@ const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
 const AiPlayer = require('./classes/AiPlayer');
 const PlayerList = require('./classes/PlayerList')
+const CoinList = require("./classes/CoinList")
 
 const io = new Server(server, {
   allowRequest: (req, callback) => {
@@ -99,8 +100,6 @@ Object.filter = (obj, predicate) =>
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
-var coins = [];
-
 var maxCoins = 100;
 var maxAiPlayers = 19;
 
@@ -156,7 +155,7 @@ io.on('connection', async (socket) => {
         allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
         if (allPlayers && allPlayers.length > 0) socket.emit('players', allPlayers);
-        socket.emit('coins', coins);
+        socket.emit('coins', CoinList.coins);
 
         socket.joined = true;
       }).catch((e) => {
@@ -234,7 +233,7 @@ io.on('connection', async (socket) => {
     if (PlayerList.has(socket.id)) {
       var player = PlayerList.getPlayer(socket.id);
       if (player.mouseDown == down) return;
-       coins = player.down(down, coins, io)
+       player.down(down, io)
        PlayerList.updatePlayer(player)
     } else socket.emit('refresh');
   });
@@ -246,7 +245,7 @@ io.on('connection', async (socket) => {
         var player = PlayerList.getPlayer(socket.id);
         player.move(controller);
 
-        coins = player.collectCoins(coins, io, levels)
+        player.collectCoins(io, levels)
       }
     } catch (e) {
       console.log(e);
@@ -270,9 +269,10 @@ setInterval(async () => {
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
   PlayerList.clean()
   moderation.io = io
-  if (coins.length < maxCoins) {
-    coins.push(new Coin());
-    io.sockets.emit('coin', coins[coins.length - 1]);
+  if (CoinList.coins.length < maxCoins) {
+    var newCoin = new Coin();
+    CoinList.addCoin(newCoin);
+    io.sockets.emit('coin', newCoin);
   }
   var aiNeeded = 0
   var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length
@@ -298,7 +298,7 @@ setInterval(async () => {
     tps = 0;
   }
   if (Date.now() - lastCoinSend >= 10000) {
-    io.sockets.emit('coins', coins);
+    io.sockets.emit('coins', CoinList.coins);
     lastCoinSend = Date.now();
   }
 
@@ -319,7 +319,7 @@ setInterval(async () => {
     if(player) {
     //   player.moveWithMouse(players)
     if(player.ai) {
-     coins = player.tick(coins, io, levels)
+    player.tick(io, levels)
     }
     if (
       Date.now() - player.lastHit > 5000 &&
