@@ -123,8 +123,8 @@ this.pos.y = pos[1]
         touching.forEach((coin) => {
           this.coins += 1;
           if (this.scale > 7.5) var increase = 0.00005;
-          else if (this.scale > 2.5) var increase = 0.0001;
-          else var increase = 0.0002;
+          else if (this.scale > 2.5) var increase = 0.0004;
+          else var increase = 0.0008;
           this.scale += increase;
           var index = coins.findIndex((e) => e.id == coin.id);
           coins.splice(index, 1);
