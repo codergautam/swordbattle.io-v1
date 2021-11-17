@@ -14,11 +14,9 @@ class DeathScene extends Phaser.Scene {
         this.callback = callback
     }
     preload() {
-
     }
 
     create() {
-        console.log("Rendering death screen")
         this.lerp = function (start, end, amt){
             return (1-amt)*start+amt*end
           }
@@ -61,7 +59,6 @@ class DeathScene extends Phaser.Scene {
         this.returnKey.on("down", event => {
             this.scene.start('title')
         });
-        console.log("Render complete!")
     }
 
     update() {

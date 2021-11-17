@@ -18,7 +18,6 @@ const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
 const AiPlayer = require('./classes/AiPlayer');
 const PlayerList = require('./classes/PlayerList')
-const CoinList = require("./classes/CoinList")
 
 const io = new Server(server, {
   allowRequest: (req, callback) => {
@@ -100,26 +99,14 @@ Object.filter = (obj, predicate) =>
     .filter((key) => predicate(obj[key]))
     .reduce((res, key) => ((res[key] = obj[key]), res), {});
 
+var coins = [];
+
 var maxCoins = 100;
 var maxAiPlayers = 9;
 
 app.get('/', (req, res) => {
   res.sendFile(__dirname + '/dist/index.html');
 });
-
-
-var oldlevels = [
-  {coins: 10, scale: 0.3},
-  {coins: 100, scale: 0.5},
-  {coins: 1000, scale: 1}
-]
-var levels = []
-oldlevels.forEach((level, index)  =>{
-  if(index == 0) levels.push(Object.assign({start: 0},level)) 
-  else {
-    levels.push(Object.assign({start: levels[index - 1].coins + levels[index - 1].start}, level))
-  }
-})
 
 
 
@@ -155,7 +142,7 @@ io.on('connection', async (socket) => {
         allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
         if (allPlayers && allPlayers.length > 0) socket.emit('players', allPlayers);
-        socket.emit('coins', CoinList.coins);
+        socket.emit('coins', coins);
 
         socket.joined = true;
       }).catch((e) => {
@@ -233,7 +220,7 @@ io.on('connection', async (socket) => {
     if (PlayerList.has(socket.id)) {
       var player = PlayerList.getPlayer(socket.id);
       if (player.mouseDown == down) return;
-       player.down(down, io)
+       coins = player.down(down, coins, io)
        PlayerList.updatePlayer(player)
     } else socket.emit('refresh');
   });
@@ -244,8 +231,7 @@ io.on('connection', async (socket) => {
       if (PlayerList.has(socket.id)) {
         var player = PlayerList.getPlayer(socket.id);
         player.move(controller);
-
-        player.collectCoins(io, levels)
+        coins = player.collectCoins(coins, io)
       }
     } catch (e) {
       console.log(e);
@@ -269,10 +255,9 @@ setInterval(async () => {
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
   PlayerList.clean()
   moderation.io = io
-  if (CoinList.coins.length < maxCoins) {
-    var newCoin = new Coin();
-    CoinList.addCoin(newCoin);
-    io.sockets.emit('coin', newCoin);
+  if (coins.length < maxCoins) {
+    coins.push(new Coin());
+    io.sockets.emit('coin', coins[coins.length - 1]);
   }
   var aiNeeded = 0
   var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length
@@ -298,7 +283,7 @@ setInterval(async () => {
     tps = 0;
   }
   if (Date.now() - lastCoinSend >= 10000) {
-    io.sockets.emit('coins', CoinList.coins);
+    io.sockets.emit('coins', coins);
     lastCoinSend = Date.now();
   }
 
@@ -319,7 +304,7 @@ setInterval(async () => {
     if(player) {
     //   player.moveWithMouse(players)
     if(player.ai) {
-    player.tick(io, levels)
+     coins = player.tick(coins, io)
     }
     if (
       Date.now() - player.lastHit > 5000 &&
@@ -330,13 +315,10 @@ setInterval(async () => {
       player.lastRegen = Date.now();
       player.health += player.health / 100;
     }
-    player.lastPosSent = Date.now()
     PlayerList.updatePlayer(player)
 
     //emit player data to all clients
-    
     sockets.forEach((socket) => {
-      
       if(!player.getSendObj()) console.log("gg")
       if (player.id != socket.id) socket.emit('player', player.getSendObj());
       else socket.emit('me', player);
@@ -344,17 +326,7 @@ setInterval(async () => {
   }
   });
   tps += 1;
-}, 1000 / 5);
-
-//get ping 
-setInterval(async () => {
-  var playersarray = Object.values(PlayerList.players);
-  var sockets = await io.fetchSockets();
-
-  sockets.forEach((socket)=>{
-    
-  })
-}, 2000)
+}, 1000 / 30);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log('server started');

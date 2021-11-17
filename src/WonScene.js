@@ -17,7 +17,7 @@ class WonScene extends Phaser.Scene {
     }
 
     create() {
-        console.log("Rendering winscreen")
+
         this.background = this.add.rectangle(0, 0, window.innerHeight, window.innerWidth, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.innerWidth / 2, 0, 'You won!', {
             fontSize: '64px',
@@ -57,7 +57,6 @@ class WonScene extends Phaser.Scene {
         this.returnKey.on("down", event => {
             this.scene.start('title')
         });
-        console.log("Render Complete!")
     }
 
     update() {

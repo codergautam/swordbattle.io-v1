@@ -4,7 +4,6 @@ class TitleScene extends Phaser.Scene {
     this.callback = callback
   }
  preload() {
-   console.log("Loading Home Screen")
   document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 100;
   this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "/textbox.html");
@@ -88,7 +87,6 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
   this.btnrect.height = this.btntext.height + 10
  
   const go = () => {
- 
     let name = this.nameBox.getChildByName("name")
 
   // let name ={value: "hi"}
@@ -99,7 +97,6 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
       this.done = true
       window.localStorage.setItem("oldName", name.value)
       this.callback(name.value, this.music)
-      console.log("Opening game screen..")
       this.nameBox.destroy()
 
     }
@@ -146,8 +143,6 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     window.addEventListener("resize", resize, false);
 
     resize()
-
-    console.log("Load complete")
     
 }
 
