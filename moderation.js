@@ -41,9 +41,11 @@ module.exports = {
           app.get('/ipunban/:token', (req, res) => {
             var token = req.params.token == process.env.TOKEN;
             if (token) {
-              if (module.exports.bannedIps.includes(req.query.ip))
-              module.exports.bannedIps = module.exports.bannedIps.filter((b) => b != req.query.ip);
-              res.send(module.exports.bannedIps.toString());
+                var ip = req.query.ip.replace(/%20/g, " ");
+
+              if (module.exports.bannedIps.includes(ip))
+              module.exports.bannedIps = module.exports.bannedIps.filter((b) => b != ip);
+              res.send('unbanned '+ip);
             } else {
               res.send('idot');
             }
