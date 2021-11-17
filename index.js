@@ -341,7 +341,7 @@ setInterval(async () => {
   }
   });
   tps += 1;
-}, 1000 / 2);
+}, 1000 / 5);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log('server started');
