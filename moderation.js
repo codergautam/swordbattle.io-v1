@@ -17,7 +17,7 @@ module.exports = {
               var txt = '';
               if (Object.values(PlayerList.players).length < 1) return res.send('len 0');
               Object.values(PlayerList.players).forEach((player) => {
-                var socket = io.sockets.sockets.get(player.id);
+                var socket = module.exports.io.sockets.sockets.get(player.id);
                 txt += player.name + ' - ' + socket.ip + ' - '+player.id+'<br>';
               });
               res.send(txt);
@@ -29,7 +29,7 @@ module.exports = {
           app.get('/ipban/:token', (req, res) => {
             var token = req.params.token == process.env.TOKEN;
             if (token) {
-                  var socket = io.sockets.sockets.get(req.query.id);
+                  var socket = module.exports.io.sockets.sockets.get(req.query.id);
               module.exports.bannedIps.push(socket.ip);
                 socket.disconnect();
               res.send("banned "+socket.ip);
