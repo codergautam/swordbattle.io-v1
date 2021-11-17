@@ -330,10 +330,13 @@ setInterval(async () => {
       player.lastRegen = Date.now();
       player.health += player.health / 100;
     }
+    player.lastPosSent = Date.now()
     PlayerList.updatePlayer(player)
 
     //emit player data to all clients
+    
     sockets.forEach((socket) => {
+      
       if(!player.getSendObj()) console.log("gg")
       if (player.id != socket.id) socket.emit('player', player.getSendObj());
       else socket.emit('me', player);

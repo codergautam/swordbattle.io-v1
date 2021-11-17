@@ -19,6 +19,7 @@ class Player {
     this.kills = 0
     this.speed = 700
     this.scale = 0.25
+    this.lastPosSent = Date.now()
     this.damage = 10
 
     if(["devil"].includes(name.toLowerCase())) {

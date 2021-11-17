@@ -222,6 +222,10 @@ this.callback({win: true, data:data})
         
         this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50)
         this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51)
+        this.meCircle =  this.add.circle(0, 0, 50, 0xFF0000).setDepth(567)
+        
+
+
         this.swordAnim = {go: false, added: 0}
         this.goTo = {
             x: undefined,
@@ -309,7 +313,7 @@ this.callback({win: true, data:data})
         
         this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.visualViewport.width, window.visualViewport.height);
         this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard, this.lvlBar.bar ]);
-        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
+        this.UICam.ignore([this.meCircle, this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
         this.cameras.main.startFollow(this.mePlayer);
 
         console.log("Camera loaded")
@@ -493,6 +497,9 @@ this.callback({win: true, data:data})
                 this.loadrect.destroy()
                 console.log("Connected to server!")
             }
+
+            this.meCircle.x = player.pos.x
+            this.meCircle.y = player.pos.y
 
             if(this.mePlayer.texture.key+"Player" != player.skin) {
                 this.mePlayer.setTexture(player.skin+"Player")
