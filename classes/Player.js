@@ -41,6 +41,16 @@ class Player {
     this.radius = this.size / 2
     this.lastMove = Date.now()
   }
+  predictPosition() {
+    //get the time spent moving on client
+    var timeSpentMoving = Date.now() - this.lastPosSent
+    //assume fps is 60, calculate lerpValue based on it
+    var fps = 60
+    var lerpValue = fps/ 500
+    var lerpTimes = timeSpentMoving / fps
+    
+
+  }
   moveWithMouse(players) {
 /*
     var players = Object.values(players)

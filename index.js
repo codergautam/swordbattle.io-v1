@@ -346,6 +346,16 @@ setInterval(async () => {
   tps += 1;
 }, 1000 / 5);
 
+//get ping 
+setInterval(async () => {
+  var playersarray = Object.values(PlayerList.players);
+  var sockets = await io.fetchSockets();
+
+  sockets.forEach((socket)=>{
+    
+  })
+}, 2000)
+
 server.listen(process.env.PORT || 3000, () => {
   console.log('server started');
 });
