@@ -1,3 +1,4 @@
+const CoinList = require("./CoinList");
 const Player = require("./Player")
 const PlayerList = require("./PlayerList")
 function getRandomInt(min, max) {
@@ -14,17 +15,17 @@ class AiPlayer extends Player {
         this.mousePos.viewport.height = 1000
         
     }
-    tick(coins, io) {
+    tick(io, levels) {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id)
       } else {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
-if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins))
+if(!this.target || !this.entityExists(this.target,this.getEntities())) this.target = this.getClosestEntity(this.getEntities())
       if(this.target) {
         
         if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(100, 700)) {
           this.lastHit = Date.now()
-         coins = this.down(!this.mouseDown, coins, io)
+         this.down(!this.mouseDown, io)
         } 
         var tPos = this.getTpos()
         this.toSword = {
@@ -37,9 +38,9 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       }
       var controller = this.getController()
       this.move(controller)
-     coins = this.collectCoins(coins, io)
+     this.collectCoins(io, levels)
       }
-      return coins
+     
     }
     getController() {
       var controller = {
@@ -58,10 +59,11 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       }
       return controller
     }
-    getEntities(coins) {
+    getEntities() {
       var players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id && Date.now() - p.joinTime > 5000)
-      var entities = players.concat(coins)
-      return (this.coins < 5000 && Date.now() - this.joinTime < 5000 ? coins : (this.coins < 5000 ? entities : players))
+      var entities = players.concat(CoinList.coins)
+      
+      return (this.coins < 5000 && Date.now() - this.joinTime < 5000 ? CoinList.coins : (this.coins < 5000 ? entities : players))
       //return players
     }
     getTpos() {

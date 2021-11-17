@@ -4,6 +4,8 @@ import DeathScene from './DeathScene.js';
 import WonScene from './WonScene.js';
 import OpenScene from './OpenScene.js';
 
+console.log("%cSword.io %cDev Build\n%cDeveloped by %cCoderGautamYT", "font-size: 50px; color: green", "color: cyan", "font-size: 15px; color: orange", "font-size: 20px; color: red");
+
 var config = {
     type: Phaser.AUTO,
     width: window.visualViewport.width,

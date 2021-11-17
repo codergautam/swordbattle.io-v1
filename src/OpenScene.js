@@ -14,6 +14,9 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback
     }
     preload() {
+
+        console.log("Starting sword.io")
+        console.log("Loading assets")
         this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
@@ -27,9 +30,11 @@ class OpenScene extends Phaser.Scene {
         this.load.audio('hit', '/assets/sound/hitenemy.wav');
         this.load.audio('winSound', '/assets/sound/win.m4a');
         this.load.audio('loseSound', '/assets/sound/lost.mp3');
+        console.log("Assets loaded!")
     }
 
     create() {
+        console.log("Rendering screen..")
         this.go = false
         this.background = this.add.rectangle(0, 0, window.visualViewport.width, window.visualViewport.height, 0x000000).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(window.visualViewport.width / 2, window.visualViewport.height / 2, 'Click to join the game..', {
@@ -53,6 +58,7 @@ class OpenScene extends Phaser.Scene {
         this.input.on("pointerdown", event => {
             this.go = true
         });
+        console.log("Render complete!")
     }
 
     update() {
