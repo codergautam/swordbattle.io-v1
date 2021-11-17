@@ -1,3 +1,4 @@
+const PlayerList = require("./classes/PlayerList")
 module.exports = {
     bannedIps: [
         '34.133.168.193',
@@ -9,16 +10,15 @@ module.exports = {
         '34.135.84.39',
         '73.222.174.240',
       ],
-      players: {},
       io: undefined,
     start(app) {
         app.get('/ipcheck/:token', (req, res) => {
             if (process.env.TOKEN == req.params.token) {
               var txt = '';
-              if (Object.values(module.exports.players).length < 1) return res.send('len 0');
-              Object.values(module.exports.players).forEach((player) => {
+              if (Object.values(PlayerList.players).length < 1) return res.send('len 0');
+              Object.values(PlayerList.players).forEach((player) => {
                 var socket = io.sockets.sockets.get(player.id);
-                txt += player.name + ' - ' + socket.ip + '<br>';
+                txt += player.name + ' - ' + socket.ip + ' - '+player.id+'<br>';
               });
               res.send(txt);
             } else {
@@ -29,8 +29,10 @@ module.exports = {
           app.get('/ipban/:token', (req, res) => {
             var token = req.params.token == process.env.TOKEN;
             if (token) {
-              module.exports.bannedIps.push(req.query.ip);
-              res.send(module.exports.bannedIps.toString());
+                  var socket = io.sockets.sockets.get(req.query.id);
+              module.exports.bannedIps.push(socket.ip);
+                socket.disconnect();
+              res.send("banned "+socket.ip);
             } else {
               res.send('idot');
             }
