@@ -257,11 +257,14 @@ this.callback({win: true, data:data})
         const convert = (num, val, newNum) => (newNum * val) / num
         this.miniMap = {people: [], scaleFactor: convert(1189, 96, window.visualViewport.width), square: undefined}
         this.miniGraphics = this.add.graphics().setDepth(100)
+        
         var padding = 13
+        this.miniMap.scaleFactor = convert(1189, 96, window.visualViewport.width)
         this.miniGraphics.x = window.visualViewport.width - ((this.miniMap.scaleFactor * 2) + padding)
         this.miniGraphics.y = window.visualViewport.height - ((this.miniMap.scaleFactor * 2) + padding)
         this.miniGraphics.lineStyle(5, 0xffff00, 1)
-        this.miniMap.square =  this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+        this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+        
         this.cameras.main.ignore(this.miniGraphics)
         
         
@@ -326,13 +329,15 @@ this.callback({win: true, data:data})
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
+            this.miniGraphics.clear()
             var padding = 13
             this.miniMap.scaleFactor = convert(1189, 96, window.visualViewport.width)
             this.miniGraphics.x = window.visualViewport.width - ((this.miniMap.scaleFactor * 2) + padding)
             this.miniGraphics.y = window.visualViewport.height - ((this.miniMap.scaleFactor * 2) + padding)
-            this.miniGraphics.displayWidth = 3
+            this.miniGraphics.lineStyle(5, 0xffff00, 1)
+            this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
 
-            var padding = (this.canvas.width / 2)
+            padding = (this.canvas.width / 2)
             this.lvlBar.x = padding / 2
             
             this.lvlBar.width = this.canvas.width - padding
@@ -534,9 +539,9 @@ this.callback({win: true, data:data})
 
             var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
             
-            miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
-            miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
-            miniMapPlayer.circle.radius = ( 300 / (this.miniMap.scaleFactor / 2))*player.scale 
+            miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
+            miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
+            miniMapPlayer.circle.radius = player.scale * convert(1280, 20, window.visualViewport.width)
         })
         this.socket.on("player", (player) => {
             //update player
@@ -566,10 +571,11 @@ this.callback({win: true, data:data})
 
                 //minimap
                 var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
-            
-                miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-                miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-                miniMapPlayer.circle.radius = (300 / 48 * player.scale)
+    
+
+                miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
+                miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
+                miniMapPlayer.circle.radius = convert(1280, 20, window.visualViewport.width) * player.scale
 
             } catch (e) {
                 console.log(e)
