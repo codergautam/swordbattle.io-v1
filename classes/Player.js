@@ -17,7 +17,7 @@ class Player {
     this.scale = 0.25
     this.damage = 10
 
-    if(["devil"].includes(name.toLowerCase())) {
+    if(["devil", "codergautamyt"].includes(name.toLowerCase())) {
       this.skin = name.toLowerCase()
     } else this.skin = "player"
 
