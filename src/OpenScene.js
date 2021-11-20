@@ -17,6 +17,8 @@ class OpenScene extends Phaser.Scene {
         this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
+        this.load.image("codergautamytPlayer", "/assets/images/codergautamytPlayer.png");
+        this.load.image("codergautamytSword", "/assets/images/codergautamytSword.png");
         this.load.image("devilPlayer", "/assets/images/devilPlayer.png");
         this.load.image("devilSword", "/assets/images/devilSword.png");
         this.load.image('background', '/assets/images/background.jpeg');
