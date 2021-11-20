@@ -13,6 +13,13 @@ class TitleScene extends Phaser.Scene {
 }
 
  create() {
+  var access = true
+  try {
+    window.localStorage
+  } catch(e) {
+    access = false
+  }
+
   this.music = this.sound.add('openingsound', {
     mute: false,
     volume: 1,
@@ -70,8 +77,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
        this.nameBox.getChildByName('name').value+=event.key;
      }
 }.bind(this));
-
-  this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : ""
+  if(access) this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : ""
+  else this.nameBox.getChildByName("name").value = ""
 
   
   this.done = false
@@ -95,7 +102,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     else if(this.done) return
     else {
       this.done = true
-      window.localStorage.setItem("oldName", name.value)
+      if(access) window.localStorage.setItem("oldName", name.value)
       this.callback(name.value, this.music)
       this.nameBox.destroy()
 

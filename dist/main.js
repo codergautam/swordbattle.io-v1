@@ -649,9 +649,6 @@ if(this.meSword) var old = this.meSword.angle
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
 
-console.log(mousePos)
-
-
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 this.mePlayer.angle = this.meSword.angle + 45 +180
          //sword animation
@@ -1070,6 +1067,13 @@ class TitleScene extends Phaser.Scene {
 }
 
  create() {
+  var access = true
+  try {
+    window.localStorage
+  } catch(e) {
+    access = false
+  }
+
   this.music = this.sound.add('openingsound', {
     mute: false,
     volume: 1,
@@ -1127,8 +1131,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
        this.nameBox.getChildByName('name').value+=event.key;
      }
 }.bind(this));
-
-  this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : ""
+  if(access) this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : ""
+  else this.nameBox.getChildByName("name").value = ""
 
   
   this.done = false
@@ -1152,7 +1156,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
     else if(this.done) return
     else {
       this.done = true
-      window.localStorage.setItem("oldName", name.value)
+      if(access) window.localStorage.setItem("oldName", name.value)
       this.callback(name.value, this.music)
       this.nameBox.destroy()
 
@@ -1411,7 +1415,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var config = {
-    type: Phaser.AUTO,
+    type: Phaser.CANVAS,
     width: window.visualViewport.width,
     height: window.visualViewport.height,
     parent: "game",

@@ -512,9 +512,6 @@ if(this.meSword) var old = this.meSword.angle
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
 
-console.log(mousePos)
-
-
 this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 this.mePlayer.angle = this.meSword.angle + 45 +180
          //sword animation
