@@ -12,7 +12,7 @@ const Filter = require("purgomalum-swear-filter")
 var filter = new Filter()
 const moderation = require("./moderation")
 const { v4: uuidv4 } = require('uuid');
-var recaptcha = false
+var recaptcha = true
 
 const Player = require('./classes/Player');
 const Coin = require('./classes/Coin');
@@ -259,16 +259,13 @@ setInterval(async () => {
     coins.push(new Coin());
     io.sockets.emit('coin', coins[coins.length - 1]);
   }
-  var aiNeeded = 0
   var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length
   var aiPlayers = Object.keys(PlayerList.players).length
   
-  aiNeeded = maxAiPlayers + 1 - normalPlayers
  // console.log(aiNeeded)
-  if(normalPlayers > maxAiPlayers) aiNeeded = 0
-  if(aiNeeded > maxAiPlayers) aiNeeded = maxAiPlayers
 
-  if (aiPlayers < aiNeeded && getRandomInt(0,100) == 5) {
+
+  if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
     var id = uuidv4()
     var theAi = new AiPlayer(id)
     console.log("AI Player Joined -> "+theAi.name)

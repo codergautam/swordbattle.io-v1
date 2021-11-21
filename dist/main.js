@@ -196,16 +196,10 @@ this.callback({win: true, data:data})
         this.hit = this.sound.add('hit', config)
         this.winSound = this.sound.add('winSound', config)
         this.loseSound = this.sound.add('loseSound', config)
-        
-        this.canvas = {
-            width: window.visualViewport.width,
-            height: window.visualViewport.height
-        }
-
+    
         this.tps = 0
         //background
-        this.background = this.add.tileSprite(-2500, -2500, 5000, 5000, 'background').setOrigin(0).setDepth(2);
-        this.void = this.add.rectangle(-5000, -5000, 10000, 10000, 0x006400).setOrigin(0).setDepth(1);
+        this.background = this.add.tileSprite(0, 0, window.visualViewport.width, window.visualViewport.height, 'background').setOrigin(0).setDepth(2);
         this.background.fixedToCamera = true;
 
         //player 
@@ -289,7 +283,7 @@ this.callback({win: true, data:data})
         
         this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.visualViewport.width, window.visualViewport.height);
         this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
-        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
+        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background])
         this.cameras.main.startFollow(this.mePlayer);
 
 
@@ -297,17 +291,16 @@ this.callback({win: true, data:data})
         ///resize dynamicly
         const resize = () => {
             try {
-            this.canvas = {
-                width: window.visualViewport.width,
-                height: window.visualViewport.height
-            }
-            this.game.scale.resize(this.canvas.width, this.canvas.height)
+
+            this.game.scale.resize( window.visualViewport.width,  window.visualViewport.height)
             if(this.mobile) this.joyStick.y = window.visualViewport.height - 150
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
             this.miniGraphics.x = window.visualViewport.width - 205
             this.miniGraphics.y = window.visualViewport.height - 205
+            this.background.width = window.visualViewport.width
+                this.background.height =  window.visualViewport.height
             
             
         } catch(e) {
@@ -356,10 +349,15 @@ this.callback({win: true, data:data})
 
         //boundary
         this.graphics = this.add.graphics().setDepth(4)
+        var thickness = 5000
+        this.graphics.lineStyle(thickness, 0x006400, 1)
+
+        this.graphics.strokeRoundedRect(-2500 - (thickness/ 2), -2500 - (thickness/ 2), 5000 + thickness, 5000 + thickness, 0 )
 
         this.graphics.lineStyle(10, 0xffff00, 1)
 
         this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
+
         //server -> client
         const addPlayer = (player) => {
            if (this.enemies.filter(e => e.id === player.id).length > 0) return
@@ -395,7 +393,7 @@ this.callback({win: true, data:data})
             enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
 
           
-            this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
+            this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag, this.graphics])
             this.enemies.push(enemy)
 
             var circle = this.add.circle(0, 0, 10, 0xFF0000)
@@ -473,9 +471,13 @@ this.callback({win: true, data:data})
             
             else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3))
 
+
+
             }
             this.meSword.setScale(player.scale)
-
+          //  this.background.setTileScale(1)
+            this.background.width = this.cameras.main.displayWidth
+            this.background.height = this.cameras.main.displayHeight
             //this.meLine.setTo(0, 0, 250, 250)
             this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins)
             this.myObj = player
@@ -649,7 +651,7 @@ if(this.meSword) var old = this.meSword.angle
 if(!this.mobile) var mousePos = this.input
 else var mousePos = this.gamePoint
 
-this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
+this.meSword.angle = Math.atan2(mousePos.y - ( window.visualViewport.height / 2), mousePos.x - (window.visualViewport.width / 2)) * 180 / Math.PI + 45;
 this.mePlayer.angle = this.meSword.angle + 45 +180
          //sword animation
         if (this.mouseDown) this.swordAnim.go = true
@@ -668,8 +670,8 @@ this.mePlayer.angle = this.meSword.angle + 45 +180
         
         var mousePos2 = {
             viewport: {
-                width: this.canvas.width,
-                height: this.canvas.height
+                width: window.visualViewport.width,
+                height: window.visualViewport.height
             },
             x: mousePos.x,
             y: mousePos.y
@@ -863,8 +865,9 @@ this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
         })
 
         //background movement
-      //  this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
-
+        this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+        this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2)
+        this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2)
         if (this.ready && !this.dead && !this.socket.connected) {
             document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
             this.dead = true
@@ -1415,7 +1418,7 @@ __webpack_require__.r(__webpack_exports__);
 
 
 var config = {
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     width: window.visualViewport.width,
     height: window.visualViewport.height,
     parent: "game",

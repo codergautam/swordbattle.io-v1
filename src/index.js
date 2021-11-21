@@ -5,7 +5,7 @@ import WonScene from './WonScene.js';
 import OpenScene from './OpenScene.js';
 
 var config = {
-    type: Phaser.CANVAS,
+    type: Phaser.AUTO,
     width: window.visualViewport.width,
     height: window.visualViewport.height,
     parent: "game",

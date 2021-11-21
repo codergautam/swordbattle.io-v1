@@ -18,7 +18,7 @@ module.exports = {
               if (Object.values(PlayerList.players).length < 1) return res.send('len 0');
               Object.values(PlayerList.players).forEach((player) => {
                 var socket = module.exports.io.sockets.sockets.get(player.id);
-                txt += player.name + ' - ' + socket.ip + ' - '+player.id+'<br>';
+               if(socket) txt += player.name + ' - ' + socket.ip + ' - '+player.id+'<br>';
               });
               res.send(txt);
             } else {
