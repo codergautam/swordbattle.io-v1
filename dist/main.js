@@ -1061,22 +1061,25 @@ class TitleScene extends Phaser.Scene {
     this.callback = callback
   }
  preload() {
+
   document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 100;
   this.load.image('opening', '/assets/images/opening.png');
   this.load.html("form", "/textbox.html");
   this.load.html("promo", "/promo.html");
   this.load.audio('openingsound', '/assets/sound/opening.mp3')
+
  // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 }
 
  create() {
+   this.redirect = false
   var access = true
   try {
     window.localStorage
   } catch(e) {
     access = false
   }
-
+try {
   this.music = this.sound.add('openingsound', {
     mute: false,
     volume: 1,
@@ -1087,6 +1090,11 @@ class TitleScene extends Phaser.Scene {
     delay: 0
 });
 this.music.play()
+} catch(e) {
+
+return
+
+}
 
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W)
 this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A)
@@ -1114,9 +1122,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 
        this.promo.x = (window.innerWidth / 2)
        this.promo.y =  (window.innerHeight / 2)
+     
        this.promo.getChildByName("close").onclick = () => {
          this.promo.destroy()
        }
+ 
      }
 
   this.input.keyboard.on('keydown', function (event) {
@@ -1211,10 +1221,15 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE)
 }
 
  update() {
+   try {
   this.text.setFontSize( window.innerWidth / 10)
     if(this.text.y < window.innerHeight/3) this.text.y += 10
-
-
+} catch(e) {
+if(this.redirect) return
+this.redirect = true
+alert("Your administrator has blocked swordbattle.io\nDon't worry, You are being redirected to a proxy server to attempt to bypass this.")
+  window.location.replace('https://sword-io-game.herokuapp.com/')
+}
 
 }
 }
