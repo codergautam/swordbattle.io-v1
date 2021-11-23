@@ -6,7 +6,7 @@ const fs = require('fs');
 const app = express();
 var cors = require('cors');
 const server = http.createServer(app);
-var JavaScriptObfuscator = require('javascript-obfuscator');
+
 const axios = require('axios').default;
 const Filter = require("purgomalum-swear-filter")
 var filter = new Filter()
@@ -39,60 +39,12 @@ if (production) {
 
 moderation.start(app)
 
-var mainjs = fs.readFileSync('./dist/main.js').toString();
-var obfuscate = false;
-if (obfuscate) {
-  mainjs = JavaScriptObfuscator.obfuscate(mainjs, {
-    compact: true,
-    controlFlowFlattening: true,
-    controlFlowFlatteningThreshold: 1,
-    debugProtection: false,
-    numbersToExpressions: true,
-    simplify: true,
-    stringArrayShuffle: true,
-    splitStrings: false,
-    renameGlobals: true,
-    renameProperties: false,
-    deadCodeInjection: true,
-    deadCodeInjectionThreshold: 42,
-    numbersToExpressions: true,
-    stringArrayThreshold: 1,
-    selfDefending: true,
-    target: 'browser',
-    transformObjectKeys: true,
-    unicodeEscapeSequence: true,
-    splitStrings: true,
-    splitStringsChunkLength: 10,
-    stringArray: true,
-    stringArrayIndexesType: ['hexadecimal-number'],
-    stringArrayEncoding: [],
-    stringArrayIndexShift: true,
-    stringArrayRotate: true,
-    stringArrayShuffle: true,
-    stringArrayWrappersCount: 1,
-    stringArrayWrappersChainedCalls: true,
-    stringArrayWrappersParametersMaxCount: 2,
-    stringArrayWrappersType: 'variable',
-    stringArrayThreshold: 0.75,
-  }).getObfuscatedCode();
-}
-
 app.use(cors());
 
-app.use('/:file', (req, res, next) => {
-  if (req.params.file == 'main.js') {
-    res.set('Content-Type', 'text/javascript');
-    res.send(mainjs);
-  } else if (['index.html', 'textbox.html', 'main.js.map', 'promo.html'].includes(req.params.file)) {
-    res.sendFile(__dirname + '/dist/' + req.params.file);
-  } else {
-    next();
-  }
-});
 
-app.use('/kaboomclient', express.static('kaboomclient'));
+app.use('/', express.static('dist'))
 app.use('/assets', express.static('assets'));
-app.use('/classes', express.static('classes'));
+
 
 Object.filter = (obj, predicate) =>
   Object.keys(obj)

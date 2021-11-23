@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html>
+  <head>
+		<link rel="shortcut icon" type="image/jpg" href="favicon.png"/>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>Swordbattle.io</title>
+    <style>
+
+.title {
+	font-family: courier, cursive;
+	font-size: 130px;
+}
+.container {
+    position: absolute;
+		margin: 0px;
+    top: 0%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-30%);
+    -webkit-transform: translateX(-50%) translateY(-30%);
+    transform: translateX(-50%) translateY(-20%);
+}
+/* Dropdown Button */
+.dropbtn {
+  background-color: rgb(32, 238, 14);
+  color: rgb(0, 0, 0);
+	font-family: copperplate, cursive;
+  padding: 16px;
+  font-size: 16px;
+  border: none;
+}
+
+/* The container <div> - needed to position the dropdown content */
+.dropdown {
+  padding: 10px;
+  position: relative;
+  display: inline-block;
+}
+
+/* Dropdown Content (Hidden by Default) */
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: green;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.885);
+  z-index: 1;
+}
+
+/* Links inside the dropdown */
+.dropdown-content a {
+  color: #ffffff;
+  padding: 12px 16px;
+  text-decoration: none;
+  display: block;
+}
+
+/* Change color of dropdown links on hover */
+.dropdown-content a:hover {background-color: rgb(0, 0, 0);}
+
+/* Show the dropdown menu on hover */
+.dropdown:hover .dropdown-content {display: block;}
+
+/* Change the background color of the dropdown button when the dropdown content is shown */
+.dropdown:hover .dropbtn {background-color: rgb(32, 238, 14);}
+
+#background {
+    width: 100%; 
+    height: 100%; 
+    position: fixed; 
+    left: 0px; 
+    top: 0px; 
+    z-index: -1; /* Ensure div tag stays behind content; -999 might work, too. */
+}
+
+.stretch {
+    width:100%;
+    height:100%;
+}
+
+
+
+.form {
+    position: absolute;
+		margin: 0px;
+    top: 45%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-60%);
+    -webkit-transform: translateX(-50%) translateY(-60%);
+    transform: translateX(-50%) translateY(10%);
+}
+
+.textbox {
+	font-size: 45px;
+}
+
+.dropdown {
+    position: absolute;
+		margin: 0px;
+    top: -.5%;
+    left: 0%;
+    -moz-transform: translateX(0%) translateY(5%);
+    -webkit-transform: translateX(0%) translateY(5%);
+    transform: translateX(0%) translateY(5%);
+}
+
+.button {
+
+	  font-size: 25px;
+    position: absolute;
+		margin: 0px;
+    top: 90%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-60%);
+    -webkit-transform: translateX(-50%) translateY(-60%);
+    transform: translateX(-50%) translateY(10%);
+transition-duration: 0.4s;
+      background-color: #4CAF50; /* Green */
+  color: white;
+  padding: 15px 32px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+   border: 2px solid black;
+}
+
+.button:hover {
+  background-color: #ffffff;
+  color: #4CAF50
+}
+
+.randomgen {
+	  background-color: rgb(32, 238, 14);
+	  font-size: 15px;
+    position: absolute;
+		margin: 0px;
+    top: 60%;
+    left: 50%;
+    -moz-transform: translateX(-50%) translateY(-60%);
+    -webkit-transform: translateX(-50%) translateY(-60%);
+    transform: translateX(-50%) translateY(10%);
+}
+
+@media only screen and (max-height: 660px) {
+  .container {
+    top: 0%;
+	}
+  .form {
+    top: 50%
+  }
+}
+
+@media only screen and (max-height: 375px) {
+  .container {
+    top: 0%;
+	}
+}
+
+@media only screen and (max-height: 333px) {
+  .container {
+    top: 0%;
+	}
+  .form {
+    top: 40%
+  }
+}
+
+@media only screen and (max-width: 1100px) {
+  .title {
+    font-size: 90px;
+	}
+    .textbox {
+    font-size: 35px
+  }
+}
+@media only screen and (max-width: 761px) {
+  .title {
+    font-size: 70px;
+	}
+  .textbox {
+    font-size: 30px
+  }
+}
+@media only screen and (max-width: 584px) {
+  .title {
+    font-size: 50px;
+	}
+}
+@media only screen and (max-width: 420px) {
+  .title {
+    font-size: 40px;
+	}
+  .textbox {
+    font-size: 20px
+  }
+}
+@media only screen and (max-width: 320px) {
+  .title {
+    font-size: 25px;
+	}
+  .textbox { 
+    font-size: 20px
+  }
+}
+
+.embedchat {
+    position: absolute;
+		margin: 0px;
+    top: 50%;
+    left: 75%;
+    -moz-transform: translateX(0%) translateY(0%);
+    -webkit-transform: translateX(0%) translateY(0%);
+    transform: translateX(0%) translateY(0%);
+}
+.title {
+  color: rgb(0, 0, 0);
+  animation-name: slide;
+  animation-duration: 1s;
+}
+
+@keyframes slide {
+	0%  {top: -325px;}
+}
+      </style>
+  </head>
+	        <div id="background">
+    <img src="/assets/images/opening.png" class="stretch" alt="" />
+</div>
+    <script src="script.js"></script>
+			<body>
+				<div class='form' id='input-form'>
+        <input id="box" class="textbox" name="name" STYLE="color: black; font-family: Verdana; font-weight: bold; background-color: white; border:10px solid #000000; " size="20" maxlength="16" value="" placeholder='Username'></input>
+        <br></br>
+				<br></br>
+				<button name="btn" class="button size">Play!</button>
+        </div>
+</body>
+		<div style='text-align: center;' class="dropdown">
+  <div class="dropdown-content">
+		<a href="https://discord.gg/XMsYAquZmq">Discord</a>
+<!--<a href="https://replit.com/@CoderGautamYT">CoderGautamYT</a>
+    <a href="https://replit.com/@JoshuaTucker3">JoshuaTucker3</a>
+		<a href="https://replit.com/@codealt1">code-alt</a>--> 
+  
+  </div>
+</div>
+<br>
+</html>
