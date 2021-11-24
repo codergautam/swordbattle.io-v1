@@ -267,6 +267,10 @@ this.callback({win: true, data:data})
         //bar
         this.meBar = new _HealthBar_js__WEBPACK_IMPORTED_MODULE_0__["default"](this, 0, 0, 16, 80)
 
+        //levelbar
+        this.lvlBar = new _HealthBar_js__WEBPACK_IMPORTED_MODULE_0__["default"](this, 0, 0, 0, 100)
+        this.lvlBar.draw()
+
         //coins array
         this.coins = []
        // this.lastMove = Date.now()
@@ -282,7 +286,7 @@ this.callback({win: true, data:data})
         
         
         this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, document.documentElement.clientWidth, document.documentElement.clientHeight);
-        this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
+        this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar ]);
         this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background])
         this.cameras.main.startFollow(this.mePlayer);
 
@@ -302,6 +306,13 @@ this.callback({win: true, data:data})
             this.background.width = document.documentElement.clientWidth
                 this.background.height =  document.documentElement.clientHeight
             
+                var padding = (document.documentElement.clientWidth / 2)
+                this.lvlBar.x = padding / 2
+                
+                this.lvlBar.width = document.documentElement.clientWidth- padding
+                this.lvlBar.height = document.documentElement.clientHeight / 30
+                this.lvlBar.y = document.documentElement.clientHeight - this.lvlBar.height - (document.documentElement.clientHeight / 40)
+                this.lvlBar.draw()
             
         } catch(e) {
             console.log(e)
