@@ -16,6 +16,7 @@ class Player {
     this.speed = 700
     this.scale = 0.25
     this.damage = 10
+    this.level = 1
 
     if(["devil", "codergautamyt"].includes(name.toLowerCase())) {
       this.skin = name.toLowerCase()
@@ -117,15 +118,20 @@ this.pos.y = pos[1]
     this.pos.x = clamp(pos[0], -2500, 2500)
     this.pos.y = clamp(pos[1],-2500, 2500)
   }
-  collectCoins(coins, io) {
+  collectCoins(coins, io, levels) {
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
           this.coins += 1;
-          if (this.scale > 7.5) var increase = 0.00005;
-          else if (this.scale > 2.5) var increase = 0.0004;
-          else var increase = 0.0008;
-          this.scale += increase;
+
+          if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
+            //lvl up!
+            
+            var lvl = levels[this.level-1]
+            this.level += 1
+            this.scale = lvl.scale
+          }
+
           var index = coins.findIndex((e) => e.id == coin.id);
           coins.splice(index, 1);
 
