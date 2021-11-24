@@ -238,14 +238,18 @@ this.callback({win: true, data:data})
         console.log(e)
     }
         //minimap
+        const convert = (num, val, newNum) => (newNum * val) / num
+        this.miniMap = {people: [], scaleFactor: convert(1189, 96, document.documentElement.clientWidth), square: undefined}
         this.miniGraphics = this.add.graphics().setDepth(100)
-        this.miniGraphics.x = document.documentElement.clientWidth - 205
-        this.miniGraphics.y = document.documentElement.clientHeight - 205
-        this.miniGraphics.lineStyle(5, 0xffff00, 1)
-        this.miniGraphics.strokeRoundedRect(0, 0, 192,  192, 0)
-        this.cameras.main.ignore(this.miniGraphics)
         
-        this.miniMap = {square:  this.miniGraphics, people: []}
+        var padding = 13
+        this.miniMap.scaleFactor = convert(1189, 96, document.documentElement.clientWidth)
+        this.miniGraphics.x = document.documentElement.clientWidth - ((this.miniMap.scaleFactor * 2) + padding)
+        this.miniGraphics.y = document.documentElement.clientHeight - ((this.miniMap.scaleFactor * 2) + padding)
+        this.miniGraphics.lineStyle(5, 0xffff00, 1)
+        this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+        
+        this.cameras.main.ignore(this.miniGraphics)
 
         //
         //joystick
@@ -301,8 +305,15 @@ this.callback({win: true, data:data})
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
-            this.miniGraphics.x = document.documentElement.clientWidth - 205
-            this.miniGraphics.y = document.documentElement.clientHeight - 205
+            this.miniGraphics.clear()
+            var padding = 13
+            this.miniMap.scaleFactor = convert(1189, 96, document.documentElement.clientWidth)
+            this.miniGraphics.x = document.documentElement.clientWidth - ((this.miniMap.scaleFactor * 2) + padding)
+            this.miniGraphics.y = document.documentElement.clientHeight - ((this.miniMap.scaleFactor * 2) + padding)
+            this.miniGraphics.lineStyle(5, 0xffff00, 1)
+            this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+
+
             this.background.width = document.documentElement.clientWidth
                 this.background.height =  document.documentElement.clientHeight
             
@@ -508,9 +519,9 @@ this.callback({win: true, data:data})
 
             var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
             
-            miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-            miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-            miniMapPlayer.circle.radius = ( 300 / 48)*player.scale 
+            miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
+            miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
+            miniMapPlayer.circle.radius = player.scale * convert(1280, 20, document.documentElement.clientWidth)
         })
         this.socket.on("player", (player) => {
             //update player
@@ -541,9 +552,11 @@ this.callback({win: true, data:data})
                 //minimap
                 var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
             
-                miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-                miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-                miniMapPlayer.circle.radius = (300 / 48 * player.scale)
+        
+
+                miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
+                miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
+                miniMapPlayer.circle.radius = convert(1280, 20, document.documentElement.clientWidth) * player.scale
 
             } catch (e) {
                 console.log(e)
