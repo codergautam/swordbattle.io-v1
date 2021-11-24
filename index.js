@@ -36,6 +36,19 @@ if (production) {
   app.use('/', limiter);
 }
 
+var oldlevels = [
+  {coins: 10, scale: 0.3},
+  {coins: 100, scale: 0.5},
+  {coins: 1000, scale: 1}
+]
+var levels = []
+oldlevels.forEach((level, index)  =>{
+  if(index == 0) levels.push(Object.assign({start: 0},level)) 
+  else {
+    levels.push(Object.assign({start: levels[index - 1].coins + levels[index - 1].start}, level))
+  }
+})
+
 moderation.start(app)
 
 app.use(cors());
