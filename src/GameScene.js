@@ -101,14 +101,18 @@ this.callback({win: true, data:data})
         console.log(e)
     }
         //minimap
+        const convert = (num, val, newNum) => (newNum * val) / num
+        this.miniMap = {people: [], scaleFactor: convert(1189, 96, window.visualViewport.width), square: undefined}
         this.miniGraphics = this.add.graphics().setDepth(100)
-        this.miniGraphics.x = document.documentElement.clientWidth - 205
-        this.miniGraphics.y = document.documentElement.clientHeight - 205
-        this.miniGraphics.lineStyle(5, 0xffff00, 1)
-        this.miniGraphics.strokeRoundedRect(0, 0, 192,  192, 0)
-        this.cameras.main.ignore(this.miniGraphics)
         
-        this.miniMap = {square:  this.miniGraphics, people: []}
+        var padding = 13
+        this.miniMap.scaleFactor = convert(1189, 96, window.visualViewport.width)
+        this.miniGraphics.x = window.visualViewport.width - ((this.miniMap.scaleFactor * 2) + padding)
+        this.miniGraphics.y = window.visualViewport.height - ((this.miniMap.scaleFactor * 2) + padding)
+        this.miniGraphics.lineStyle(5, 0xffff00, 1)
+        this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+        
+        this.cameras.main.ignore(this.miniGraphics)
 
         //
         //joystick
