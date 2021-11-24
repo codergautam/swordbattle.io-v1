@@ -2,7 +2,6 @@ const express = require('express');
 const http = require('http');
 require('dotenv').config();
 const { Server } = require('socket.io');
-const fs = require('fs');
 const app = express();
 var cors = require('cors');
 const server = http.createServer(app);
@@ -55,12 +54,6 @@ var coins = [];
 
 var maxCoins = 100;
 var maxAiPlayers = 9;
-
-app.get('/', (req, res) => {
-  res.sendFile(__dirname + '/dist/index.html');
-});
-
-
 
 io.on('connection', async (socket) => {
   socket.joinTime = Date.now();
