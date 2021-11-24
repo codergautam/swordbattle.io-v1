@@ -130,6 +130,10 @@ this.callback({win: true, data:data})
         //bar
         this.meBar = new HealthBar(this, 0, 0, 16, 80)
 
+        //levelbar
+        this.lvlBar = new HealthBar(this, 0, 0, 0, 100)
+        this.lvlBar.draw()
+
         //coins array
         this.coins = []
        // this.lastMove = Date.now()
