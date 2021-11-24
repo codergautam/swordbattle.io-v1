@@ -26,7 +26,7 @@ class PlayerList {
     Object.filter = (obj, predicate) => 
     Object.keys(obj)
           .filter( key => predicate(obj[key]) )
-          .reduce( (res, key) => (res[key] = obj[key], res), {} );
+          .reduce( (res, key) => (res[key] = obj[key], res), {} )
     this.players = Object.filter(this.players,(p => !this.deadPlayers.includes(p.id)))
   }
 }

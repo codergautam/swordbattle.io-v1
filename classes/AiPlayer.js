@@ -1,14 +1,14 @@
 const Player = require("./Player")
 const PlayerList = require("./PlayerList")
 function getRandomInt(min, max) {
-  return min + Math.floor(Math.random() * (max - min + 1));
+  return min + Math.floor(Math.random() * (max - min + 1))
 }
 class AiPlayer extends Player {
     constructor(id) {
-        const randomElement = (array) => array[Math.floor(Math.random() * array.length)];
+        const randomElement = (array) => array[Math.floor(Math.random() * array.length)]
         super(id, randomElement(["PlopyFun", "RoadCode", "32hropat", "Typer32", "McGod", "MitBlade", "Killer", "12345", "Hacker326", "sword", "swordgod", "sword.io", "player", "Alex", "Rajesh", "Ram","Emily", "Steve", "Max", "Lily", "Rohit", "Shiva", "Krishna", "Fan", "Liam", "Noah", "Emma", "Olivia", "mollthecoder", "RayhanADev", "amasad", "Elon Musk", "Jeff Bezos", "ur bad LMAO", "killsword", "swordKILLER", "EvasiveCollecter", "123asd", "Name", "Yeet", "Idiot", "Tamil", "Hindi", "Telugu", "Kannada", "Malayalam", "USA", "Pakistan", "Malaysia", "UAE", "Enter name", "Hero", "Warrior", "Timewaster", "Game0ver", "Demonatic","Borrowed_Time", "Gemfinder", "Wolfblood", "Qakqueen", "Sympathyyy", "CuriousGeorgia", "Silvester", "Millennial0", "Checkm8"]))
-        this.ai = true;
-        this.target = undefined;
+        this.ai = true
+        this.target = undefined
         this.lastHit = Date.now()
         this.mousePos.viewport.width = 1000
         this.mousePos.viewport.height = 1000
@@ -18,7 +18,7 @@ class AiPlayer extends Player {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id)
       } else {
-const lerp = (x, y, a) => x * (1 - a) + y * a; 
+const lerp = (x, y, a) => x * (1 - a) + y * a 
 if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins))
       if(this.target) {
         
@@ -76,7 +76,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
     }
     getClosestEntity(entities) {
       if(entities.length > 0) {
-      const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y); 
+      const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y) 
       var closest = entities.sort((a,b)=>distanceFromThis(a.pos)-distanceFromThis(b.pos))[0]
       if(closest.hasOwnProperty("joinTime")) {
         closest = closest.getSendObj()

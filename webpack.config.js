@@ -1,8 +1,9 @@
-const webpack = require('webpack');
-const path = require('path');
-const CopyPlugin = require("copy-webpack-plugin");
+
+const webpack = require("webpack")
+const path = require("path")
+const CopyPlugin = require("copy-webpack-plugin")
 const config = {
-  entry: './src/index.js',
+  entry: "./src/index.js",
   plugins: [
     new CopyPlugin({
       patterns: [
@@ -13,11 +14,11 @@ const config = {
     }),
   ],
   output: {
-    path: path.resolve(__dirname, 'dist'),
-    filename: 'main.js',
+    path: path.resolve(__dirname, "dist"),
+    filename: "main.js",
   },
-  devtool: 'source-map',
-  mode: 'development',
-};
+  devtool: "source-map",
+  mode: "production",
+}
 
-module.exports = config;
+module.exports = config
