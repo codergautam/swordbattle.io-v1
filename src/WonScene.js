@@ -18,8 +18,8 @@ class WonScene extends Phaser.Scene {
 
     create() {
 
-        this.background = this.add.rectangle(0, 0, window.visualViewport.height, window.visualViewport.width, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
-        this.text = this.add.text(window.visualViewport.width / 2, 0, 'You won!', {
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientHeight, document.documentElement.clientWidth, 0x90ee90).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.text = this.add.text(document.documentElement.clientWidth / 2, 0, 'You won!', {
             fontSize: '64px',
             fill: '#000000'
         }).setOrigin(0.5);
@@ -33,14 +33,14 @@ class WonScene extends Phaser.Scene {
         this.displayKills = (this.data.kills == 1 ? 1 : 0);
         this.displayCoins = 0
 
-        this.stats = this.add.text(window.visualViewport.width / 2, window.visualViewport.height / 2, `You conquered the map and became Ka-HUGE!\nTime Taken: 0s\nKills: ${this.displayKills}`, {
+        this.stats = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, `You conquered the map and became Ka-HUGE!\nTime Taken: 0s\nKills: ${this.displayKills}`, {
             fontSize: '48px',
             fill: '#000000'
         }).setOrigin(0.5);
 
 
         this.btnrect = this.add.rectangle(0, 0, 0, 0, 0x6666ff);
-        this.btntext = this.add.text(window.visualViewport.width / 2, window.visualViewport.height / 1.2, 'Play Again', {
+        this.btntext = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 1.2, 'Play Again', {
             fontSize: '48px',
             fill: '#000000'
         }).setOrigin(0.5);
@@ -60,10 +60,10 @@ class WonScene extends Phaser.Scene {
     }
 
     update() {
-        this.text.setFontSize(window.visualViewport.width / 10)
-        this.stats.setFontSize(window.visualViewport.width / 30)
-        this.btntext.setFontSize(window.visualViewport.width / 25)
-        if (this.text.y < window.visualViewport.height / 4) this.text.y += 10
+        this.text.setFontSize(document.documentElement.clientWidth / 10)
+        this.stats.setFontSize(document.documentElement.clientWidth / 30)
+        this.btntext.setFontSize(document.documentElement.clientWidth / 25)
+        if (this.text.y < document.documentElement.clientHeight / 4) this.text.y += 10
 
         if(this.displayKills < this.data.kills ) {
             this.displayKills += 1
@@ -81,16 +81,16 @@ class WonScene extends Phaser.Scene {
 
         this.stats.setText(`You conquered the map and became Ka-HUGE!\nTime Taken: ${msToTime(this.displayTime)}\nCoins: ${this.displayCoins}\nKills: ${this.displayKills}`)
         const resize = () => {
-            this.game.scale.resize(window.visualViewport.width, window.visualViewport.height)
-            this.background.width = window.visualViewport.width
-            this.background.height = window.visualViewport.height
-            this.text.x = window.visualViewport.width / 2
-            this.text.y = window.visualViewport.height / 4
-            this.stats.x = window.visualViewport.width / 2
-            this.stats.y = window.visualViewport.height / 2
+            this.game.scale.resize(document.documentElement.clientWidth, document.documentElement.clientHeight)
+            this.background.width = document.documentElement.clientWidth
+            this.background.height = document.documentElement.clientHeight
+            this.text.x = document.documentElement.clientWidth / 2
+            this.text.y = document.documentElement.clientHeight / 4
+            this.stats.x = document.documentElement.clientWidth / 2
+            this.stats.y = document.documentElement.clientHeight / 2
             
-            this.btntext.x = window.visualViewport.width / 2
-            this.btntext.y = window.visualViewport.height / 1.2
+            this.btntext.x = document.documentElement.clientWidth / 2
+            this.btntext.y = document.documentElement.clientHeight / 1.2
 
 
             //this.stats.y -= this.stats.height

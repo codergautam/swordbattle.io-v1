@@ -229,6 +229,17 @@ return false
             if(!this.ai && socket) socket.emit('dealHit', enemy.id);
             if(!enemy.ai && socketById) socketById.emit('takeHit', this.id);
             //if colliding
+
+            if(this.ai) {
+              this.target = this.getClosestEntity(this.getEntities(coins))
+              PlayerList.updatePlayer(this)
+            } 
+            if(enemy.ai) {
+              enemy.target = enemy.getClosestEntity(coins)
+            PlayerList.updatePlayer(enemy)
+            } 
+
+
             this.lastDamageDealt = Date.now();
             enemy.lastHit = Date.now();
             var oldHealth = enemy.health;
@@ -236,6 +247,7 @@ return false
             if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
               enemy.health = enemy.maxHealth * 0.1;
             if (enemy.health <= 0) {
+             
               //enemy has 0 or less than 0 health, time to kill
 
               //increment killcount by 1

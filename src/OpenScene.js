@@ -33,8 +33,8 @@ class OpenScene extends Phaser.Scene {
 
     create() {
         this.go = false
-        this.background = this.add.rectangle(0, 0, window.visualViewport.width, window.visualViewport.height, 0x000000).setOrigin(0).setScrollFactor(0, 0).setScale(2);
-        this.text = this.add.text(window.visualViewport.width / 2, window.visualViewport.height / 2, 'Click to join the game..', {
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x000000).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.text = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, 'Click to join the game..', {
             fontSize: '64px',
             fill: '#FFFFFF'
         }).setOrigin(0.5);
@@ -42,9 +42,9 @@ class OpenScene extends Phaser.Scene {
         ///resize dynamicly
         const resize = () => {
             try {
-            this.game.scale.resize(window.visualViewport.width, window.visualViewport.height)
-            this.background.height = window.visualViewport.height
-            this.background.width = window.visualViewport.width
+            this.game.scale.resize(document.documentElement.clientWidth, document.documentElement.clientHeight)
+            this.background.height = document.documentElement.clientHeight
+            this.background.width = document.documentElement.clientWidth
             
             
         } catch(e) {
@@ -58,9 +58,9 @@ class OpenScene extends Phaser.Scene {
     }
 
     update() {
-        this.text.x = (window.visualViewport.width / 2)
-        this.text.y = (window.visualViewport.height / 2)
-        this.text.setFontSize(window.visualViewport.width * 128 / 1920)
+        this.text.x = (document.documentElement.clientWidth / 2)
+        this.text.y = (document.documentElement.clientHeight / 2)
+        this.text.setFontSize(document.documentElement.clientWidth * 128 / 1920)
         if(!this.go) {
         if(this.text.alpha < 1) this.text.setAlpha(this.text.alpha + 0.01)
         } else {

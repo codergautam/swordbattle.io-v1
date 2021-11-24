@@ -6,8 +6,8 @@ import OpenScene from './OpenScene.js';
 
 var config = {
     type: Phaser.AUTO,
-    width: window.visualViewport.width,
-    height: window.visualViewport.height,
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
     parent: "game",
     dom: {
         createContainer: true
