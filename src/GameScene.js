@@ -414,9 +414,11 @@ this.callback({win: true, data:data})
                 //minimap
                 var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
             
-                miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-                miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-                miniMapPlayer.circle.radius = (300 / 48 * player.scale)
+        
+
+                miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor
+                miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor
+                miniMapPlayer.circle.radius = convert(1280, 20, window.visualViewport.width) * player.scale
 
             } catch (e) {
                 console.log(e)
