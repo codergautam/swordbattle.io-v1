@@ -168,8 +168,14 @@ this.callback({win: true, data:data})
             this.UICam.x = this.cameras.main.x
             this.UICam.y = this.cameras.main.y
 
-            this.miniGraphics.x = document.documentElement.clientWidth - 205
-            this.miniGraphics.y = document.documentElement.clientHeight - 205
+            var padding = 13
+            this.miniMap.scaleFactor = convert(1189, 96, window.visualViewport.width)
+            this.miniGraphics.x = window.visualViewport.width - ((this.miniMap.scaleFactor * 2) + padding)
+            this.miniGraphics.y = window.visualViewport.height - ((this.miniMap.scaleFactor * 2) + padding)
+            this.miniGraphics.lineStyle(5, 0xffff00, 1)
+            this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0)
+
+
             this.background.width = document.documentElement.clientWidth
                 this.background.height =  document.documentElement.clientHeight
             
