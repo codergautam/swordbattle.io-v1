@@ -189,7 +189,7 @@ io.on('connection', async (socket) => {
       if (PlayerList.has(socket.id)) {
         var player = PlayerList.getPlayer(socket.id);
         player.move(controller);
-        coins = player.collectCoins(coins, io)
+        coins = player.collectCoins(coins, io, levels)
       }
     } catch (e) {
       console.log(e);
@@ -259,7 +259,7 @@ setInterval(async () => {
     if(player) {
     //   player.moveWithMouse(players)
     if(player.ai) {
-     coins = player.tick(coins, io)
+     coins = player.tick(coins, io, levels)
     }
     if (
       Date.now() - player.lastHit > 5000 &&
