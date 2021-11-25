@@ -1,7 +1,7 @@
 
-const webpack = require("webpack")
-const path = require("path")
-const CopyPlugin = require("copy-webpack-plugin")
+const webpack = require("webpack");
+const path = require("path");
+const CopyPlugin = require("copy-webpack-plugin");
 const config = {
   entry: "./src/index.js",
   plugins: [
@@ -19,6 +19,6 @@ const config = {
   },
   devtool: "source-map",
   mode: "production",
-}
+};
 
-module.exports = config
+module.exports = config;
