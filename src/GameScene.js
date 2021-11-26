@@ -137,7 +137,11 @@ class GameScene extends Phaser.Scene {
 				this.lvlBar = new HealthBar(this, 0, 0, 0, 0, true);
 				var padding = (this.canvas.width / 2);
 				this.lvlBar.x = padding / 2;
-        
+
+				this.lastKill = Date.now();
+				this.streak = 0;
+				this.killtxts = [];
+
 				this.lvlBar.width = this.canvas.width- padding;
 				this.lvlBar.height = this.canvas.height / 30;
 				this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
@@ -154,7 +158,7 @@ class GameScene extends Phaser.Scene {
 				this.cursors = this.input.keyboard.createCursorKeys();
 
 				//lvl text
-				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 4,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(75).setDepth(75).setAlpha(0).setOrigin(0.5);
+				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(75).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
 				
 				//camera follow
@@ -173,7 +177,10 @@ class GameScene extends Phaser.Scene {
 					try {
 
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
+						this.lvlText.y = this.canvas.height / 5;
+						this.lvlText.x = this.canvas.width  /2;
 						if(this.mobile) {
+							this.joyStick.radius = convert(2360, 250, this.canvas.width);
 							this.joyStick.x = this.canvas.width / 8;
 							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
 							this.joyStick.base.radius = convert(2360, 250, this.canvas.width);
@@ -367,7 +374,7 @@ class GameScene extends Phaser.Scene {
 							this.lvlTextTween = this.tweens.add({
 								targets: this.lvlText,
 								alpha: 0,
-								y: this.canvas.height / 4,
+								y: this.canvas.height / 5,
 								onComplete: () => this.lvlText.setData("x", 0),
 								duration: 300,
 								ease: "Power2"
@@ -376,7 +383,7 @@ class GameScene extends Phaser.Scene {
 						this.lvlTextTween = this.tweens.add({
 							targets: this.lvlText,
 							alpha: 1,
-							y: this.canvas.height / 3,
+							y: this.canvas.height / 4,
 							completeDelay: 1000,
 							duration: 500,
 							onComplete: completeCallback,
@@ -487,13 +494,55 @@ class GameScene extends Phaser.Scene {
 					var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
 					if(enemy && enemy.playerObj) {
 					//i killed them!!
-					var s1 = `[color=#e82a1f]Killed [/color][color=#ffffff]${enemy.playerObj.name}[/color]`;
-					var text = this.add.rexBBCodeText(100, 30, s1, {
-						fontSize: "60px",
-					});
+						var fontsize = 64;
+						if(Date.now() - this.lastKill < 2500) {
+							this.streak++;
+							var list = ["Double", "Triple", "Quadra", "Quinta", "Hexta", "Hepta", "Octa", "Nona", "Deca"];
+							if(this.streak-1 > list.length) var txt = `x${this.streak}`;
+							else var txt = list[this.streak-1];
+							txt += " Kill!";
+
+							this.killtxts.forEach((i) => {
+								i.destroy();
+							});
+							this.killtxts = [];
+						} else {
+
+						this.streak = 0;
+					var txt = `[color=#e82a1f]Killed [/color][color=#ffffff]${enemy.playerObj.name}[/color]`;
+						}
+					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
+					text.setData("index", this.killtxts.length);
+					this.killtxts.push(text);
+
+						const completeCallback = (text) => {
+							this.tweens.add({
+								targets: text,
+								alpha: 0,
+								y: this.canvas.height,
+								onComplete: ()=>{
+									this.killtxts.slice(text.getData("index"),1);
+									text.destroy();
+								},
+								ease: "Power2",
+								duration: 250
+							});
+						};
+
+					this.tweens.add({
+						targets: text,
+						alpha: 1,
+						y: this.canvas.height - this.canvas.height / 8,
+						completeDelay: 250,
+						duration: 750,
+						onComplete: ()=>completeCallback(text),
+						ease: "Bounce"
+					  }, this);
 					this.cameras.main.ignore(text);
+						}
+						this.lastKill = Date.now();
 				}
-				}
+				
 
 				this.removePlayer(id);
 
