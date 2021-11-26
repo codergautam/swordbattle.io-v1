@@ -65,7 +65,7 @@ class DeathScene extends Phaser.Scene {
         this.text.setFontSize(document.documentElement.clientWidth / 10);
         this.stats.setFontSize(document.documentElement.clientWidth / 20);
         this.btntext.setFontSize(document.documentElement.clientWidth / 25);
-        if (this.text.y < document.documentElement.clientHeight / 4.5) this.text.y += 10;
+        if (this.text.y < document.documentElement.clientHeight / 5.5) this.text.y = this.lerp(this.text.y, document.documentElement.clientHeight / 5.5, 0.2 );
 
         if(this.displayKills < this.data.kills ) {
             this.displayKills += 1;
@@ -87,7 +87,7 @@ class DeathScene extends Phaser.Scene {
             this.background.width = document.documentElement.clientWidth;
             this.background.height = document.documentElement.clientHeight;
             this.text.x = document.documentElement.clientWidth / 2;
-            this.text.y = document.documentElement.clientHeight / 4.5;
+            this.text.y = document.documentElement.clientHeight / 5.5;
             this.stats.x = document.documentElement.clientWidth / 2;
             this.stats.y = document.documentElement.clientHeight / 2;
             

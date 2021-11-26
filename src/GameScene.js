@@ -119,11 +119,11 @@ class GameScene extends Phaser.Scene {
 					this.joyStick = this.plugins
 						.get("rexvirtualjoystickplugin")
 						.add(this, {
-							x: 150,
-							y: this.canvas.height - 150,
-							radius: 100,
-							base: this.add.circle(0, 0, 100, 0x888888),
-							thumb: this.add.circle(0, 0, 50, 0xcccccc)
+							x: this.canvas.width / 8,
+							y: this.canvas.height - this.canvas.height / 2.5,
+							radius: convert(2360, 200, this.canvas.width),
+							base: this.add.circle(0, 0, convert(2360, 250, this.canvas.width), 0x888888),
+							thumb: this.add.circle(0, 0, convert(2360, 100, this.canvas.width), 0xcccccc)
 							// dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
 							// forceMin: 16,
 							// enable: true
@@ -173,7 +173,12 @@ class GameScene extends Phaser.Scene {
 					try {
 
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
-						if(this.mobile) this.joyStick.y = this.canvas.height - 150;
+						if(this.mobile) {
+							this.joyStick.x = this.canvas.width / 8;
+							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
+							this.joyStick.base.radius = convert(2360, 250, this.canvas.width);
+							this.joyStick.thumb.radius = convert(2360, 100, this.canvas.width);
+						}
 						this.UICam.x = this.cameras.main.x;
 						this.UICam.y = this.cameras.main.y;
 
@@ -785,7 +790,7 @@ class GameScene extends Phaser.Scene {
 		}
 		//playercount
 		try {
-			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 30) * 100) + "%");
+			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps));
 			this.playerCount.x = 0;
 			this.playerCount.y = 0;
 		} catch(e) {
