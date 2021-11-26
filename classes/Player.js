@@ -264,11 +264,11 @@ return false;
               });
             
               socketById.broadcast.emit("playerDied", enemy.id, {
-                killedBy: this.name,
+                killedBy: {id: this.id, name: this.name},
               });
               } else {
                 io.sockets.emit("playerDied", enemy.id, {
-                  killedBy: this.name,
+                  killedBy: {id: this.id, name: this.name},
                 });
               }
               //drop their coins

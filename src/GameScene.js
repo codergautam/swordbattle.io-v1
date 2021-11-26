@@ -408,9 +408,9 @@ class GameScene extends Phaser.Scene {
 
 					}
 					this.meSword.setScale(player.scale);
-					//  this.background.setTileScale(1)
-					this.background.width = this.cameras.main.displayWidth;
-					this.background.height = this.cameras.main.displayHeight;
+					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
+					this.background.displayWidth = this.cameras.main.displayWidth;
+					this.background.displayHeight = this.cameras.main.displayHeight;
 					//this.meLine.setTo(0, 0, 250, 250)
 					this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins);
 					this.myObj = player;
@@ -475,7 +475,24 @@ class GameScene extends Phaser.Scene {
 					}
 				});
 				this.socket.on("playerLeave", this.removePlayer);
-				this.socket.on("playerDied", this.removePlayer);
+				this.socket.on("playerDied", (id, data) => {
+				//check if killed by me
+
+				if(this.myObj && this.myObj.id === data.killedBy.id) {
+					var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
+					if(enemy && enemy.playerObj) {
+					//i killed them!!
+					var s1 = `[color=#e82a1f]Killed [/color][color=#ffffff]${enemy.playerObj.name}[/color]`;
+					var text = this.add.rexBBCodeText(100, 30, s1, {
+						fontSize: "60px",
+					});
+					this.cameras.main.ignore(text);
+				}
+				}
+
+				this.removePlayer(id);
+
+				});
 
 				this.socket.on("dealHit", (playerId) => {
 					this.hit.play();
