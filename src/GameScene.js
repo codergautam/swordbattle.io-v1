@@ -766,7 +766,7 @@ class GameScene extends Phaser.Scene {
 
 		enemies.push({playerObj: this.myObj});
 		try {
-			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10);
+			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,(this.mobile ? 5 : 10));
 			var text = "";
 			sorted.forEach((entry, i) => {
 				if(!entry.playerObj) return;
