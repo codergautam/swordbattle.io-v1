@@ -27,7 +27,6 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
           
           if(this.chaseTime > 30) {
             this.target = this.getClosestEntity(coins);
-            console.log(this.chaseTime);
             this.chaseTime = 0;
           }
           this.lastHit = Date.now();

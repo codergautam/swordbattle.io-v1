@@ -77,26 +77,23 @@ class GameScene extends Phaser.Scene {
 				this.myObj = undefined;
 
 				//killcounter
-				this.killCount = this.add.text(this.canvas.width / 1.5, 0, "Kills: 0", {
+				this.killCount = this.add.text(0, 0, "Kills: 0", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
 				}).setFontSize(40).setDepth(101);
-				this.killCount.scrollFactorX = 0;
-				this.killCount.scrollFactorY = 0;
+				this.killCount.setScrollFactor(0);
 
 				//player+fpscounter
 				try { 
-					this.playerCount = this.add.text(this.cameras.main.worldView.x*this.cameras.main.zoom, this.cameras.main.worldView.y*this.cameras.main.zoom, "Players: 0" + "\nFPS: 0", {
+					this.playerCount = this.add.text(0, 0, "Players: 0" + "\nFPS: 0", {
 						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
 					}).setFontSize(20).setDepth(101);
-					this.playerCount.scrollFactorX = 0;
-					this.playerCount.scrollFactorY = 0;
+					this.playerCount.setScrollFactor(1);
 
 					//leaderboard
-					this.leaderboard = this.add.text(this.canvas.width, this.cameras.main.worldView.y*this.cameras.main.zoom, "Players: 0" + "\nFPS: 0", {
+					this.leaderboard = this.add.text(0, 0, "", {
 						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
 					}).setFontSize(20).setDepth(101);
-					this.playerCount.scrollFactorX = 0;
-					this.playerCount.scrollFactorY = 0;
+					this.leaderboard.setScrollFactor(0);
 				} catch(e) {
 					console.log(e);
 				}
@@ -159,7 +156,7 @@ class GameScene extends Phaser.Scene {
 				this.cursors = this.input.keyboard.createCursorKeys();
 
 				//lvl text
-				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(75).setDepth(75).setAlpha(0).setOrigin(0.5);
+				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
 				
 				//camera follow
@@ -209,6 +206,11 @@ class GameScene extends Phaser.Scene {
 						this.lvlBar.height = this.canvas.height / 30;
 						this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
 						this.lvlBar.draw();
+
+						this.playerCount.x = this.canvas.width - this.playerCount.width;
+						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - (this.canvas.height / 13);
+
+						this.lvlText.setFontSize(convert(1366, 75, this.canvas.width));
             
 					} catch(e) {
 						console.log(e);
@@ -609,6 +611,9 @@ class GameScene extends Phaser.Scene {
 					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0};
 				});
 
+				this.playerCount.x = this.canvas.width - this.playerCount.width;
+				this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - (this.canvas.height / 13);
+
 			});
 		});
 	}
@@ -833,7 +838,6 @@ class GameScene extends Phaser.Scene {
 
 			this.leaderboard.setText(text);
 			this.leaderboard.x = this.canvas.width - this.leaderboard.width;
-			this.killCount.x = (this.canvas.width*0.9) - this.leaderboard.width - this.killCount.width;
 
 		} catch(e) {
 			//we shall try next frame
@@ -842,8 +846,6 @@ class GameScene extends Phaser.Scene {
 		//playercount
 		try {
 			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps));
-			this.playerCount.x = 0;
-			this.playerCount.y = 0;
 		} catch(e) {
 			console.log(e);
 		}
