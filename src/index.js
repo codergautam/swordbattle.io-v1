@@ -10,7 +10,8 @@ var config = {
     height: document.documentElement.clientHeight,
     parent: "game",
     dom: {
-        createContainer: true
+        createContainer: true,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scale: {
         mode:Phaser.Scale.RESIZE,
@@ -78,6 +79,7 @@ game.scene.add("win", winScene);
 game.scene.add("open", openScene);
 
 game.scene.start("open");
+
 
 //for debugging on the school chromebooks they fricking banned dev console
 window.onerror = function(msg, url, line) {

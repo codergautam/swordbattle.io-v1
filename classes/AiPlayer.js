@@ -12,6 +12,7 @@ class AiPlayer extends Player {
         this.lastHit = Date.now();
         this.mousePos.viewport.width = 1000;
         this.mousePos.viewport.height = 1000;
+        this.chaseTime = 0;
         
     }
     tick(coins, io, levels) {
@@ -21,8 +22,14 @@ class AiPlayer extends Player {
 const lerp = (x, y, a) => x * (1 - a) + y * a; 
 if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins));
       if(this.target) {
-        
+        if(this.target.type == "player") this.chaseTime += 1;
         if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(100, 700)) {
+          
+          if(this.chaseTime > 30) {
+            this.target = this.getClosestEntity(coins);
+            console.log(this.chaseTime);
+            this.chaseTime = 0;
+          }
           this.lastHit = Date.now();
          coins = this.down(!this.mouseDown, coins, io);
         } 

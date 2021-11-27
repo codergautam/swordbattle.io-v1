@@ -15,6 +15,7 @@ class TitleScene extends Phaser.Scene {
 }
 
  create() {
+  
    this.redirect = false;
   var access = true;
   try {

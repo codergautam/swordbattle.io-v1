@@ -31,6 +31,8 @@ class OpenScene extends Phaser.Scene {
         this.load.audio("hit", "/assets/sound/hitenemy.wav");
         this.load.audio("winSound", "/assets/sound/win.m4a");
         this.load.audio("loseSound", "/assets/sound/lost.mp3");
+
+        this.scale.fullscreenTarget = document.getElementById("game");
     }
 
     create() {
@@ -67,7 +69,10 @@ class OpenScene extends Phaser.Scene {
         if(this.text.alpha < 1) this.text.setAlpha(this.text.alpha + 0.01);
         } else {
             if(this.text.alpha > 0 )this.text.setAlpha(this.text.alpha - 0.05);
-            else this.scene.start("title");
+            else {
+                this.scale.startFullscreen();
+                this.scene.start("title");
+            }
         }
     }
 }

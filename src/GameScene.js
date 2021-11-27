@@ -33,6 +33,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+
         this.levels = [];
   
 		//recaptcha
@@ -494,13 +495,14 @@ class GameScene extends Phaser.Scene {
 					var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
 					if(enemy && enemy.playerObj) {
 					//i killed them!!
-						var fontsize = 64;
+						var fontsize = convert(1366, 64, this.canvas.width);
 						if(Date.now() - this.lastKill < 2500) {
 							this.streak++;
+							var txt = "[b]";
 							var list = ["Double", "Triple", "Quadra", "Quinta", "Hexta", "Hepta", "Octa", "Nona", "Deca"];
-							if(this.streak-1 > list.length) var txt = `x${this.streak}`;
-							else var txt = list[this.streak-1];
-							txt += " Kill!";
+							if(this.streak-1 > list.length) txt += `x${this.streak}`;
+							else txt += list[this.streak-1];
+							txt += " Kill![/b]";
 
 							this.killtxts.forEach((i) => {
 								i.destroy();
@@ -509,7 +511,7 @@ class GameScene extends Phaser.Scene {
 						} else {
 
 						this.streak = 0;
-					var txt = `[color=#e82a1f]Killed [/color][color=#ffffff]${enemy.playerObj.name}[/color]`;
+					var txt = `[b][color=#e82a1f]Killed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
 						}
 					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
 					text.setData("index", this.killtxts.length);
