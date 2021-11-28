@@ -4,6 +4,7 @@ require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
 var cors = require("cors");
+var fs = require("fs")
 
 var server;
 if(process.env.PRODUCTION==="true") {
