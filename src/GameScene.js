@@ -14,6 +14,7 @@ class GameScene extends Phaser.Scene {
 		}
 		this.ready = false;
 		this.loadrect = this.add.rectangle(0,0, this.canvas.width*2, this.canvas.height*2, 0x006400).setDepth(200);
+		this.ping = 0;
 	}
 
 	died(data) {
@@ -77,20 +78,33 @@ class GameScene extends Phaser.Scene {
 				this.myObj = undefined;
 
 				//killcounter
-				this.killCount = this.add.text(0, 0, "Kills: 0", {
-					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
+
+				this.killCount = this.add.rexBBCodeText(15, 10, "Kills: 0", {
+					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(40).setDepth(101);
+				this.killCount.addImage("coin", {
+					key: "coin",
+					width: 45,
+					height: 45
+				});
+				this.killCount.addImage("kill", {
+					key: "kill",
+					width: 45,
+					height: 45
+				});
+				
 				this.killCount.setScrollFactor(0);
 
 				//player+fpscounter
 				try { 
-					this.playerCount = this.add.text(0, 0, "Players: 0" + "\nFPS: 0", {
-						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
-					}).setFontSize(20).setDepth(101);
+					this.playerCount = this.add.text(0, 0, "Players: 0" + (!this.mobile ? "\nFPS: 0\nTPS: 0\nPing: 0 ms":""), {
+						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
+						align: "right"
+					}).setFontSize(20).setDepth(101).setOrigin(1);
 					this.playerCount.setScrollFactor(1);
 
 					//leaderboard
-					this.leaderboard = this.add.text(0, 0, "", {
+					this.leaderboard = this.add.text(0, 10, "", {
 						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
 					}).setFontSize(20).setDepth(101);
 					this.leaderboard.setScrollFactor(0);
@@ -207,8 +221,8 @@ class GameScene extends Phaser.Scene {
 						this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
 						this.lvlBar.draw();
 
-						this.playerCount.x = this.canvas.width - this.playerCount.width;
-						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - (this.canvas.height / 13);
+						this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
+						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
 
 						this.lvlText.setFontSize(convert(1366, 75, this.canvas.width));
             
@@ -251,6 +265,11 @@ class GameScene extends Phaser.Scene {
 				}
 				this.socket.on("tps", (tps) => {
 					this.tps = tps;
+					var start = Date.now();
+					this.socket.emit( "ping",()=> {
+							this.ping = (Date.now() - start);
+					});
+
 				});
 				this.socket.on("ban", (data) => {
 					document.write(data);
@@ -427,7 +446,7 @@ class GameScene extends Phaser.Scene {
 					this.background.displayWidth = this.cameras.main.displayWidth;
 					this.background.displayHeight = this.cameras.main.displayHeight;
 					//this.meLine.setTo(0, 0, 250, 250)
-					this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins);
+					this.killCount.setText("[img=kill] " + player.kills+"\n[img=coin] "+player.coins);
 					this.myObj = player;
 
 					//minimap
@@ -611,8 +630,8 @@ class GameScene extends Phaser.Scene {
 					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0};
 				});
 
-				this.playerCount.x = this.canvas.width - this.playerCount.width;
-				this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - (this.canvas.height / 13);
+				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
+				this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
 
 			});
 		});
@@ -837,15 +856,16 @@ class GameScene extends Phaser.Scene {
 			});
 
 			this.leaderboard.setText(text);
-			this.leaderboard.x = this.canvas.width - this.leaderboard.width;
+			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
 
 		} catch(e) {
 			//we shall try next frame
 			console.log(e);
 		}
 		//playercount
+		
 		try {
-			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps));
+			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}

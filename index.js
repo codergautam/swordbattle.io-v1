@@ -245,7 +245,9 @@ io.on("connection", async (socket) => {
 			console.log(e);
 		}
 	});
-
+	socket.on( "ping", function ( fn ) {
+		fn(); // Simply execute the callback on the client
+	} );
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
 		PlayerList.deletePlayer(socket.id);
