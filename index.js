@@ -6,6 +6,7 @@ const app = express();
 var cors = require("cors");
 var fs = require("fs");
 
+/*
 var server;
 if(process.env.PRODUCTION==="true") {
 	var options = {
@@ -16,7 +17,9 @@ if(process.env.PRODUCTION==="true") {
 } else {
 
  server = http.createServer(app);
-}
+}*/
+
+const server = http.createServer(app);
 
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
@@ -39,7 +42,7 @@ function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = false
+var production = false;
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
