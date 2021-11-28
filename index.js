@@ -4,8 +4,18 @@ require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
 var cors = require("cors");
-const server = http.createServer(app);
 
+var server;
+if(process.env.PRODUCTION==="true") {
+	var options = {
+		key: fs.readFileSync("./ssl/privatekey.pem"),
+		cert: fs.readFileSync("./ssl/certificate.pem"),
+	};
+ server = http.createServer(options, app);
+} else {
+
+ server = http.createServer(app);
+}
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
 var filter = new Filter();
@@ -26,7 +36,7 @@ const io = new Server(server, {
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
-var production = false;
+
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
