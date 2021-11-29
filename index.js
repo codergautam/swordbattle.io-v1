@@ -1,25 +1,23 @@
 const express = require("express");
-const http = require("http");
+const https = require("https");
+var http = require("http");
 require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
 var cors = require("cors");
 var fs = require("fs");
 
-/*
+
 var server;
 if(process.env.PRODUCTION==="true") {
 	var options = {
 		key: fs.readFileSync("./ssl/privatekey.pem"),
 		cert: fs.readFileSync("./ssl/certificate.pem"),
 	};
- server = http.createServer(options, app);
+ server = https.createServer(options, app);
 } else {
-
  server = http.createServer(app);
-}*/
-
-const server = http.createServer(app);
+}
 
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
@@ -111,8 +109,6 @@ oldlevels.forEach((level, index)  =>{
 		levels.push(Object.assign({start: levels[index - 1].coins}, level));
 	}
 });
-
-console.log(levels.length);
 
 moderation.start(app);
 
@@ -354,3 +350,9 @@ setInterval(async () => {
 server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");
 });
+
+
+http.createServer(function (req, res) {
+    res.writeHead(301, { "Location": "https://" + req.headers["host"] + req.url });
+    res.end();
+}).listen(80);
