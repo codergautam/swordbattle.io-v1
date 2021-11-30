@@ -9,6 +9,7 @@ var fs = require("fs");
 
 
 var server;
+/*
 if(process.env.PRODUCTION==="true") {
 	var options = {
 		key: fs.readFileSync("./ssl/privatekey.pem"),
@@ -17,7 +18,10 @@ if(process.env.PRODUCTION==="true") {
  server = https.createServer(options, app);
 } else {
  server = http.createServer(app);
-}
+} 
+*/
+
+server = http.createServer(app);
 
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
@@ -351,8 +355,9 @@ server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");
 });
 
-
+/*
 http.createServer(function (req, res) {
     res.writeHead(301, { "Location": "https://" + req.headers["host"] + req.url });
     res.end();
 }).listen(80);
+*/
