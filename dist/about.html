@@ -1,0 +1,130 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+        .buttoen {
+            color: black;
+            border: 1px solid black;
+            border-radius: 1vw;
+            padding: 0.5vh 1vw;
+            font-size: 40px;
+        }
+
+.button:hover {
+  background-color: #555;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+  .buttoen {
+      font-size: 20px;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="about-section">
+  <h1>About</h1>
+  <p>This game was developed by Coder Gautam</p>
+</div>
+
+<h2 style="text-align:center">More info</h2>
+<div class="row">
+  <div class="column">
+    <div class="card">
+      <div class="container">
+ 	<br>
+        <p class="title">Technologies used:</p>
+        <p>This was created in node.js, phaser, and socket.io</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+
+      <div class="container">
+      <br>
+        <p class="title">Who am I?</p>
+        <p>I'm a 13 year old who's passionate about coding. This is my first actual multiplayer game! </p>
+        <p><a href="mailto:gautamgxtv@gmail.com" class="button">Contact Me</a></p>
+      </div>
+    </div>
+  </div>
+  
+  <div class="column">
+    <div class="card">
+      <div class="container">
+      <br>
+        <p class="title">Credits</p>
+        <p>samme - helping me a lot with phaser.<br><br> Joshuatucker3 - creating the homepage. <br><br>Phoenix - creating the cool skins!<br><br>Kognise - Helping me with multiplayer logic.</p>
+      </div>
+    </div>
+  </div>
+</div>
+<br>
+<center><a href="/" class="buttoen">Back to homepage</a></center>
+</body>
+</html>

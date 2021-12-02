@@ -9,7 +9,8 @@ const config = {
       patterns: [
         { from: "src/promo.html", to: "" },
         { from: "src/index.html", to: "" },
-        { from: "src/title.html", to: "" }
+        { from: "src/title.html", to: "" },
+        { from: "src/about.html", to: "" }
       ],
     }),
   ],

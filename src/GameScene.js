@@ -157,6 +157,7 @@ class GameScene extends Phaser.Scene {
 				this.lvlBar.width = this.canvas.width- padding;
 				this.lvlBar.height = this.canvas.height / 30;
 				this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
+
 				this.lvlBar.draw();
 
 				//coins array
@@ -172,13 +173,14 @@ class GameScene extends Phaser.Scene {
 				//lvl text
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
-				
+
+				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
 				//camera follow
 				this.cameras.main.setZoom(1);
         
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText ]);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
 				this.cameras.main.startFollow(this.mePlayer);
 
@@ -220,6 +222,11 @@ class GameScene extends Phaser.Scene {
 						this.lvlBar.height = this.canvas.height / 30;
 						this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
 						this.lvlBar.draw();
+
+						this.lvlState.x = this.canvas.width / 2;
+						this.lvlState.y = this.lvlBar.y - (this.lvlBar.height);
+						this.lvlState.setFontSize(convert(1366, 50, this.canvas.width));
+						
 
 						this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
 						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
@@ -383,6 +390,8 @@ class GameScene extends Phaser.Scene {
                     var diff = this.levels[player.level-1].coins - this.levels[player.level-1].start;
                     var lvlcoins = player.coins - this.levels[player.level-1].start;
                     this.lvlBar.setLerpValue((lvlcoins / diff)*100);
+
+					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
 
 					if(this.myObj && player.level > this.myObj.level) {
 
@@ -555,7 +564,7 @@ class GameScene extends Phaser.Scene {
 					this.tweens.add({
 						targets: text,
 						alpha: 1,
-						y: this.canvas.height - this.canvas.height / 8,
+						y: this.canvas.height - this.canvas.height / 6,
 						completeDelay: 250,
 						duration: 750,
 						onComplete: ()=>completeCallback(text),
