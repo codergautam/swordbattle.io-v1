@@ -4,6 +4,8 @@ import DeathScene from "./DeathScene.js";
 import WonScene from "./WonScene.js";
 import OpenScene from "./OpenScene.js";
 
+window.addEventListener("load", () => {
+
 var config = {
     type: Phaser.CANVAS,
     width: document.documentElement.clientWidth,
@@ -87,3 +89,4 @@ window.onerror = function(msg, url, line) {
     document.write("Line number : " + line + "<br><br>");
     document.write("File : " + url);
 };
+})
