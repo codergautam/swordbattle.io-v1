@@ -4,8 +4,11 @@ class TitleScene extends Phaser.Scene {
     this.callback = callback;
   }
  preload() {
-
+try {
   document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 100;
+} catch(e) {
+  console.log("captcha hasnt loaded yet");
+}
   this.load.image("opening", "/assets/images/opening.png");
   this.load.html("title", "/title.html");
   this.load.html("promo", "/promo.html");

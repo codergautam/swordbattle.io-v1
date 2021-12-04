@@ -89,4 +89,4 @@ window.onerror = function(msg, url, line) {
     document.write("Line number : " + line + "<br><br>");
     document.write("File : " + url);
 };
-})
+});

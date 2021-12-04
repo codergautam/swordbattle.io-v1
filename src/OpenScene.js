@@ -26,6 +26,7 @@ class OpenScene extends Phaser.Scene {
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
         this.load.image("kill", "/assets/images/kill.png");
+        this.load.image("hitParticle", "/assets/images/hitparticle.png");
 
         this.load.audio("coin", "/assets/sound/coin.m4a");
         this.load.audio("damage", "/assets/sound/damage.mp3");

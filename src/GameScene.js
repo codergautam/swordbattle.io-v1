@@ -175,6 +175,8 @@ class GameScene extends Phaser.Scene {
 				this.lvlTextTween = undefined;
 
 				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
+				this.lvlState.y = this.lvlBar.y - (this.lvlState.height / 2);
+				
 				//camera follow
 				this.cameras.main.setZoom(1);
         
@@ -224,7 +226,7 @@ class GameScene extends Phaser.Scene {
 						this.lvlBar.draw();
 
 						this.lvlState.x = this.canvas.width / 2;
-						this.lvlState.y = this.lvlBar.y - (this.lvlBar.height);
+						this.lvlState.y = this.lvlBar.y - (this.lvlState.height /2);
 						this.lvlState.setFontSize(convert(1366, 50, this.canvas.width));
 						
 
@@ -581,6 +583,21 @@ class GameScene extends Phaser.Scene {
 				});
 
 				this.socket.on("dealHit", (playerId) => {
+					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
+					if(player) {
+						var particles = this.add.particles("hitParticle");
+
+						var emitter = particles.createEmitter({
+							maxParticles: 5,
+							scale: 0.2,
+						});
+						emitter.setPosition(player.player.x, player.player.y);
+					
+						this.UICam.ignore(particles);
+						emitter.setSpeed(200);
+						particles.setDepth(5);
+						emitter.setBlendMode(Phaser.BlendModes.ADD);
+					}
 					this.hit.play();
 				});
 				this.socket.on("takeHit", (playerId) => {
