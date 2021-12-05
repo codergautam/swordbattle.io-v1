@@ -68,8 +68,8 @@ class GameScene extends Phaser.Scene {
 
 				//player 
         
-				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50);
-				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51);
+				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
+				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
 				this.swordAnim = {go: false, added: 0};
 				this.goTo = {
 					x: undefined,
@@ -144,6 +144,7 @@ class GameScene extends Phaser.Scene {
       
 				//bar
 				this.meBar = new HealthBar(this, 0, 0, 16, 80);
+				this.meBar.bar.setAlpha(0.5);
 
 				//levelbar
 				this.lvlBar = new HealthBar(this, 0, 0, 0, 0, true);
@@ -176,7 +177,7 @@ class GameScene extends Phaser.Scene {
 
 				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
 				this.lvlState.y = this.lvlBar.y - (this.lvlState.height / 2);
-				
+
 				//camera follow
 				this.cameras.main.setZoom(1);
         
@@ -321,7 +322,7 @@ class GameScene extends Phaser.Scene {
 							fontSize: "25px"
 						}).setDepth(100),
 						swordAnim: {go: false, added: 0},
-						toAngle: 0
+						toAngle: 0,
 					};
          
 					var factor = (100/(player.scale*100))*1.5;
@@ -346,21 +347,52 @@ class GameScene extends Phaser.Scene {
 						}
 					);
 
+					//check if player joined 5 seconds ago
+					if (Date.now() - player.joinTime < 5000) {
+						console.log("joined 5 seconds ago");
+						enemy.player.setAlpha(0.5);
+						enemy.sword.setAlpha(0.5);
+						enemy.bar.bar.setAlpha(0.5);
+						//use a tween to make the player a bit transparent for 5 seconds
+						setTimeout(() => {
+						this.tweens.add({
+							targets: [enemy.player, enemy.sword, enemy.bar.bar],
+							alpha: 1,
+							duration: 100,
+							ease: "Linear",
+							repeat: 0,
+							yoyo: false
+						});
+					}, 5000 - (Date.now() - player.joinTime));
+
+					}
+
+
 				};
 				this.removePlayer = (id) => {
 					try {
 						var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
         
-						enemy.player.destroy();
-						enemy.sword.destroy();
-						enemy.bar.destroy();
-						enemy.nameTag.destroy();
-        
-						this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1);
-        
-						var miniMapPlayer = this.miniMap.people.find(x => x.id === id);
-						miniMapPlayer.circle.destroy();
-						this.miniMap.people = this.miniMap.people.filter(p => p.id != id);
+
+
+						//fade out the enemy using tweens
+						var fadeOut = this.tweens.add({
+							targets: [enemy.player, enemy.nameTag, enemy.bar.bar, enemy.sword],
+							alpha: 0,
+							duration: 150,
+							ease: "Sine2",
+							onComplete: () => {
+								enemy.player.destroy();
+								this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1);
+								enemy.bar.destroy();
+								enemy.nameTag.destroy();
+								enemy.sword.destroy();
+								var miniMapPlayer = this.miniMap.people.find(x => x.id === id);
+								miniMapPlayer.circle.destroy();
+								this.miniMap.people = this.miniMap.people.filter(p => p.id != id);
+							}
+						});
+								
         
 					} catch (e) {
 						console.log(e);
@@ -606,16 +638,31 @@ class GameScene extends Phaser.Scene {
 
 				//coins
 
-				const addCoin = coin => {
+				const addCoin = (coin,start) => {
 					if(this.dead) return;
+					var anim = true;
+					if(!start) {
+						start = [coin.pos.x, coin.pos.y];
+						anim = false;
+					}
+					
 					this.coins.push(
 						{
 							id: coin.id,
-							item: this.add.image(coin.pos.x, coin.pos.y, "coin").setScale(coin.size/100).setDepth(20),
+							item: this.add.image(start[0], start[1], "coin").setScale(coin.size/100).setDepth(20).setAlpha(anim?0:1),
 							state: {collected: false, collectedBy: undefined, time: 0}
 						}
 					);
-
+						if(anim) {
+							this.tweens.add({
+								targets: this.coins[this.coins.length-1].item,
+								alpha: 1,
+								x: coin.pos.x,
+								y: coin.pos.y,
+								duration: 250,
+								ease: "Sine2"
+							});
+						}
 					this.UICam.ignore(this.coins[this.coins.length - 1].item);
 				};
 
@@ -635,11 +682,17 @@ class GameScene extends Phaser.Scene {
 					this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1);
 				});
 
-				this.socket.on("coin", (coin) => {      
+				this.socket.on("coin", (coin, start) => {      
 					if(Array.isArray(coin)) {
+						if(start) {
+						coin.forEach((x) => {
+							addCoin(x, start);
+						});
+					} else {
 						coin.forEach((x) => {
 							addCoin(x);
 						});
+					}
 					} else {      
 						addCoin(coin);
 					}
@@ -659,6 +712,17 @@ class GameScene extends Phaser.Scene {
 				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
 				this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
 
+
+				setTimeout(() => {
+						this.tweens.add({
+							targets: [this.mePlayer, this.meSword, this.meBar.bar],
+							alpha: 1,
+							duration: 100,
+							ease: "Linear",
+							repeat: 0,
+							yoyo: false
+						});
+				},5000);
 			});
 		});
 	}
