@@ -9,16 +9,13 @@ try {
 } catch(e) {
   console.log("captcha hasnt loaded yet");
 }
-  this.load.image("opening", "/assets/images/opening.png");
-  this.load.html("title", "/title.html");
-  this.load.html("promo", "/promo.html");
-  this.load.audio("openingsound", "/assets/sound/opening.mp3");
+
 
  // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 }
 
  create() {
-  
+  var footerdone = false;
    this.redirect = false;
   var access = true;
   try {
@@ -51,9 +48,12 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
   this.background = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
+  this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);
+  this.footer.y = this.canvas.height + (this.footer.height*2);
+
   this.background.displayHeight = this.canvas.height;
   this.background.displayWidth =this.canvas.width;
-  this.nameBox = this.add.dom(this.canvas.width/2, this.canvas.height/1.7 ).createFromCache("title");
+  this.nameBox = this.add.dom(this.canvas.width/2, 0 ).createFromCache("title");
      if(this.showPromo) {
 
        this.promo = this.add.dom(0, 0).createFromCache("promo");
@@ -125,33 +125,51 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.background.displayHeight = this.canvas.height;
     this.background.displayWidth =this.canvas.width;
     this.nameBox.x = this.canvas.width / 2;
-    this.nameBox.y = this.canvas.height / 2;
     this.text.x = this.canvas.width / 2;
-    if(this.text.y != 0) this.text.y = this.canvas.height / 3;
+    var footery =this.canvas.height - (this.footer.height);
+    if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
+    if(footerdone) this.text.y = this.canvas.height / 4;
+    if(footerdone) this.footer.y = footery;
+    try {
+    this.text.setFontSize( this.canvas.width / 10);
+    } catch(e) {
+      console.log("font size not set");
+    }
+    this.footer.x = this.canvas.width/2;
   };
         
     window.addEventListener("resize", resize, false);
 
 resize();
     
+
+
+
+setTimeout(() => {
+  var footery =this.canvas.height - (this.footer.height);
+  if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
+
+  this.tweens.add({
+    targets: this.footer,
+    y: footery,
+    onComplete: () => {
+      footerdone = true;
+    },
+    duration: 1000,
+    ease: "Power2"
+  });
+
+  this.tweens.add({
+    targets: this.text,
+    y: this.canvas.height / 4,
+    duration: 1000,
+    ease: "Power2"
+  });
+},250);
 }
 
  update(d) {
-  function lerp (start, end, amt){
-    return (1-amt)*start+amt*end;
-  }
-   try {
-  this.text.setFontSize( this.canvas.width / 10);
-  if(this.text.y < this.canvas.height/3) this.text.y = lerp(this.text.y, this.canvas.height/3, 0.1);
-   } catch(e) {
-
-
-if(this.redirect) return;
-this.redirect = true;
-alert("Your administrator has blocked swordbattle.io\nDon't worry, You are being redirected to a proxy server to attempt to bypass this.");
-  window.location.replace("https://sword-io-game.herokuapp.com/");
-
-  }
+   this.nameBox.y = (this.mobile ? this.text.y + (this.text.height / 2) : this.text.y + (this.text.height));
 }
 }
 

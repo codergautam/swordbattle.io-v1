@@ -34,6 +34,12 @@ class OpenScene extends Phaser.Scene {
         this.load.audio("winSound", "/assets/sound/win.m4a");
         this.load.audio("loseSound", "/assets/sound/lost.mp3");
 
+        this.load.image("opening", "/assets/images/opening.png");
+        this.load.html("title", "/title.html");
+        this.load.html("promo", "/promo.html");
+        this.load.html("footer", "/footer.html");
+        this.load.audio("openingsound", "/assets/sound/opening.mp3");
+
         this.scale.fullscreenTarget = document.getElementById("game");
     }
 

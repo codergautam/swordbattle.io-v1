@@ -131,9 +131,9 @@ class GameScene extends Phaser.Scene {
 					this.joyStick = this.plugins
 						.get("rexvirtualjoystickplugin")
 						.add(this, {
-							x: this.canvas.width / 8,
+							x: this.canvas.width / 6,
 							y: this.canvas.height - this.canvas.height / 2.5,
-							radius: convert(2360, 200, this.canvas.width),
+							radius: convert(2360, 250, this.canvas.width),
 							base: this.add.circle(0, 0, convert(2360, 250, this.canvas.width), 0x888888),
 							thumb: this.add.circle(0, 0, convert(2360, 100, this.canvas.width), 0xcccccc)
 							// dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
@@ -172,7 +172,7 @@ class GameScene extends Phaser.Scene {
 				this.cursors = this.input.keyboard.createCursorKeys();
 
 				//lvl text
-				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "nice", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
+				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
 
 				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
@@ -197,11 +197,12 @@ class GameScene extends Phaser.Scene {
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
 						if(this.mobile) {
-							this.joyStick.radius = convert(2360, 250, this.canvas.width);
+
 							this.joyStick.x = this.canvas.width / 8;
 							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
 							this.joyStick.base.radius = convert(2360, 250, this.canvas.width);
 							this.joyStick.thumb.radius = convert(2360, 100, this.canvas.width);
+							this.joyStick.radius = convert(2360, 250, this.canvas.width);
 						}
 						this.UICam.x = this.cameras.main.x;
 						this.UICam.y = this.cameras.main.y;
@@ -227,9 +228,9 @@ class GameScene extends Phaser.Scene {
 						this.lvlBar.draw();
 
 						this.lvlState.x = this.canvas.width / 2;
-						this.lvlState.y = this.lvlBar.y - (this.lvlState.height /2);
+					
 						this.lvlState.setFontSize(convert(1366, 50, this.canvas.width));
-						
+						this.lvlState.y = this.lvlBar.y - (this.lvlState.height /2);
 
 						this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
 						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
@@ -364,7 +365,6 @@ class GameScene extends Phaser.Scene {
 							yoyo: false
 						});
 					}, 5000 - (Date.now() - player.joinTime));
-
 					}
 
 
