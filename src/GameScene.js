@@ -727,7 +727,8 @@ class GameScene extends Phaser.Scene {
 		});
 	}
 
-	update() {
+	update(time, delta) {
+		const convert = (num, val, newNum) => (newNum * val) / num;
 		if(!this.readyt) return;
 
         this.lvlBar.update();
@@ -779,13 +780,19 @@ class GameScene extends Phaser.Scene {
 		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 		this.mePlayer.angle = this.meSword.angle + 45 +180;
 		//sword animation
-		if (this.mouseDown) this.swordAnim.go = true;
-		else this.swordAnim.go = false;
+		if (this.mouseDown ) {
+			if(this.swordAnim.added <= 0) this.swordAnim.go = true;
+		}
+		else if(this.swordAnim.added >= 50) this.swordAnim.go = false;
         
         
 		if(this.swordAnim.go) {
 
-			if(this.swordAnim.added < 50) this.swordAnim.added += 10;
+
+			var cooldown = (this.myObj ? this.myObj.damageCooldown : 120);
+			var increase = (50 / cooldown) * delta;
+			console.log(cooldown, delta, increase);
+			if(this.swordAnim.added < 50) this.swordAnim.added += increase;
 			this.meSword.angle -= this.swordAnim.added;
 		} else if(this.swordAnim.added >0) {
 			this.swordAnim.added -= 10;
@@ -860,13 +867,17 @@ class GameScene extends Phaser.Scene {
 			}         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5);
 			enemy.player.angle = enemy.sword.angle + 45 + 180;
 
+			
+		
+
 			if (enemy.down) {
-				enemy.swordAnim.go = true;
 				if(!enemy.swordAnim.added) enemy.swordAnim.added = 0;
-			} else enemy.swordAnim.go = false;
+				if(enemy.swordAnim.added <= 0)enemy.swordAnim.go = true;
+			} else if(enemy.swordAnim.added >= 50) enemy.swordAnim.go = false;
 
 			if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
-				enemy.swordAnim.added += 10;
+				var increase = (50 / enemy.playerObj.damageCooldown) * delta;
+				if(enemy.swordAnim.added < 50) enemy.swordAnim.added += increase;
 			}
 
 			if(!enemy.swordAnim.go  && enemy.swordAnim.added > 0) {

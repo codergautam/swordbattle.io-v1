@@ -17,6 +17,7 @@ class Player {
     this.scale = 0.25;
     this.damage = 10;
     this.level = 1;
+    this.damageCooldown = 100;
 
     if(["devil", "codergautamyt"].includes(name.toLowerCase())) {
       this.skin = name.toLowerCase();
@@ -207,6 +208,9 @@ return false;
 
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
+
+    this.damageCooldown = 50 + (this.level * 10);
+
   }
   down(down, coins, io) {
     this.mouseDown = down;
@@ -216,7 +220,7 @@ return false;
     //hit cooldown
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    if (this.mouseDown && Date.now() - this.lastDamageDealt > 1000 / 7) {
+    if (this.mouseDown && Date.now() - this.lastDamageDealt > this.damageCooldown && Date.now() - this.joinTime >= 5000) {
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
         if (enemy && enemy.id != this.id && !PlayerList.deadPlayers.includes(enemy.id)) {
@@ -310,7 +314,7 @@ return false;
     return coins;
   }
   getSendObj() {
-    return {joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 
