@@ -220,7 +220,7 @@ return false;
     //hit cooldown
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown && Date.now() - this.joinTime >= 4500) {
+    if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown && Date.now() - this.joinTime >= 5000) {
       this.lastSwing = Date.now();
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
