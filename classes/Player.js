@@ -28,7 +28,7 @@ class Player {
 
     this.maxHealth = 100;
     this.lastPos = this.pos;
-    this.lastDamageDealt = Date.now();
+    this.lastSwing = Date.now();
     this.joinTime = Date.now();
     this.lastHit = Date.now();
     this.lastRegen = Date.now();
@@ -220,7 +220,8 @@ return false;
     //hit cooldown
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    if (this.mouseDown && Date.now() - this.lastDamageDealt > this.damageCooldown && Date.now() - this.joinTime >= 5000) {
+    if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown && Date.now() - this.joinTime >= 2500) {
+      this.lastSwing = Date.now();
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
         if (enemy && enemy.id != this.id && !PlayerList.deadPlayers.includes(enemy.id)) {
@@ -246,7 +247,7 @@ return false;
             } 
 
 
-            this.lastDamageDealt = Date.now();
+            
             enemy.lastHit = Date.now();
             var oldHealth = enemy.health;
             enemy.health -= this.damage;
