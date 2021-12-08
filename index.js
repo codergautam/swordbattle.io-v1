@@ -5,8 +5,7 @@ require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
 var cors = require("cors");
-var fs = require("fs");
-
+ 
 
 var server;
 /*
@@ -34,6 +33,7 @@ const Player = require("./classes/Player");
 const Coin = require("./classes/Coin");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
+const { sql } = require("./database");
 
 const io = new Server(server, {
 	allowRequest: (req, callback) => {
@@ -121,6 +121,11 @@ app.use(cors());
 
 app.use("/", express.static("dist"));
 app.use("/assets", express.static("assets"));
+
+app.get("/leaderboard", async (req, res) => {
+	var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 10`;
+	res.render("leaderboard.ejs", {lb: lb});
+});
 
 
 Object.filter = (obj, predicate) =>

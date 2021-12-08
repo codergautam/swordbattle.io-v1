@@ -145,7 +145,6 @@ resize();
 
 
 
-setTimeout(() => {
   var footery =this.canvas.height - (this.footer.height);
   if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
@@ -165,7 +164,7 @@ setTimeout(() => {
     duration: 1000,
     ease: "Power2"
   });
-},250);
+
 }
 
  update(d) {

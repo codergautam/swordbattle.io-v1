@@ -1,9 +1,11 @@
 var intersects = require("intersects");
 const PlayerList = require("./PlayerList");
 const Coin = require("./Coin.js");
+const {sql} = require("../database");
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+
 class Player { 
   constructor(id, name) {
     this.ai = false;
@@ -256,12 +258,15 @@ return false;
             if (enemy.health <= 0) {
              
               //enemy has 0 or less than 0 health, time to kill
+              sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime})`;
 
               //increment killcount by 1
               this.kills += 1;
 
               //tell clients that this enemy died
               if(!enemy.ai && socketById) {
+
+                
                 
               socketById.emit("youDied", {
                 killedBy: this.name,

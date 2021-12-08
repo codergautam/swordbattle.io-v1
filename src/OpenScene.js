@@ -78,7 +78,11 @@ class OpenScene extends Phaser.Scene {
         } else {
             if(this.text.alpha > 0 )this.text.setAlpha(this.text.alpha - 0.05);
             else {
+                try {
                 this.scale.startFullscreen();
+                } catch(e) {
+                    console.log("fullscreen error oof");
+                }
                 this.scene.start("title");
             }
         }
