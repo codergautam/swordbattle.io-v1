@@ -134,6 +134,9 @@ this.pos.y = pos[1]
               //yay you won!
               if(!this.ai) {
               var socketById = io.sockets.sockets.get(this.id);
+              
+              sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime})`;
+              
               socketById.emit("youWon", {
                 timeSurvived: Date.now() - this.joinTime,
               });
