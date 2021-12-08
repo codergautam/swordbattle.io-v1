@@ -209,7 +209,7 @@ return false;
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 10);
+    this.damageCooldown = 50 + (this.level * 5);
 
   }
   down(down, coins, io) {
