@@ -27,6 +27,45 @@ function msToTime(duration) {
   function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
+
+function niceifyType(d) {
+	var table = {
+		'coins': 'Coins',
+		'kills': 'Kills',
+		'time': 'Survived',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function niceifyDur(d) {
+	var table = {
+		'all': 'All-Time',
+		'day': 'Past Day',
+		'week': 'Past Week',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function tableDur(d) {
+	var table = ["all", "day", "week"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
+function tableType(d) {
+	var table = ["coins", "kills", "time"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
   %>
 <!DOCTYPE html>
 <html lang="en">
@@ -34,10 +73,34 @@ function msToTime(duration) {
 	<meta charset="UTF-8">
 	<title>Leaderboard</title>
 	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
-	<link rel="stylesheet" type="text/css" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/css/bootstrap.min.css">
 	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
 	<link rel="stylesheet" type="text/css" href="css/style.css">
-    <style>
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>
+	function updateQueryStringParameter(uri, key, value) {
+var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+if (uri.match(re)) {
+return uri.replace(re, '$1' + key + "=" + value + '$2');
+}
+else {
+return uri + separator + key + "=" + value;
+}
+}
+	function setOptions(time, type) {
+		if(!time) var time = "<%= duration %>"
+		if(!type) var type = "<%= type %>"
+		var url = window.location.href;
+		url = updateQueryStringParameter(url, "type", type);
+		url = updateQueryStringParameter(url, "duration", time);
+		console.log(url);
+		window.location.assign(url);
+
+
+	}
+</script>
+	<style>
         @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
 body {
 	background: #f9f9f9;
@@ -118,14 +181,36 @@ img.circle-img.circle-img--small {
     </style>
 </head>
 <body>
+
 	<section class="main-content">
+
 		<div class="container">
-			<h1>Coins Leaderboard</h1>
+			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : "Survived") %> Leaderboard%></h1>
             <br>
-            <h3>All-Time</h3>
-			<br>
+            <h3><%=(duration == "all" ? "All-Time" : duration == "day" ? "Past Day" : "Past Week")%></h3>
 			<br>
 
+			<div class="dropdown dropdown d-inline-block">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <%= niceifyType(type)[0] %>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[0]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[1] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[1]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[2] %></a>
+				</div>
+			  </div>
+			  <div class="dropdown dropdown d-inline-block">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<%= niceifyDur(duration)[0] %>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				  <a onclick="setOptions('<%=tableDur(duration)[0]%>')" class="dropdown-item" href="#"><%= niceifyDur(duration)[1] %></a>
+				  <a onclick="setOptions('<%=tableDur(duration)[1]%>')" class="dropdown-item" href="#"><%= niceifyDur(duration)[2] %></a>
+				</div>
+			  </div>
+			  
+			  <br>
+			  <br>
 			<div class="row">
 				<div class="col-sm-4">
 					<div class="leaderboard-card leaderboard-card--first">
@@ -213,5 +298,7 @@ img.circle-img.circle-img--small {
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
 </body>
 </html>

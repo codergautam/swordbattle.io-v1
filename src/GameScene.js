@@ -350,7 +350,6 @@ class GameScene extends Phaser.Scene {
 
 					//check if player joined 5 seconds ago
 					if (Date.now() - player.joinTime < 5000) {
-						console.log("joined 5 seconds ago");
 						enemy.player.setAlpha(0.5);
 						enemy.sword.setAlpha(0.5);
 						enemy.bar.bar.setAlpha(0.5);
@@ -426,7 +425,6 @@ class GameScene extends Phaser.Scene {
                     this.lvlBar.setLerpValue((lvlcoins / diff)*100);
 
 					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
-
 					if(this.myObj && player.level > this.myObj.level) {
 
 						if(this.lvlTextTween) this.lvlTextTween.stop();
@@ -488,7 +486,7 @@ class GameScene extends Phaser.Scene {
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
 					this.background.displayHeight = this.cameras.main.displayHeight;
-					//this.meLine.setTo(0, 0, 250, 250)
+
 					this.killCount.setText("[img=kill] " + player.kills+"\n[img=coin] "+player.coins);
 					this.myObj = player;
 
@@ -791,7 +789,6 @@ class GameScene extends Phaser.Scene {
 
 			var cooldown = (this.myObj ? this.myObj.damageCooldown : 120);
 			var increase = (50 / cooldown) * delta;
-			console.log(cooldown, delta, increase);
 			if(this.swordAnim.added < 50) this.swordAnim.added += increase;
 			this.meSword.angle -= this.swordAnim.added;
 		} else if(this.swordAnim.added >0) {
