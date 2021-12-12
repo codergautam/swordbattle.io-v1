@@ -15,7 +15,7 @@ try {
 }
 
  create() {
-  var footerdone = false;
+  this.footerdone = false;
    this.redirect = false;
   var access = true;
   try {
@@ -128,8 +128,8 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     this.text.x = this.canvas.width / 2;
     var footery =this.canvas.height - (this.footer.height);
     if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
-    if(footerdone) this.text.y = this.canvas.height / 4;
-    if(footerdone) this.footer.y = footery;
+    if(this.footerdone) this.text.y = this.canvas.height / 4;
+    if(this.footerdone) this.footer.y = footery;
     try {
     this.text.setFontSize( this.canvas.width / 10);
     } catch(e) {
@@ -152,7 +152,7 @@ resize();
     targets: this.footer,
     y: footery,
     onComplete: () => {
-      footerdone = true;
+      this.footerdone = true;
     },
     duration: 1000,
     ease: "Power2"
@@ -169,6 +169,11 @@ resize();
 
  update(d) {
    this.nameBox.y = (this.mobile ? this.text.y + (this.text.height / 2) : this.text.y + (this.text.height));
+
+   var footery =this.canvas.height - (this.footer.height);
+   if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
+
+   if(this.footerdone && this.footer.y != footery) this.footer.y = footery;
 }
 }
 
