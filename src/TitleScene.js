@@ -1,7 +1,8 @@
 class TitleScene extends Phaser.Scene {
-  constructor(callback) {
+  constructor(playPreroll,callback) {
     super();
     this.callback = callback;
+    this.playPreroll = playPreroll;
   }
  preload() {
 try {
@@ -101,8 +102,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     else {
       this.done = true;
       if(access) window.localStorage.setItem("oldName", name.value);
-      this.callback(name.value, this.music);
       this.nameBox.destroy();
+      if(this.playPreroll) {
+        
+      }
+      this.callback(name.value, this.music);
 
     }
   };

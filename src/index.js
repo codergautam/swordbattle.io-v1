@@ -26,7 +26,10 @@ var deathScene = new DeathScene();
 var winScene = new WonScene();
 var openScene = new OpenScene();
 
+var playPreroll = false;
+
 var gameScene = new GameScene((data) => {
+    playPreroll = !playPreroll;
     if(data.win) {
         winScene.data = data.data;
         gameScene.scene.start("win");
@@ -36,7 +39,7 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene((name, music) => {
+var titleScene = new TitleScene(playPreroll, (name, music) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
