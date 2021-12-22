@@ -27,9 +27,11 @@ var winScene = new WonScene();
 var openScene = new OpenScene();
 
 var playPreroll = false;
+var lastAd = 0;
 
 var gameScene = new GameScene((data) => {
-    playPreroll = !playPreroll;
+   playPreroll = !playPreroll;
+    titleScene.playPreroll = playPreroll;
     if(data.win) {
         winScene.data = data.data;
         gameScene.scene.start("win");
@@ -39,11 +41,13 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene(playPreroll, (name, music) => {
+var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > 10000), (name, music) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
     titleScene.showPromo = false;
+    console.log(lastAd, playPreroll);
+    if(playPreroll) lastAd = Date.now();
 });
 
 titleScene.mobile = mobile;
@@ -88,10 +92,11 @@ document.addEventListener("contextmenu",function(e) {
     e.preventDefault();
     });
 
+
 //for debugging on the school chromebooks they fricking banned dev console
-window.onerror = function(msg, url, line) {
+/*window.onerror = function(msg, url, line) {
     document.write("Error : " + msg + "<br><br>");
     document.write("Line number : " + line + "<br><br>");
     document.write("File : " + url);
-};
+};*/
 });
