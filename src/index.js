@@ -41,7 +41,7 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > 10000), (name, music) => {
+var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > 60000), (name, music) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
