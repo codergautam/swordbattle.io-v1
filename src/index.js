@@ -31,7 +31,7 @@ var lastAd = 0;
 
 var gameScene = new GameScene((data) => {
    playPreroll = true;
-    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > 45000);
+    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > 60000);
     if(data.win) {
         winScene.data = data.data;
         gameScene.scene.start("win");
@@ -46,7 +46,7 @@ var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > 60000), (n
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
     titleScene.showPromo = false;
-    if((playPreroll && Date.now() - lastAd > 45000)) lastAd = Date.now();
+    if((playPreroll && Date.now() - lastAd > 60000)) lastAd = Date.now();
 });
 
 titleScene.mobile = mobile;
