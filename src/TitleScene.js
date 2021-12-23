@@ -102,6 +102,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
     else {
       this.done = true;
       if(access) window.localStorage.setItem("oldName", name.value);
+      var myName = name.value;
      
       if(this.playPreroll) {
            if (typeof aiptag.adplayer !== "undefined") {
@@ -127,7 +128,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 			*/
        this.nameBox.destroy();
          document.getElementById("game").focus();
-      this.callback(name.value, this.music);
+      this.callback(myName, this.music);
       
 			console.log("Preroll Ad Completed: " + evt);
 		}
@@ -138,9 +139,11 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 }  else {
    this.nameBox.destroy();
  
-  this.callback(name.value, this.music);
+  this.callback(myName, this.music);
 }
-      } else {    this.callback(name.value, this.music);
+      } else {    
+         this.nameBox.destroy();
+        this.callback(myName, this.music);
       }
     }
   };

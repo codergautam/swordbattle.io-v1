@@ -28,10 +28,10 @@ var openScene = new OpenScene();
 
 var playPreroll = false;
 var lastAd = 0;
-
+var adDelay = 60000
 var gameScene = new GameScene((data) => {
    playPreroll = true;
-    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > 60000);
+    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
     if(data.win) {
         winScene.data = data.data;
         gameScene.scene.start("win");
@@ -41,12 +41,12 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > 60000), (name, music) => {
+var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
     titleScene.showPromo = false;
-    if((playPreroll && Date.now() - lastAd > 60000)) lastAd = Date.now();
+    if((playPreroll && Date.now() - lastAd > adDelay)) lastAd = Date.now();
 });
 
 titleScene.mobile = mobile;
