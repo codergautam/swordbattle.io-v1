@@ -28,7 +28,7 @@ var openScene = new OpenScene();
 
 var playPreroll = false;
 var lastAd = 0;
-var adDelay = 120000;
+var adDelay = 300000;
 var gameScene = new GameScene((data) => {
    playPreroll = true;
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
