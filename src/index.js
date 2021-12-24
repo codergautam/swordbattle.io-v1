@@ -30,7 +30,8 @@ var playPreroll = false;
 var lastAd = 0;
 var adDelay = 600000;
 var gameScene = new GameScene((data) => {
-   playPreroll = true;
+   //playPreroll = true;
+   playPreroll = false;
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
     if(data.win) {
         winScene.data = data.data;
