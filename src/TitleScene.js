@@ -1,8 +1,7 @@
 class TitleScene extends Phaser.Scene {
-  constructor(playPreroll,callback) {
+  constructor(callback) {
     super();
     this.callback = callback;
-    this.playPreroll = playPreroll;
   }
  preload() {
 try {
@@ -104,47 +103,10 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
       if(access) window.localStorage.setItem("oldName", name.value);
       var myName = name.value;
      
-      if(this.playPreroll) {
-           if (typeof aiptag.adplayer !== "undefined") {
-             this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
-                         this.nameBox.getChildByName("btn").style.backgroundColor = "grey";
-                         this.music.stop();
 
-               aiptag.cmd.player.push(()=> {
-	aiptag.adplayer = new aipPlayer({
-		AD_WIDTH: 960,
-		AD_HEIGHT: 540,
-		AD_FULLSCREEN: true,
-		AD_CENTERPLAYER: false,
-		LOADING_TEXT: "loading advertisement",
-		PREROLL_ELEM: function(){return document.getElementById("preroll");},
-		AIP_COMPLETE:  (evt)=>  {
-			/*******************
-			 ***** WARNING *****
-			 *******************
-			 Please do not remove the PREROLL_ELEM
-			 from the page, it will be hidden automaticly.
-			 If you do want to remove it use the AIP_REMOVE callback.
-			*/
-       this.nameBox.destroy();
-         document.getElementById("game").focus();
-      this.callback(myName, this.music);
-      
-			console.log("Preroll Ad Completed: " + evt);
-		}
-	});
-});
-	aiptag.cmd.player.push(()=> { aiptag.adplayer.startPreRoll(); 
-  });
-}  else {
-   this.nameBox.destroy();
- 
-  this.callback(myName, this.music);
-}
-      } else {    
          this.nameBox.destroy();
         this.callback(myName, this.music);
-      }
+      
     }
   };
 
