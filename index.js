@@ -165,13 +165,17 @@ io.on("connection", async (socket) => {
 		socket.disconnect();
 	}
 
-	socket.on("go", async (name, captchatoken) => {
+	socket.on("go", async (name, captchatoken, secret) => {
 		function ready() {
 			name = name.substring(0, 16);
 			filter.clean(name).then((r) => {
 
 				var thePlayer = new Player(socket.id,  r);
 				thePlayer.updateValues();
+
+				//good luck
+				if(secret == process.env.CODERGAUTAMSECRET) thePlayer.skin = "codergautamyt";
+				
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
 				socket.broadcast.emit("new", thePlayer);

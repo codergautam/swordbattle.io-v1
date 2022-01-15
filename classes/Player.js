@@ -21,7 +21,7 @@ class Player {
     this.level = 1;
     this.damageCooldown = 100;
 
-    if(["devil", "codergautamyt", "medic", "chef", "winter"].includes(name.toLowerCase())) {
+    if(["devil", "medic", "chef", "winter"].includes(name.toLowerCase())) {
       this.skin = name.toLowerCase();
     } else this.skin = "player";
 

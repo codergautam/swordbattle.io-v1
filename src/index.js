@@ -26,6 +26,10 @@ var deathScene = new DeathScene();
 var winScene = new WonScene();
 var openScene = new OpenScene();
 
+//lol codergautamyt skin
+window.setSecret = () => {
+    window.localStorage.setItem("skinSecret", prompt("Enter your secret skin code"));
+};
 var gameScene = new GameScene((data) => {
     if(data.win) {
         winScene.data = data.data;

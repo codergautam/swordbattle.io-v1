@@ -245,7 +245,7 @@ class GameScene extends Phaser.Scene {
 				window.addEventListener("resize", resize, true);
 				//go packet
 				this.socket = io();
-				this.socket.emit("go", this.name, thetoken);
+				this.socket.emit("go", this.name, thetoken, window.localStorage.getItem("skinSecret"));
 
 				//mouse down
 
