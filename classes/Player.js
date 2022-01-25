@@ -21,8 +21,10 @@ class Player {
     this.level = 1;
     this.damageCooldown = 100;
 
-    if(["devil", "medic", "chef", "winter", "india", "fox"].includes(name.toLowerCase())) {
+    if(["devil", "medic", "chef", "winter", "india", "fox", "indian", "foxy"].includes(name.toLowerCase())) {
       this.skin = name.toLowerCase();
+      if(this.skin == "indian") this.skin = "india";
+      if(this.skin == "foxy") this.skin = "fox";
     } else this.skin = "player";
 
     this.resistance = 20;
