@@ -109,7 +109,7 @@ this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
           this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
                       this.nameBox.getChildByName("btn").style.backgroundColor = "grey";
                       this.music.stop();
-
+                      document.getElementById("admessage").style.display = "block";
             aiptag.cmd.player.push(()=> {
 aiptag.adplayer = new aipPlayer({
  AD_WIDTH: 960,
@@ -128,6 +128,7 @@ aiptag.adplayer = new aipPlayer({
    */
     this.nameBox.destroy();
       document.getElementById("game").focus();
+      document.getElementById("admessage").style.display = "none";
    this.callback(myName, this.music);
 
    console.log("Preroll Ad Completed: " + evt);
