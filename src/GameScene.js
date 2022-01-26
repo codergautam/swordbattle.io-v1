@@ -104,9 +104,10 @@ class GameScene extends Phaser.Scene {
 					this.playerCount.setScrollFactor(1);
 
 					//leaderboard
-					this.leaderboard = this.add.text(0, 10, "", {
-						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif"
-					}).setFontSize(20).setDepth(101);
+					this.leaderboard = this.add.rexBBCodeText(0, 10, "", {
+					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
+				}).setFontSize(25).setDepth(101);
+					
 					this.leaderboard.setScrollFactor(0);
 				} catch(e) {
 					console.log(e);
@@ -935,7 +936,9 @@ class GameScene extends Phaser.Scene {
 		this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180);
 
 
-        
+        function conv(num) {
+			return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
+		}
 
 		//leaderboard
 		if(!this.myObj) return;
@@ -944,14 +947,20 @@ class GameScene extends Phaser.Scene {
 
 		enemies.push({playerObj: this.myObj});
 		try {
-			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,(this.mobile ? 5 : 10));
+			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
 			var text = "";
-			sorted.forEach((entry, i) => {
+			var amIinit = false;
+			sorted.slice(0,(this.mobile ? 5 : 10)).forEach((entry, i) => {
 				if(!entry.playerObj) return;
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
+				if(entry.playerObj.id == this.myObj.id) amIinit = true;
 				var playerObj = entry.playerObj;
-				text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`;
+				text += `#${i+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${playerObj.name}- ${conv(playerObj.coins)}\n`;
 			});
+			if(!amIinit) {
+				var myIndex = sorted.findIndex(a=>a.playerObj.id == this.myObj.id);
+				text += `...\n#${myIndex+1}: ${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
+			}
 
 			this.leaderboard.setText(text);
 			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
