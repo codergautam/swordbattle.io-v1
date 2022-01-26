@@ -106,7 +106,7 @@ class GameScene extends Phaser.Scene {
 					//leaderboard
 					this.leaderboard = this.add.rexBBCodeText(0, 10, "", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
-				}).setFontSize(25).setDepth(101);
+				}).setFontSize(20).setDepth(101);
 					
 					this.leaderboard.setScrollFactor(0);
 				} catch(e) {
@@ -318,7 +318,7 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.text(player.pos.x, player.pos.y - 90, player.name, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${player.name}`, {
 							fontFamily: "serif",
 							fill: "#000000",
 							fontSize: "25px"
@@ -950,7 +950,9 @@ class GameScene extends Phaser.Scene {
 			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
 			var text = "";
 			var amIinit = false;
-			sorted.slice(0,(this.mobile ? 5 : 10)).forEach((entry, i) => {
+			var limit = this.mobile ? 5 : 10;
+			if(!this.mobile && this.canvas.height < 550) limit = 5;
+			sorted.slice(0,limit).forEach((entry, i) => {
 				if(!entry.playerObj) return;
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
 				if(entry.playerObj.id == this.myObj.id) amIinit = true;
@@ -959,7 +961,7 @@ class GameScene extends Phaser.Scene {
 			});
 			if(!amIinit) {
 				var myIndex = sorted.findIndex(a=>a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
 			}
 
 			this.leaderboard.setText(text);
