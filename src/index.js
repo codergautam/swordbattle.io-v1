@@ -30,7 +30,12 @@ var openScene = new OpenScene();
 window.setSecret = () => {
     window.localStorage.setItem("skinSecret", prompt("Enter your secret skin code"));
 };
+
+var playPreroll = true;
+var lastAd = 0;
+var adDelay = 1200000;
 var gameScene = new GameScene((data) => {
+    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
     if(data.win) {
         winScene.data = data.data;
         gameScene.scene.start("win");
@@ -40,11 +45,12 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene((name, music) => {
+var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
     titleScene.scene.start("game");
     titleScene.showPromo = false;
+    if((playPreroll && Date.now() - lastAd > adDelay)) lastAd = Date.now();
 });
 
 titleScene.mobile = mobile;
