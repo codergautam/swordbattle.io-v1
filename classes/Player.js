@@ -270,7 +270,7 @@ return false;
             if (enemy.health <= 0) {
              
               //enemy has 0 or less than 0 health, time to kill
-              sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime})`;
+            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime})`;
 
               //increment killcount by 1
               this.kills += 1;
