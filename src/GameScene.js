@@ -950,8 +950,7 @@ class GameScene extends Phaser.Scene {
 			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
 			var text = "";
 			var amIinit = false;
-			var limit = this.mobile ? 5 : 10;
-			if(!this.mobile && this.canvas.height < 550) limit = 5;
+			var limit = this.mobile || this.canvas.height < 550 ? 5 : 10;
 			sorted.slice(0,limit).forEach((entry, i) => {
 				if(!entry.playerObj) return;
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
@@ -960,8 +959,8 @@ class GameScene extends Phaser.Scene {
 				text += `#${i+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${playerObj.name}- ${conv(playerObj.coins)}\n`;
 			});
 			if(!amIinit) {
-				var myIndex = sorted.findIndex(a=>a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
+				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
+				text += `...\n#${myIndex+1}: ${this.myObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
 			}
 
 			this.leaderboard.setText(text);
