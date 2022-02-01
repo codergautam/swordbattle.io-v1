@@ -246,8 +246,8 @@ class GameScene extends Phaser.Scene {
 				window.addEventListener("resize", resize, true);
 				//go packet
 				this.socket = io();
-				this.socket.emit("go", this.name, thetoken, window.localStorage.getItem("skinSecret"));
-
+				if(!this.secret) this.socket.emit("go", this.name, thetoken, false);
+				else this.socket.emit("go", this.secret, thetoken, true);
 				//mouse down
 
 				this.input.on("pointerdown", function (pointer) {
@@ -318,7 +318,7 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${player.name}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
 							fontFamily: "serif",
 							fill: "#000000",
 							fontSize: "25px"
@@ -956,11 +956,11 @@ class GameScene extends Phaser.Scene {
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
 				if(entry.playerObj.id == this.myObj.id) amIinit = true;
 				var playerObj = entry.playerObj;
-				text += `#${i+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${playerObj.name}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.name}- ${conv(playerObj.coins)}\n`;
 			});
 			if(!amIinit) {
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${this.myObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
 			}
 
 			this.leaderboard.setText(text);

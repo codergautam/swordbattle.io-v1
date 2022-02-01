@@ -20,12 +20,9 @@ class Player {
     this.damage = 10;
     this.level = 1;
     this.damageCooldown = 100;
+    this.verified = false;
 
-    if(["devil", "medic", "chef", "winter", "india", "fox", "indian", "foxy"].includes(name.toLowerCase())) {
-      this.skin = name.toLowerCase();
-      if(this.skin == "indian") this.skin = "india";
-      if(this.skin == "foxy") this.skin = "fox";
-    } else this.skin = "player";
+   this.skin = "player";
 
     this.resistance = 20;
     this.power = 200;
@@ -270,7 +267,7 @@ return false;
             if (enemy.health <= 0) {
              
               //enemy has 0 or less than 0 health, time to kill
-            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime})`;
+            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
 
               //increment killcount by 1
               this.kills += 1;
@@ -332,7 +329,7 @@ return false;
     return coins;
   }
   getSendObj() {
-    return {damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 

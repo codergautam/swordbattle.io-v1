@@ -47,6 +47,9 @@ class OpenScene extends Phaser.Scene {
         this.load.image("opening", "/assets/images/opening.png");
         this.load.html("title", "/title.html");
         this.load.html("promo", "/promo.html");
+        this.load.html("login", "/login.html");
+        this.load.html("signup", "/signup.html");
+        this.load.html("dropdown", "/dropdown.html");
         this.load.html("footer", "/footer.html");
         this.load.audio("openingsound", "/assets/sound/opening.mp3");
 
@@ -87,14 +90,8 @@ class OpenScene extends Phaser.Scene {
         if(this.text.alpha < 1) this.text.setAlpha(this.text.alpha + 0.01);
         } else {
             if(this.text.alpha > 0 )this.text.setAlpha(this.text.alpha - 0.05);
-            else {
-                try {
-                this.scale.startFullscreen();
-                } catch(e) {
-                    console.log("fullscreen error oof");
-                }
-                this.scene.start("title");
-            }
+            else this.scene.start("title");
+            
         }
     }
 }
