@@ -129,9 +129,9 @@ app.get("/leaderboard", async (req, res) => {
 	var type =["coins", "kills", "time"].includes(req.query.type) ? req.query.type : "coins";
 	var duration  = ["all", "day", "week"].includes(req.query.duration) ? req.query.duration : "all";
 	if(duration != "all") {
-		var lb = await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} ORDER BY ${ sql(type) } DESC LIMIT 23`;
+		var lb = await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	} else {
-		var lb = await sql`SELECT * from games ORDER BY ${ sql(type) } DESC LIMIT 23`;
+		var lb = await sql`SELECT * from games ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	}
 	console.log(type, duration);
 	res.render("leaderboard.ejs", {lb: lb, type: type, duration: duration});
