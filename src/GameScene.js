@@ -740,10 +740,11 @@ class GameScene extends Phaser.Scene {
 		};
 
 
-		var wKey = this.input.keyboard.addKey("W");
-		var aKey = this.input.keyboard.addKey("A");
-		var sKey = this.input.keyboard.addKey("S");
-		var dKey = this.input.keyboard.addKey("D");
+		var wKey = this.input.keyboard.addKey("W", false);
+		var aKey = this.input.keyboard.addKey("A", false);
+		var sKey = this.input.keyboard.addKey("S", false);
+		var dKey = this.input.keyboard.addKey("D",false);
+		
 		try {
 			this.key = this.mobile ?  this.joyStick.createCursorKeys() : this.cursors;
 			if (this.key.up.isDown || wKey.isDown ) {

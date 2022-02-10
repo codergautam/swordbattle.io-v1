@@ -163,9 +163,9 @@ app.post("/api/signup", async (req, res) => {
 		res.send({error: "Username can't have two spaces in a row"});
 		return;
 	}
-	var regex = /^[a-zA-Z0-9.!@?#"$%&:';()*\+,\/;\-=[\\\]\^_{|}<>~` ]+$/g;
+	var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;
 	if(!username.match(regex)) {
-		res.send({error: "Username can only contain letters, numbers, spaces, and the following symbols: .!@?#\"$%&:';()*\+,/;-=[\\\]\^_{|}<>~`"});
+		res.send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
 		return;
 	}
 	
@@ -298,15 +298,47 @@ app.get("/leaderboard", async (req, res) => {
 	//SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
  
 	//var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
-	var type =["coins", "kills", "time"].includes(req.query.type) ? req.query.type : "coins";
-	var duration  = ["all", "day", "week"].includes(req.query.duration) ? req.query.duration : "all";
+	var type =["coins", "kills", "time","xp"].includes(req.query.type) ? req.query.type : "coins";
+	var duration  = ["all", "day", "week","xp"].includes(req.query.duration) ? req.query.duration : "all";
+	if(type !== "xp") {
 	if(duration != "all") {
 		var lb = await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	} else {
 		var lb = await sql`SELECT * from games ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	}
+} else {
+	if(duration != "all") {
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} group by name order by xp desc limit 23`;
+	} else {
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc limit 23`;
+	}
+}
+	
 	console.log(type, duration);
 	res.render("leaderboard.ejs", {lb: lb, type: type, duration: duration});
+});
+
+app.get("/:user", async (req, res, next) => {
+	var user = req.params.user;
+	var dbuser  = await sql`SELECT * from accounts where lower(username)=lower(${user})`;
+	if(!dbuser[0]) {
+		next();
+	} else {
+		var yo = await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+		var stats = await sql`
+		select a.dt,b.name,b.xp,b.kills from
+		(
+		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 order by created_at::date 
+		) a
+		left join
+		(
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
+		) b on a.dt=b.dt1 order by a.dt asc
+		`;
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+		res.render("user.ejs", {user: dbuser[0], games: yo, stats: stats, lb: lb});
+		
+	}
 });
 
 
@@ -473,6 +505,8 @@ io.on("connection", async (socket) => {
 	} );
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
+		var thePlayer = PlayerList.getPlayer(socket.id);
+		sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${thePlayer.id}, ${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);
 	});

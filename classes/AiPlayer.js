@@ -6,7 +6,7 @@ function getRandomInt(min, max) {
 class AiPlayer extends Player {
     constructor(id) {
         const randomElement = (array) => array[Math.floor(Math.random() * array.length)];
-        super(id, randomElement(["PlopyFun", "RoadCode", "32hropat", "Typer32", "McGod", "MitBlade", "Killer", "12345", "Hacker326", "sword", "swordgod", "sword.io", "player", "Alex", "Rajesh", "Ram","Emily", "Steve", "Max", "Lily", "Rohit", "Shiva", "Krishna", "Fan", "Liam", "Noah", "Emma", "Olivia", "mollthecoder", "RayhanADev", "amasad", "Elon Musk", "Jeff Bezos", "ur bad LMAO", "killsword", "swordKILLER", "EvasiveCollecter", "123asd", "Name", "Yeet", "Idiot", "Tamil", "Hindi", "Telugu", "Kannada", "Malayalam", "USA", "Pakistan", "Malaysia", "UAE", "Enter name", "Hero", "Warrior", "Timewaster", "Game0ver", "Demonatic","Borrowed_Time", "Gemfinder", "Wolfblood", "Qakqueen", "Sympathyyy", "CuriousGeorgia", "Silvester", "Millennial0", "Checkm8"]));
+        super(id, randomElement(["Amy", "Abby", "Aero", "America", "Asia", "Astro", "Astronaut", "Arnold", "Artic", "Angel", "Andy", "Avery", "Anbu", "Abbas", "Alice", "Alligator", "Apple", "Zebra", "Zuck", "Zuckerberg", "Zip", "Zipper", "Zippy", "Zombie", "Zoo", "Zzzzz", "Zigzag", "z"]));
         this.ai = true;
         this.target = undefined;
         this.lastHit = Date.now();

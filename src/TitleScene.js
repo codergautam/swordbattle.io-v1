@@ -16,15 +16,12 @@ try {
 
 
  // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
-}
 
+
+
+ }
  create() {
-
-  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W, false);
-  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A, false);
-  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S, false);
-  this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D, false);
-
+alert(this.canvas.width)
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -50,16 +47,11 @@ return;
 
 }
 
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
   this.background = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
   this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);
-  this.footer.y = this.canvas.height + (this.footer.height*2);
+
 
   this.background.displayHeight = this.canvas.height;
   this.background.displayWidth =this.canvas.width;
@@ -157,7 +149,7 @@ this.callback(myName, this.music, this.secret);
   this.nameBox.getChildByName("btn").onclick = () => {
    go2();
   };
-  this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+  this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER, false);
   this.returnKey.on("down", event => {
     go2();
   });
@@ -224,6 +216,8 @@ this.callback(myName, this.music, this.secret);
     
     this.dropdown = this.add.dom(0, 0).createFromCache("dropdown").setOrigin(0);
     document.getElementById("username").innerHTML = this.accountData.username;
+    document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
+  
     document.getElementById("username").style.fontSize = "30px";
     this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
     
@@ -254,9 +248,10 @@ this.callback(myName, this.music, this.secret);
 
   var createButtons = () => {
     if(loggedIn) return;
-  this.loginButton = new Button(this, this.canvas.width-300, 0, "Login", "48px", 0x00FFFF, ()=>{
+  this.loginButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "Login", "48px", 0x00FFFF, ()=>{
     if(this.promo && this.promo.visible) return;
     if(this.signup && this.signup.visible) return;
+    if(this.login && this.login.visible) return;
     this.login = this.add.dom(0, 0).createFromCache("login");
 
     this.login.x = (this.canvas.width / 2);
@@ -319,8 +314,9 @@ try {
     };
     
   });
-  this.signupButton = new Button(this, this.canvas.width-600, 0, "Sign Up", "48px", 0x00FFFF, ()=>{
+  this.signupButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 600: 400), 0, "Sign Up", "48px", 0x00FFFF, ()=>{
     if(this.promo && this.promo.visible) return;
+    if(this.signup && this.signup.visible) return;
     if(this.login && this.login.visible) return;
     this.signup = this.add.dom(0, 0).createFromCache("signup");
 
@@ -413,13 +409,20 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
-    if(this.signupButton ) this.signupButton.update(this.canvas.width-600, 0);
-    if(this.loginButton ) this.loginButton.update(this.canvas.width-300, 0);
+    if(this.signupButton ) this.signupButton.update(this.canvas.width-(this.canvas.width > 610? 600: 400), 0);
+    if(this.loginButton ) this.loginButton.update(this.canvas.width-(this.canvas.width > 610? 300: 150), 0);
 
     if(this.dropdown && this.dropdown.visible) { this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
   }
   
-    var footery =this.canvas.height - (this.footer.height);
+  if(this.scene.isActive("title")) {
+    if((this.promo && this.promo.visible) || (this.signup && this.signup.visible) || (this.login && this.login.visible)) {
+    } else {
+      this.footer.destroy();
+   this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);  
+    }
+  }
+  var footery =this.canvas.height - (this.footer.height);
     if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
     if(this.footerdone) this.text.y = this.canvas.height / 4;
     if(this.footerdone) this.footer.y = footery;
@@ -429,6 +432,21 @@ try {
       console.log("font size not set");
     }
     this.footer.x = this.canvas.width/2;
+
+    if(this.promo && this.promo.visible) {
+      this.promo.x = this.canvas.width/2;
+      this.promo.y = this.canvas.height/2;
+    }
+
+    if(this.login && this.login.visible) {
+      this.login.x = this.canvas.width/2;
+      this.login.y = this.canvas.height/2;
+    }
+
+    if(this.signup && this.signup.visible) {
+      this.signup.x = this.canvas.width/2;
+      this.signup.y = this.canvas.height/2;
+    }
    
   };
         
