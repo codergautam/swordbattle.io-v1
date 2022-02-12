@@ -13,7 +13,10 @@ class GameScene extends Phaser.Scene {
 			console.log(e);
 		}
 		this.ready = false;
-		this.loadrect = this.add.rectangle(0,0, this.canvas.width*2, this.canvas.height*2, 0x006400).setDepth(200);
+		this.loadrect = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2).setDepth(200);
+		this.loadrect.displayWidth = this.canvas.width;
+		this.loadrect.displayHeight = this.canvas.height;
+		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
 	}
 
@@ -170,7 +173,13 @@ class GameScene extends Phaser.Scene {
 				this.enemies = [];
 				this.dead = false;
 				//arrow keys
-				this.cursors = this.input.keyboard.createCursorKeys();
+				var KeyCodes = Phaser.Input.Keyboard.KeyCodes;
+				this.cursors = this.input.keyboard.addKeys({
+					up: KeyCodes.UP,
+					down: KeyCodes.DOWN,
+					left: KeyCodes.LEFT,
+					right: KeyCodes.RIGHT,
+				}, false);
 
 				//lvl text
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
@@ -192,6 +201,7 @@ class GameScene extends Phaser.Scene {
 				this.input.addPointer(3);
 				///resize dynamicly
 				const resize = () => {
+					if(!this.scene.isActive("game")) return;
 					try {
 
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
@@ -205,6 +215,7 @@ class GameScene extends Phaser.Scene {
 							this.joyStick.thumb.radius = convert(2360, 100, this.canvas.width);
 							this.joyStick.radius = convert(2360, 250, this.canvas.width);
 						}
+						
 						this.UICam.x = this.cameras.main.x;
 						this.UICam.y = this.cameras.main.y;
 
@@ -246,8 +257,8 @@ class GameScene extends Phaser.Scene {
 				window.addEventListener("resize", resize, true);
 				//go packet
 				this.socket = io();
-				this.socket.emit("go", this.name, thetoken, window.localStorage.getItem("skinSecret"));
-
+				if(!this.secret) this.socket.emit("go", this.name, thetoken, false);
+				else this.socket.emit("go", this.secret, thetoken, true);
 				//mouse down
 
 				this.input.on("pointerdown", function (pointer) {
@@ -318,11 +329,11 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${player.name}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
 							fontFamily: "serif",
-							fill: "#000000",
+							fill: player.verified?"#0000FF" :"#000000",
 							fontSize: "25px"
-						}).setDepth(100),
+						}).setDepth(100).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
 						toAngle: 0,
 					};
@@ -419,6 +430,7 @@ class GameScene extends Phaser.Scene {
 				});
 				this.socket.on("me", (player) => {
 					if(this.loadrect.visible) this.loadrect.destroy();
+					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
 
                     var diff = this.levels[player.level-1].coins - this.levels[player.level-1].start;
@@ -740,10 +752,11 @@ class GameScene extends Phaser.Scene {
 		};
 
 
-		var wKey = this.input.keyboard.addKey("W");
-		var aKey = this.input.keyboard.addKey("A");
-		var sKey = this.input.keyboard.addKey("S");
-		var dKey = this.input.keyboard.addKey("D");
+		var wKey = this.input.keyboard.addKey("W", false);
+		var aKey = this.input.keyboard.addKey("A", false);
+		var sKey = this.input.keyboard.addKey("S", false);
+		var dKey = this.input.keyboard.addKey("D",false);
+		
 		try {
 			this.key = this.mobile ?  this.joyStick.createCursorKeys() : this.cursors;
 			if (this.key.up.isDown || wKey.isDown ) {
@@ -956,11 +969,11 @@ class GameScene extends Phaser.Scene {
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
 				if(entry.playerObj.id == this.myObj.id) amIinit = true;
 				var playerObj = entry.playerObj;
-				text += `#${i+1}: ${playerObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${playerObj.name}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? "[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}- ${conv(playerObj.coins)}\n`;
 			});
 			if(!amIinit) {
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${this.myObj.skin=="codergautamyt"?"[color=blue]\[DEV\][/color] ":""}${this.myObj.name}- ${conv(this.myObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${this.myObj.verified? "[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
 			}
 
 			this.leaderboard.setText(text);

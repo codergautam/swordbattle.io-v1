@@ -33,6 +33,7 @@ function niceifyType(d) {
 		'coins': 'Coins',
 		'kills': 'Kills',
 		'time': 'Survived',
+		'xp': 'XP'
 	}
 	var arr = [table[d]]
 
@@ -60,7 +61,7 @@ function tableDur(d) {
 	return table;
 }
 function tableType(d) {
-	var table = ["coins", "kills", "time"];
+	var table = ["coins", "kills", "time", "xp"];
 	//remove d from table
 	table.splice(table.indexOf(d), 1);
 
@@ -185,7 +186,7 @@ img.circle-img.circle-img--small {
 	<section class="main-content">
 
 		<div class="container">
-			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : "Survived") %> Leaderboard%></h1>
+			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : type=="xp"?"XP":"Survived") %> Leaderboard%></h1>
             <br>
             <h3><%=(duration == "all" ? "All-Time" : duration == "day" ? "Past Day" : "Past Week")%></h3>
 			<br>
@@ -197,6 +198,7 @@ img.circle-img.circle-img--small {
 				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
 				  <a onclick="setOptions(undefined, '<%=tableType(type)[0]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[1] %></a>
 				  <a onclick="setOptions(undefined, '<%=tableType(type)[1]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[2] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[2]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[3] %></a>
 				</div>
 			  </div>
 			  <div class="dropdown dropdown d-inline-block">
@@ -212,7 +214,10 @@ img.circle-img.circle-img--small {
 			  <br>
 			  <br>
 			<div class="row">
+				<% if (lb.length > 2) { %>
 				<div class="col-sm-4">
+					
+
 					<div class="leaderboard-card leaderboard-card--first">
 						<div class="leaderboard-card__top">
 							<h3 class="text-center"><%= lb[0].name %> </h3>
@@ -220,9 +225,15 @@ img.circle-img.circle-img--small {
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
+								
+								<% if (type != "xp") { %>
+								
 								<h5 class="mb-0"><%= numberWithCommas(lb[0].coins) %> coins</h5>
 								<p class="text-muted mb-0">Kills: <%= lb[0].kills %>, Survived: <%= msToTime(lb[0].time) %>  </p>
-								
+								<% } else { %>
+									<h5 class="mb-0"><%= numberWithCommas(lb[0].xp) %> XP</h5>
+								<% } %>
+
 							</div>
 						</div>
 					</div>
@@ -235,9 +246,12 @@ img.circle-img.circle-img--small {
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
+								<% if (type != "xp") { %>
 								<h5 class="mb-0"><%= numberWithCommas(lb[1].coins) %> coins</h5>
 								<p class="text-muted mb-0">Kills: <%= lb[1].kills %>, Survived: <%= msToTime(lb[1].time) %>  </p>
-								
+								<% } else { %>
+									<h5 class="mb-0"><%= numberWithCommas(lb[1].xp) %> XP</h5>
+								<% } %>
 							</div>
 						</div>
 					</div>
@@ -247,15 +261,25 @@ img.circle-img.circle-img--small {
 						<div class="leaderboard-card__top">
 							<h3 class="text-center"><%= lb[2].name %> </h3>
 						</div>
+						
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
+								
+								<% if (type != "xp") { %>
 								<h5 class="mb-0"><%= numberWithCommas(lb[2].coins) %> coins</h5>
 								<p class="text-muted mb-0">Kills: <%= lb[2].kills %>, Survived: <%= msToTime(lb[2].time) %>  </p>
+								<% } else { %>
+									<h5 class="mb-0"><%= numberWithCommas(lb[2].xp) %> XP</h5>
+								<% } %>
 							</div>
 						</div>
+						
 					</div>
 				</div>
+				<% } else { %>
+					Not enough data.
+					<% } %>
 			</div>
 
 
@@ -263,15 +287,21 @@ img.circle-img.circle-img--small {
 			<table class="table">
 				<thead>
 					<tr>
+						<% if (type != "xp") { %>
 						<th>Name</th>
 						<th>Coins</th>
 						<th>Kills</th>
 						<th>Survived</th>
+						<% } else { %>
+						<th>Name</th>
+						<th>XP</th>
+						<% } %>
 					</tr>
 				</thead>
 				<tbody>
                     <% for (var i = 3; i < lb.length; i++) { %>
 					<tr>
+						<a href="/<%= lb[i].name %>">
 						<td>
 							<div class="d-flex align-items-center">
 								<div class="user-info__basic">
@@ -280,6 +310,7 @@ img.circle-img.circle-img--small {
 								</div>
 							</div>
 						</td>
+						<% if (type != "xp") { %>
 						<td>
 							<div class="d-flex align-items-baseline">
 								<h4 class="mr-1"><%=numberWithCommas(lb[i].coins)%></h4>
@@ -287,6 +318,14 @@ img.circle-img.circle-img--small {
 						</td>
 						<td><%= lb[i].kills %></td>
 						<td><%= msToTime(lb[i].time) %></td>
+						<% } else { %>
+							<td>
+						
+									<h4 class="mr-1"><%=numberWithCommas(lb[i].xp)%></h4>
+							
+							</td>
+							<% } %>
+							
 					</tr>
                     <% } %>
 				

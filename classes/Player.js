@@ -20,14 +20,9 @@ class Player {
     this.damage = 10;
     this.level = 1;
     this.damageCooldown = 100;
-
-    if(["devil", "medic", "chef", "winter", "india", "fox", "indian", "foxy", "jordan 1", "shoe", "-foxy-"].includes(name.toLowerCase())) {
-      this.skin = name.toLowerCase();
-      if(this.skin == "indian") this.skin = "india";
-      if(this.skin == "foxy") this.skin = "fox";
-      if(this.skin == "-foxy-") this.skin = "fox";
-      if(this.skin == "jordan 1") this.skin = "shoe";
-    } else this.skin = "player";
+    this.verified = false;
+    
+   this.skin = "player";
 
     this.resistance = 20;
     this.power = 200;
@@ -146,7 +141,7 @@ this.pos.y = pos[1]
               if(!this.ai) {
               var socketById = io.sockets.sockets.get(this.id);
               
-              sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime})`;
+              sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime}, ${this.verified})`;
               
               socketById.emit("youWon", {
                 timeSurvived: Date.now() - this.joinTime,
@@ -272,7 +267,7 @@ return false;
             if (enemy.health <= 0) {
              
               //enemy has 0 or less than 0 health, time to kill
-            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime})`;
+            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
 
               //increment killcount by 1
               this.kills += 1;
@@ -284,6 +279,7 @@ return false;
                 
               socketById.emit("youDied", {
                 killedBy: this.name,
+                killerVerified: this.verified,
                 timeSurvived: Date.now() - enemy.joinTime,
               });
             
@@ -334,7 +330,7 @@ return false;
     return coins;
   }
   getSendObj() {
-    return {damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 

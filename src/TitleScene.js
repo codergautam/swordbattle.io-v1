@@ -1,3 +1,6 @@
+import Button from "./PhaserButton";
+import axios from "axios";
+
 class TitleScene extends Phaser.Scene {
   constructor(playPreroll, callback) {
     super();
@@ -13,9 +16,12 @@ try {
 
 
  // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
-}
 
+
+
+ }
  create() {
+
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -41,48 +47,18 @@ return;
 
 }
 
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.W);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.S);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D);
-this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.SPACE);
 
 
   this.background = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
   this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);
-  this.footer.y = this.canvas.height + (this.footer.height*2);
+
 
   this.background.displayHeight = this.canvas.height;
   this.background.displayWidth =this.canvas.width;
   this.nameBox = this.add.dom(this.canvas.width/2, 0 ).createFromCache("title");
-     if(this.showPromo) {
 
-       this.promo = this.add.dom(0, 0).createFromCache("promo");
 
-       this.promo.x = (this.canvas.width / 2);
-       this.promo.y =  (this.canvas.height / 2);
-     
-       this.promo.getChildByName("close").onclick = () => {
-         this.promo.destroy();
-       };
- 
-     }
 
-  this.input.keyboard.on("keydown", function (event) {
-
-    if(this.nameBox.getChildByName("name") && (this.nameBox.getChildByName("name").value.length >= 16 ||this.nameBox.getChildByName("name")  !== document.activeElement)) return;
-   	if(event.key == "a"){
-   		this.nameBox.getChildByName("name").value+=event.key;
-   	}else if(event.key == "s"){
-   		this.nameBox.getChildByName("name").value+=event.key;
-   	}else if(event.key == "d"){
-   		this.nameBox.getChildByName("name").value+=event.key;
-   	}else if(event.key == "w"){
-   		this.nameBox.getChildByName("name").value+=event.key;
-   	} else if(event.which == 32) {
-       this.nameBox.getChildByName("name").value+=event.key;
-     }
-}.bind(this));
   if(access) this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : "";
   else this.nameBox.getChildByName("name").value = "";
 
@@ -128,7 +104,7 @@ aiptag.adplayer = new aipPlayer({
    */
     this.nameBox.destroy();
       document.getElementById("game").focus();
-   this.callback(myName, this.music);
+   this.callback(myName, this.music, this.secret);
 
    console.log("Preroll Ad Completed: " + evt);
  }
@@ -139,50 +115,343 @@ aiptag.cmd.player.push(()=> { aiptag.adplayer.startPreRoll();
 }  else {
 this.nameBox.destroy();
 
-this.callback(myName, this.music);
+this.callback(myName, this.music, this.secret);
 }
    } else {    
 
          this.nameBox.destroy();
-        this.callback(myName, this.music);
+        this.callback(myName, this.music, this.secret);
    }
     }
   };
 
-  this.nameBox.getChildByName("btn").onclick = () => {
+  var go2 = () => {
     if(this.promo && this.promo.visible) {
+      this.promo.destroy();
+    } else if(this.login && this.login.visible) {
+      this.login.getChildByName("login").click();
+    }  else if(this.signup && this.signup.visible) {
+      this.signup.getChildByName("signup").click();
+    } else if(this.nameBox.getChildByName("btn").disabled) {
     } else go();
   };
-  this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
+  this.nameBox.getChildByName("btn").onclick = () => {
+   go2();
+  };
+  this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER, false);
   this.returnKey.on("down", event => {
-   if(this.promo && this.promo.visible) {
-     this.promo.destroy();
-   } else go();
+    go2();
   });
 
+  var loggedIn = false;
+  this.secret = undefined;
+
+  const login = (secret) => {
+   this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
+    this.nameBox.getChildByName("btn").disabled = true;
+    console.log("Attempting to login");
+    grecaptcha.ready(() =>{
+      grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "relogin"}).then((thetoken) => {
+        axios.post("/api/loginsecret", {
+          secret:secret,
+          captcha: thetoken
+        }).then((res) => {
+          if(res.data.error) {
+            alert("Login Error: " + res.data.error);
+
+            try {
+              if(window.localStorage.getItem("secret")) window.localStorage.removeItem("secret");
+            } catch(e) {
+
+            }
+
+            createButtons();
+            console.log(res);
+            return;
+          }
+          try {
+            window.localStorage.setItem("secret", secret);
+          } catch(e) {
+            console.log("Failed to save secret");
+            console.log(e);
+          }
+          loggedIn=true;
+          this.secret = secret;
+          console.log("Logged in");
+          if(this.loginButton) this.loginButton.destroy();
+          if(this.signupButton) this.signupButton.destroy();
+          if(this.nameBox && this.nameBox.visible) {
+          this.nameBox.getChildByName("name").value = res.data.username;
+          this.nameBox.getChildByName("name").disabled = true;
+          this.nameBox.getChildByName("name").classList.add("loggedin");
+
+          this.nameBox.getChildByName("btn").innerHTML = "Play!";
+          this.nameBox.getChildByName("btn").disabled = false;
+
+          this.accountData = res.data;
+            showLoggedIn();
+
+          }
+        }).catch((err) => {
+          console.log("Login Error: ");
+          console.log(err);
+          alert("Failed to login automatically, please try manually.");
+        });
+      });
+    });
+  };
+
+  var showLoggedIn = () => {
+    
+    this.dropdown = this.add.dom(0, 0).createFromCache("dropdown").setOrigin(0);
+    document.getElementById("username").innerHTML = this.accountData.username;
+    document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
+    this.nameBox.getChildByName("name").classList.add("loggedin");
+    
+    this.nameBox.getChildByName("name").disabled = true;
+    document.getElementById("username").style.fontSize = "30px";
+    this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
+    
+    document.getElementById("logout").onclick = () => {
+      this.dropdown.destroy();
+      try {
+        window.localStorage.removeItem("secret");
+      } catch(e) {
+        console.log("failed to clear local storage");
+      }
+      this.secret = undefined;
+      this.accountData = undefined;
+      loggedIn = false;
+      this.nameBox.getChildByName("name").disabled = false;
+      this.nameBox.getChildByName("name").classList.remove("loggedin");
+      this.nameBox.getChildByName("name").value = "";
+      try {
+        window.localStorage.removeItem("oldName");
+      } catch(e) {
+        console.log("failed to clear local storage oldname");
+      }
+
+      createButtons();
+    };
+
+
+  };
+
+  var createButtons = () => {
+    if(loggedIn) return;
+  this.loginButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "Login", "48px", 0x00FFFF, ()=>{
+    if(this.promo && this.promo.visible) return;
+    if(this.signup && this.signup.visible) return;
+    if(this.login && this.login.visible) return;
+    this.login = this.add.dom(0, 0).createFromCache("login");
+
+    this.login.x = (this.canvas.width / 2);
+    this.login.y =  (this.canvas.height / 2);
   
-  const resize = ()=>{
+    this.login.getChildByName("close").onclick = () => {
+      this.login.destroy();
+    };
+    this.login.getChildByName("login").onclick = () => {
+      grecaptcha.ready(() =>{
+        grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "login"}).then((thetoken) => {
+  
+try {
+      var username = this.login.getChildByName("username").value;
+      var password = this.login.getChildByName("password").value;
+      if(username.trim() == "" || password == "") return;
+      this.login.getChildByName("login").innerHTML = "Logging in..";
+      this.login.getChildByName("login").disabled = true;
+      this.login.getChildByName("close").disabled = true;
+      axios.post("/api/login", {
+        username: username,
+        password: password,
+        captcha: thetoken
+      }).then((res) => {
+        if(res.data.error) {
+          alert(res.data.error);
+          this.login.getChildByName("login").disabled = false;
+          this.login.getChildByName("close").disabled = false;
+          this.login.getChildByName("login").innerHTML = "Login";
+        } else {
+          alert("Logged in!");
+          this.login.getChildByName("login").disabled = false;
+          this.login.getChildByName("close").disabled = false;
+          this.login.getChildByName("login").innerHTML = "Login";
+          
+          this.login.destroy();
+          try {
+            login(res.data.secret);
+          } catch(e) {
+            console.log("Failed to login");
+            console.log(e);
+          }
+        }
+
+      
+      }).catch((err) => {
+        alert("Unexpected error, please try again later");
+        console.log(err);
+        this.login.getChildByName("login").disabled = false;
+        this.login.getChildByName("close").disabled = false;
+        this.login.getChildByName("login").innerHTML = "Login";
+
+      });
+    } catch(e) {
+      console.log(e);
+    }
+    });
+    
+  });
+    };
+    
+  });
+  this.signupButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 600: 400), 0, "Sign Up", "48px", 0x00FFFF, ()=>{
+    if(this.promo && this.promo.visible) return;
+    if(this.signup && this.signup.visible) return;
+    if(this.login && this.login.visible) return;
+    this.signup = this.add.dom(0, 0).createFromCache("signup");
+
+    this.signup.x = (this.canvas.width / 2);
+    this.signup.y =  (this.canvas.height / 2);
+  
+    this.signup.getChildByName("close").onclick = () => {
+      this.signup.destroy();
+    };
+    this.signup.getChildByName("signup").onclick = () => {
+      grecaptcha.ready(() =>{
+        grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "signup"}).then((thetoken) => {
+  
+try {
+      var username = this.signup.getChildByName("username").value;
+      var password = this.signup.getChildByName("password").value;
+      var email = this.signup.getChildByName("email").value;
+      if(username.trim() == "" || password == "") return;
+      this.signup.getChildByName("signup").innerHTML = "Signing up..";
+      this.signup.getChildByName("signup").disabled = true;
+      this.signup.getChildByName("close").disabled = true;
+      axios.post("/api/signup", {
+        username: username,
+        password: password,
+        email: email,
+        captcha: thetoken
+      }).then((res) => {
+        if(res.data.error) {
+          alert(res.data.error);
+          this.signup.getChildByName("signup").disabled = false;
+          this.signup.getChildByName("close").disabled = false;
+          this.signup.getChildByName("signup").innerHTML = "Sign Up";
+        } else {
+          alert("Signup Successful!");
+          this.signup.getChildByName("signup").disabled = false;
+          this.signup.getChildByName("close").disabled = false;
+          this.signup.getChildByName("signup").innerHTML = "Sign Up";
+          this.signup.destroy();
+          try {
+            login(res.data.secret);
+          } catch(e) {
+            console.log("Failed to login");
+            console.log(e);
+          }
+        }
+
+      
+      }).catch((err) => {
+        alert("Unexpected error, please try again later");
+        console.log(err);
+        this.login.getChildByName("login").disabled = false;
+        this.login.getChildByName("close").disabled = false;
+        this.login.getChildByName("login").innerHTML = "Login";
+
+      });
+    } catch(e) {
+      console.log(e);
+    }
+    });
+    
+  });
+    };
+    
+  });
+};
+  try {
+   var secret = window.localStorage.getItem("secret");
+    if(secret && !this.accountData)  {
+      login(secret);
+    }
+    else if(secret && this.accountData) {
+      this.secret = this.accountData.secret;
+      showLoggedIn();
+    }
+    else createButtons();
+  } catch(e) {
+    console.log("failed to autologin");
+    console.log(e);
+  }
+
+
+  //this.stats.y -= this.stats.height
+
+  
+  const resize = (when=false)=>{
     
     this.game.scale.resize(this.canvas.width, this.canvas.height);
     this.background.displayHeight = this.canvas.height;
     this.background.displayWidth =this.canvas.width;
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
-    var footery =this.canvas.height - (this.footer.height);
+   
+    if(this.signupButton ) this.signupButton.update(this.canvas.width-(this.canvas.width > 610? 600: 400), 0);
+    if(this.loginButton ) this.loginButton.update(this.canvas.width-(this.canvas.width > 610? 300: 150), 0);
+
+    if(this.dropdown && this.dropdown.visible) { this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
+  }
+  
+  if(this.scene.isActive("title")) {
+    if((this.promo && this.promo.visible) || (this.signup && this.signup.visible) || (this.login && this.login.visible)) {
+    } else {
+      this.footer.destroy();
+   this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);  
+    }
+  }
+  var footery =this.canvas.height - (this.footer.height);
     if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
     if(this.footerdone) this.text.y = this.canvas.height / 4;
     if(this.footerdone) this.footer.y = footery;
-    try {
-    this.text.setFontSize( this.canvas.width / 10);
-    } catch(e) {
-      console.log("font size not set");
-    }
+    
+      
+    if(this.scene.isActive("title")) this.text.setFontSize( this.canvas.width / 20);
+ 
     this.footer.x = this.canvas.width/2;
+
+    if(this.promo && this.promo.visible) {
+      this.promo.x = this.canvas.width/2;
+      this.promo.y = this.canvas.height/2;
+    }
+
+    if(this.login && this.login.visible) {
+      this.login.x = this.canvas.width/2;
+      this.login.y = this.canvas.height/2;
+    }
+
+    if(this.signup && this.signup.visible) {
+      this.signup.x = this.canvas.width/2;
+      this.signup.y = this.canvas.height/2;
+    }
+           var clamp = (val, min, max) => {
+    if(val < min) return min;
+    if(val > max) return max;
+    return val;
   };
-        
+  if(this.loginButton && this.loginButton.visible) {
+    this.loginButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
+    this.signupButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
+    this.signupButton.update( this.loginButton.x - (this.signupButton.width)-this.canvas.width/20);
+  }
+  };
+
     window.addEventListener("resize", resize, false);
 
-resize();
+resize(true);
     
 
 

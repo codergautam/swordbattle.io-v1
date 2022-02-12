@@ -92,7 +92,7 @@
 }
 
 .textbox {
-	font-size: 45px;
+	font-size: 27.5px;
 }
 
 .dropdown {
@@ -110,7 +110,7 @@
 	  font-size: 25px;
     position: absolute;
 		margin: 0px;
-    top: 90%;
+    top: 60%;
     left: 50%;
     -moz-transform: translateX(-50%) translateY(-60%);
     -webkit-transform: translateX(-50%) translateY(-60%);
@@ -118,7 +118,7 @@
 transition-duration: 0.4s;
       background-color: #4CAF50; /* Green */
   color: white;
-  padding: 15px 32px;
+  padding: 7.5px 16px;
   text-align: center;
   text-decoration: none;
   display: inline-block;
@@ -130,86 +130,66 @@ transition-duration: 0.4s;
   color: #4CAF50
 }
 
-.randomgen {
-	  background-color: rgb(32, 238, 14);
-	  font-size: 15px;
-    position: absolute;
-		margin: 0px;
-    top: 60%;
-    left: 50%;
-    -moz-transform: translateX(-50%) translateY(-60%);
-    -webkit-transform: translateX(-50%) translateY(-60%);
-    transform: translateX(-50%) translateY(10%);
-}
-
 @media screen and (max-height: 660px) {
 
 }
 
 @media  screen and (max-height: 375px) {
   .button {
-    top: 70%;
+    top: 50%;
   }
 
 }
 
 @media  screen and (max-height: 333px) {
   .button {
-    top: 50%;
+    top: 40%;
   }
   .title {
-    top: 50%
+    top: 0%
   }
 
 }
 
 @media  screen and (max-width: 1100px) {
   .title {
-    font-size: 90px;
+    font-size: 45px;
 	}
     .textbox {
-    font-size: 35px;
+    font-size: 17.5px;
   }
 }
 @media  screen and (max-width: 761px) {
   .title {
-    font-size: 70px;
+    font-size: 35px;
 	}
   .textbox {
-    font-size: 30px;
+    font-size: 15px;
   }
 }
 @media  screen and (max-width: 584px) {
   .title {
-    font-size: 50px;
+    font-size: 25px;
 	}
 }
 @media  screen and (max-width: 420px) {
   .title {
-    font-size: 40px;
+    font-size: 20px;
 	}
   .textbox {
-    font-size: 20px
+    font-size: 10px
   }
 }
 @media  screen and (max-width: 320px) {
   .title {
-    font-size: 25px;
+    font-size: 12.5px;
 	}
   .textbox { 
-    font-size: 20px;
+    font-size: 10px;
   }
 }
 
-.embedchat {
-    position: absolute;
-		margin: 0px;
-    top: 50%;
-    left: 75%;
-    -moz-transform: translateX(0%) translateY(0%);
-    -webkit-transform: translateX(0%) translateY(0%);
-    transform: translateX(0%) translateY(0%);
-}
+
 .title {
   color: rgb(0, 0, 0);
   animation-name: slide;
@@ -219,6 +199,13 @@ transition-duration: 0.4s;
 @keyframes slide {
 	0%  {top: -325px;}
 }
+.loggedin {
+  cursor: not-allowed;
+  background-color: lightgray;
+}
+.loggedin::selection {
+  color: black;
+}
       </style>
   </head>
 	        <div id="background">
@@ -227,7 +214,7 @@ transition-duration: 0.4s;
     <script src="script.js"></script>
 			<body>
 				<div class='form' id='input-form'>
-        <input id="box" class="textbox" name="name" STYLE="color: black; font-family: Verdana; font-weight: bold; background-color: white; border:10px solid #000000; " size="20" maxlength="16" value="" placeholder='Username'></input>
+        <input id="box" class="textbox" name="name" STYLE="color: black; font-family: Verdana; font-weight: bold; background-color: white; border:3px solid #000000; " size="20" maxlength="16" value="" placeholder='Username'></input>
         <br></br>
 				<br></br>
 				<button name="btn" class="button size">Play!</button>
@@ -235,7 +222,6 @@ transition-duration: 0.4s;
 </body>
 		<div style='text-align: center;' class="dropdown">
   <div class="dropdown-content">
-		<a href="https://discord.gg/XMsYAquZmq">Discord</a>
 <!--<a href="https://replit.com/@CoderGautamYT">CoderGautamYT</a>
     <a href="https://replit.com/@JoshuaTucker3">JoshuaTucker3</a>
 		<a href="https://replit.com/@codealt1">code-alt</a>--> 

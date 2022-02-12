@@ -1,0 +1,433 @@
+<%
+function msToTime(duration) {
+    const portions = [];
+  
+    const msInHour = 1000 * 60 * 60;
+    const hours = Math.trunc(duration / msInHour);
+    if (hours > 0) {
+      portions.push(hours + 'h');
+      duration = duration - (hours * msInHour);
+    }
+  
+    const msInMinute = 1000 * 60;
+    const minutes = Math.trunc(duration / msInMinute);
+    if (minutes > 0) {
+      portions.push(minutes + 'm');
+      duration = duration - (minutes * msInMinute);
+    }
+  
+    const seconds = Math.trunc(duration / 1000);
+    if (seconds > 0) {
+      portions.push(seconds + 's');
+    }
+  
+    return portions.join(' ');
+  }
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function niceifyType(d) {
+	var table = {
+		'coins': 'Coins',
+		'kills': 'Kills',
+		'time': 'Survived',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function niceifyDur(d) {
+	var table = {
+		'all': 'All-Time',
+		'day': 'Past Day',
+		'week': 'Past Week',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function tableDur(d) {
+	var table = ["all", "day", "week"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
+function tableType(d) {
+	var table = ["coins", "kills", "time"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
+function forHumans ( seconds ) {
+    var levels = [
+        [Math.floor(seconds / 31536000), 'years'],
+        [Math.floor((seconds % 31536000) / 86400), 'days'],
+        [Math.floor(((seconds % 31536000) % 86400) / 3600), 'hours'],
+        [Math.floor((((seconds % 31536000) % 86400) % 3600) / 60), 'minutes'],
+        [(((seconds % 31536000) % 86400) % 3600) % 60, 'seconds'],
+    ];
+    var returntext = '';
+
+    for (var i = 0, max = levels.length; i < max; i++) {
+        if ( levels[i][0] === 0 ) continue;
+        returntext += ' ' + levels[i][0] + ' ' + (levels[i][0] === 1 ? levels[i][1].substr(0, levels[i][1].length-1): levels[i][1]);
+        break;
+    };
+    return returntext.trim();
+}
+
+function go() {
+
+    var date = new Date(user.created_at);
+
+    //time since Date
+    var timeSince =(new Date(new Date().toUTCString().slice(0, -3)))- date;
+    //time since in seconds
+    timeSince = timeSince / 1000;
+    //convert to readable format
+    return forHumans(timeSince);
+}
+function br() {
+  var recent = games.sort(function(a, b) {
+    return new Date(b.created_at) - new Date(a.created_at);
+  })[0];
+if(recent) {
+  var date = new Date(recent.created_at);
+ // date = new Date(date.valueOf() + recent.time);
+
+  //time since Date
+  var timeSince =(new Date(new Date().toUTCString().slice(0, -3)))- date;
+  //time since in seconds
+  timeSince = timeSince / 1000;
+  //convert to readable format
+  return forHumans(timeSince);
+} else return false
+}
+  %>
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <title><%= user.username %></title>
+    <meta
+      content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"
+      name="viewport"
+    />
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css"
+    />
+    <link rel="stylesheet" type="text/css" href="css/style.css" />
+    <link
+      href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css"
+      rel="stylesheet"
+      integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3"
+      crossorigin="anonymous"
+    />
+    <script
+      src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"
+      integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p"
+      crossorigin="anonymous"
+    ></script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+      function updateQueryStringParameter(uri, key, value) {
+        var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+        var separator = uri.indexOf("?") !== -1 ? "&" : "?";
+        if (uri.match(re)) {
+          return uri.replace(re, "$1" + key + "=" + value + "$2");
+        } else {
+          return uri + separator + key + "=" + value;
+        }
+      }
+    </script>
+    <style>
+      @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+      body {
+        background: #f9f9f9;
+        font-family: "Roboto", sans-serif;
+      }
+
+      .main-content {
+        padding-top: 100px;
+        padding-bottom: 100px;
+      }
+
+      .leaderboard-card {
+        background: #fff;
+        margin-bottom: 30px;
+        border-radius: 5px;
+        overflow: hidden;
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      }
+      .leaderboard-card.leaderboard-card--first {
+        transform: scale(1.05);
+      }
+      .leaderboard-card.leaderboard-card--first .leaderboard-card__top {
+        background: linear-gradient(45deg, #7e57c2, #ab47bc);
+        color: #fff;
+      }
+      .leaderboard-card__top {
+        background: #f9f6ff;
+        padding: 20px 0 10px 0;
+      }
+      .leaderboard-card__body {
+        padding: 15px;
+        margin-top: -40px;
+        z-index: inherit;
+      }
+
+      img.circle-img {
+        height: 70px;
+        width: 70px;
+        border-radius: 70px;
+        border: 3px solid #fff;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+      img.circle-img.circle-img--small {
+        height: 55px;
+        width: 55px;
+        border-radius: 55px;
+      }
+
+      .table {
+        border-spacing: 0 15px;
+        border-collapse: separate;
+      }
+      .table thead tr th,
+      .table thead tr td,
+      .table tbody tr th,
+      .table tbody tr td {
+        vertical-align: middle;
+        border: none;
+      }
+      .table thead tr th:nth-last-child(1),
+      .table thead tr td:nth-last-child(1),
+      .table tbody tr th:nth-last-child(1),
+      .table tbody tr td:nth-last-child(1) {
+        text-align: center;
+      }
+      .table tbody tr {
+        box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+        border-radius: 5px;
+      }
+      .table tbody tr td {
+        background: #fff;
+      }
+      .table tbody tr td:nth-child(1) {
+        border-radius: 5px 0 0 5px;
+      }
+      .table tbody tr td:nth-last-child(1) {
+        border-radius: 0 5px 5px 0;
+      }
+
+      .tooltipy {
+        position: relative;
+        display: inline-block;
+        border-bottom: 1px dotted black;
+      }
+
+      .tooltipy .tooltiptexty {
+        visibility: hidden;
+        width: 120px;
+        background-color: black;
+        color: #fff;
+        text-align: center;
+        border-radius: 6px;
+        padding: 5px 0;
+
+        /* Position the tooltip */
+        position: absolute;
+        z-index: 9999;
+        top: -30px;
+        left: 20%;
+      }
+
+      .tooltipy:hover .tooltiptexty {
+        visibility: visible;
+      }
+    </style>
+  </head>
+  <body>
+    <section class="main-content">
+      <div class="container">
+        <h1><%= user.username %></h1>
+        <br />
+        <h3>Joined <%=go()%> ago<% if(br()) { %> <br> Last seen <%=br()%> ago <% } %>
+        <br />      <br>
+        <% var arank =(lb.findIndex((l)=>l.name==user.username)+1); %>
+
+      <%= (arank==0?"":`#${arank} all time`) %> 
+      <br>
+        <% var brank =(lb.findIndex((l)=>l.name==user.username)+1); %>
+        <%= (brank==0?"":`#${brank} today`) %> 
+        </h3>
+        <br />
+        <div class="row">
+          <div class="col-sm-4">
+            <div class="leaderboard-card">
+              <div class="leaderboard-card__top">
+                <h3 class="text-center"><%= games.length %></h3>
+              </div>
+              <div class="leaderboard-card__body">
+                <div class="text-center">
+                  <br /><br />
+                  <h5 class="mb-0">Games Played</h5>
+                  <p class="text-muted mb-0"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="leaderboard-card">
+              <div class="leaderboard-card__top">
+                <h3 class="text-center">
+                  <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
+                    <%= numberWithCommas(e) %>
+                </h3>
+              </div>
+              <div class="leaderboard-card__body">
+                <div class="text-center">
+                  <br /><br />
+
+                  <div class="tooltipy">
+                    <h5 class="mb-0">XP</h5>
+                    <span class="tooltiptexty"
+                      >1 coin = 1 XP<br />1 kill = 100 XP</span
+                    >
+                  </div>
+                  <p class="text-muted mb-0"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="leaderboard-card">
+              <div class="leaderboard-card__top">
+                <h3 class="text-center">
+                    <% var e = 0; games.forEach((x)=>e+=x.time ) %>
+                    <%= msToTime(e)==""?"0s":msToTime(e) %>
+                </h3>
+              </div>
+              <div class="leaderboard-card__body">
+                <div class="text-center">
+                  <br /><br />
+                  <h5 class="mb-0">Total Playtime</h5>
+                  <p class="text-muted mb-0"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              id="total"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+            >
+              Total
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                class="dropdown-item"
+                id="totalClick"
+                onclick="changeTotal()"
+                >Gained</a
+              >
+            </div>
+          </div>
+          <canvas id="myChart"></canvas>
+        </div>
+        <script>
+
+         
+
+         const labels = <%- "["+stats.map((e) => `"${e.dt.toString().split(" ").slice(0,3).join(" ")}"`).join(",")+"]" %>
+
+        function runningTotal(nums) {
+            let psum = 0;
+            return nums.map(x => psum += x);
+          };
+          var xpData =  <%- "["+stats.map((e) => `"${e.xp??0}"`).join(",")+"]" %>
+          var coinsData =  <%- "["+stats.map((e) => `"${e.coins??0}"`).join(",")+"]" %>
+          var killsData =  <%- "["+stats.map((e) => `"${e.kills??0}"`).join(",")+"]" %>
+
+          var selected = "xp"
+
+          function getSelector() {
+            if (selected == "xp") {
+                return xpData
+            } else if (selected == "coins") {
+                return coinsData
+            } else if (selected == "kills") {
+                return killsData
+            }
+        }
+
+
+                          var data = {
+                            labels: labels,
+                            datasets: [{
+                              label: 'Total xp',
+                              backgroundColor: 'rgb(255, 99, 132)',
+                              borderColor: 'rgb(255, 99, 132)',
+                          data: runningTotal(getSelector().map(Number)),
+                            }]
+                          };
+
+                          var config = {
+                            type: 'line',
+                            data: data,
+                            options: {}
+                          };
+                          var myChart = new Chart(
+              document.getElementById('myChart'),
+              config
+            );
+            document.getElementById("total").innerHTML = "Total"
+            function changeTotal(e) {
+                
+                              if(document.getElementById("total").innerHTML == "Total") {
+                                  document.getElementById("total").innerHTML = "Gained"
+                                  document.getElementById("totalClick").innerHTML = "Total"
+                                  data.datasets[0].label = selected+" Gained"
+                                  data.datasets[0].data = (getSelector().map(Number))
+                              } else {
+                                  document.getElementById("total").innerHTML = "Total"
+                                  document.getElementById("totalClick").innerHTML = "Gained"
+                                  data.datasets[0].data = runningTotal(getSelector(selected).map(Number))
+                                  data.datasets[0].label = "Total "+selected
+                              }
+                              uh()
+                              return false; 
+              }
+
+              function uh() {
+                  myChart.destroy()
+                myChart = new Chart(
+              document.getElementById('myChart'),
+              config
+            );
+              }
+        </script>
+      </div>
+    </section>
+
+    <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+  </body>
+</html>

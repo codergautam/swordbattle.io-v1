@@ -26,14 +26,9 @@ var deathScene = new DeathScene();
 var winScene = new WonScene();
 var openScene = new OpenScene();
 
-//lol codergautamyt skin
-window.setSecret = () => {
-    window.localStorage.setItem("skinSecret", prompt("Enter your secret skin code"));
-};
-
 var playPreroll = true;
 var lastAd = 0;
-var adDelay = 1200000;
+var adDelay = 420000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
     if(data.win) {
@@ -45,9 +40,11 @@ var gameScene = new GameScene((data) => {
     }
 });
 
-var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music) => {
+var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
     gameScene.name = name;
     gameScene.openingBgm = music;
+    gameScene.secret = secret;
+
     titleScene.scene.start("game");
     titleScene.showPromo = false;
     if((playPreroll && Date.now() - lastAd > adDelay)) lastAd = Date.now();
@@ -57,6 +54,7 @@ titleScene.mobile = mobile;
 gameScene.mobile = mobile;
 
 if(!mobile) titleScene.showPromo = true;
+//titleScene.showPromo = false;
 
 function canvas() {
     return {

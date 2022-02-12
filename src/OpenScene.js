@@ -49,6 +49,9 @@ class OpenScene extends Phaser.Scene {
         this.load.image("opening", "/assets/images/opening.png");
         this.load.html("title", "/title.html");
         this.load.html("promo", "/promo.html");
+        this.load.html("login", "/login.html");
+        this.load.html("signup", "/signup.html");
+        this.load.html("dropdown", "/dropdown.html");
         this.load.html("footer", "/footer.html");
         this.load.audio("openingsound", "/assets/sound/opening.mp3");
 
@@ -56,6 +59,9 @@ class OpenScene extends Phaser.Scene {
     }
 
     create() {
+
+
+        
         this.go = false;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x000000).setOrigin(0).setScrollFactor(0, 0).setScale(2);
         this.text = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Click to join the game..", {
@@ -79,9 +85,12 @@ class OpenScene extends Phaser.Scene {
         this.input.on("pointerdown", event => {
             this.go = true;
         });
+        this.scene.start("title");
+        
     }
 
     update() {
+        /*
         this.text.x = (document.documentElement.clientWidth / 2);
         this.text.y = (document.documentElement.clientHeight / 2);
         this.text.setFontSize(document.documentElement.clientWidth * 128 / 1920);
@@ -89,15 +98,10 @@ class OpenScene extends Phaser.Scene {
         if(this.text.alpha < 1) this.text.setAlpha(this.text.alpha + 0.01);
         } else {
             if(this.text.alpha > 0 )this.text.setAlpha(this.text.alpha - 0.05);
-            else {
-                try {
-                this.scale.startFullscreen();
-                } catch(e) {
-                    console.log("fullscreen error oof");
-                }
-                this.scene.start("title");
-            }
+            else this.scene.start("title");
+            
         }
+        */
     }
 }
 
