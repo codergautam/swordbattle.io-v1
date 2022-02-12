@@ -279,6 +279,7 @@ return false;
                 
               socketById.emit("youDied", {
                 killedBy: this.name,
+                killerVerified: this.verified,
                 timeSurvived: Date.now() - enemy.joinTime,
               });
             

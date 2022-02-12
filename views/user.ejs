@@ -99,9 +99,9 @@ function br() {
   var recent = games.sort(function(a, b) {
     return new Date(b.created_at) - new Date(a.created_at);
   })[0];
-
+if(recent) {
   var date = new Date(recent.created_at);
-  date = new Date(date.valueOf() + recent.time);
+ // date = new Date(date.valueOf() + recent.time);
 
   //time since Date
   var timeSince =(new Date(new Date().toUTCString().slice(0, -3)))- date;
@@ -109,6 +109,7 @@ function br() {
   timeSince = timeSince / 1000;
   //convert to readable format
   return forHumans(timeSince);
+} else return false
 }
   %>
 <!DOCTYPE html>
@@ -260,7 +261,7 @@ function br() {
       <div class="container">
         <h1><%= user.username %></h1>
         <br />
-        <h3>Joined <%=go()%> ago <br> Last seen <%=br()%> ago
+        <h3>Joined <%=go()%> ago<% if(br()) { %> <br> Last seen <%=br()%> ago <% } %>
         <br />      <br>
         <% var arank =(lb.findIndex((l)=>l.name==user.username)+1); %>
 

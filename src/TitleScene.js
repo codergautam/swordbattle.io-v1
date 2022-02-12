@@ -21,6 +21,7 @@ try {
 
  }
  create() {
+
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -55,18 +56,7 @@ return;
   this.background.displayHeight = this.canvas.height;
   this.background.displayWidth =this.canvas.width;
   this.nameBox = this.add.dom(this.canvas.width/2, 0 ).createFromCache("title");
-     if(this.showPromo) {
 
-       this.promo = this.add.dom(0, 0).createFromCache("promo");
-
-       this.promo.x = (this.canvas.width / 2);
-       this.promo.y =  (this.canvas.height / 2);
-     
-       this.promo.getChildByName("close").onclick = () => {
-         this.promo.destroy();
-       };
- 
-     }
 
 
   if(access) this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : "";
@@ -216,7 +206,9 @@ this.callback(myName, this.music, this.secret);
     this.dropdown = this.add.dom(0, 0).createFromCache("dropdown").setOrigin(0);
     document.getElementById("username").innerHTML = this.accountData.username;
     document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
-  
+    this.nameBox.getChildByName("name").classList.add("loggedin");
+    
+    this.nameBox.getChildByName("name").disabled = true;
     document.getElementById("username").style.fontSize = "30px";
     this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
     
@@ -425,12 +417,10 @@ try {
     if(this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
     if(this.footerdone) this.text.y = this.canvas.height / 4;
     if(this.footerdone) this.footer.y = footery;
-    try {
+    
       
-    this.text.setFontSize( this.canvas.width / 20);
-    } catch(e) {
-      console.log("font size not set");
-    }
+    if(this.scene.isActive("title")) this.text.setFontSize( this.canvas.width / 20);
+ 
     this.footer.x = this.canvas.width/2;
 
     if(this.promo && this.promo.visible) {

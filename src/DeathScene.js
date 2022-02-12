@@ -35,10 +35,12 @@ class DeathScene extends Phaser.Scene {
         this.displayKills = (this.data.kills == 1 ? 1 : 0);
         this.displayCoins = 0;
 
-        this.stats = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Killed by: "+this.data.killedBy+`\nSurvived Time: 0s\nKills: ${this.displayKills}`, {
+        this.stats = this.add.rexBBCodeText(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Killed by: "+(this.data.killerVerified?"[area=u][color=blue][u]":"")+this.data.killedBy+(this.data.killerVerified?"[/u][/color][/area]":"")+`\nSurvived Time: 0s\nKills: ${this.displayKills}`, {
             fontSize: "48px",
             fill: "#000000"
-        }).setOrigin(0.5);
+        }).setOrigin(0.5).setInteractive().on("areaup",  (k)=> {
+            window.open(`/${this.data.killedBy}`, "_blank");
+        });
 
 
         this.btnrect = this.add.rectangle(0, 0, 0, 0, 0x6666ff);
@@ -81,7 +83,7 @@ class DeathScene extends Phaser.Scene {
         }
 
 
-        this.stats.setText(`Killed by: ${this.data.killedBy}\nSurvived Time: ${msToTime(this.displayTime)}\nCoins: ${this.displayCoins}\nKills: ${this.displayKills}`);
+        this.stats.setText("Killed by: "+(this.data.killerVerified?"[area=u][color=blue][u]":"")+this.data.killedBy+(this.data.killerVerified?"[/u][/color][/area]":"")+`\nSurvived Time: ${msToTime(this.displayTime)}\nCoins: ${this.displayCoins}\nKills: ${this.displayKills}`);
         const resize = () => {
             this.game.scale.resize(document.documentElement.clientWidth, document.documentElement.clientHeight);
             this.background.width = document.documentElement.clientWidth;

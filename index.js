@@ -318,6 +318,10 @@ app.get("/leaderboard", async (req, res) => {
 	res.render("leaderboard.ejs", {lb: lb, type: type, duration: duration});
 });
 
+app.get("/settings", async (req, res) => {
+	res.send("I'm still working on this page.<br><br>For now, if you want to change password, or change your username, please email me at<br>gautamgxtv@gmail.com");
+});
+
 app.get("/:user", async (req, res, next) => {
 	var user = req.params.user;
 	var dbuser  = await sql`SELECT * from accounts where lower(username)=lower(${user})`;

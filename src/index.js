@@ -28,7 +28,7 @@ var openScene = new OpenScene();
 
 var playPreroll = true;
 var lastAd = 0;
-var adDelay = 1200000;
+var adDelay = 420000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
     if(data.win) {
@@ -53,8 +53,8 @@ var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), 
 titleScene.mobile = mobile;
 gameScene.mobile = mobile;
 
-//if(!mobile) titleScene.showPromo = true;
-titleScene.showPromo = false;
+if(!mobile) titleScene.showPromo = true;
+//titleScene.showPromo = false;
 
 function canvas() {
     return {
