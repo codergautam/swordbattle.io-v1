@@ -19,16 +19,34 @@ export default class Button extends Phaser.GameObjects.Container {
 
         this.btnrect.setInteractive().on("pointerdown", onClick);
     }
+    get width() {
+        return this.btnrect.width;
+    }
+    get height() {
+        return this.btnrect.height;
+    }
     update(x,y) {
+        if(x) {
         this.x = x;
-        this.y = y;
         this.btntext.x = x;
-        this.btntext.y = y;
         this.btnrect.x = this.btntext.x  - 5;
+        }
+        if(y) {
+        this.y = y;
+        this.btntext.y = y;
         this.btnrect.y = this.btntext.y  - 5;
+        }
         this.btnrect.width = this.btntext.width + 10;
         this.btnrect.height = this.btntext.height + 10;
     } 
+    setFontSize(size) {
+        
+        this.btntext.setFontSize(size);
+        this.btnrect.x = this.btntext.x - 5;
+        this.btnrect.y = this.btntext.y - 5;
+        this.btnrect.width = this.btntext.width + 10;
+        this.btnrect.height = this.btntext.height + 10;
+    }
     destroy() {
         this.btnrect.destroy();
         this.btntext.destroy();

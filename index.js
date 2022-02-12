@@ -336,7 +336,8 @@ app.get("/:user", async (req, res, next) => {
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
 		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
-		res.render("user.ejs", {user: dbuser[0], games: yo, stats: stats, lb: lb});
+		var lb2 = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc limit 23`;
+		res.render("user.ejs", {user: dbuser[0], games: yo, stats: stats, lb: lb, lb2: lb2});
 		
 	}
 });

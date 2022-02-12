@@ -95,6 +95,21 @@ function go() {
     //convert to readable format
     return forHumans(timeSince);
 }
+function br() {
+  var recent = games.sort(function(a, b) {
+    return new Date(b.created_at) - new Date(a.created_at);
+  })[0];
+
+  var date = new Date(recent.created_at);
+  date = new Date(date.valueOf() + recent.time);
+
+  //time since Date
+  var timeSince =(new Date(new Date().toUTCString().slice(0, -3)))- date;
+  //time since in seconds
+  timeSince = timeSince / 1000;
+  //convert to readable format
+  return forHumans(timeSince);
+}
   %>
 <!DOCTYPE html>
 <html lang="en">
@@ -245,9 +260,15 @@ function go() {
       <div class="container">
         <h1><%= user.username %></h1>
         <br />
-        <h3>Joined <%=go()%> ago</h3>
-        <br />
+        <h3>Joined <%=go()%> ago <br> Last seen <%=br()%> ago
+        <br />      <br>
+        <% var arank =(lb.findIndex((l)=>l.name==user.username)+1); %>
 
+      <%= (arank==0?"":`#${arank} all time`) %> 
+      <br>
+        <% var brank =(lb.findIndex((l)=>l.name==user.username)+1); %>
+        <%= (brank==0?"":`#${brank} today`) %> 
+        </h3>
         <br />
         <div class="row">
           <div class="col-sm-4">
@@ -268,9 +289,8 @@ function go() {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                    <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
-                    <% var rank =(lb.findIndex((l)=>l.name==user.username)+1); %>
-                    <%= numberWithCommas(e) + (rank==0?"":` (#${rank})`) %>
+                  <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
+                    <%= numberWithCommas(e) %>
                 </h3>
               </div>
               <div class="leaderboard-card__body">

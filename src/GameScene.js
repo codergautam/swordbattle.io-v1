@@ -13,7 +13,7 @@ class GameScene extends Phaser.Scene {
 			console.log(e);
 		}
 		this.ready = false;
-		this.loadrect = this.add.rectangle(0,0, this.canvas.width*2, this.canvas.height*2, 0x006400).setDepth(200);
+		this.loadrect = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
 		this.ping = 0;
 	}
 

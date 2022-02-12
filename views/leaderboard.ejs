@@ -214,7 +214,10 @@ img.circle-img.circle-img--small {
 			  <br>
 			  <br>
 			<div class="row">
+				<% if (lb.length > 2) { %>
 				<div class="col-sm-4">
+					
+
 					<div class="leaderboard-card leaderboard-card--first">
 						<div class="leaderboard-card__top">
 							<h3 class="text-center"><%= lb[0].name %> </h3>
@@ -274,6 +277,9 @@ img.circle-img.circle-img--small {
 						
 					</div>
 				</div>
+				<% } else { %>
+					Not enough data.
+					<% } %>
 			</div>
 
 

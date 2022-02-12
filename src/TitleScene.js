@@ -21,7 +21,6 @@ try {
 
  }
  create() {
-alert(this.canvas.width)
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -427,7 +426,8 @@ try {
     if(this.footerdone) this.text.y = this.canvas.height / 4;
     if(this.footerdone) this.footer.y = footery;
     try {
-    this.text.setFontSize( this.canvas.width / 10);
+      
+    this.text.setFontSize( this.canvas.width / 20);
     } catch(e) {
       console.log("font size not set");
     }
@@ -447,9 +447,18 @@ try {
       this.signup.x = this.canvas.width/2;
       this.signup.y = this.canvas.height/2;
     }
-   
+           var clamp = (val, min, max) => {
+    if(val < min) return min;
+    if(val > max) return max;
+    return val;
   };
-        
+  if(this.loginButton && this.loginButton.visible) {
+    this.loginButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
+    this.signupButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
+    this.signupButton.update( this.loginButton.x - (this.signupButton.width)-this.canvas.width/20);
+  }
+  };
+
     window.addEventListener("resize", resize, false);
 
 resize(true);
