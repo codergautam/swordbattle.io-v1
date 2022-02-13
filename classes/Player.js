@@ -95,13 +95,33 @@ this.pos.y = pos[1]
     if(controller.right) this.pos.x += go;
     if(controller.left) this.pos.x -= go;
 
+ if(controller.up) {
+      var moveAngle = 45;
+    } else if(controller.down) {
+      var moveAngle = 180-45;
+    } else if(controller.left) {
+      var moveAngle = -90;
+    } else if(controller.right) {
+      var moveAngle = 90;
+    } else {
+      var moveAngle = this.calcSwordAngle()+45;
+    }
+
     if(this.pos.x <= -2500) this.pos.x = -2500;
     if(this.pos.x >= 2500) this.pos.x = 2500;
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
 
+
    // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
-    if(players.filter(player=> player && player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y};
+
+      var times = 0;
+      while (players.filter(player=> player && player.id != this.id && player.touchingPlayer(this)).length > 0 && times <10) {
+      times++;
+        var p = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*180/Math.PI , go==0?this.speed/10:go);
+      this.pos.x = p[0];
+      this.pos.y = p[1];
+      }
     
     if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y};
 
@@ -131,7 +151,7 @@ this.pos.y = pos[1]
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          this.coins += 1;
+          this.coins += 100;
 
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
@@ -141,7 +161,7 @@ this.pos.y = pos[1]
               if(!this.ai) {
               var socketById = io.sockets.sockets.get(this.id);
               
-              sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime}, ${this.verified})`;
+            //  sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime}, ${this.verified})`;
               
               socketById.emit("youWon", {
                 timeSurvived: Date.now() - this.joinTime,
@@ -203,7 +223,7 @@ this.pos.y = pos[1]
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.5, player.pos.x, player.pos.y, (player.radius*player.scale)*0.5);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.8, player.pos.x, player.pos.y, (player.radius*player.scale)*0.8);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;

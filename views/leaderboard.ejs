@@ -220,7 +220,11 @@ img.circle-img.circle-img--small {
 
 					<div class="leaderboard-card leaderboard-card--first">
 						<div class="leaderboard-card__top">
+							<% if (type == "xp") { %>
+								<h3 class="text-center"><a style="color:white;" href="/<%= lb[0].name %>"><%= lb[0].name %></a> </h3>
+								<% } else { %>
 							<h3 class="text-center"><%= lb[0].name %> </h3>
+							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
 							<div class="text-center">
@@ -241,7 +245,11 @@ img.circle-img.circle-img--small {
 				<div class="col-sm-4">
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
+							<% if (type == "xp") { %>
+								<h3 class="text-center"><a style="color:black;" href="/<%= lb[1].name %>"><%= lb[1].name %></a> </h3>
+								<% } else { %>
 							<h3 class="text-center"><%= lb[1].name %> </h3>
+							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
 							<div class="text-center">
@@ -259,7 +267,11 @@ img.circle-img.circle-img--small {
 				<div class="col-sm-4">
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
+							<% if (type == "xp") { %>
+								<h3 class="text-center"><a style="color:black;" href="/<%= lb[2].name %>"><%= lb[2].name %></a> </h3>
+								<% } else { %>
 							<h3 class="text-center"><%= lb[2].name %> </h3>
+							<% } %>
 						</div>
 						
 						<div class="leaderboard-card__body">
@@ -305,7 +317,11 @@ img.circle-img.circle-img--small {
 						<td>
 							<div class="d-flex align-items-center">
 								<div class="user-info__basic">
-									<h5 class="mb-0"><%= lb[i].name%></h5>
+									<% if (type == "xp") { %>
+										<h5 class="mb-0"><a style="color:black;" href="/<%= lb[i].name %>"><%= lb[i].name %></a> </h3>
+										<% } else { %>
+									<h5 class="mb-0"><%= lb[i].name %> </h3>
+									<% } %>
 									<p class="text-muted mb-0"></p>
 								</div>
 							</div>
