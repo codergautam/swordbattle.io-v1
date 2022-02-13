@@ -341,7 +341,6 @@ try {
           this.signup.getChildByName("close").disabled = false;
           this.signup.getChildByName("signup").innerHTML = "Sign Up";
         } else {
-          alert("Signup Successful!");
           this.signup.getChildByName("signup").disabled = false;
           this.signup.getChildByName("close").disabled = false;
           this.signup.getChildByName("signup").innerHTML = "Sign Up";
