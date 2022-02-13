@@ -273,7 +273,7 @@ try {
           this.login.getChildByName("close").disabled = false;
           this.login.getChildByName("login").innerHTML = "Login";
         } else {
-          alert("Logged in!");
+          
           this.login.getChildByName("login").disabled = false;
           this.login.getChildByName("close").disabled = false;
           this.login.getChildByName("login").innerHTML = "Login";
