@@ -5,7 +5,9 @@ require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
 var cors = require("cors");
- 
+var emailValidator = require("email-validator");
+const bcrypt = require("bcrypt");
+var uuid = require("uuid");
 
 var server;
 /*
@@ -28,6 +30,15 @@ var filter = new Filter();
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
 var recaptcha = true;
+var passwordValidator = require("password-validator");
+var schema = new passwordValidator();
+app.use(express.json());
+// Add properties to it
+schema
+.is().min(5, "Password has to be at least 5 chars")                                    // Minimum length 5
+.is().max(20, "Password cant be longer than 20 chars")                                  // Maximum length 20
+.has().not().spaces(undefined, "Password cant contain spaces");                          // Should not have spaces
+
 
 const Player = require("./classes/Player");
 const Coin = require("./classes/Coin");
@@ -122,19 +133,217 @@ app.use(cors());
 app.use("/", express.static("dist"));
 app.use("/assets", express.static("assets"));
 
+app.post("/api/signup", async (req, res) => {
+	if(!req.body || req.body.password == undefined || req.body.username == undefined) {	
+		res.send({error: "Missing fields"});
+		return;
+	}
+	if(req.body.email && req.body.email.length > 30) {
+		res.send({error: "Email too long"});
+		return;
+	}
+	if(req.body.email && !emailValidator.validate(req.body.email)) {
+		res.send({error: "Invalid email"});
+		return;
+	}
+	if(!schema.validate(req.body.password)) {
+		res.send({error:schema.validate(req.body.password, { details: true })[0].message});
+		return;
+	}
+	var username = req.body.username;
+	if(username.length > 20) {
+		res.send({error: "Username has to be shorter than 20 characters"});
+		return;
+	}
+	if(username.charAt(0) == " " || username.charAt(username.length - 1) == " ") {
+		res.send({error: "Username can't start or end with a space"});
+		return;
+	}
+	if(username.includes("  ")) {
+		res.send({error: "Username can't have two spaces in a row"});
+		return;
+	}
+	var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;
+	if(!username.match(regex)) {
+		res.send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
+		return;
+	}
+	
+	var containsProfanity = await filter.containsProfanity(username);
+	if(containsProfanity) {
+		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+		return;
+	}
+	var exists = await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
+
+	if (exists[0].exists) {
+		res.send({error: "Username already taken"});
+		return;
+	}
+
+	bcrypt.hash(req.body.password, 10, (err, hash) => {
+		if (err) {
+			res.status(500).send({error:"Internal server error"});
+			return;
+		}
+		var secret = uuid.v4();
+		sql`insert into accounts(username, password, email, secret, skins, lastlogin) values(${username}, ${hash}, ${req.body.email}, ${secret}, ${JSON.stringify({collected: ["player"], selected: "player"})}, ${Date.now()})`;
+		res.send({secret: secret});
+	});
+
+
+
+});
+
+app.post("/api/login", async (req, res) => { 
+	if(!req.body || req.body.password == undefined || req.body.username == undefined || req.body.captcha == undefined) {	
+		res.send({error: "Missing fields"});
+		return;
+	}
+
+	async function doit() {
+	var username = req.body.username;
+	var password = req.body.password;
+	var account = await sql`select * from accounts where lower(username)=lower(${username})`;
+
+	if(!account[0]) {
+		res.send({error: "Invalid username"});
+		return;
+	}
+
+	const match = await bcrypt.compare(password, account[0].password);
+	if(!match) {
+		res.send({error: "Invalid password"});
+		return;
+	}
+	
+	res.send(account[0]);
+	}
+	var send = {
+		secret: process.env.CAPTCHASECRET,
+		response: req.body.captcha,
+		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
+	};
+	if(recaptcha) {
+		axios
+			.post(
+				"https://www.google.com/recaptcha/api/siteverify?" +
+	  new URLSearchParams(send)
+			)
+			.then(async (f) => {
+				f = f.data;
+				if (!f.success) {
+					res.status(403).send("Captcha failed " +  f["error-codes"].toString());
+					return;
+				}
+				if (f.score < 0.3) {
+					res.status(403).send("Captcha score too low");
+					return;
+				}
+				doit();
+			});
+	} else doit();
+
+
+});
+
+app.post("/api/loginsecret", async (req, res) => { 
+	if(!req.body || !req.body.secret || req.body.captcha == undefined) {	
+		res.send({error: "Missing secret or captcha"});
+		return;
+	}
+
+	async function doit() {
+	var secret = req.body.secret;
+	
+	var account = await sql`select * from accounts where secret=${secret}`;
+
+	if(!account[0]) {
+		res.send({error: "Invalid secret"});
+		return;
+	}
+
+	res.send(account[0]);
+
+	}
+	var send = {
+		secret: process.env.CAPTCHASECRET,
+		response: req.body.captcha,
+		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
+	};
+	if(recaptcha) {
+		axios
+			.post(
+				"https://www.google.com/recaptcha/api/siteverify?" +
+	  new URLSearchParams(send)
+			)
+			.then(async (f) => {
+				f = f.data;
+				if (!f.success) {
+					res.status(403).send("Captcha failed " +  f["error-codes"].toString());
+					return;
+				}
+				if (f.score < 0.3) {
+					res.status(403).send("Captcha score too low");
+					return;
+				}
+				doit();
+			});
+	} else doit();
+
+
+});
+
 app.get("/leaderboard", async (req, res) => {
 	//SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
  
 	//var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
-	var type =["coins", "kills", "time"].includes(req.query.type) ? req.query.type : "coins";
-	var duration  = ["all", "day", "week"].includes(req.query.duration) ? req.query.duration : "all";
+	var type =["coins", "kills", "time","xp"].includes(req.query.type) ? req.query.type : "coins";
+	var duration  = ["all", "day", "week","xp"].includes(req.query.duration) ? req.query.duration : "all";
+	if(type !== "xp") {
 	if(duration != "all") {
-		var lb = await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} ORDER BY ${ sql(type) } DESC LIMIT 23`;
+		var lb = await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	} else {
-		var lb = await sql`SELECT * from games ORDER BY ${ sql(type) } DESC LIMIT 23`;
+		var lb = await sql`SELECT * from games ORDER BY ${ sql(type) } DESC, created_at DESC LIMIT 23`;
 	}
+} else {
+	if(duration != "all") {
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${duration == "day" ? "86400" : "608400"} group by name order by xp desc limit 23`;
+	} else {
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc limit 23`;
+	}
+}
+	
 	console.log(type, duration);
 	res.render("leaderboard.ejs", {lb: lb, type: type, duration: duration});
+});
+
+app.get("/settings", async (req, res) => {
+	res.send("I'm still working on this page.<br><br>For now, if you want to change password, or change your username, please email me at<br>gautamgxtv@gmail.com");
+});
+
+app.get("/:user", async (req, res, next) => {
+	var user = req.params.user;
+	var dbuser  = await sql`SELECT * from accounts where lower(username)=lower(${user})`;
+	if(!dbuser[0]) {
+		next();
+	} else {
+		var yo = await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+		var stats = await sql`
+		select a.dt,b.name,b.xp,b.kills from
+		(
+		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 order by created_at::date 
+		) a
+		left join
+		(
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
+		) b on a.dt=b.dt1 order by a.dt asc
+		`;
+		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+		var lb2 = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
+		res.render("user.ejs", {user: dbuser[0], games: yo, stats: stats, lb: lb, lb2: lb2});
+		
+	}
 });
 
 
@@ -146,7 +355,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 200;
-var maxAiPlayers = 9;
+var maxAiPlayers = 0;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -165,16 +374,36 @@ io.on("connection", async (socket) => {
 		socket.disconnect();
 	}
 
-	socket.on("go", async (name, captchatoken, secret) => {
-		function ready() {
-			name = name.substring(0, 16);
-			filter.clean(name).then((r) => {
+	socket.on("go", async (r, captchatoken, tryverify) => {
+		async function ready() {
+			var name;
+			if(!tryverify) {
+				try {
+			name = await filter.clean(r.substring(0, 16));
+				} catch(e) {
+					name = r.substring(0, 16);
+				}
 
-				var thePlayer = new Player(socket.id,  r);
+			} else {
+				var accounts = await sql`select * from accounts where secret=${r}`;
+				if(!accounts[0]) {
+					socket.emit("ban", "Invalid secret, please try logging out and relogging in");
+					socket.disconnect();
+					return;
+				}
+		var name = accounts[0].username;
+
+			}
+
+				var thePlayer = new Player(socket.id,  name);
 				thePlayer.updateValues();
+				
 
-				//good luck
-				if(secret == process.env.CODERGAUTAMSECRET) thePlayer.skin = "codergautamyt";
+				if(tryverify) {
+					thePlayer.verified = true;
+					thePlayer.skin = accounts[0].skins.selected;
+				}
+
 				
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
@@ -188,10 +417,6 @@ io.on("connection", async (socket) => {
 
 				socket.joined = true;
         socket.emit("levels", levels);
-			}).catch((e) => {
-				socket.emit("ban", e);
-				socket.disconnect();
-			});
 
 		}
 		if (!captchatoken && recaptcha) {
@@ -201,7 +426,7 @@ io.on("connection", async (socket) => {
 			);
 			return socket.disconnect();
 		}
-		if (!name) {
+		if (!r) {
 			socket.emit("ban", "You were kicked for not sending a name. ");
 			return socket.disconnect();
 		}
@@ -285,6 +510,8 @@ io.on("connection", async (socket) => {
 	} );
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
+		var thePlayer = PlayerList.getPlayer(socket.id);
+		sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${thePlayer.id}, ${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);
 	});
