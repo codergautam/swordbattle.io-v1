@@ -21,7 +21,7 @@ class Player {
     this.level = 1;
     this.damageCooldown = 100;
     this.verified = false;
-
+    
    this.skin = "player";
 
     this.resistance = 20;

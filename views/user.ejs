@@ -267,7 +267,7 @@ if(recent) {
 
       <%= (arank==0?"":`#${arank} all time`) %> 
       <br>
-        <% var brank =(lb.findIndex((l)=>l.name==user.username)+1); %>
+        <% var brank =(lb2.findIndex((l)=>l.name==user.username)+1); %>
         <%= (brank==0?"":`#${brank} today`) %> 
         </h3>
         <br />
@@ -361,9 +361,9 @@ if(recent) {
             let psum = 0;
             return nums.map(x => psum += x);
           };
-          var xpData =  <%- "["+stats.map((e) => `"${e.xp??0}"`).join(",")+"]" %>
-          var coinsData =  <%- "["+stats.map((e) => `"${e.coins??0}"`).join(",")+"]" %>
-          var killsData =  <%- "["+stats.map((e) => `"${e.kills??0}"`).join(",")+"]" %>
+          var xpData =  <%- "["+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
+          var coinsData =  <%- "["+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
+          var killsData =  <%- "["+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
 
           var selected = "xp"
 
