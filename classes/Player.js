@@ -151,7 +151,7 @@ this.pos.y = pos[1]
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          this.coins += 100;
+          this.coins += 1;
 
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!

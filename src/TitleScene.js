@@ -419,7 +419,7 @@ try {
     if(this.footerdone) this.footer.y = footery;
     
       
-    if(this.scene.isActive("title")) this.text.setFontSize( this.canvas.width / 20);
+    if(this.text.visible) this.text.setFontSize( this.canvas.width / 20);
  
     this.footer.x = this.canvas.width/2;
 
