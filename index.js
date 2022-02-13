@@ -312,6 +312,10 @@ app.get("/leaderboard", async (req, res) => {
 	} else {
 		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc limit 23`;
 	}
+	lb = lb.map(x => {
+		x.verified = true;
+		return x;
+	});
 }
 	
 	console.log(type, duration);

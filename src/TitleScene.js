@@ -57,7 +57,18 @@ return;
   this.background.displayWidth =this.canvas.width;
   this.nameBox = this.add.dom(this.canvas.width/2, 0 ).createFromCache("title");
 
+  if(this.showPromo) {
 
+    this.promo = this.add.dom(0, 0).createFromCache("promo");
+
+    this.promo.x = (this.canvas.width / 2);
+    this.promo.y =  (this.canvas.height / 2);
+  
+    this.promo.getChildByName("close").onclick = () => {
+      this.promo.destroy();
+    };
+
+  }
 
   if(access) this.nameBox.getChildByName("name").value = window.localStorage.getItem("oldName")  ?  window.localStorage.getItem("oldName") : "";
   else this.nameBox.getChildByName("name").value = "";
