@@ -1,4 +1,4 @@
-import Button from "./PhaserButton";
+import ImgButton from "./PhaserImgButton";
 import axios from "axios";
 
 class TitleScene extends Phaser.Scene {
@@ -250,7 +250,7 @@ this.callback(myName, this.music, this.secret);
 
   var createButtons = () => {
     if(loggedIn) return;
-  this.loginButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "Login", "48px", 0x00FFFF, ()=>{
+  this.loginButton = new ImgButton(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "loginbtn",  ()=>{
     if(this.promo && this.promo.visible) return;
     if(this.signup && this.signup.visible) return;
     if(this.login && this.login.visible) return;
@@ -316,7 +316,7 @@ try {
     };
     
   });
-  this.signupButton = new Button(this, this.canvas.width-(this.canvas.width > 610? 600: 400), 0, "Sign Up", "48px", 0x00FFFF, ()=>{
+  this.signupButton = new ImgButton(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "signupbtn",  ()=>{
     if(this.promo && this.promo.visible) return;
     if(this.signup && this.signup.visible) return;
     if(this.login && this.login.visible) return;
@@ -382,6 +382,8 @@ try {
     };
     
   });
+  this.loginButton.btn.setScale(0.5);
+  this.signupButton.btn.setScale(0.5);
 };
   try {
    var secret = window.localStorage.getItem("secret");
@@ -410,8 +412,24 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
-    if(this.signupButton ) this.signupButton.update(this.canvas.width-(this.canvas.width > 610? 600: 400), 0);
-    if(this.loginButton ) this.loginButton.update(this.canvas.width-(this.canvas.width > 610? 300: 150), 0);
+    var scale = 0.5;
+    if(this.canvas.width < 800) {
+      scale-=0.15;
+    }
+    if(this.canvas.width < 610) {
+      scale-=0.07;
+    }
+    if(this.canvas.width < 500) {
+      scale-=0.07;
+    }
+    if(this.canvas.width < 400) {
+      scale-=0.1;
+    }
+    this.loginButton.btn.setScale(scale);
+    this.signupButton.btn.setScale(scale);
+    if(this.loginButton ) this.loginButton.update(this.canvas.width-(this.loginButton.btn.displayWidth), 0);
+    if(this.signupButton ) this.signupButton.update(this.canvas.width-(this.signupButton.btn.displayWidth), this.loginButton.btn.displayHeight+10);
+    
 
     if(this.dropdown && this.dropdown.visible) { this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
   }
@@ -452,11 +470,7 @@ try {
     if(val > max) return max;
     return val;
   };
-  if(this.loginButton && this.loginButton.visible) {
-    this.loginButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
-    this.signupButton.setFontSize(clamp(this.canvas.width / 20, 20, 48));
-    this.signupButton.update( this.loginButton.x - (this.signupButton.width)-this.canvas.width/20);
-  }
+ 
   };
 
     window.addEventListener("resize", resize, false);
