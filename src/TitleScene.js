@@ -403,13 +403,22 @@ try {
 
 
   //this.stats.y -= this.stats.height
-
+function close(val,t, r) {
+  if(val>t+r) return false
+  if(val<t-r) return false
+  return true
+}
   
   const resize = (when=false)=>{
     
     this.game.scale.resize(this.canvas.width, this.canvas.height);
-    this.background.displayHeight = this.canvas.height;
-    this.background.displayWidth =this.canvas.width;
+    this.background.displayWidth =this.canvas.width
+    this.background.displayHeight =this.canvas.height
+    if(!close(this.canvas.height/this.canvas.width,0.5625,0.3)) {
+      console.log("eee")
+    }
+
+
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    

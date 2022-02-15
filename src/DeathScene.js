@@ -1,3 +1,5 @@
+
+
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
       seconds = Math.floor((duration / 1000) % 60),
@@ -43,19 +45,8 @@ class DeathScene extends Phaser.Scene {
         });
 
 
-        this.btnrect = this.add.rectangle(0, 0, 0, 0, 0x6666ff);
-        this.btntext = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 1.2, "Play Again", {
-            fontSize: "48px",
-            fill: "#000000"
-        }).setOrigin(0.5);
-        this.btnrect.x = this.btntext.x - (this.btntext.width/2) - 5;
-        this.btnrect.y = this.btntext.y - (this.btntext.height/2) - 5;
-        this.btnrect.width = this.btntext.width + 10;
-        this.btnrect.height = this.btntext.height + 10;
-        //this.stats.y -= this.stats.height
-        this.btnrect.setInteractive().on("pointerdown", (pointer, localX, localY, event) => {
-            this.scene.start("title");
-        });
+      
+    
         this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
         this.returnKey.on("down", event => {
@@ -66,7 +57,7 @@ class DeathScene extends Phaser.Scene {
     update() {
         this.text.setFontSize(document.documentElement.clientWidth / 10);
         this.stats.setFontSize(document.documentElement.clientWidth / 20);
-        this.btntext.setFontSize(document.documentElement.clientWidth / 25);
+   
         if (this.text.y < document.documentElement.clientHeight / 5.5) this.text.y = this.lerp(this.text.y, document.documentElement.clientHeight / 5.5, 0.2 );
 
         if(this.displayKills < this.data.kills ) {
@@ -93,16 +84,12 @@ class DeathScene extends Phaser.Scene {
             this.stats.x = document.documentElement.clientWidth / 2;
             this.stats.y = document.documentElement.clientHeight / 2;
             
-            this.btntext.x = document.documentElement.clientWidth / 2;
-            this.btntext.y = document.documentElement.clientHeight / 1.2;
+      
 
 
             //this.stats.y -= this.stats.height
         };
-        this.btnrect.x = this.btntext.x - (this.btntext.width/2) - 5;
-        this.btnrect.y = this.btntext.y - (this.btntext.height/2) - 5;
-        this.btnrect.width = this.btntext.width + 10;
-        this.btnrect.height = this.btntext.height + 10;
+
         window.addEventListener("resize", resize, false);
 
     }
