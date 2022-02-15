@@ -243,6 +243,7 @@ this.callback(myName, this.music, this.secret);
       }
 
       createButtons();
+      resize();
     };
 
 
@@ -425,8 +426,9 @@ try {
     if(this.canvas.width < 400) {
       scale-=0.1;
     }
-    this.loginButton.btn.setScale(scale);
-    this.signupButton.btn.setScale(scale);
+  
+    if(this.loginButton) this.loginButton.btn.setScale(scale);
+    if(this.signupButton) this.signupButton.btn.setScale(scale);
     if(this.loginButton ) this.loginButton.update(this.canvas.width-(this.loginButton.btn.displayWidth), 0);
     if(this.signupButton ) this.signupButton.update(this.canvas.width-(this.signupButton.btn.displayWidth), this.loginButton.btn.displayHeight+10);
     
