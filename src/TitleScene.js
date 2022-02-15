@@ -414,17 +414,18 @@ try {
     this.text.x = this.canvas.width / 2;
    
     var scale = 0.5;
-    if(this.canvas.width < 800) {
+    if(this.canvas.width < 900) {
       scale-=0.15;
+    }
+  
+    if(this.canvas.width < 710) {
+      scale-=0.07;
     }
     if(this.canvas.width < 610) {
       scale-=0.07;
     }
     if(this.canvas.width < 500) {
       scale-=0.07;
-    }
-    if(this.canvas.width < 400) {
-      scale-=0.1;
     }
   
     if(this.loginButton) this.loginButton.btn.setScale(scale);
