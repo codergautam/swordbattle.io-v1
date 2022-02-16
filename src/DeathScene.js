@@ -79,6 +79,8 @@ class DeathScene extends Phaser.Scene {
 
 
         this.stats.setText("Killed by: "+(this.data.killerVerified?"[area=u][color=blue][u]":"")+this.data.killedBy+(this.data.killerVerified?"[/u][/color][/area]":"")+`\nSurvived Time: ${msToTime(this.displayTime)}\nCoins: ${this.displayCoins}\nKills: ${this.displayKills}`);
+           
+        const convert = (num, val, newNum) => (newNum * val) / num;
         const resize = () => {
             this.game.scale.resize(document.documentElement.clientWidth, document.documentElement.clientHeight);
             this.background.width = document.documentElement.clientWidth;
@@ -87,8 +89,7 @@ class DeathScene extends Phaser.Scene {
             this.text.y = document.documentElement.clientHeight / 5.5;
             this.stats.x = document.documentElement.clientWidth / 2;
             this.stats.y = document.documentElement.clientHeight / 2;
-            
-            const convert = (num, val, newNum) => (newNum * val) / num;
+        
 
             this.playAgain.btn.setScale(convert(1280, 0.15, document.documentElement.clientWidth));
             this.playAgain.update(document.documentElement.clientWidth / 2,  document.documentElement.clientHeight / 1.2);
