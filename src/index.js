@@ -17,11 +17,7 @@ var config = {
     },
     scale: {
         mode:Phaser.Scale.RESIZE,
-    },
-    fps: {
-        target: 75,
-        forceSetTimeOut: true
-    },
+    }
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
