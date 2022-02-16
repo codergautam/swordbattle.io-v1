@@ -1,3 +1,4 @@
+import ImgButton from "./PhaserImgButton";
 
 
 function msToTime(duration) {
@@ -45,7 +46,10 @@ class DeathScene extends Phaser.Scene {
         });
 
 
-      
+      this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+          this.scene.start("title");
+      });
+      this.playAgain.btn.setScale(0.2);
     
         this.returnKey = this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.ENTER);
 
@@ -84,12 +88,17 @@ class DeathScene extends Phaser.Scene {
             this.stats.x = document.documentElement.clientWidth / 2;
             this.stats.y = document.documentElement.clientHeight / 2;
             
-      
+            const convert = (num, val, newNum) => (newNum * val) / num;
+
+            this.playAgain.btn.setScale(convert(1280, 0.15, document.documentElement.clientWidth));
+            this.playAgain.update(document.documentElement.clientWidth / 2,  document.documentElement.clientHeight / 1.2);
+            this.playAgain.btn.x -= this.playAgain.btn.displayWidth / 2;
+            this.playAgain.btn.y -= this.playAgain.btn.displayHeight / 2;
 
 
             //this.stats.y -= this.stats.height
         };
-
+        resize();
         window.addEventListener("resize", resize, false);
 
     }

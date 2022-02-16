@@ -17,7 +17,11 @@ var config = {
     },
     scale: {
         mode:Phaser.Scale.RESIZE,
-    }
+    },
+    fps: {
+        target: 75,
+        forceSetTimeOut: true
+    },
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
@@ -29,7 +33,7 @@ var openScene = new OpenScene();
 function storageAvailable(type) {
     try {
         var storage = window[type],
-            x = '__storage_test__';
+            x = "__storage_test__";
         storage.setItem(x, x);
         storage.removeItem(x);
         return true;
@@ -39,16 +43,16 @@ function storageAvailable(type) {
     }
 }
 
-var sva = storageAvailable('localStorage')
+var sva = storageAvailable("localStorage");
 //var sva=false
 var playPreroll = true;
 if(sva && window.localStorage.getItem("lastAd") === null) {
-window.localStorage.setItem("lastAd", 0)
+window.localStorage.setItem("lastAd", 0);
 var lastAd = 0;
 } else if(!sva) {
-  var lastAd =0
+  var lastAd =0;
 } else {
-  var lastAd = Number(window.localStorage.getItem("lastAd"))
+  var lastAd = Number(window.localStorage.getItem("lastAd"));
 }
 //alert(lastAd)
 
@@ -72,7 +76,7 @@ var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), 
     titleScene.scene.start("game");
     titleScene.showPromo = false;
     if((playPreroll && Date.now() - lastAd > adDelay)) if(sva){
-      window.localStorage.setItem("lastAd", Date.now())
+      window.localStorage.setItem("lastAd", Date.now());
        lastAd = Date.now();
     } else {
       lastAd = Date.now();
