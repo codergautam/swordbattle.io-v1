@@ -381,8 +381,8 @@ try {
     };
     
   });
-  this.loginButton.btn.setScale(0.5);
-  this.signupButton.btn.setScale(0.5);
+  this.loginButton.btn.setScale(0.25);
+  this.signupButton.btn.setScale(0.25);
 };
   try {
    var secret = window.localStorage.getItem("secret");
@@ -416,19 +416,21 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
-    var scale = 0.5;
-    if(this.canvas.width < 900) {
-      scale-=0.15;
+    var scale = 0.17;
+    if(this.canvas.width < 950) {
+      scale-=0.035;
     }
-  
-    if(this.canvas.width < 710) {
-      scale-=0.07;
+    if(this.canvas.width < 870) {
+      scale-=0.025;
+    }
+    if(this.canvas.width < 750) {
+      scale-=0.015;
     }
     if(this.canvas.width < 610) {
-      scale-=0.07;
+      scale-=0.015;
     }
     if(this.canvas.width < 500) {
-      scale-=0.07;
+      scale-=0.0035;
     }
   
     if(this.loginButton) this.loginButton.btn.setScale(scale);
@@ -453,7 +455,7 @@ try {
     if(this.footerdone) this.footer.y = footery;
     
       
-    if(this.text.visible) this.text.setFontSize( this.canvas.width / 20);
+    if(this.text.visible) this.text.setFontSize( this.canvas.width /13);
  
     this.footer.x = this.canvas.width/2;
 
