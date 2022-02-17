@@ -1,14 +1,36 @@
 
 
+<style>
+  .dropdown {
+  position: relative;
+  display: inline-block;
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  min-width: 160px;
+  box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
+  padding: 12px 16px;
+  z-index: 1;
+}
+
+.dropdown:hover .dropdown-content {
+  display: block;
+}
+</style>
 <div class="w3-container">
   <h1></h1>
-<div class="w3-dropdown-hover">
+<div class="dropdown">
   <span ><i class="fa fa-user"></i> <span id="username" name="username"></span></button>
-  <div class="w3-dropdown-content w3-bar-block w3-border">
+  <div class="dropdown-content">
     <center>
     <button href="#" name='profile' id="profile" class="w3-bar-item w3-button"><i class="fas fa-address-card"></i> Profile</a>
-    <button onclick='location.href="/settings"' href="/settings" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Settings</a>
-    <button href="#" name="logout" id="logout" class="w3-bar-item w3-button"><i class="fas fa-sign-out"></i> Logout</a>
+    <br>
+      <button onclick='location.href="/settings"' href="/settings" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Settings</a>
+    <br>
+        <button href="#" name="logout" id="logout" class="w3-bar-item w3-button"><i class="fas fa-sign-out"></i> Logout</a>
     </center>
     </div>
 </div>

@@ -14,8 +14,14 @@ class GameScene extends Phaser.Scene {
 		}
 		this.ready = false;
 		this.loadrect = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2).setDepth(200);
-		this.loadrect.displayWidth = this.canvas.width;
-		this.loadrect.displayHeight = this.canvas.height;
+  
+		const cameraWidth = this.cameras.main.width;
+		const cameraHeight = this.cameras.main.height;
+	  
+		
+		this.loadrect.setScale(Math.max(cameraWidth / this.loadrect.width, cameraHeight / this.loadrect.height));
+	
+		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
 		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
 	}

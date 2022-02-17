@@ -138,7 +138,8 @@ this.pos.y = pos[1]
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var oldPos = this.pos;
-    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*180/Math.PI , player.power-this.resistance);
+
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*Math.PI/180 , player.power-this.resistance);
     
     this.pos.x = clamp(pos[0], -2500, 2500);
     this.pos.y = clamp(pos[1],-2500, 2500);

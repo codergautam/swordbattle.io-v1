@@ -53,8 +53,6 @@ return;
   this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);
 
 
-  this.background.displayHeight = this.canvas.height;
-  this.background.displayWidth =this.canvas.width;
   this.nameBox = this.add.dom(this.canvas.width/2, 0 ).createFromCache("title");
 
   if(this.showPromo) {
@@ -222,7 +220,7 @@ this.callback(myName, this.music, this.secret);
     this.nameBox.getChildByName("name").disabled = true;
     document.getElementById("username").style.fontSize = "30px";
     this.dropdown.x = (this.canvas.width/1.2) - (document.getElementById("username").getBoundingClientRect().width);
-    
+    this.dropdown.y = -20;
     document.getElementById("logout").onclick = () => {
       this.dropdown.destroy();
       try {
@@ -407,11 +405,14 @@ try {
   const resize = (when=false)=>{
     
     this.game.scale.resize(this.canvas.width, this.canvas.height);
-
-      this.background.displayWidth =this.canvas.width;
-      this.background.displayHeight =this.canvas.height;
   
+    const cameraWidth = this.cameras.main.width;
+    const cameraHeight = this.cameras.main.height;
+  
+    
+    this.background.setScale(Math.max(cameraWidth / this.background.width, cameraHeight / this.background.height));
 
+    this.background.x = 0 - ((this.background.displayWidth - cameraWidth)/2);
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
