@@ -1,16 +1,16 @@
 {
     "name": "Swordbattle.io",
     "short_name": "Swordbattle.io",
-    "start_url": "index.html",
-    "scope": "./",
+    "start_url": "/",
+    "scope": ".",
     "icons": [
       {
-        "src": "assets/images/sword.png",
+        "src": "assets/images/logo192.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "assets/images/sword.png",
+        "src": "assets/images/logo512.png",
         "sizes": "512x512",
         "type": "image/png"
       }

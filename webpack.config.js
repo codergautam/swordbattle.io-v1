@@ -2,6 +2,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+
 const config = {
   entry: "./src/index.js",
   plugins: [
@@ -16,7 +17,7 @@ const config = {
         { from: "src/signup.html", to: "" },
         { from: "src/login.html", to: "" },
         { from: "src/dropdown.html", to: "" },
-        { from: "src/service-worker.js", to: "" },
+        { from: "src/sw.js", to: "" },
         { from: "src/manifest.json", to: "" },
       ],
     }),
