@@ -3,9 +3,28 @@ import GameScene from "./GameScene.js";
 import DeathScene from "./DeathScene.js";
 import WonScene from "./WonScene.js";
 import OpenScene from "./OpenScene.js";
+if ("serviceWorker" in navigator) {
+    // register service worker
+    navigator.serviceWorker.register("sw.js");
+  }
+  
+ window.addEventListener('online', handleConnection);
+window.addEventListener('offline', handleConnection);
+
+function handleConnection() {
+  
+  if (!navigator.onLine) {
+
+    		document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
+  } else {
+    		document.write("<h1>You're back online! Refresh to play!</h1>");
+  }
+  
+}
+
 
 window.addEventListener("load", () => {
-
+if(!navigator.onLine) handleConnection()
 var config = {
     type: Phaser.CANVAS,
     width: document.documentElement.clientWidth,
