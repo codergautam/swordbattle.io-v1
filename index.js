@@ -359,7 +359,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 200;
-var maxAiPlayers = 0;
+var maxAiPlayers = 10;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();

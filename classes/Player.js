@@ -40,32 +40,34 @@ class Player {
     this.lastMove = Date.now();
   }
   moveWithMouse(players) {
-/*
-    var players = Object.values(players)
-  //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
+
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
     var since =( Date.now() - this.lastMove ) / 1000
     
     
-    var go = since * this.speed * 2
- 
-    var last = {x: this.pos.x, y: this.pos.y}
-var pos =  this.movePointAtAngle([this.pos.x, this.pos.y],this.calcSwordAngle()*Math.PI/180+70, go)
-this.pos.x = pos[0]
-this.pos.y = pos[1]
+    var go = since * this.speed
 
-    if(this.pos.x <= -2500) this.pos.x = -2500
-    if(this.pos.x >= 2500) this.pos.x = 2500
-    if(this.pos.y <= -2500) this.pos.y = -2500
-    if(this.pos.y >= 2500) this.pos.y = 2500
+    const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
 
-   // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
-    if(players.filter(player=> player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
+    var power = distance(this.mousePos.x, this.mousePos.y, this.mousePos.viewport.width/2, this.mousePos.viewport.height/2)
+power = (power/((this.mousePos.viewport.height+this.mousePos.viewport.width)/2))*100
+
+if(power > 20) power = 100
+else power *= 5;
+
+if(power < 10)  power = 0
+go *= power/100
+
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
-    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
-    this.lastMove = Date.now()
-*/
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (this.calcSwordAngle()+45)*Math.PI/180 , go);
+    
+    this.pos.x = clamp(pos[0], -2500, 2500);
+    this.pos.y = clamp(pos[1],-2500, 2500);
+
+
+  return this.calcSwordAngle()+45
   }
   move(controller) {
     var players = Object.values(PlayerList.players);
@@ -75,6 +77,7 @@ this.pos.y = pos[1]
     
     
     var go = since * this.speed;
+    if(this.ai) {
     var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false;
@@ -112,7 +115,9 @@ this.pos.y = pos[1]
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
 
-
+    } else {
+      var moveAngle = this.moveWithMouse()
+    }
    // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
 
       var times = 0;
@@ -123,7 +128,6 @@ this.pos.y = pos[1]
       this.pos.y = p[1];
       }
     
-    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y};
 
     this.lastMove = Date.now();
     PlayerList.updatePlayer(this);

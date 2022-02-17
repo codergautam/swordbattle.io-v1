@@ -1,4 +1,5 @@
 import ImgButton from "./PhaserImgButton";
+import Button from  "./PhaserButton"
 import axios from "axios";
 
 class TitleScene extends Phaser.Scene {
@@ -21,7 +22,12 @@ try {
 
  }
  create() {
-
+          var clamp = (val, min, max) => {
+    if(val < min) return min;
+    if(val > max) return max;
+    return val;
+  };
+ 
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -77,6 +83,13 @@ return;
     fontSize: "64px",
     fill: "#000000"
   }).setOrigin(0.5);
+
+
+  this.settingsBtn = new Button(this,0, 0,"Settings","20px","#00FFFF", () => {
+    alert("clicked!")
+  } )
+
+
   const go = () => {
     let name = this.nameBox.getChildByName("name");
 
@@ -416,6 +429,8 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
+  this.settingsBtn.setFontSize(clamp(this.canvas.width/20,20,40))
+
     var scale = 0.17;
     if(this.canvas.width < 950) {
       scale-=0.035;
@@ -473,11 +488,6 @@ try {
       this.signup.x = this.canvas.width/2;
       this.signup.y = this.canvas.height/2;
     }
-           var clamp = (val, min, max) => {
-    if(val < min) return min;
-    if(val > max) return max;
-    return val;
-  };
  
   };
 
