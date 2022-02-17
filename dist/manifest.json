@@ -1,21 +1,21 @@
 {
-    "name": "Stick-it Notes by Tharun",
-    "short_name": "Stick-it",
+    "name": "Swordbattle.io",
+    "short_name": "Swordbattle.io",
     "start_url": "index.html",
     "scope": "./",
     "icons": [
       {
-        "src": "contract.png",
+        "src": "assets/images/sword.png",
         "sizes": "192x192",
         "type": "image/png"
       },
       {
-        "src": "contract.png",
+        "src": "assets/images/sword.png",
         "sizes": "512x512",
         "type": "image/png"
       }
     ],
-    "theme_color": "#ffd31d",
-    "background_color": "#333",
+    "theme_color": "#00FF00",
+    "background_color": "#00FF00",
     "display": "standalone"
   }

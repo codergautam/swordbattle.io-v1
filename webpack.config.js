@@ -16,6 +16,8 @@ const config = {
         { from: "src/signup.html", to: "" },
         { from: "src/login.html", to: "" },
         { from: "src/dropdown.html", to: "" },
+        { from: "src/service-worker.js", to: "" },
+        { from: "src/manifest.json", to: "" },
       ],
     }),
   ],
