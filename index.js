@@ -359,7 +359,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 
 var maxCoins = 200;
-var maxAiPlayers = 0;
+var maxAiPlayers = 10;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -378,7 +378,7 @@ io.on("connection", async (socket) => {
 		socket.disconnect();
 	}
 
-	socket.on("go", async (r, captchatoken, tryverify) => {
+	socket.on("go", async (r, captchatoken, tryverify, options) => {
 		async function ready() {
 			var name;
 			if(!tryverify) {
@@ -401,6 +401,9 @@ io.on("connection", async (socket) => {
 
 				var thePlayer = new Player(socket.id,  name);
 				thePlayer.updateValues();
+        if(options && options.hasOwnProperty("movementMode")) {
+          thePlayer.movementMode = options.movementMode
+        }
 				
 
 				if(tryverify) {
