@@ -8,8 +8,8 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
   
- window.addEventListener('online', handleConnection);
-window.addEventListener('offline', handleConnection);
+ window.addEventListener("online", handleConnection);
+window.addEventListener("offline", handleConnection);
 
 function handleConnection() {
   
@@ -24,7 +24,7 @@ function handleConnection() {
 
 
 window.addEventListener("load", () => {
-if(!navigator.onLine) handleConnection()
+if(!navigator.onLine) handleConnection();
 var config = {
     type: Phaser.CANVAS,
     width: document.documentElement.clientWidth,
