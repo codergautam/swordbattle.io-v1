@@ -14,8 +14,8 @@ export default class Button extends Phaser.GameObjects.Container {
         }).setOrigin(0);
         this.btnrect.x = this.btntext.x - 5;
         this.btnrect.y = this.btntext.y - 5;
-        this.btnrect.displayWidth = this.btntext.width + 10;
-        this.btnrect.displayHeight = this.btntext.height + 10;
+        this.btnrect.width = this.btntext.width + 10;
+        this.btnrect.height = this.btntext.height + 10;
 
         this.btnrect.setInteractive().on("pointerdown", onClick);
     }
@@ -25,7 +25,6 @@ export default class Button extends Phaser.GameObjects.Container {
     get height() {
         return this.btnrect.height;
     }
-
     update(x,y) {
         if(x) {
         this.x = x;
@@ -37,7 +36,7 @@ export default class Button extends Phaser.GameObjects.Container {
         this.btntext.y = y;
         this.btnrect.y = this.btntext.y  - 5;
         }
-        this.btnrect.displayWidth = this.btntext.width + 10;
+        this.btnrect.width = this.btntext.width + 10;
         this.btnrect.height = this.btntext.height + 10;
     } 
     setFontSize(size) {
@@ -45,9 +44,8 @@ export default class Button extends Phaser.GameObjects.Container {
         this.btntext.setFontSize(size);
         this.btnrect.x = this.btntext.x - 5;
         this.btnrect.y = this.btntext.y - 5;
-        this.btnrect.displayWidth = this.btntext.width + 10;
-        this.btnrect.displayHeight = this.btntext.height + 10;
-
+        this.btnrect.width = this.btntext.width + 10;
+        this.btnrect.height = this.btntext.height + 10;
     }
     destroy() {
         this.btnrect.destroy();

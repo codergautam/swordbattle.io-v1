@@ -22,12 +22,6 @@ try {
  }
  create() {
 
-          var clamp = (val, min, max) => {
-    if(val < min) return min;
-    if(val > max) return max;
-    return val;
-  };
- 
   this.footerdone = false;
    this.redirect = false;
   var access = true;
@@ -36,22 +30,6 @@ try {
   } catch(e) {
     access = false;
   }
-
-  if(access) {
-    if(window.localStorage.getItem("options")) {
-      this.options = JSON.parse(window.localStorage.getItem("options"));
-    } else {
-      this.options = {
-        movementMode: (this.mobile?"keys":"mouse")
-      };
-      window.localStorage.setItem("options", JSON.stringify(this.options));
-    }
-  } else {
-    this.options = {
-      movementMode: (this.mobile?"keys":"mouse")
-    };
-  }
-
 try {
   this.music = this.sound.add("openingsound", {
     mute: false,
@@ -99,30 +77,6 @@ return;
     fontSize: "64px",
     fill: "#000000"
   }).setOrigin(0.5);
-
-
-  this.settingsBtn = new ImgButton(this, 0,0, "settingsBtn", () => {
-    if(this.promo && this.promo.visible) return;
-    if(this.login && this.login.visible) return;
-    if(this.signup && this.signup.visible) return;
-    if(this.settings && this.settings.visible) return this.settings.destroy();
-    this.settings = this.add.dom(0, 0).createFromCache("settings");
-    this.settings.x = (this.canvas.width / 2);
-    this.settings.y =  (this.canvas.height / 2);
-    this.settings.getChildByName("close").onclick = () => {
-      this.settings.destroy();
-    };
-    document.getElementById("movement").value = this.options.movementMode;
-    document.getElementById("movement").onchange = () => {
-      this.options.movementMode = document.getElementById("movement").value;
-      if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
-    };
-
-
-    
-  });
-
-
   const go = () => {
     let name = this.nameBox.getChildByName("name");
 
@@ -134,7 +88,7 @@ return;
       this.done = true;
       if(access) window.localStorage.setItem("oldName", name.value);
       var myName = name.value;
-    
+     
       if(this.playPreroll) {
         if (typeof aiptag.adplayer !== "undefined") {
           this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
@@ -188,8 +142,6 @@ this.callback(myName, this.music, this.secret);
     }  else if(this.signup && this.signup.visible) {
       this.signup.getChildByName("signup").click();
     } else if(this.nameBox.getChildByName("btn").disabled) {
-    } else if(this.settings && this.settings.visible) {
-      this.settings.destroy();
     } else go();
   };
   this.nameBox.getChildByName("btn").onclick = () => {
@@ -300,7 +252,6 @@ this.callback(myName, this.music, this.secret);
   this.loginButton = new ImgButton(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "loginbtn",  ()=>{
     if(this.promo && this.promo.visible) return;
     if(this.signup && this.signup.visible) return;
-    if(this.settings && this.settings.visible) return;
     if(this.login && this.login.visible) return;
     this.login = this.add.dom(0, 0).createFromCache("login");
 
@@ -367,7 +318,6 @@ try {
   this.signupButton = new ImgButton(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "signupbtn",  ()=>{
     if(this.promo && this.promo.visible) return;
     if(this.signup && this.signup.visible) return;
-    if(this.settings && this.settings.visible) return;
     if(this.login && this.login.visible) return;
     this.signup = this.add.dom(0, 0).createFromCache("signup");
 
@@ -466,14 +416,6 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
-    this.settingsBtn.btn.setScale(clamp(this.canvas.width / 1920, 0.4, 0.7));
-    this.settingsBtn.btn.y = this.canvas.height - this.settingsBtn.btn.displayHeight;
-
-    if(this.settings && this.settings.visible) {
-      this.settings.x = this.canvas.width / 2;
-      this.settings.y = this.canvas.height / 2;
-    }
-
     var scale = 0.17;
     if(this.canvas.width < 950) {
       scale-=0.035;
@@ -501,9 +443,7 @@ try {
   }
   
   if(this.scene.isActive("title")) {
-    if((this.promo && this.promo.visible) || (this.signup && this.signup.visible) || (this.login && this.login.visible) || (this.settings && this.settings.visible)) {
-   
-    
+    if((this.promo && this.promo.visible) || (this.signup && this.signup.visible) || (this.login && this.login.visible)) {
     } else {
       this.footer.destroy();
    this.footer = this.add.dom(this.canvas.width/2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile?1:2);  
@@ -533,6 +473,11 @@ try {
       this.signup.x = this.canvas.width/2;
       this.signup.y = this.canvas.height/2;
     }
+           var clamp = (val, min, max) => {
+    if(val < min) return min;
+    if(val > max) return max;
+    return val;
+  };
  
   };
 
