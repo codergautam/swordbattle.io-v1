@@ -137,7 +137,7 @@ class GameScene extends Phaser.Scene {
 
 				//
 				//joystick
-				if(this.mobile && this.movementMode == "keys") {
+				if(this.mobile) {
 					this.joyStick = this.plugins
 						.get("rexvirtualjoystickplugin")
 						.add(this, {
@@ -213,7 +213,7 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
-						if(this.mobile && this.movementMode =="keys") {
+						if(this.mobile) {
 
 							this.joyStick.x = this.canvas.width / 8;
 							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
@@ -263,13 +263,12 @@ class GameScene extends Phaser.Scene {
 				window.addEventListener("resize", resize, true);
 				//go packet
 				this.socket = io();
-
-				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
+				if(!this.secret) this.socket.emit("go", this.name, thetoken, false);
 				else this.socket.emit("go", this.secret, thetoken, true);
 				//mouse down
 
 				this.input.on("pointerdown", function (pointer) {
-					if(this.mobile && this.joyStick &&this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+					if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (!this.mouseDown) {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
 						this.mouseDown = true;
@@ -279,7 +278,7 @@ class GameScene extends Phaser.Scene {
 				}, this);
 				this.input.on("pointerup", function (pointer) {
             
-					if(this.mobile && this.joyStick && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+					if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (this.mouseDown) {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
 						this.mouseDown = false;
@@ -765,7 +764,7 @@ class GameScene extends Phaser.Scene {
 		var dKey = this.input.keyboard.addKey("D",false);
 		
 		try {
-			this.key = this.mobile && this.joyStick ?  this.joyStick.createCursorKeys() : this.cursors;
+			this.key = this.mobile ?  this.joyStick.createCursorKeys() : this.cursors;
 			if (this.key.up.isDown || wKey.isDown ) {
 				controller.up = true;
 

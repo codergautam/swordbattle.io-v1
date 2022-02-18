@@ -19,7 +19,6 @@ const config = {
         { from: "src/dropdown.html", to: "" },
         { from: "src/sw.js", to: "" },
         { from: "src/manifest.json", to: "" },
-         { from: "src/settings.html", to: "" },
       ],
     }),
   ],
