@@ -42,13 +42,13 @@ try {
       this.options = JSON.parse(window.localStorage.getItem("options"));
     } else {
       this.options = {
-        movementMode: "mouse"
+        movementMode: (this.mobile?"keys":"mouse")
       };
       window.localStorage.setItem("options", JSON.stringify(this.options));
     }
   } else {
     this.options = {
-      movementMode: "mouse"
+      movementMode: (this.mobile?"keys":"mouse")
     };
   }
 
@@ -134,7 +134,7 @@ return;
       this.done = true;
       if(access) window.localStorage.setItem("oldName", name.value);
       var myName = name.value;
-     alert(this.options.movementMode);
+    
       if(this.playPreroll) {
         if (typeof aiptag.adplayer !== "undefined") {
           this.nameBox.getChildByName("btn").innerHTML = "Connecting..";

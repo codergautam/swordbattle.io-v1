@@ -9,6 +9,7 @@ function getRandomInt(min, max) {
 class Player { 
   constructor(id, name) {
     this.ai = false;
+    this.movementMode = "mouse";
     this.id = id;
     this.name = name;
     this.health = 100;
@@ -99,7 +100,7 @@ go *= power/100;
     
     
     var go = since * this.speed;
-    if(this.ai) {
+    if(this.ai || this.movementMode == "keys") {
     var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false;
