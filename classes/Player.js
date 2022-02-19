@@ -83,9 +83,23 @@ go *= power/100;
        * Example: in 4 direction system North (320-45) becomes (0-90)
        */
       const offsetAngle = angle + degreePerDirection / 2;
-    
+    /*
+
+      var o = [45,90,135,-90];
+      //get closest angle
+      var closest = o[0];
+      var closestDiff = Math.abs(o[0] - offsetAngle);
+      for(var i = 1; i < o.length; i++) {
+        var diff = Math.abs(o[i] - offsetAngle);
+        if(diff < closestDiff) {
+          closest = o[i];
+          closestDiff = diff;
+        }
+      }
+      return closest;
+*/
       return (offsetAngle >= 0 * degreePerDirection && offsetAngle < 1 * degreePerDirection) ? 45
-        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? 45
+        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? 90
           : (offsetAngle >= 2 * degreePerDirection && offsetAngle < 3 * degreePerDirection) ? 90
             : (offsetAngle >= 3 * degreePerDirection && offsetAngle < 4 * degreePerDirection) ? 180-45
               : (offsetAngle >= 4 * degreePerDirection && offsetAngle < 5 * degreePerDirection) ? 180-45
@@ -93,50 +107,67 @@ go *= power/100;
                   : (offsetAngle >= 6 * degreePerDirection && offsetAngle < 7 * degreePerDirection) ? -90
                     : -90;
     }
+
     var players = Object.values(PlayerList.players);
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
     var since =( Date.now() - this.lastMove ) / 1000;
     
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var go = since * this.speed;
     if(this.ai || this.movementMode == "keys") {
-    var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false;
     if(this.pos.x >= 2500) controller.right = false;
     if(this.pos.y <= -2500) controller.up = false;
     if(this.pos.y >= 2500) controller.down = false;
 
-    if(controller.up || controller.down) diagnol += 1;
-    if(controller.right || controller.left) diagnol += 1;
 
-    if(diagnol > 0) go = 0.707 * go;
 
-    go = Math.round(go);
-    var last = {x: this.pos.x, y: this.pos.y};
-
-    if(controller.up) this.pos.y -= go;
-    if(controller.down) this.pos.y += go;
-    if(controller.right) this.pos.x += go;
-    if(controller.left) this.pos.x -= go;
-
+var move = true;
  if(controller.up) {
-      var moveAngle = 45;
+    var moveAngle = 0;
+
+   if(controller.right) {
+       moveAngle += 45;
+   } else if(controller.left) {
+      moveAngle -= 45;
+   }
+      
     } else if(controller.down) {
-      var moveAngle = 180-45;
+       moveAngle = 180;
+
+         if(controller.right) {
+       moveAngle -= 45;
+   } else if(controller.left) {
+      moveAngle += 45;
+   }
+   
     } else if(controller.left) {
       var moveAngle = -90;
     } else if(controller.right) {
       var moveAngle = 90;
     } else {
       var moveAngle = this.calcSwordAngle()+45;
+      move = false;
+    }
+
+    
+
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*Math.PI/180 , go);
+    
+    if(move) {
+    this.pos.x = clamp(pos[0], -2500, 2500);
+    this.pos.y = clamp(pos[1],-2500, 2500);
     }
 
     if(this.pos.x <= -2500) this.pos.x = -2500;
     if(this.pos.x >= 2500) this.pos.x = 2500;
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
+
+    moveAngle = getCardinal(moveAngle);  
 
     } else {
       var moveAngle = getCardinal(this.moveWithMouse());
@@ -251,7 +282,7 @@ go *= power/100;
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.6, player.pos.x, player.pos.y, (player.radius*player.scale)*0.6);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.7, player.pos.x, player.pos.y, (player.radius*player.scale)*0.7);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
