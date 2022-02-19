@@ -265,7 +265,7 @@ class GameScene extends Phaser.Scene {
 				this.socket = io();
 
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
-				else this.socket.emit("go", this.secret, thetoken, true);
+				else this.socket.emit("go", this.secret, thetoken, true,this.options);
 				//mouse down
 
 				this.input.on("pointerdown", function (pointer) {
