@@ -83,9 +83,23 @@ go *= power/100;
        * Example: in 4 direction system North (320-45) becomes (0-90)
        */
       const offsetAngle = angle + degreePerDirection / 2;
-    
+    /*
+
+      var o = [45,90,135,-90];
+      //get closest angle
+      var closest = o[0];
+      var closestDiff = Math.abs(o[0] - offsetAngle);
+      for(var i = 1; i < o.length; i++) {
+        var diff = Math.abs(o[i] - offsetAngle);
+        if(diff < closestDiff) {
+          closest = o[i];
+          closestDiff = diff;
+        }
+      }
+      return closest;
+*/
       return (offsetAngle >= 0 * degreePerDirection && offsetAngle < 1 * degreePerDirection) ? 45
-        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? 45
+        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? 90
           : (offsetAngle >= 2 * degreePerDirection && offsetAngle < 3 * degreePerDirection) ? 90
             : (offsetAngle >= 3 * degreePerDirection && offsetAngle < 4 * degreePerDirection) ? 180-45
               : (offsetAngle >= 4 * degreePerDirection && offsetAngle < 5 * degreePerDirection) ? 180-45
@@ -93,6 +107,7 @@ go *= power/100;
                   : (offsetAngle >= 6 * degreePerDirection && offsetAngle < 7 * degreePerDirection) ? -90
                     : -90;
     }
+
     var players = Object.values(PlayerList.players);
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
@@ -110,7 +125,7 @@ go *= power/100;
 
 
 
-var move = true
+var move = true;
  if(controller.up) {
     var moveAngle = 0;
 
@@ -152,17 +167,7 @@ var move = true
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
 
-     if(controller.up) {
-       moveAngle = 45;
-    } else if(controller.down) {
-       moveAngle = 180-45;
-    } else if(controller.left) {
-       moveAngle = -90;
-    } else if(controller.right) {
-       moveAngle = 90;
-    } else {
-       moveAngle = this.calcSwordAngle()+45;
-    }
+    moveAngle = getCardinal(moveAngle);  
 
     } else {
       var moveAngle = getCardinal(this.moveWithMouse());
@@ -277,7 +282,7 @@ var move = true
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.6, player.pos.x, player.pos.y, (player.radius*player.scale)*0.6);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.7, player.pos.x, player.pos.y, (player.radius*player.scale)*0.7);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
