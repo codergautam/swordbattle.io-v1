@@ -98,45 +98,71 @@ go *= power/100;
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
     var since =( Date.now() - this.lastMove ) / 1000;
     
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var go = since * this.speed;
     if(this.ai || this.movementMode == "keys") {
-    var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false;
     if(this.pos.x >= 2500) controller.right = false;
     if(this.pos.y <= -2500) controller.up = false;
     if(this.pos.y >= 2500) controller.down = false;
 
-    if(controller.up || controller.down) diagnol += 1;
-    if(controller.right || controller.left) diagnol += 1;
 
-    if(diagnol > 0) go = 0.707 * go;
 
-    go = Math.round(go);
-    var last = {x: this.pos.x, y: this.pos.y};
-
-    if(controller.up) this.pos.y -= go;
-    if(controller.down) this.pos.y += go;
-    if(controller.right) this.pos.x += go;
-    if(controller.left) this.pos.x -= go;
-
+var move = true
  if(controller.up) {
-      var moveAngle = 45;
+    var moveAngle = 0;
+
+   if(controller.right) {
+       moveAngle += 45;
+   } else if(controller.left) {
+      moveAngle -= 45;
+   }
+      
     } else if(controller.down) {
-      var moveAngle = 180-45;
+       moveAngle = 180;
+
+         if(controller.right) {
+       moveAngle -= 45;
+   } else if(controller.left) {
+      moveAngle += 45;
+   }
+   
     } else if(controller.left) {
       var moveAngle = -90;
     } else if(controller.right) {
       var moveAngle = 90;
     } else {
       var moveAngle = this.calcSwordAngle()+45;
+      move = false;
+    }
+
+    
+
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*Math.PI/180 , go);
+    
+    if(move) {
+    this.pos.x = clamp(pos[0], -2500, 2500);
+    this.pos.y = clamp(pos[1],-2500, 2500);
     }
 
     if(this.pos.x <= -2500) this.pos.x = -2500;
     if(this.pos.x >= 2500) this.pos.x = 2500;
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
+
+     if(controller.up) {
+       moveAngle = 45;
+    } else if(controller.down) {
+       moveAngle = 180-45;
+    } else if(controller.left) {
+       moveAngle = -90;
+    } else if(controller.right) {
+       moveAngle = 90;
+    } else {
+       moveAngle = this.calcSwordAngle()+45;
+    }
 
     } else {
       var moveAngle = getCardinal(this.moveWithMouse());
