@@ -137,7 +137,7 @@ class GameScene extends Phaser.Scene {
 
 				//
 				//joystick
-				if(this.mobile && this.movementMode == "keys") {
+				if(this.mobile && this.options.movementMode == "keys") {
 					this.joyStick = this.plugins
 						.get("rexvirtualjoystickplugin")
 						.add(this, {
@@ -213,7 +213,7 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
-						if(this.mobile && this.movementMode =="keys") {
+						if(this.mobile && this.options.movementMode =="keys") {
 
 							this.joyStick.x = this.canvas.width / 8;
 							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
