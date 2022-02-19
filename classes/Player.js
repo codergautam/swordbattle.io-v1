@@ -9,6 +9,7 @@ function getRandomInt(min, max) {
 class Player { 
   constructor(id, name) {
     this.ai = false;
+    this.movementMode = "mouse";
     this.id = id;
     this.name = name;
     this.health = 100;
@@ -39,35 +40,59 @@ class Player {
     this.radius = this.size / 2;
     this.lastMove = Date.now();
   }
-  moveWithMouse(players) {
-/*
-    var players = Object.values(players)
-  //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
-  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000) 
-    var since =( Date.now() - this.lastMove ) / 1000
+  moveWithMouse() {
+
+  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
+    var since =( Date.now() - this.lastMove ) / 1000;
     
     
-    var go = since * this.speed * 2
- 
-    var last = {x: this.pos.x, y: this.pos.y}
-var pos =  this.movePointAtAngle([this.pos.x, this.pos.y],this.calcSwordAngle()*Math.PI/180+70, go)
-this.pos.x = pos[0]
-this.pos.y = pos[1]
+    var go = since * this.speed;
 
-    if(this.pos.x <= -2500) this.pos.x = -2500
-    if(this.pos.x >= 2500) this.pos.x = 2500
-    if(this.pos.y <= -2500) this.pos.y = -2500
-    if(this.pos.y >= 2500) this.pos.y = 2500
+    const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
 
-   // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
-    if(players.filter(player=> player.id != this.id && player.touchingPlayer(this)).length > 0) this.pos = {x: last.x, y:last.y}
+    var power = distance(this.mousePos.x, this.mousePos.y, this.mousePos.viewport.width/2, this.mousePos.viewport.height/2);
+power = (power/((this.mousePos.viewport.height+this.mousePos.viewport.width)/2))*100;
+
+if(power > 15) power = 100;
+else power *= 100/15;
+
+if(power < 10)  power = 0;
+go *= power/100;
+
+        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
-    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y}
 
-    this.lastMove = Date.now()
-*/
+    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (this.calcSwordAngle()+45)*Math.PI/180 , go);
+    
+    this.pos.x = clamp(pos[0], -2500, 2500);
+    this.pos.y = clamp(pos[1],-2500, 2500);
+
+
+  return this.calcSwordAngle()+45;
   }
   move(controller) {
+    function getCardinal(angle) {
+      /** 
+       * Customize by changing the number of directions you have
+       * We have 8
+       */
+      const degreePerDirection = 360 / 8;
+    
+      /** 
+       * Offset the angle by half of the degrees per direction
+       * Example: in 4 direction system North (320-45) becomes (0-90)
+       */
+      const offsetAngle = angle + degreePerDirection / 2;
+    
+      return (offsetAngle >= 0 * degreePerDirection && offsetAngle < 1 * degreePerDirection) ? 45
+        : (offsetAngle >= 1 * degreePerDirection && offsetAngle < 2 * degreePerDirection) ? 45
+          : (offsetAngle >= 2 * degreePerDirection && offsetAngle < 3 * degreePerDirection) ? 90
+            : (offsetAngle >= 3 * degreePerDirection && offsetAngle < 4 * degreePerDirection) ? 180-45
+              : (offsetAngle >= 4 * degreePerDirection && offsetAngle < 5 * degreePerDirection) ? 180-45
+                : (offsetAngle >= 5 * degreePerDirection && offsetAngle < 6 * degreePerDirection) ? -90
+                  : (offsetAngle >= 6 * degreePerDirection && offsetAngle < 7 * degreePerDirection) ? -90
+                    : -90;
+    }
     var players = Object.values(PlayerList.players);
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
   if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
@@ -75,6 +100,7 @@ this.pos.y = pos[1]
     
     
     var go = since * this.speed;
+    if(this.ai || this.movementMode == "keys") {
     var diagnol = 0;
 
     if(this.pos.x <= -2500) controller.left = false;
@@ -112,7 +138,9 @@ this.pos.y = pos[1]
     if(this.pos.y <= -2500) this.pos.y = -2500;
     if(this.pos.y >= 2500) this.pos.y = 2500;
 
-
+    } else {
+      var moveAngle = getCardinal(this.moveWithMouse());
+    }
    // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
 
       var times = 0;
@@ -123,7 +151,6 @@ this.pos.y = pos[1]
       this.pos.y = p[1];
       }
     
-    if(last.x != this.pos.x || last.y != this.pos.y) this.lastPos = {x: last.x, y: last.y};
 
     this.lastMove = Date.now();
     PlayerList.updatePlayer(this);
@@ -152,8 +179,8 @@ this.pos.y = pos[1]
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          this.coins += 1;
-
+          //this.coins += (this.ai?1:100);
+          this.coins++;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
 
