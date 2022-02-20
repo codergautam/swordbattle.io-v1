@@ -14,6 +14,11 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback;
     }
     preload() {
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.text = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Loading.. 0%", {
+            fontSize: "64px",
+            fill: "#FFFFFF"
+        }).setOrigin(0.5);
         this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
         this.load.plugin("rexbbcodetextplugin", "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js", true);
 
@@ -71,18 +76,18 @@ class OpenScene extends Phaser.Scene {
 
         
         this.go = false;
-        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x000000).setOrigin(0).setScrollFactor(0, 0).setScale(2);
-        this.text = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Click to join the game..", {
-            fontSize: "64px",
-            fill: "#FFFFFF"
-        }).setOrigin(0.5);
-        this.text.setAlpha(0);
+
+    
         ///resize dynamicly
         const resize = () => {
             try {
             this.game.scale.resize(document.documentElement.clientWidth, document.documentElement.clientHeight);
             this.background.height = document.documentElement.clientHeight;
             this.background.width = document.documentElement.clientWidth;
+
+            this.text.x = document.documentElement.clientWidth / 2;
+            this.text.y = document.documentElement.clientHeight / 2; 
+            this.text.setFontSize(this.canvas.width/20);
             
             
         } catch(e) {
@@ -93,8 +98,11 @@ class OpenScene extends Phaser.Scene {
         this.input.on("pointerdown", event => {
             this.go = true;
         });
-        this.scene.start("title");
         
+      this.loadProg = 0;
+        this.showProg = 0;
+        this.last = 100;
+       
     }
 
     update() {
@@ -108,6 +116,25 @@ class OpenScene extends Phaser.Scene {
             if(this.text.alpha > 0 )this.text.setAlpha(this.text.alpha - 0.05);
             else this.scene.start("title");
             
+        }
+        */
+
+        this.loadProg = Math.round(this.load.progress * 100);
+        
+        if(this.loadProg > this.showProg) {
+            this.showProg+= Math.round((this.loadProg - this.showProg) / 10);
+            if(this.showProg == this.last) this.scene.start("title");
+            else this.last = this.showProg;
+            this.text.setText("Loading.. " + this.showProg + "%");
+        }
+   
+            
+          //  this.loadProg = newProg;
+        
+                /*
+        if(this.text.text === "Loading.. 100%") {
+            this.scene.stop();
+            this.scene.start("title");
         }
         */
     }
