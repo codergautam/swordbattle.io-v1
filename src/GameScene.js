@@ -649,7 +649,7 @@ class GameScene extends Phaser.Scene {
 					
 						this.UICam.ignore(particles);
 						emitter.setSpeed(200);
-						particles.setDepth(5);
+						particles.setDepth(105);
 						emitter.setBlendMode(Phaser.BlendModes.ADD);
 					}
 					this.hit.play();
@@ -667,7 +667,7 @@ class GameScene extends Phaser.Scene {
 				
 					this.UICam.ignore(particles);
 					emitter.setSpeed(200);
-					particles.setDepth(5);
+					particles.setDepth(105);
 					//emitter.setBlendMode(Phaser.BlendModes.ADD);
 				});
 
@@ -1124,7 +1124,10 @@ class GameScene extends Phaser.Scene {
 		});
 
 		//background movement
-		this.background.setTilePosition(this.cameras.main.scrollX+(this.mePlayer.x -  this.cameras.main.scrollX - (this.canvas.width/2)), this.cameras.main.scrollY+(this.mePlayer.y -  this.cameras.main.scrollY - (this.canvas.height/2)));
+		this.background.setTilePosition(
+			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.mePlayer.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
+			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.mePlayer.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
+		);
 		this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2);
 		this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2);
 

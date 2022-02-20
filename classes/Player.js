@@ -310,7 +310,7 @@ return false;
     //hit cooldown
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown && Date.now() - this.joinTime >= 2500) {
+    if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown) {
       this.lastSwing = Date.now();
       Object.values(PlayerList.players).forEach((enemy) => {
         //loop through all enemies, make sure the enemy isnt the player itself
@@ -318,8 +318,7 @@ return false;
           //get the values needed for line-circle-collison
           //check if enemy and player colliding
           if (
-            this.hittingPlayer(enemy) &&
-            Date.now() - enemy.joinTime >= 5000
+            this.hittingPlayer(enemy)
           ) {
             var socketById = io.sockets.sockets.get(enemy.id);
             var socket = io.sockets.sockets.get(this.id);
@@ -336,7 +335,7 @@ return false;
             } 
 
 
-            
+            if(Date.now() - enemy.joinTime >= 5000) {
             enemy.lastHit = Date.now();
             var oldHealth = enemy.health;
             enemy.health -= this.damage;
@@ -404,7 +403,12 @@ return false;
               if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
             }
+          } else {
+            enemy.doKnockback(this);
+            if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
+            if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
           }
+        }
         }
       });
 
