@@ -1,628 +1,1010 @@
-import HealthBar from './HealthBar.js'
+import HealthBar from "./HealthBar.js";
 
 class GameScene extends Phaser.Scene {
-    constructor(callback) {
-        super()
-        this.callback = callback
-    }
+	constructor(callback) {
+		super();
+		this.callback = callback;
+	}
 
-    preload() {    
-         try {       
-        document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
-         } catch(e) {
-             console.log(e)
-         }
-        this.load.image("player", "/assets/images/player.png");
-        this.load.image("sword", "/assets/images/sword.png");
-        this.load.image('background', '/assets/images/background.jpeg');
-        this.load.image('coin', '/assets/images/coin.png');
-
-        this.load.audio('coin', '/assets/sound/coin.m4a');
-        this.load.audio('damage', '/assets/sound/damage.mp3');
-        this.load.audio('hit', '/assets/sound/hitenemy.wav');
-        this.load.audio('winSound', '/assets/sound/win.m4a');
-        this.load.audio('loseSound', '/assets/sound/lost.mp3');
-
-       
-
-
-        this.ready = false;
-    }
-
-    died(data) {
-        this.loseSound.play()
-        this.children.list.forEach((b) => {
-            b.destroy();
-        })
-        this.dead = true
-        data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
-        this.callback({win:false, data: data})
-    }
-    win(data) {
-        this.winSound.play()
-this.dead = true  
-data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins})
-this.callback({win: true, data:data})
-    }
-
-    create() {
-        this.mobile = false;
-        ((a)=>{if(/(android|bb\d+|meego).+mobile|avantgo|bada\/|blackberry|blazer|compal|elaine|fennec|hiptop|iemobile|ip(hone|od)|iris|kindle|lge |maemo|midp|mmp|mobile.+firefox|netfront|opera m(ob|in)i|palm( os)?|phone|p(ixi|re)\/|plucker|pocket|psp|series(4|6)0|symbian|treo|up\.(browser|link)|vodafone|wap|windows ce|xda|xiino|android|ipad|playbook|silk/i.test(a)||/1207|6310|6590|3gso|4thp|50[1-6]i|770s|802s|a wa|abac|ac(er|oo|s\-)|ai(ko|rn)|al(av|ca|co)|amoi|an(ex|ny|yw)|aptu|ar(ch|go)|as(te|us)|attw|au(di|\-m|r |s )|avan|be(ck|ll|nq)|bi(lb|rd)|bl(ac|az)|br(e|v)w|bumb|bw\-(n|u)|c55\/|capi|ccwa|cdm\-|cell|chtm|cldc|cmd\-|co(mp|nd)|craw|da(it|ll|ng)|dbte|dc\-s|devi|dica|dmob|do(c|p)o|ds(12|\-d)|el(49|ai)|em(l2|ul)|er(ic|k0)|esl8|ez([4-7]0|os|wa|ze)|fetc|fly(\-|_)|g1 u|g560|gene|gf\-5|g\-mo|go(\.w|od)|gr(ad|un)|haie|hcit|hd\-(m|p|t)|hei\-|hi(pt|ta)|hp( i|ip)|hs\-c|ht(c(\-| |_|a|g|p|s|t)|tp)|hu(aw|tc)|i\-(20|go|ma)|i230|iac( |\-|\/)|ibro|idea|ig01|ikom|im1k|inno|ipaq|iris|ja(t|v)a|jbro|jemu|jigs|kddi|keji|kgt( |\/)|klon|kpt |kwc\-|kyo(c|k)|le(no|xi)|lg( g|\/(k|l|u)|50|54|\-[a-w])|libw|lynx|m1\-w|m3ga|m50\/|ma(te|ui|xo)|mc(01|21|ca)|m\-cr|me(rc|ri)|mi(o8|oa|ts)|mmef|mo(01|02|bi|de|do|t(\-| |o|v)|zz)|mt(50|p1|v )|mwbp|mywa|n10[0-2]|n20[2-3]|n30(0|2)|n50(0|2|5)|n7(0(0|1)|10)|ne((c|m)\-|on|tf|wf|wg|wt)|nok(6|i)|nzph|o2im|op(ti|wv)|oran|owg1|p800|pan(a|d|t)|pdxg|pg(13|\-([1-8]|c))|phil|pire|pl(ay|uc)|pn\-2|po(ck|rt|se)|prox|psio|pt\-g|qa\-a|qc(07|12|21|32|60|\-[2-7]|i\-)|qtek|r380|r600|raks|rim9|ro(ve|zo)|s55\/|sa(ge|ma|mm|ms|ny|va)|sc(01|h\-|oo|p\-)|sdk\/|se(c(\-|0|1)|47|mc|nd|ri)|sgh\-|shar|sie(\-|m)|sk\-0|sl(45|id)|sm(al|ar|b3|it|t5)|so(ft|ny)|sp(01|h\-|v\-|v )|sy(01|mb)|t2(18|50)|t6(00|10|18)|ta(gt|lk)|tcl\-|tdg\-|tel(i|m)|tim\-|t\-mo|to(pl|sh)|ts(70|m\-|m3|m5)|tx\-9|up(\.b|g1|si)|utst|v400|v750|veri|vi(rg|te)|vk(40|5[0-3]|\-v)|vm40|voda|vulc|vx(52|53|60|61|70|80|81|83|85|98)|w3c(\-| )|webc|whit|wi(g |nc|nw)|wmlb|wonu|x700|yas\-|your|zeto|zte\-/i.test(a.substr(0,4))) this.mobile = true;})(navigator.userAgent||navigator.vendor||window.opera);
+	preload() {    
+		try {       
+			document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
+		} catch(e) {
+			console.log(e);
+		}
+		this.ready = false;
+		this.loadrect = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2).setDepth(200);
   
-        //recaptcha
+		const cameraWidth = this.cameras.main.width;
+		const cameraHeight = this.cameras.main.height;
+	  
+		
+		this.loadrect.setScale(Math.max(cameraWidth / this.loadrect.width, cameraHeight / this.loadrect.height));
+	
+		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
+		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
+		this.ping = 0;
+	}
 
-        grecaptcha.ready(() =>{
-            grecaptcha.execute('6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt', {action: 'join'}).then((thetoken) => {
+	died(data) {
+		this.loseSound.play();
+		this.children.list.forEach((b) => {
+			b.destroy();
+		});
+		this.dead = true;
+		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins});
+		this.callback({win:false, data: data});
+	}
+	win(data) {
+		this.winSound.play();
+		this.dead = true;  
+		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.levels[this.levels.length-1].coins});
+		this.callback({win: true, data:data});
+	}
 
-            this.readyt = true
-        this.openingBgm.stop()
-        var config =  {
-            mute: false,
-            volume: 1,
-            rate: 1,
-            detune: 0,
-            seek: 0,
-            loop: false,
-            delay: 0
-        }
+	create() {
+
+        this.levels = [];
+  
+		//recaptcha
+
+		grecaptcha.ready(() =>{
+			grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "join"}).then((thetoken) => {
+
+				this.readyt = true;
+				this.openingBgm.stop();
+				var config =  {
+					mute: false,
+					volume: 1,
+					rate: 1,
+					detune: 0,
+					seek: 0,
+					loop: false,
+					delay: 0
+				};
     
 
-        this.coin = this.sound.add('coin', config)
-        this.damage = this.sound.add('damage', config)
-        this.hit = this.sound.add('hit', config)
-        this.winSound = this.sound.add('winSound', config)
-        this.loseSound = this.sound.add('loseSound', config)
+				this.coin = this.sound.add("coin", config);
+				this.chestOpen = this.sound.add("chestOpen", config);
+				this.damage = this.sound.add("damage", config);
+				this.hit = this.sound.add("hit", config);
+				this.winSound = this.sound.add("winSound", config);
+				this.loseSound = this.sound.add("loseSound", config);
+    
+				this.tps = 0;
+				//background
+				this.background = this.add.tileSprite(0, 0, this.canvas.width, this.canvas.height, "background").setOrigin(0).setDepth(2);
+				this.background.fixedToCamera = true;
+
+				//player 
         
-        this.canvas = {
-            width: window.innerWidth,
-            height: window.innerHeight
-        }
+				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
+				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.swordAnim = {go: false, added: 0};
+				this.goTo = {
+					x: undefined,
+					y: undefined
+				};
+				this.myObj = undefined;
 
-        this.tps = 0
-        //background
-        this.background = this.add.tileSprite(-2500, -2500, 5000, 5000, 'background').setOrigin(0).setDepth(2);
-        this.void = this.add.rectangle(-5000, -5000, 10000, 10000, 0x006400).setOrigin(0).setDepth(1);
-        this.background.fixedToCamera = true;
+				//killcounter
 
-        //player 
+				this.killCount = this.add.rexBBCodeText(15, 10, "Kills: 0", {
+					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
+				}).setFontSize(40).setDepth(101);
+				this.killCount.addImage("coin", {
+					key: "coin",
+					width: 45,
+					height: 45
+				});
+				this.killCount.addImage("kill", {
+					key: "kill",
+					width: 45,
+					height: 45
+				});
+				
+				this.killCount.setScrollFactor(0);
+
+				//player+fpscounter
+				try { 
+					this.playerCount = this.add.text(0, 0, "Players: 0" + (!this.mobile ? "\nFPS: 0\nTPS: 0\nPing: 0 ms":""), {
+						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
+						align: "right"
+					}).setFontSize(20).setDepth(101).setOrigin(1);
+					this.playerCount.setScrollFactor(1);
+
+					//leaderboard
+					this.leaderboard = this.add.rexBBCodeText(0, 10, "", {
+					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
+				}).setFontSize(20).setDepth(101);
+					
+					this.leaderboard.setScrollFactor(0);
+				} catch(e) {
+					console.log(e);
+				}
+				//minimap
+				const convert = (num, val, newNum) => (newNum * val) / num;
+				this.miniMap = {people: [], scaleFactor: convert(1189, 96, this.canvas.width), square: undefined};
+				this.miniGraphics = this.add.graphics().setDepth(100);
         
-        this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50)
-        this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51)
-        this.swordAnim = {go: false, added: 0}
-        this.goTo = {
-            x: undefined,
-            y: undefined
-        }
-        this.myObj = undefined
-
-        //killcounter
-        this.killCount = this.add.text(window.innerWidth / 1.5, 0, 'Kills: 0', {
-            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-        }).setFontSize(40).setDepth(101);
-        this.killCount.scrollFactorX = 0
-        this.killCount.scrollFactorY = 0
-
-        //player+fpscounter
-        try { 
-        this.playerCount = this.add.text(this.cameras.main.worldView.x*this.cameras.main.zoom, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
-            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-        }).setFontSize(20).setDepth(101);
-        this.playerCount.scrollFactorX = 0
-        this.playerCount.scrollFactorY = 0
-
-        //leaderboard
-        this.leaderboard = this.add.text(window.innerWidth, this.cameras.main.worldView.y*this.cameras.main.zoom, 'Players: 0' + "\nFPS: 0", {
-            fontFamily: 'Georgia, "Goudy Bookletter 1911", Times, serif'
-        }).setFontSize(20).setDepth(101);
-        this.playerCount.scrollFactorX = 0
-        this.playerCount.scrollFactorY = 0
-    } catch(e) {
-        console.log(e)
-    }
-        //minimap
-        this.miniGraphics = this.add.graphics().setDepth(100)
-        this.miniGraphics.x = window.innerWidth - 205
-        this.miniGraphics.y = window.innerHeight - 205
-        this.miniGraphics.lineStyle(5, 0xffff00, 1)
-        this.miniGraphics.strokeRoundedRect(0, 0, 192,  192, 0)
-        this.cameras.main.ignore(this.miniGraphics)
+				var padding = 13;
+				this.miniMap.scaleFactor = convert(1189, 96, this.canvas.width);
+				this.miniGraphics.x = this.canvas.width - ((this.miniMap.scaleFactor * 2) + padding);
+				this.miniGraphics.y = this.canvas.height - ((this.miniMap.scaleFactor * 2) + padding);
+				this.miniGraphics.lineStyle(5, 0xffff00, 1);
+				this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0);
         
-        this.miniMap = {square:  this.miniGraphics, people: []}
+				this.cameras.main.ignore(this.miniGraphics);
 
-        //
-        //joystick
-        if(this.mobile) {
-        this.joyStick = this.plugins
-        .get("rexvirtualjoystickplugin")
-        .add(this, {
-          x: 150,
-          y: window.innerHeight - 150,
-          radius: 100,
-          base: this.add.circle(0, 0, 100, 0x888888),
-          thumb: this.add.circle(0, 0, 50, 0xcccccc)
-          // dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
-          // forceMin: 16,
-          // enable: true
-        })
-    }
+				//
+				//joystick
+				if(this.mobile && this.options.movementMode == "keys") {
+					this.joyStick = this.plugins
+						.get("rexvirtualjoystickplugin")
+						.add(this, {
+							x: this.canvas.width / 6,
+							y: this.canvas.height - this.canvas.height / 2.5,
+							radius: convert(2360, 250, this.canvas.width),
+							base: this.add.circle(0, 0, convert(2360, 250, this.canvas.width), 0x888888),
+							thumb: this.add.circle(0, 0, convert(2360, 100, this.canvas.width), 0xcccccc)
+							// dir: '8dir',   // 'up&down'|0|'left&right'|1|'4dir'|2|'8dir'|3
+							// forceMin: 16,
+							// enable: true
+						});
+				}
       
-        //bar
-        this.meBar = new HealthBar(this, 0, 0, 16, 80)
+				//bar
+				this.meBar = new HealthBar(this, 0, 0, 16, 80);
+				this.meBar.bar.setAlpha(0.5);
 
-        //coins array
-        this.coins = []
-       // this.lastMove = Date.now()
+				//levelbar
+				this.lvlBar = new HealthBar(this, 0, 0, 0, 0, true);
+				var padding = (this.canvas.width / 2);
+				this.lvlBar.x = padding / 2;
 
-        //enemies array
-        this.enemies = []
-        this.dead = false
-        //arrow keys
-        this.cursors = this.input.keyboard.createCursorKeys();
+				this.lastKill = Date.now();
+				this.streak = 0;
+				this.killtxts = [];
 
-        //camera follow
-        this.cameras.main.setZoom(1)
+				this.lvlBar.width = this.canvas.width- padding;
+				this.lvlBar.height = this.canvas.height / 30;
+				this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
+
+				this.lvlBar.draw();
+
+				//coins array
+				this.coins = [];
+				this.chests = [];
+				// this.lastMove = Date.now()
+
+				//enemies array
+				this.enemies = [];
+				this.dead = false;
+				//arrow keys
+				var KeyCodes = Phaser.Input.Keyboard.KeyCodes;
+				this.cursors = this.input.keyboard.addKeys({
+					up: KeyCodes.UP,
+					down: KeyCodes.DOWN,
+					left: KeyCodes.LEFT,
+					right: KeyCodes.RIGHT,
+				}, false);
+
+				//lvl text
+				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
+				this.lvlTextTween = undefined;
+
+				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
+				this.lvlState.y = this.lvlBar.y - (this.lvlState.height / 2);
+
+				//camera follow
+				this.cameras.main.setZoom(1);
         
         
-        this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, window.innerWidth, window.innerHeight);
-        this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard ]);
-        this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.void])
-        this.cameras.main.startFollow(this.mePlayer);
+				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
+				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
+				this.cameras.main.startFollow(this.mePlayer,true);
 
 
-        
-        ///resize dynamicly
-        const resize = () => {
-            try {
-            this.canvas = {
-                width: window.innerWidth,
-                height: window.innerHeight
-            }
-            this.game.scale.resize(this.canvas.width, this.canvas.height)
-            if(this.mobile) this.joyStick.y = window.innerHeight - 150
-            this.UICam.x = this.cameras.main.x
-            this.UICam.y = this.cameras.main.y
+				this.input.addPointer(3);
+				///resize dynamicly
+				const resize = () => {
+					if(!this.scene.isActive("game")) return;
+					try {
 
-            this.miniGraphics.x = window.innerWidth - 205
-            this.miniGraphics.y = window.innerHeight - 205
+						this.game.scale.resize( this.canvas.width,  this.canvas.height);
+						this.lvlText.y = this.canvas.height / 5;
+						this.lvlText.x = this.canvas.width  /2;
+						if(this.mobile && this.options.movementMode =="keys") {
+
+							this.joyStick.x = this.canvas.width / 8;
+							this.joyStick.y = this.canvas.height - this.canvas.height / 2.5;
+							this.joyStick.base.radius = convert(2360, 250, this.canvas.width);
+							this.joyStick.thumb.radius = convert(2360, 100, this.canvas.width);
+							this.joyStick.radius = convert(2360, 250, this.canvas.width);
+						}
+						
+						this.UICam.x = this.cameras.main.x;
+						this.UICam.y = this.cameras.main.y;
+
+						this.miniGraphics.clear();
+						var padding = 13;
+						this.miniMap.scaleFactor = convert(1189, 96, this.canvas.width);
+						this.miniGraphics.x = this.canvas.width - ((this.miniMap.scaleFactor * 2) + padding);
+						this.miniGraphics.y = this.canvas.height - ((this.miniMap.scaleFactor * 2) + padding);
+						this.miniGraphics.lineStyle(5, 0xffff00, 1);
+						this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0);
+
+
+						this.background.width = this.canvas.width;
+						this.background.height =  this.canvas.height;
             
+						padding = (this.canvas.width / 2);
+						this.lvlBar.x = padding / 2;
+                
+						this.lvlBar.width = this.canvas.width- padding;
+						this.lvlBar.height = this.canvas.height / 30;
+						this.lvlBar.y = this.canvas.height - this.lvlBar.height - (this.canvas.height / 40);
+						this.lvlBar.draw();
+
+						this.lvlState.x = this.canvas.width / 2;
+					
+						this.lvlState.setFontSize(convert(1366, 50, this.canvas.width));
+						this.lvlState.y = this.lvlBar.y - (this.lvlState.height /2);
+
+						this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
+						this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
+
+						this.lvlText.setFontSize(convert(1366, 75, this.canvas.width));
             
-        } catch(e) {
-            console.log(e)
-        }
-        }
+					} catch(e) {
+						console.log(e);
+					}
+				};
 
-         window.addEventListener("resize", resize, true);
-        //go packet
-        this.socket = io()
-        this.socket.emit("go", this.name, thetoken)
+				window.addEventListener("resize", resize, true);
+				//go packet
+				this.socket = io();
 
-        //mouse down
+				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
+				else this.socket.emit("go", this.secret, thetoken, true,this.options);
+				//mouse down
 
-        this.input.on('pointerdown', function (pointer) {
-            if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return
-            if (!this.mouseDown) {
-                this.mouseDown = true
-                this.socket.emit("mouseDown", true)
+				this.input.on("pointerdown", function (pointer) {
+					if(this.mobile && this.joyStick &&this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+					if (!this.mouseDown) {
+						this.gamePoint = {x: pointer.x, y: pointer.y};
+						this.mouseDown = true;
+						this.socket.emit("mouseDown", true);
 
-            }
-        }, this);
-        this.input.on('pointerup', function (pointer) {
+					}
+				}, this);
+				this.input.on("pointerup", function (pointer) {
             
-            if(this.mobile && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return
-            if (this.mouseDown) {
-                this.mouseDown = false
-                this.socket.emit("mouseDown", false)
-            }
-        }, this);
-        if(this.mobile) {
-            this.gamePoint = {x: 0, y: 0}
-        this.input.on('pointermove', (pointer) => {
-            if(this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return
-            this.gamePoint = {x: pointer.x, y: pointer.y}
-        })
-    }
-        this.socket.on("tps", (tps) => {
-            this.tps = tps
-        })
-        this.socket.on("ban", (data) => {
-            document.write(data)
-        })
+					if(this.mobile && this.joyStick && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+					if (this.mouseDown) {
+						this.gamePoint = {x: pointer.x, y: pointer.y};
+						this.mouseDown = false;
+						this.socket.emit("mouseDown", false);
+					}
+				}, this);
+				if(this.mobile) {
+					this.gamePoint = {x: 0, y: 0};
+					this.input.on("pointermove", (pointer) => {
+						if(this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+						this.gamePoint = {x: pointer.x, y: pointer.y};
+					});
+				}
+				this.socket.on("tps", (tps) => {
+					this.tps = tps;
+					var start = Date.now();
+					this.socket.emit( "ping",()=> {
+							this.ping = (Date.now() - start);
+					});
 
-        //boundary
-        this.graphics = this.add.graphics().setDepth(4)
+				});
+				this.socket.on("ban", (data) => {
+					document.write(data);
+				});
 
-        this.graphics.lineStyle(10, 0xffff00, 1)
+				//boundary
+				this.graphics = this.add.graphics().setDepth(4);
+				var thickness = 5000;
+				this.graphics.lineStyle(thickness, 0x006400, 1);
 
-        this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
-        //server -> client
-        const addPlayer = (player) => {
-           if (this.enemies.filter(e => e.id === player.id).length > 0) return
-  /* vendors contains the element we're looking for */
+				this.graphics.strokeRoundedRect(-2500 - (thickness/ 2), -2500 - (thickness/ 2), 5000 + thickness, 5000 + thickness, 0 );
 
-            var enemy = {
-                id: player.id,
-                down: false,
-                toMove: {
-                    x: undefined,
-                    y: undefined
-                },
-                playerObj: undefined,
-                lastTick: Date.now(),
-                sword: this.add.image(player.pos.x, player.pos.y, "sword").setScale(0.25).setDepth(49),
-                player: this.add.image(player.pos.x, player.pos.y, "player").setScale(0.25).setDepth(49),
-                bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-                nameTag: this.add.text(player.pos.x, player.pos.y - 90, player.name, {
-                    fontFamily: 'serif',
-                    fill: '#000000',
-                    fontSize: '25px'
-                }).setDepth(100),
-                swordAnim: {go: false, added: 0},
-                toAngle: 0
-            }
+				this.graphics.lineStyle(10, 0xffff00, 1);
+
+				this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
+
+				//server -> client
+
+                this.socket.on("levels", (l)=>this.levels=l);
+
+				const addPlayer = (player) => {
+					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
+					/* vendors contains the element we're looking for */
+
+					var enemy = {
+						id: player.id,
+						down: false,
+						toMove: {
+							x: undefined,
+							y: undefined
+						},
+						playerObj: undefined,
+						lastTick: Date.now(),
+						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
+						player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
+						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
+							fontFamily: "serif",
+							fill: player.verified?"#0000FF" :"#000000",
+							fontSize: "25px"
+						}).setDepth(100).setAlpha(player.verified?1:0.5),
+						swordAnim: {go: false, added: 0},
+						toAngle: 0,
+					};
          
-                var factor = (100/(player.scale*100))*1.5
+					var factor = (100/(player.scale*100))*1.5;
        
-            enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+					enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
             
             
-            enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
-            enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
+					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
+					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 
           
-            this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag])
-            this.enemies.push(enemy)
+					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag, this.graphics]);
+					this.enemies.push(enemy);
 
-            var circle = this.add.circle(0, 0, 10, 0xFF0000)
-            this.cameras.main.ignore(circle)
-            circle.setDepth(98)
-             this.miniMap.people.push(
-                 {
-                     id: player.id,
-                     circle: circle
-                 }
-             )
+					var circle = this.add.circle(0, 0, 10, 0xFF0000);
+					this.cameras.main.ignore(circle);
+					circle.setDepth(98);
+					this.miniMap.people.push(
+						{
+							id: player.id,
+							circle: circle
+						}
+					);
 
-        }
-        this.removePlayer = (id) => {
-            try {
-                var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id)
+					//check if player joined 5 seconds ago
+					if (Date.now() - player.joinTime < 5000) {
+						enemy.player.setAlpha(0.5);
+						enemy.sword.setAlpha(0.5);
+						enemy.bar.bar.setAlpha(0.5);
+						//use a tween to make the player a bit transparent for 5 seconds
+						setTimeout(() => {
+						this.tweens.add({
+							targets: [enemy.player, enemy.sword, enemy.bar.bar],
+							alpha: 1,
+							duration: 100,
+							ease: "Linear",
+							repeat: 0,
+							yoyo: false
+						});
+					}, 5000 - (Date.now() - player.joinTime));
+					}
+
+
+				};
+				this.removePlayer = (id) => {
+					try {
+						var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
         
-                enemy.player.destroy()
-                enemy.sword.destroy()
-                enemy.bar.destroy()
-                enemy.nameTag.destroy()
-        
-                this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1)
-        
-                var miniMapPlayer = this.miniMap.people.find(x => x.id === id)
-                miniMapPlayer.circle.destroy()
-                this.miniMap.people = this.miniMap.people.filter(p => p.id != id)
-        
-            } catch (e) {
-                console.log(e)
-            }
-        }
 
 
-        this.socket.on("players", (players) => {
-            players.forEach(player => addPlayer(player))
+						//fade out the enemy using tweens
+						var fadeOut = this.tweens.add({
+							targets: [enemy.player, enemy.nameTag, enemy.bar.bar, enemy.sword],
+							alpha: 0,
+							duration: 150,
+							ease: "Sine2",
+							onComplete: () => {
+								enemy.player.destroy();
+								this.enemies.splice(this.enemies.findIndex(enemy => enemy.id == id), 1);
+								enemy.bar.destroy();
+								enemy.nameTag.destroy();
+								enemy.sword.destroy();
+								var miniMapPlayer = this.miniMap.people.find(x => x.id === id);
+								miniMapPlayer.circle.destroy();
+								this.miniMap.people = this.miniMap.people.filter(p => p.id != id);
+							}
+						});
+								
+        
+					} catch (e) {
+						console.log(e);
+					}
+				};
 
-            this.ready = true
+
+				this.socket.on("players", (players) => {
+					players.forEach(player => addPlayer(player));
+
+					this.ready = true;
           
-            if(!this.ready) {
-                this.ready = true
+					if(!this.ready) {
+						this.ready = true;
           
-            }
-        })
-        this.socket.on("new", (player) => {
-            addPlayer(player)
-            if(!this.ready) {
-            this.ready = true
+					}
+				});
+				this.socket.on("new", (player) => {
+					addPlayer(player);
+					if(!this.ready) {
+						this.ready = true;
            
-            }
-        })
-        this.socket.on("me", (player) => {
-            if (!this.myObj) {
-                this.mePlayer.x = player.pos.x
-                this.mePlayer.y = player.pos.y
-            } else {
-                this.goTo.x = player.pos.x
-                this.goTo.y = player.pos.y
-            }
-            this.mePlayer.setScale(player.scale)
-            this.meBar.maxValue = player.maxHealth
-            this.meBar.setHealth(player.health)
-           // if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
-            if(!(this.cameras.main.zoom <= 0.15)) {
-            if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale)
-            if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8))
-            else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8))
+					}
+				});
+				this.socket.on("me", (player) => {
+					if(this.loadrect.visible) this.loadrect.destroy();
+					if(this.loadtext.visible) this.loadtext.destroy();
+					if(this.levels.length > 0) {
+
+                    var diff = this.levels[player.level-1].coins - this.levels[player.level-1].start;
+                    var lvlcoins = player.coins - this.levels[player.level-1].start;
+                    this.lvlBar.setLerpValue((lvlcoins / diff)*100);
+
+					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
+					if(this.myObj && player.level > this.myObj.level) {
+
+						if(this.lvlTextTween) this.lvlTextTween.stop();
+
+						if(!this.lvlText.data) this.lvlText.setData("x", 0);
+						this.lvlText.setData("x", this.lvlText.getData("x")+(player.level-this.myObj.level) );
+						this.lvlText.setText("Level up!"+(this.lvlText.getData("x") > 1 ? ` x${this.lvlText.getData("x")}` : ""));
+
+						 var completeCallback = () => {
+							this.lvlTextTween = this.tweens.add({
+								targets: this.lvlText,
+								alpha: 0,
+								y: this.canvas.height / 5,
+								onComplete: () => this.lvlText.setData("x", 0),
+								duration: 300,
+								ease: "Power2"
+							  }, this);
+						};
+						this.lvlTextTween = this.tweens.add({
+							targets: this.lvlText,
+							alpha: 1,
+							y: this.canvas.height / 4,
+							completeDelay: 1000,
+							duration: 500,
+							onComplete: completeCallback,
+							ease: "Power2"
+						  }, this);
+
+					  
+					}
+					}
+					if(this.mePlayer.texture.key+"Player" != player.skin) {
+						this.mePlayer.setTexture(player.skin+"Player");
+						this.meSword.setTexture(player.skin+"Sword");
+					}
+
+					if (!this.myObj) {
+						this.mePlayer.x = player.pos.x;
+						this.mePlayer.y = player.pos.y;
+					} else {
+						this.goTo.x = player.pos.x;
+						this.goTo.y = player.pos.y;
+					}
+					this.mePlayer.setScale(player.scale);
+					this.meBar.maxValue = player.maxHealth;
+					this.meBar.setHealth(player.health);
+					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
+					if(!(this.cameras.main.zoom <= 0.15)) {
+						 
+						if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale);
+						if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
+						else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
             
-            else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3))
+						else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3));
 
-            }
-            this.meSword.setScale(player.scale)
 
-            //this.meLine.setTo(0, 0, 250, 250)
-            this.killCount.setText("Kills: " + player.kills+"\nCoins: "+player.coins)
-            this.myObj = player
 
-            //minimap
-            if(!this.miniMap.people.find(x => x.id === player.id)) {
-                var circle = this.add.circle(0, 0, 10, 0xFFFFFF)
-                this.cameras.main.ignore(circle)
-                circle.setDepth(99)
-                 this.miniMap.people.push(
-                     {
-                         id: player.id,
-                         circle: circle
-                     }
-                 )
-            }
+					}
+					this.meSword.setScale(player.scale);
+					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
+					this.background.displayWidth = this.cameras.main.displayWidth;
+					this.background.displayHeight = this.cameras.main.displayHeight;
 
-            var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
+					this.killCount.setText("[img=kill] " + player.kills+"\n[img=coin] "+player.coins);
+					this.myObj = player;
+
+					//minimap
+					if(!this.miniMap.people.find(x => x.id === player.id)) {
+						var circle = this.add.circle(0, 0, 10, 0xFFFFFF);
+						this.cameras.main.ignore(circle);
+						circle.setDepth(99);
+						this.miniMap.people.push(
+							{
+								id: player.id,
+								circle: circle
+							}
+						);
+					}
+
+					var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
-            miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-            miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-            miniMapPlayer.circle.radius = 20*player.scale
-        })
-        this.socket.on("player", (player) => {
-            //update player
-            if (!this.ready) return
-            try {
+					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
+					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+					miniMapPlayer.circle.radius = player.scale * convert(1280, 20, this.canvas.width);
+
+				});
+				this.socket.on("player", (player) => {
+					//update player
+					if (!this.ready) return;
+					try {
                
-                var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id)
-                if(!enemy) return
+						var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == player.id);
+						if(!enemy) return;
 
-                enemy.lastTick = Date.now()
+						enemy.lastTick = Date.now();
 
-                enemy.playerObj = player
-                enemy.bar.maxValue = player.maxHealth
-                enemy.bar.setHealth(player.health);
+						enemy.playerObj = player;
+						enemy.bar.maxValue = player.maxHealth;
+						enemy.bar.setHealth(player.health);
 
-                //update pos
-                enemy.toMove.x = player.pos.x
-                enemy.toMove.y = player.pos.y
+						//update pos
+						enemy.toMove.x = player.pos.x;
+						enemy.toMove.y = player.pos.y;
 
-                //update sword
-                var mousePos = player.mousePos
-                enemy.toAngle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
+						//update sword
+						var mousePos = player.mousePos;
+						enemy.toAngle = Math.atan2(mousePos.y - ((mousePos.viewport.height) / 2), mousePos.x - ((mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
 
-                enemy.player.setScale(player.scale)
-                enemy.sword.setScale(player.scale)
-                enemy.down = player.mouseDown
+						enemy.player.setScale(player.scale);
+						enemy.sword.setScale(player.scale);
+						enemy.down = player.mouseDown;
 
-                //minimap
-                var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id)
+						//minimap
+						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
-                miniMapPlayer.circle.x = (this.miniMap.square.x + ((player.pos.x / 2500) * 96))+96
-                miniMapPlayer.circle.y = (this.miniMap.square.y+ ((player.pos.y / 2500) * 96)) + 96
-                miniMapPlayer.circle.radius = 20 * player.scale
+        
 
-            } catch (e) {
-                console.log(e)
-            }
-        })
-        this.socket.on("playerLeave", this.removePlayer)
-        this.socket.on("playerDied", this.removePlayer)
+						miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
+						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+						miniMapPlayer.circle.radius = convert(1280, 20, this.canvas.width) * player.scale;
 
-        this.socket.on("dealHit", (playerId) => {
-            this.hit.play()
-        })
-        this.socket.on("takeHit", (playerId) => {
-            this.damage.play()
-        })
+					} catch (e) {
+						console.log(e);
+					}
+				});
+				this.socket.on("playerLeave", this.removePlayer);
+				this.socket.on("playerDied", (id, data) => {
+				//check if killed by me
 
-        //coins
+				if(this.myObj && this.myObj.id === data.killedBy.id) {
+					var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
+					if(enemy && enemy.playerObj) {
+					//i killed them!!
+						var fontsize = convert(1366, 64, this.canvas.width);
+						if(Date.now() - this.lastKill < 2500) {
+							this.streak++;
+							var txt = "[b]";
+							var list = ["Double", "Triple", "Quadra", "Quinta", "Hexta", "Hepta", "Octa", "Nona", "Deca"];
+							if(this.streak-1 > list.length) txt += `x${this.streak}`;
+							else txt += list[this.streak-1];
+							txt += " Kill![/b]";
 
-        const addCoin = coin => {
-          if(this.dead) return
-            this.coins.push(
-                {
-                    id: coin.id,
-                    item: this.add.image(coin.pos.x, coin.pos.y, 'coin').setScale(coin.size/100).setDepth(20),
-                    state: {collected: false, collectedBy: undefined, time: 0}
-                }
-                )
+							this.killtxts.forEach((i) => {
+								i.destroy();
+							});
+							this.killtxts = [];
+						} else {
 
-                this.UICam.ignore(this.coins[this.coins.length - 1].item)
-        }
+						this.streak = 0;
+					var txt = `[b][color=#e82a1f]Killed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
+						}
+					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
+					text.setData("index", this.killtxts.length);
+					this.killtxts.push(text);
 
-        this.socket.on("coins", (coinsArr) => {
+						const completeCallback = (text) => {
+							this.tweens.add({
+								targets: text,
+								alpha: 0,
+								y: this.canvas.height,
+								onComplete: ()=>{
+									this.killtxts.slice(text.getData("index"),1);
+									text.destroy();
+								},
+								ease: "Power2",
+								duration: 250
+							});
+						};
+
+					this.tweens.add({
+						targets: text,
+						alpha: 1,
+						y: this.canvas.height - this.canvas.height / 6,
+						completeDelay: 250,
+						duration: 750,
+						onComplete: ()=>completeCallback(text),
+						ease: "Bounce"
+					  }, this);
+					this.cameras.main.ignore(text);
+						}
+						this.lastKill = Date.now();
+				}
+				
+
+				this.removePlayer(id);
+
+				});
+
+				this.socket.on("dealHit", (playerId, pPos) => {
+					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
+					if(player) {
+						var particles = this.add.particles("hitParticle");
+
+						var emitter = particles.createEmitter({
+							
+							maxParticles: 5,
+							scale: 0.01
+						});
+						emitter.setPosition(pPos?pPos.x : player.player.x, pPos? pPos.y : player.player.y);
+					
+						this.UICam.ignore(particles);
+						emitter.setSpeed(200);
+						particles.setDepth(105);
+						emitter.setBlendMode(Phaser.BlendModes.ADD);
+					}
+					this.hit.play();
+				});
+				this.socket.on("takeHit", (playerId, pPos) => {
+					this.damage.play();
+					var particles = this.add.particles("hitParticle");
+
+					var emitter = particles.createEmitter({
+						
+						maxParticles: 5,
+						scale: 0.01
+					});
+					emitter.setPosition(this.mePlayer.x,this.mePlayer.y);
+				
+					this.UICam.ignore(particles);
+					emitter.setSpeed(200);
+					particles.setDepth(105);
+					//emitter.setBlendMode(Phaser.BlendModes.ADD);
+				});
+
+				//coins
+
+				const addCoin = (coin,start) => {
+					if(this.dead) return;
+					var anim = true;
+					if(!start) {
+						start = [coin.pos.x, coin.pos.y];
+						anim = false;
+					}
+					
+					this.coins.push(
+						{
+							id: coin.id,
+							item: this.add.image(start[0], start[1], "coin").setScale(coin.size/100).setDepth(20).setAlpha(anim?0:1),
+							state: {collected: false, collectedBy: undefined, time: 0}
+						}
+					);
+						if(anim) {
+							this.tweens.add({
+								targets: this.coins[this.coins.length-1].item,
+								alpha: 1,
+								x: coin.pos.x,
+								y: coin.pos.y,
+								duration: 250,
+								ease: "Sine2"
+							});
+						}
+					this.UICam.ignore(this.coins[this.coins.length - 1].item);
+				};
+				
+
+				const addChest = (chest,start) => {
+					if(this.dead) return;
+					var anim = true;
+					if(!start) {
+						start = [chest.pos.x, chest.pos.y];
+						anim = false;
+					}
+					
+					this.chests.push(
+						{
+							id: chest.id,
+							item: this.add.image(start[0], start[1], "chest").setScale(chest.scale).setDepth(21).setAlpha(anim?0:1).setOrigin(0),
+						}
+					);
+						if(anim) {
+							this.tweens.add({
+								targets: this.chests[this.chests.length-1].item,
+								alpha: 1,
+								x: chest.pos.x,
+								y: chest.pos.y,
+								duration: 250,
+								ease: "Sine2"
+							});
+						}
+					this.UICam.ignore(this.chests[this.chests.length - 1].item);
+				};
+
+				this.socket.on("coins", (coinsArr) => {
            
-            coinsArr.forEach((coin) => {
-                if(this.coins.filter(e => e.id == coin.id).length == 0) {
-                    addCoin(coin)
-                }
-            })
+					coinsArr.forEach((coin) => {
+						if(this.coins.filter(e => e.id == coin.id).length == 0) {
+							addCoin(coin);
+						}
+					});
 
-           var remove = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 0)
-           remove.forEach((coin) => {
+					var remove = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 0);
+					remove.forEach((coin) => {
                
-               coin.item.destroy()
-           })
-           this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1)
-        })
+						coin.item.destroy();
+					});
+					this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1);
+				});
 
-        this.socket.on("coin", (coin) => {      
-            if(Array.isArray(coin)) {
-                coin.forEach((x) => {
-                    addCoin(x)
-                })
-            } else {      
-            addCoin(coin)
-            }
-        })
+				this.socket.on("coin", (coin, start) => {      
+					if(Array.isArray(coin)) {
+						if(start) {
+						coin.forEach((x) => {
+							addCoin(x, start);
+						});
+					} else {
+						coin.forEach((x) => {
+							addCoin(x);
+						});
+					}
+					} else {      
+						addCoin(coin);
+					}
+				});
 
-        this.socket.on("youDied", (data) => {
-            this.died(data)
-        })
-        this.socket.on("youWon", (data) => {
-            this.win(data)
-        })
-        this.socket.on("collected", (coinId, playerId) => {
-            if(this.myObj && this.myObj.id == playerId) this.coin.play() 
-            if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
-        })
 
-    })
-    })
-    }
+				this.socket.on("chests", (chestsArr) => {
+           
+					chestsArr.forEach((chest) => {
+						if(this.chests.filter(e => e.id == chest.id).length == 0) {
+							addChest(chest);
+						}
+					});
 
-    update() {
-        if(!this.readyt) return
+					var remove = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 0);
+					remove.forEach((chest) => {
+               
+						chest.item.destroy();
+					});
+					this.chests = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 1);
+				});
+
+				this.socket.on("chest", (chest, start) => {      
+					if(Array.isArray(chest)) {
+						if(start) {
+						chest.forEach((x) => {
+							addChest(x, start);
+						});
+					} else {
+						chest.forEach((x) => {
+							addChest(x);
+						});
+					}
+					} else {      
+						addChest(chest);
+					}
+				});
+
+				this.socket.on("youDied", (data) => {
+					this.died(data);
+				});
+				this.socket.on("youWon", (data) => {
+					this.win(data);
+				});
+				this.socket.on("collected", (coinId, playerId, coin) => {
+					if(this.myObj && this.myObj.id == playerId) {
+						(coin?this.coin:this.chestOpen).play();
+					}
+					// eslint-disable-next-line semi
+					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
+					else if(this.chests.find(chest => chest.id == coinId)) this.tweens.add({
+						targets: this.chests.find(chest => chest.id == coinId).item,
+						alpha: 0,
+						duration: 500,
+						ease: "Sine2",
+						onComplete: (t) => {
+							//delete chest
+							t.targets[0].destroy();
+						}
+					});
+				
+				});
+
+				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
+				this.playerCount.y = this.canvas.height - (this.miniMap.scaleFactor * 2 ) - 17;
+
+
+				setTimeout(() => {
+						this.tweens.add({
+							targets: [this.mePlayer, this.meSword, this.meBar.bar],
+							alpha: 1,
+							duration: 100,
+							ease: "Linear",
+							repeat: 0,
+							yoyo: false
+						});
+				},5000);
+			});
+		});
+	}
+
+	update(time, delta) {
+		const convert = (num, val, newNum) => (newNum * val) / num;
+		if(!this.readyt) return;
+
+        this.lvlBar.update();
        
-        var controller = {
-            left: false,
-            up: false,
-            right: false,
-            down: false
-        }
+		var controller = {
+			left: false,
+			up: false,
+			right: false,
+			down: false
+		};
 
 
-        var wKey = this.input.keyboard.addKey('W');
-        var aKey = this.input.keyboard.addKey('A');
-        var sKey = this.input.keyboard.addKey('S');
-        var dKey = this.input.keyboard.addKey('D');
-        try {
-        this.key = this.mobile ?  this.joyStick.createCursorKeys() : this.cursors
-        if (this.key.up.isDown || wKey.isDown ) {
-            controller.up = true
+		var wKey = this.input.keyboard.addKey("W", false);
+		var aKey = this.input.keyboard.addKey("A", false);
+		var sKey = this.input.keyboard.addKey("S", false);
+		var dKey = this.input.keyboard.addKey("D",false);
+		
+		try {
+			this.key = this.mobile && this.joyStick ?  this.joyStick.createCursorKeys() : this.cursors;
+			if (this.key.up.isDown || wKey.isDown ) {
+				controller.up = true;
 
-        }
-        if (this.key.down.isDown || sKey.isDown ) {
-            controller.down = true
+			}
+			if (this.key.down.isDown || sKey.isDown ) {
+				controller.down = true;
 
-        }
-        if (this.key.right.isDown || dKey.isDown) {
-            controller.right = true
+			}
+			if (this.key.right.isDown || dKey.isDown) {
+				controller.right = true;
 
-        }
-        if (this.key.left.isDown || aKey.isDown) {
-            controller.left = true
+			}
+			if (this.key.left.isDown || aKey.isDown) {
+				controller.left = true;
 
-        }
+			}
     
-        this.socket.emit("move", controller)
-        } catch(e) {
-            console.log(e)
-        }
-       // this.lastMove = Date.now()
-        //sword 
+			this.socket.emit("move", controller);
+		} catch(e) {
+			console.log(e);
+		}
+		// this.lastMove = Date.now()
+		//sword 
 
                
-if(this.meSword.angle) var old = this.meSword.angle
+		if(this.meSword) var old = this.meSword.angle;
 
-if(!this.mobile) var mousePos = this.input
-else var mousePos = this.gamePoint
+		if(!this.mobile) var mousePos = this.input;
+		else var mousePos = this.gamePoint;
 
-
-this.meSword.angle = Math.atan2(mousePos.y - (this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
-         //sword animation
-        if (this.mouseDown) this.swordAnim.go = true
-        else this.swordAnim.go = false
+		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
+		this.mePlayer.angle = this.meSword.angle + 45 +180;
+		//sword animation
+		if (this.mouseDown ) {
+			if(this.swordAnim.added <= 0) this.swordAnim.go = true;
+		}
+		else if(this.swordAnim.added >= 50) this.swordAnim.go = false;
         
         
-        if(this.swordAnim.go) {
+		if(this.swordAnim.go) {
 
-            if(this.swordAnim.added < 50) this.swordAnim.added += 10
-            this.meSword.angle -= this.swordAnim.added
-        } else if(this.swordAnim.added >0) {
-             this.swordAnim.added -= 10
-            this.meSword.angle -= this.swordAnim.added
-        }
+
+			var cooldown = (this.myObj ? this.myObj.damageCooldown : 120);
+			var increase = (50 / cooldown) * delta;
+			if(this.swordAnim.added < 50) this.swordAnim.added += increase;
+			this.meSword.angle -= this.swordAnim.added;
+		} else if(this.swordAnim.added >0) {
+			this.swordAnim.added -= 10;
+			this.meSword.angle -= this.swordAnim.added;
+		}
         
         
-        var mousePos2 = {
-            viewport: {
-                width: this.canvas.width,
-                height: this.canvas.height
-            },
-            x: mousePos.x,
-            y: mousePos.y
-        }
+		var mousePos2 = {
+			viewport: {
+				width: this.canvas.width,
+				height: this.canvas.height
+			},
+			x: mousePos.x,
+			y: mousePos.y
+		};
 
-        if (old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2)
+		if (this.socket && old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2);
 
-        var fps = this.sys.game.loop.actualFps
+		var fps = this.sys.game.loop.actualFps;
    
-        //var difference = function (a, b) { return Math.abs(a - b); }
-            function lerp (start, end, amt){
-  return (1-amt)*start+amt*end
-}
-const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-function repeat(t, m) {
-  return clamp(t - Math.floor(t / m) * m, 0, m);
-}
+		//var difference = function (a, b) { return Math.abs(a - b); }
+		function lerp (start, end, amt){
+			return (1-amt)*start+amt*end;
+		}
+		const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+		function repeat(t, m) {
+			return clamp(t - Math.floor(t / m) * m, 0, m);
+		}
 
-function lerpTheta(a, b, t) {
-  const dt = repeat(b - a, 360);
-  return lerp(a, a + (dt > 180 ? dt - 360 : dt), t);
-}
-        this.enemies.forEach(enemy => {
-            if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy)
-           // if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
-    /*        no lerp
+		function lerpTheta(a, b, t) {
+			const dt = repeat(b - a, 360);
+			return lerp(a, a + (dt > 180 ? dt - 360 : dt), t);
+		}
+		this.enemies.forEach(enemy => {
+			if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy);
+			// if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
+			/*        no lerp
             if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
             if (enemy.player.x > enemy.toMove.x) enemy.player.x -= speed
             if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
             if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
             */
-            //yes lerp
+			//yes lerp
 
-if(enemy.toMove.x ) {
-        enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/500)
-enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
-}
+			if(enemy.toMove.x ) {
+				enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/500);
+				enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500);
+			}
 
 
-          // if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
-          // if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
-        if(enemy.playerObj) var scale = enemy.playerObj.scale
-        else var scale = 0.25
-          enemy.bar.width = (enemy.player.height*scale / 0.9375)
-          enemy.bar.height = (enemy.player.height*scale*0.150)
-          enemy.bar.x = enemy.player.x  - enemy.bar.width / 2
-          enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2)
+			// if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
+			// if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
+			if(enemy.playerObj) var scale = enemy.playerObj.scale;
+			else var scale = 0.25;
+			enemy.bar.width = (enemy.player.height*scale / 0.9375);
+			enemy.bar.height = (enemy.player.height*scale*0.150);
+			enemy.bar.x = enemy.player.x  - enemy.bar.width / 2;
+			enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2);
 
-            enemy.bar.draw()
-            try {
-            enemy.nameTag.setFontSize(100*scale)
-            enemy.nameTag.x = enemy.player.x  - enemy.nameTag.width / 2
-            enemy.nameTag.y = enemy.player.y - (enemy.player.height*scale) - enemy.nameTag.height
-            } catch(e) {
-                console.log(e)
-            }
-          if(enemy.playerObj) {
-            var factor = (100/(enemy.playerObj.scale*100))*1.5
-          } else {
-              var factor = 6
-          }         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5)
+			enemy.bar.draw();
+			try {
+				enemy.nameTag.setFontSize(100*scale);
+				enemy.nameTag.x = enemy.player.x  - enemy.nameTag.width / 2;
+				enemy.nameTag.y = enemy.player.y - (enemy.player.height*scale) - enemy.nameTag.height;
+			} catch(e) {
+				console.log(e);
+			}
+			if(enemy.playerObj) {
+				var factor = (100/(enemy.playerObj.scale*100))*1.5;
+			} else {
+				var factor = 6;
+			}         enemy.sword.angle = lerpTheta(enemy.sword.angle, enemy.toAngle, 0.5);
+			enemy.player.angle = enemy.sword.angle + 45 + 180;
 
-                         if (enemy.down) {
-                             enemy.swordAnim.go = true
-                            if(!enemy.swordAnim.added) enemy.swordAnim.added = 0
-                        } else enemy.swordAnim.go = false
+			
+		
 
-                if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
-                    enemy.swordAnim.added += 10
-                }
+			if (enemy.down) {
+				if(!enemy.swordAnim.added) enemy.swordAnim.added = 0;
+				if(enemy.swordAnim.added <= 0)enemy.swordAnim.go = true;
+			} else if(enemy.swordAnim.added >= 50) enemy.swordAnim.go = false;
 
-                if(!enemy.swordAnim.go  && enemy.swordAnim.added > 0) {
-                    enemy.swordAnim.added -= 10
+			if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
+				var increase = (50 / enemy.playerObj.damageCooldown) * delta;
+				if(enemy.swordAnim.added < 50) enemy.swordAnim.added += increase;
+			}
 
-                }
-                enemy.sword.angle -= enemy.swordAnim.added
+			if(!enemy.swordAnim.go  && enemy.swordAnim.added > 0) {
+				enemy.swordAnim.added -= 10;
+
+			}
+			enemy.sword.angle -= enemy.swordAnim.added;
                
 
-            enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180)
-            enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180)
+			enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
+			enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 
 
                 
-        })
+		});
  
-    /*    if(this.myObj) {
+		/*    if(this.myObj) {
             var speed = this.myObj.speed / fps
         } else {
             var speed = 700 /fps
@@ -638,104 +1020,122 @@ enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500)
         if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
         if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
         */
-        //with lerp
+		//with lerp
 
-if(this.goTo.x ) {
+		if(this.goTo.x ) {
     
-        this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/500)
-this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500)
-}
-//console.log(this.mePlayer.x, this.mePlayer.y)
-      //  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
-      //  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
-      var myObj = this.myObj
+			this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/500);
+			this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500);
+		}
+		//console.log(this.mePlayer.x, this.mePlayer.y)
+		//  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
+		//  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
+		var myObj = this.myObj;
   
-        if(!myObj) myObj = {scale: 0.25}
+		if(!myObj) myObj = {scale: 0.25};
 
-        this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375)
-        this.meBar.height = (this.mePlayer.height*myObj.scale*0.200)
-        this.meBar.x = this.mePlayer.x  - this.meBar.width / 2
-        this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2)
-        this.meBar.draw()
-        if(this.myObj) { 
-        var factor1 = (100/(this.myObj.scale*100))*1.5
-        } else {
-            var factor1 = 6
-        }
-        this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180)
-        this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180)
+		this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375);
+		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);
+		this.meBar.x = this.mePlayer.x  - this.meBar.width / 2;
+		this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2);
+		this.meBar.draw();
+		if(this.myObj) { 
+			var factor1 = (100/(this.myObj.scale*100))*1.5;
+		} else {
+			var factor1 = 6;
+		}
+		this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180);
+		this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180);
 
 
+        function conv(num) {
+			return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
+		}
+
+		//leaderboard
+		if(!this.myObj) return;
         
+		var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj") && a.playerObj);
 
-        //leaderboard
-        if(!this.myObj) return
-        
-        var enemies = this.enemies.filter(a=>a.hasOwnProperty("playerObj") && a.playerObj)
+		enemies.push({playerObj: this.myObj});
+		try {
+			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
+			var text = "";
+			var amIinit = false;
+			var limit = this.mobile || this.canvas.height < 550 ? 5 : 10;
+			sorted.slice(0,limit).forEach((entry, i) => {
+				if(!entry.playerObj) return;
+				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
+				if(entry.playerObj.id == this.myObj.id) amIinit = true;
+				var playerObj = entry.playerObj;
+				text += `#${i+1}: ${playerObj.verified? "[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}- ${conv(playerObj.coins)}\n`;
+			});
+			if(!amIinit) {
+				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
+				text += `...\n#${myIndex+1}: ${this.myObj.verified? "[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
+			}
 
-        enemies.push({playerObj: this.myObj})
-       try {
-        var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().slice(0,10)
-        var text = ""
-        sorted.forEach((entry, i) => {
-            if(!entry.playerObj) return
-            if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj)
-            var playerObj = entry.playerObj
-            text += `#${i+1}: ${playerObj.name}- ${playerObj.coins}\n`
-        })
+			this.leaderboard.setText(text);
+			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
 
-        this.leaderboard.setText(text)
-        this.leaderboard.x = window.innerWidth - this.leaderboard.width
-        this.killCount.x = (window.innerWidth*0.9) - this.leaderboard.width - this.killCount.width 
-
-    } catch(e) {
-        //we shall try next frame
-        console.log(e)
-    }
-        //playercount
-        try {
-        this.playerCount.setText('Players: ' + (Object.keys(this.enemies).length + 1).toString() + "\nFPS: " + Math.round(this.sys.game.loop.actualFps) + "\nTick Speed: " + Math.round((this.tps / 30) * 100) + "%")
-        this.playerCount.x = 0
-        this.playerCount.y = 0
-        } catch(e) {
-            console.log(e)
-        }
-        if(!this.myObj) return
-        const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
-        this.coins.forEach((coin) => {
-            if(coin.state.collected) {
-                if(coin.state.collectedBy == this.myObj.id) {
-                    var x = this.mePlayer.x
-                    var y = this.mePlayer.y
-                } else {
-                  try {
-                    var player = this.enemies.find(el => el.id == coin.state.collectedBy)
-                    var x = player.player.x
-                    var y = player.player.y
-                  } catch(e) {
-                    console.log(e)
-                    return
-                  }
-                }
-                    coin.item.x = lerp(coin.item.x, x, ((6 - (Math.log2(fps) - Math.log2(1.875))) / 10)*2)
-                    coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10)
-                    coin.state.time += 1
-                    if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3 || coin.state.time > 7) {
-                        coin.item.destroy()
-                        this.coins = this.coins.filter((el) => el.id != coin.id)
-                    }
+		} catch(e) {
+			//we shall try next frame
+			console.log(e);
+		}
+		//playercount
+		
+		try {
+			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+		} catch(e) {
+			console.log(e);
+		}
+		if(!this.myObj) return;
+		const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
+		this.coins.forEach((coin) => {
+			if(coin.state.collected) {
+				if(coin.state.collectedBy == this.myObj.id) {
+					var x = this.mePlayer.x;
+					var y = this.mePlayer.y;
+				} else {
+					try {
+						var player = this.enemies.find(el => el.id == coin.state.collectedBy);
+                        if(player) {
+						var x = player.player.x;
+						var y = player.player.y;
+                        } else {
+                            coin.item.destroy();
+                            this.coins = this.coins.filter((el) => el.id != coin.id);
+                            return;
+                        }
+					} catch(e) {
+						console.log(e);
+						return;
+					}
+				}
+				coin.item.x = lerp(coin.item.x, x, ((6 - (Math.log2(fps) - Math.log2(1.875))) / 10)*2);
+				coin.item.y = lerp(coin.item.y, y,(6 - (Math.log2(fps) - Math.log2(1.875))) / 10);
+				coin.state.time += 1;
+				if(distance(coin.item.x, coin.item.y, x, y) < this.mePlayer.width * this.mePlayer.scale / 3 || coin.state.time > 7) {
+					coin.item.destroy();
+					this.coins = this.coins.filter((el) => el.id != coin.id);
+				}
                 
-            }
-        })
+			}
+		});
 
-        //background movement
-      //  this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+		//background movement
+		this.background.setTilePosition(
+			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.mePlayer.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
+			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.mePlayer.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
+		);
+		this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2);
+		this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2);
 
-        if (this.ready && !this.dead && !this.socket.connected) {
-            document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>")
-            this.dead = true
-        }
-    }
+		if (this.ready && !this.dead && !this.socket.connected) {
+			document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
+			this.dead = true;
+		}
+	}
 }
 
 export default GameScene;

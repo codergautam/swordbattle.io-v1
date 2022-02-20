@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Arial, Helvetica, sans-serif;
+            margin: 0;
+        }
+
+        html {
+            box-sizing: border-box;
+        }
+
+        *,
+        *:before,
+        *:after {
+            box-sizing: inherit;
+        }
+
+        .column {
+            float: left;
+            width: 33.3%;
+            margin-bottom: 16px;
+            padding: 0 8px;
+        }
+
+        .card {
+            box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+            margin: 8px;
+        }
+
+        .controls-section {
+            padding: 50px;
+            text-align: center;
+            background-color: #474e5d;
+            color: white;
+        }
+
+        .container {
+            padding: 0 16px;
+        }
+
+        .container::after,
+        .row::after {
+            content: "";
+            clear: both;
+            display: table;
+        }
+
+        .title {
+            color: grey;
+        }
+
+        .button {
+            border: none;
+            outline: 0;
+            display: inline-block;
+            padding: 8px;
+            color: white;
+            background-color: #000;
+            text-align: center;
+            cursor: pointer;
+            width: 100%;
+        }
+
+        .buttoen {
+            color: black;
+            border: 1px solid black;
+            border-radius: 1vw;
+            padding: 0.5vh 1vw;
+            font-size: 40px;
+        }
+
+        .button:hover {
+            background-color: #555;
+        }
+
+        @media screen and (max-width: 650px) {
+            .column {
+                width: 100%;
+                display: block;
+            }
+            .buttoen {
+                font-size: 20px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="controls-section">
+        <h1>How to Play</h1>
+        <p>This is how to play swordbattle.io</p>
+    </div>
+
+    <div class="row">
+        <div class="column">
+            <h2 style='text-align: center;'>Movement</h2>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Moving:</p>
+                    <p>To move around the board, use the arrow keys or the W A S D keys</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Direction:</p>
+                    <p>To change the direction that you're moving in, move the mouse around</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <h2 style='text-align: center;'>Attacking</h2>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Hitting:</p>
+                    <p>To attack another player, left click the mouse on that player. If they are in range, then you will damage them. You should see their health bar go down.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Killing:</p>
+                    <p>When you kill a player, they will disappear. They'll drop all of their coins which you can then pick up and use to level yourself up. Your kill counter in the top left will also increase by one.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="column">
+            <h2 style='text-align: center;'>Levels</h2>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Coins:</p>
+                    <p>You can collect coins by travelling around the map and bumping into them. You also get coins from opponents that have died. Coins are used to help you level up.</p>
+                </div>
+            </div>
+            <div class="card">
+                <div class="container">
+                    <br>
+                    <p class="title">Levels:</p>
+                    <p>When you collect enough coins, you'll level up. At the bottom of your screen is a bar that shows how far you are to the next level.</p>
+                </div>
+            </div>
+        </div>
+
+
+    </div>
+    <br>
+    <center><a href="/" class="buttoen">Back to homepage</a></center>
+</body>
+
+</html>
