@@ -495,6 +495,7 @@ class GameScene extends Phaser.Scene {
 					this.meBar.setHealth(player.health);
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
 					if(!(this.cameras.main.zoom <= 0.15)) {
+						 
 						if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale);
 						if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
 						else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
@@ -634,16 +635,17 @@ class GameScene extends Phaser.Scene {
 
 				});
 
-				this.socket.on("dealHit", (playerId) => {
+				this.socket.on("dealHit", (playerId, pPos) => {
 					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
 					if(player) {
 						var particles = this.add.particles("hitParticle");
 
 						var emitter = particles.createEmitter({
+							
 							maxParticles: 5,
-							scale: 0.2,
+							scale: 0.01
 						});
-						emitter.setPosition(player.player.x, player.player.y);
+						emitter.setPosition(pPos.x??player.player.x, pPos.y??player.player.y);
 					
 						this.UICam.ignore(particles);
 						emitter.setSpeed(200);
@@ -652,8 +654,21 @@ class GameScene extends Phaser.Scene {
 					}
 					this.hit.play();
 				});
-				this.socket.on("takeHit", (playerId) => {
+				this.socket.on("takeHit", (playerId, pPos) => {
 					this.damage.play();
+					var particles = this.add.particles("hitParticle");
+
+					var emitter = particles.createEmitter({
+						
+						maxParticles: 5,
+						scale: 0.01
+					});
+					emitter.setPosition(this.mePlayer.x,this.mePlayer.y);
+				
+					this.UICam.ignore(particles);
+					emitter.setSpeed(200);
+					particles.setDepth(5);
+					//emitter.setBlendMode(Phaser.BlendModes.ADD);
 				});
 
 				//coins

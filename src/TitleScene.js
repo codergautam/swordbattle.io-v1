@@ -470,7 +470,7 @@ try {
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
-    this.settingsBtn.btn.setScale(clamp(this.canvas.width / 1920, 0.4, 0.7));
+    this.settingsBtn.btn.setScale(clamp(this.canvas.width / 10000, 0.08, 0.4));
     this.settingsBtn.btn.y = this.canvas.height - this.settingsBtn.btn.displayHeight;
 
     if(this.settings && this.settings.visible) {

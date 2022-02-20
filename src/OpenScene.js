@@ -87,7 +87,7 @@ class OpenScene extends Phaser.Scene {
 
             this.text.x = document.documentElement.clientWidth / 2;
             this.text.y = document.documentElement.clientHeight / 2; 
-            this.text.setFontSize(this.canvas.width/20);
+            this.text.setFontSize(this.canvas.width/50);
             
             
         } catch(e) {
@@ -123,7 +123,14 @@ class OpenScene extends Phaser.Scene {
         
         if(this.loadProg > this.showProg) {
             this.showProg+= Math.round((this.loadProg - this.showProg) / 10);
-            if(this.showProg == this.last) this.scene.start("title");
+            if(this.showProg == this.last) {
+                try {
+                    this.scale.startFullscreen();
+                    } catch(e) {
+                        console.log("fullscreen error oof");
+                    }
+                this.scene.start("title");
+            }
             else this.last = this.showProg;
             this.text.setText("Loading.. " + this.showProg + "%");
         }

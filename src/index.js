@@ -3,6 +3,7 @@ import GameScene from "./GameScene.js";
 import DeathScene from "./DeathScene.js";
 import WonScene from "./WonScene.js";
 import OpenScene from "./OpenScene.js";
+
 if ("serviceWorker" in navigator) {
     // register service worker
     navigator.serviceWorker.register("sw.js");
