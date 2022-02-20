@@ -65,6 +65,7 @@ class GameScene extends Phaser.Scene {
     
 
 				this.coin = this.sound.add("coin", config);
+				this.chestOpen = this.sound.add("chestOpen", config);
 				this.damage = this.sound.add("damage", config);
 				this.hit = this.sound.add("hit", config);
 				this.winSound = this.sound.add("winSound", config);
@@ -173,6 +174,7 @@ class GameScene extends Phaser.Scene {
 
 				//coins array
 				this.coins = [];
+				this.chests = [];
 				// this.lastMove = Date.now()
 
 				//enemies array
@@ -201,7 +203,7 @@ class GameScene extends Phaser.Scene {
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
 				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
-				this.cameras.main.startFollow(this.mePlayer);
+				this.cameras.main.startFollow(this.mePlayer,true);
 
 
 				this.input.addPointer(3);
@@ -683,6 +685,34 @@ class GameScene extends Phaser.Scene {
 						}
 					this.UICam.ignore(this.coins[this.coins.length - 1].item);
 				};
+				
+
+				const addChest = (chest,start) => {
+					if(this.dead) return;
+					var anim = true;
+					if(!start) {
+						start = [chest.pos.x, chest.pos.y];
+						anim = false;
+					}
+					
+					this.chests.push(
+						{
+							id: chest.id,
+							item: this.add.image(start[0], start[1], "chest").setScale(chest.scale).setDepth(21).setAlpha(anim?0:1).setOrigin(0),
+						}
+					);
+						if(anim) {
+							this.tweens.add({
+								targets: this.chests[this.chests.length-1].item,
+								alpha: 1,
+								x: chest.pos.x,
+								y: chest.pos.y,
+								duration: 250,
+								ease: "Sine2"
+							});
+						}
+					this.UICam.ignore(this.chests[this.chests.length - 1].item);
+				};
 
 				this.socket.on("coins", (coinsArr) => {
            
@@ -716,15 +746,62 @@ class GameScene extends Phaser.Scene {
 					}
 				});
 
+
+				this.socket.on("chests", (chestsArr) => {
+           
+					chestsArr.forEach((chest) => {
+						if(this.chests.filter(e => e.id == chest.id).length == 0) {
+							addChest(chest);
+						}
+					});
+
+					var remove = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 0);
+					remove.forEach((chest) => {
+               
+						chest.item.destroy();
+					});
+					this.chests = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 1);
+				});
+
+				this.socket.on("chest", (chest, start) => {      
+					if(Array.isArray(chest)) {
+						if(start) {
+						chest.forEach((x) => {
+							addChest(x, start);
+						});
+					} else {
+						chest.forEach((x) => {
+							addChest(x);
+						});
+					}
+					} else {      
+						addChest(chest);
+					}
+				});
+
 				this.socket.on("youDied", (data) => {
 					this.died(data);
 				});
 				this.socket.on("youWon", (data) => {
 					this.win(data);
 				});
-				this.socket.on("collected", (coinId, playerId) => {
-					if(this.myObj && this.myObj.id == playerId) this.coin.play(); 
-					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0};
+				this.socket.on("collected", (coinId, playerId, coin) => {
+					if(this.myObj && this.myObj.id == playerId) {
+						(coin?this.coin:this.chestOpen).play();
+					}
+					// eslint-disable-next-line semi
+					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
+					else if(this.chests.find(chest => chest.id == coinId)) this.tweens.add({
+						targets: this.chests.find(chest => chest.id == coinId).item,
+						alpha: 0,
+						duration: 500,
+						ease: "Sine2",
+						onComplete: (t) => {
+							//delete chest
+							t.targets[0].destroy();
+						}
+					});
+				
 				});
 
 				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
@@ -1032,9 +1109,10 @@ class GameScene extends Phaser.Scene {
 		});
 
 		//background movement
-		this.background.setTilePosition(this.cameras.main.scrollX, this.cameras.main.scrollY);
+		this.background.setTilePosition(this.cameras.main.scrollX+(this.mePlayer.x -  this.cameras.main.scrollX - (this.canvas.width/2)), this.cameras.main.scrollY+(this.mePlayer.y -  this.cameras.main.scrollY - (this.canvas.height/2)));
 		this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2);
 		this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2);
+
 		if (this.ready && !this.dead && !this.socket.connected) {
 			document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
 			this.dead = true;

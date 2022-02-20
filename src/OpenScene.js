@@ -37,6 +37,7 @@ class OpenScene extends Phaser.Scene {
         this.load.image("foxSword", "/assets/images/devilSword.png");
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
+        this.load.image("chest", "/assets/images/chest.png");
         this.load.image("kill", "/assets/images/kill.png");
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
 
@@ -50,6 +51,7 @@ class OpenScene extends Phaser.Scene {
         this.load.audio("hit", "/assets/sound/hitenemy.wav");
         this.load.audio("winSound", "/assets/sound/win.m4a");
         this.load.audio("loseSound", "/assets/sound/lost.mp3");
+        this.load.audio("chestOpen", "/assets/sound/chest.wav");
 
         this.load.image("opening", "/assets/images/opening.png");
         this.load.html("title", "/title.html");

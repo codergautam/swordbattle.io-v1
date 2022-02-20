@@ -15,7 +15,7 @@ class AiPlayer extends Player {
         this.chaseTime = 0;
         
     }
-    tick(coins, io, levels) {
+    tick(coins, io, levels, chests) {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id);
       } else {
@@ -25,12 +25,12 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
         if(this.target.type == "player") this.chaseTime += 1;
         if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(300, 700)) {
           
-          if(this.chaseTime > 50) {
+          if(this.chaseTime > 20) {
             this.target = this.getClosestEntity(coins);
             this.chaseTime = 0;
           }
           this.lastHit = Date.now();
-         coins = this.down(!this.mouseDown, coins, io);
+         [coins,chests] = this.down(!this.mouseDown, coins, io, chests);
         } 
         var tPos = this.getTpos();
         this.toSword = {
@@ -45,7 +45,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       this.move(controller);
      coins = this.collectCoins(coins, io, levels);
       }
-      return coins;
+      return [coins,chests];
     }
     getController() {
       var controller = {

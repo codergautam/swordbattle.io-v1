@@ -456,13 +456,17 @@ try {
     
     this.game.scale.resize(this.canvas.width, this.canvas.height);
   
+    try {
     const cameraWidth = this.cameras.main.width;
     const cameraHeight = this.cameras.main.height;
-  
+ 
     
     this.background.setScale(Math.max(cameraWidth / this.background.width, cameraHeight / this.background.height));
-
+  
     this.background.x = 0 - ((this.background.displayWidth - cameraWidth)/2);
+  } catch(e) {
+    
+  }
     this.nameBox.x = this.canvas.width / 2;
     this.text.x = this.canvas.width / 2;
    
