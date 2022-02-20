@@ -246,7 +246,7 @@ var move = true;
           coins.splice(index, 1);
 
           this.updateValues();
-          io.sockets.emit("collected", coin.id, this.id);
+          io.sockets.emit("collected", coin.id, this.id, true);
         });
 
 
@@ -302,11 +302,11 @@ return false;
     this.damageCooldown = 50 + (this.level * 5);
 
   }
-  down(down, coins, io) {
+  down(down, coins, io, chests) {
     this.mouseDown = down;
-    return this.checkCollisions(coins, io);
+    return this.checkCollisions(coins,chests, io);
   }
-  checkCollisions(coins, io) {
+  checkCollisions(coins, chests, io) {
     //hit cooldown
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
@@ -405,9 +405,47 @@ return false;
           }
         }
       });
+
+
     }
-    return coins;
+          //chest collisions
+          chests.forEach((chest) => {
+            if (this.hittingChest(chest)) {
+              //remove the chest
+              chests.splice(chests.indexOf(chest), 1);
+              io.sockets.emit("collected", chest.id, this.id, false);
+    
+              //drop coins at that spot
+              var drop = chest.open();
+    
+              io.sockets.emit("coin", drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]);
+                coins.push(...drop);
+            }
+          });
+    return [coins, chests];
   }
+
+  hittingChest(chest) {
+    var angles = [-5,0,5,10,15,25,30,35,40,45, 50,55];
+    for (const increment of angles) {
+
+      var angle = this.calcSwordAngle();
+      angle -= increment;
+     
+      var sword = {x: 0, y: 0};
+      var factor = (100/(this.scale*100))*1.5;
+      sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180));
+      sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180));
+  
+    var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+    var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
+  
+        if( intersects.lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) return true;
+    }
+  return false;
+  }
+
+
   getSendObj() {
     return {verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }

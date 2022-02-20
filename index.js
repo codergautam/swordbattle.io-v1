@@ -42,6 +42,7 @@ schema
 
 const Player = require("./classes/Player");
 const Coin = require("./classes/Coin");
+const Chest = require("./classes/Chest");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
@@ -357,9 +358,11 @@ Object.filter = (obj, predicate) =>
 		.reduce((res, key) => ((res[key] = obj[key]), res), {});
 
 var coins = [];
+var chests = [];
 
 var maxCoins = 200;
-var maxAiPlayers = 0;
+var maxChests = 3;
+var maxAiPlayers = 10;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -402,7 +405,7 @@ io.on("connection", async (socket) => {
 				var thePlayer = new Player(socket.id,  name);
 				thePlayer.updateValues();
         if(options && options.hasOwnProperty("movementMode")) {
-          thePlayer.movementMode = options.movementMode
+          thePlayer.movementMode = options.movementMode;
         }
 				
 
@@ -421,6 +424,7 @@ io.on("connection", async (socket) => {
 
 				if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers);
 				socket.emit("coins", coins);
+				socket.emit("chests", chests);
 
 				socket.joined = true;
         socket.emit("levels", levels);
@@ -495,7 +499,7 @@ io.on("connection", async (socket) => {
 		if (PlayerList.has(socket.id)) {
 			var player = PlayerList.getPlayer(socket.id);
 			if (player.mouseDown == down) return;
-			coins = player.down(down, coins, io);
+			[coins,chests] = player.down(down, coins, io, chests);
 			PlayerList.updatePlayer(player);
 		} else socket.emit("refresh");
 	});
@@ -538,6 +542,10 @@ setInterval(async () => {
 		coins.push(new Coin());
 		io.sockets.emit("coin", coins[coins.length - 1]);
 	}
+	if(chests.length < maxChests) {
+		chests.push(new Chest());
+		io.sockets.emit("chest", chests[chests.length - 1]);
+	}
 	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
 	var aiPlayers = Object.keys(PlayerList.players).length;
   
@@ -560,6 +568,8 @@ setInterval(async () => {
 	}
 	if (Date.now() - lastCoinSend >= 10000) {
 		io.sockets.emit("coins", coins);
+		io.sockets.emit("chests", chests);
+
 		lastCoinSend = Date.now();
 	}
 
@@ -580,7 +590,7 @@ setInterval(async () => {
 		if(player) {
 			//   player.moveWithMouse(players)
 			if(player.ai) {
-				coins = player.tick(coins, io, levels);
+				[coins,chests] = player.tick(coins, io, levels, chests);
 			}
 			if (
 				Date.now() - player.lastHit > 5000 &&
