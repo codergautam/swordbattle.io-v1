@@ -3,6 +3,7 @@
     "short_name": "Swordbattle.io",
     "start_url": "/",
     "scope": ".",
+    "display": "fullscreen",
     "icons": [
       {
         "src": "assets/images/logo192.png",
@@ -16,6 +17,5 @@
       }
     ],
     "theme_color": "#00FF00",
-    "background_color": "#00FF00",
-    "display": "standalone"
+    "background_color": "#00FF00"
   }
