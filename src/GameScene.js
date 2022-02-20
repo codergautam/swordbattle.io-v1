@@ -645,7 +645,7 @@ class GameScene extends Phaser.Scene {
 							maxParticles: 5,
 							scale: 0.01
 						});
-						emitter.setPosition(pPos.x??player.player.x, pPos.y??player.player.y);
+						emitter.setPosition(pPos?pPos.x : player.player.x, pPos? pPos.y : player.player.y);
 					
 						this.UICam.ignore(particles);
 						emitter.setSpeed(200);
