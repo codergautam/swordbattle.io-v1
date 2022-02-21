@@ -124,11 +124,6 @@ class OpenScene extends Phaser.Scene {
         if(this.loadProg > this.showProg) {
             this.showProg+= Math.round((this.loadProg - this.showProg) / 10);
             if(this.showProg == this.last) {
-                try {
-                    this.scale.startFullscreen();
-                    } catch(e) {
-                        console.log("fullscreen error oof");
-                    }
                 this.scene.start("title");
             }
             else this.last = this.showProg;

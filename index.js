@@ -294,6 +294,13 @@ app.post("/api/loginsecret", async (req, res) => {
 
 
 });
+app.get("/skins", async (req, res) => {
+	res.redirect("/shop");
+});
+
+app.get("/shop", async (req, res) => {
+	res.send("coming soon");
+});
 
 app.get("/leaderboard", async (req, res) => {
 	//SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
