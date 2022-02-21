@@ -518,9 +518,11 @@ try {
     if(this.footerdone) this.text.y = this.canvas.height / 4;
     if(this.footerdone) this.footer.y = footery;
     
+    try {  
+     this.text.setFontSize( this.canvas.width /13);
+    } catch(e) {
       
-    if(this.text.visible) this.text.setFontSize( this.canvas.width /13);
- 
+    }
     this.footer.x = this.canvas.width/2;
 
     if(this.promo && this.promo.visible) {
