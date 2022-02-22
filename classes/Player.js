@@ -282,7 +282,7 @@ var move = true;
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.7, player.pos.x, player.pos.y, (player.radius*player.scale)*0.7);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.5, player.pos.x, player.pos.y, (player.radius*player.scale)*0.5);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
@@ -404,9 +404,6 @@ return false;
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
             }
           } else {
-            enemy.doKnockback(this);
-            if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
-            if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
           }
         }
         }
