@@ -89,7 +89,7 @@ class GameScene extends Phaser.Scene {
 				this.myObj = undefined;
 
 				//killcounter
-
+				try { 
 				this.killCount = this.add.rexBBCodeText(15, 10, "Kills: 0", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(40).setDepth(101);
@@ -107,7 +107,7 @@ class GameScene extends Phaser.Scene {
 				this.killCount.setScrollFactor(0);
 
 				//player+fpscounter
-				try { 
+
 					this.playerCount = this.add.text(0, 0, "Players: 0" + (!this.mobile ? "\nFPS: 0\nTPS: 0\nPing: 0 ms":""), {
 						fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 						align: "right"
@@ -841,8 +841,12 @@ class GameScene extends Phaser.Scene {
 	update(time, delta) {
 		const convert = (num, val, newNum) => (newNum * val) / num;
 		if(!this.readyt) return;
-
+try {
         this.lvlBar.update();
+} catch(e) {
+  console.log("Failed to update level bar")
+  console.log(e)
+}
        
 		var controller = {
 			left: false,
