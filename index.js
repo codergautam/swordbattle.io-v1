@@ -8,6 +8,7 @@ var cors = require("cors");
 var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
+var fs = require("fs");
 
 var server;
 /*
@@ -299,7 +300,9 @@ app.get("/skins", async (req, res) => {
 });
 
 app.get("/shop", async (req, res) => {
-	res.send("coming soon");
+	//read cosmetics.json
+	var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
+	res.render("shop.ejs", {cosmetics: cosmetics});
 });
 
 app.get("/leaderboard", async (req, res) => {
