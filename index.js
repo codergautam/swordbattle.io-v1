@@ -117,7 +117,15 @@ var oldlevels = [
 	{coins: 17000, scale: 3.6},
 	{coins: 18000, scale: 3.8},
 	{coins: 19000, scale: 4},
-	{coins: 20000, scale: 4.2},
+	{coins: 20000, scale: 4.1},
+	{coins: 30000, scale: 4.2},
+	{coins: 40000, scale: 4.3},
+	{coins: 50000, scale: 4.4},
+	{coins: 60000, scale: 4.5},
+	{coins: 70000, scale: 4.6},
+	{coins: 80000, scale: 4.7},
+	{coins: 90000, scale: 4.8},
+	{coins: 100000, scale: 4.9},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -370,9 +378,9 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 200;
-var maxChests = 3;
-var maxAiPlayers = 10;
+var maxCoins = 1000;
+var maxChests = 10;
+var maxAiPlayers = 20;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();

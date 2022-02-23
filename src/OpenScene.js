@@ -19,8 +19,8 @@ class OpenScene extends Phaser.Scene {
             fontSize: "64px",
             fill: "#FFFFFF"
         }).setOrigin(0.5);
-        this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
-        this.load.plugin("rexbbcodetextplugin", "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js", true);
+        this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
+        this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");

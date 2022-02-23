@@ -3,10 +3,11 @@ const PlayerList = require("./PlayerList");
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+const { faker } = require("@faker-js/faker");
 class AiPlayer extends Player {
     constructor(id) {
-        const randomElement = (array) => array[Math.floor(Math.random() * array.length)];
-        super(id, randomElement(["Amy", "Abby", "Aero", "America", "Asia", "Astro", "Astronaut", "Arnold", "Artic", "Angel", "Andy", "Avery", "Anbu", "Abbas", "Alice", "Alligator", "Apple", "Zebra", "Zuck", "Zuckerberg", "Zip", "Zipper", "Zippy", "Zombie", "Zoo", "Zzzzz", "Zigzag", "z"]));
+       
+        super(id,  faker.name.findName().split(" ")[0]);
         this.ai = true;
         this.target = undefined;
         this.lastHit = Date.now();

@@ -43,6 +43,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+		var map = 10000;
 
         this.levels = [];
   
@@ -312,11 +313,11 @@ class GameScene extends Phaser.Scene {
 				var thickness = 5000;
 				this.graphics.lineStyle(thickness, 0x006400, 1);
 
-				this.graphics.strokeRoundedRect(-2500 - (thickness/ 2), -2500 - (thickness/ 2), 5000 + thickness, 5000 + thickness, 0 );
+				this.graphics.strokeRoundedRect(-(map/2) - (thickness/ 2), -(map/2) - (thickness/ 2), map + thickness, map + thickness, 0 );
 
 				this.graphics.lineStyle(10, 0xffff00, 1);
 
-				this.graphics.strokeRoundedRect(-2500, -2500, 5000, 5000, 0);
+				this.graphics.strokeRoundedRect(-(map/2), -(map/2), map, map, 0);
 
 				//server -> client
 
@@ -528,9 +529,9 @@ class GameScene extends Phaser.Scene {
 
 					var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
-					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
-					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
-					miniMapPlayer.circle.radius = player.scale * convert(1280, 20, this.canvas.width);
+					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
+					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+					miniMapPlayer.circle.radius = player.scale * convert(1280, 15, this.canvas.width);
 
 				});
 				this.socket.on("player", (player) => {
@@ -564,9 +565,9 @@ class GameScene extends Phaser.Scene {
             
         
 
-						miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / 2500) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
-						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / 2500) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
-						miniMapPlayer.circle.radius = convert(1280, 20, this.canvas.width) * player.scale;
+						miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
+						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+						miniMapPlayer.circle.radius = convert(1280, 15, this.canvas.width) * player.scale;
 
 					} catch (e) {
 						console.log(e);
