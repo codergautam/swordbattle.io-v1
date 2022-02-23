@@ -372,7 +372,7 @@ return false;
               }
               //drop their coins
               var drop = [];
-              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 10000)
+              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 10000);
               var dropped = 0;
               while (dropped < dropAmount) {
                 var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());

@@ -844,8 +844,8 @@ class GameScene extends Phaser.Scene {
 try {
         this.lvlBar.update();
 } catch(e) {
-  console.log("Failed to update level bar")
-  console.log(e)
+  console.log("Failed to update level bar");
+  console.log(e);
 }
        
 		var controller = {

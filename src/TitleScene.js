@@ -470,8 +470,8 @@ try {
  
     //this.shopBtn.btn.setScale(clamp(this.canvas.width / 6000, 0.05, 0.2));
     if(this.shop && this.shop.visible) {
-      this.shop.x = this.canvas.width/2 
-      this.shop.y = this.canvas.height/2 
+     // this.shop.x = this.canvas.width/2 
+     // this.shop.y = this.canvas.height/2 
 
     }
     this.background.setScale(Math.max(cameraWidth / this.background.width, cameraHeight / this.background.height));
