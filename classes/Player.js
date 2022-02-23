@@ -5,6 +5,7 @@ const {sql} = require("../database");
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
+var map = 10000;
 
 class Player { 
   constructor(id, name) {
@@ -64,8 +65,8 @@ go *= power/100;
 
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (this.calcSwordAngle()+45)*Math.PI/180 , go);
     
-    this.pos.x = clamp(pos[0], -2500, 2500);
-    this.pos.y = clamp(pos[1],-2500, 2500);
+    this.pos.x = clamp(pos[0], -(map/2), map/2);
+    this.pos.y = clamp(pos[1],-(map/2), map/2);
 
 
   return this.calcSwordAngle()+45;
@@ -118,10 +119,10 @@ go *= power/100;
     var go = since * this.speed;
     if(this.ai || this.movementMode == "keys") {
 
-    if(this.pos.x <= -2500) controller.left = false;
-    if(this.pos.x >= 2500) controller.right = false;
-    if(this.pos.y <= -2500) controller.up = false;
-    if(this.pos.y >= 2500) controller.down = false;
+    if(this.pos.x <= -(map/2)) controller.left = false;
+    if(this.pos.x >= map/2) controller.right = false;
+    if(this.pos.y <= -(map/2)) controller.up = false;
+    if(this.pos.y >= map/2) controller.down = false;
 
 
 
@@ -158,14 +159,14 @@ var move = true;
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*Math.PI/180 , go);
     
     if(move) {
-    this.pos.x = clamp(pos[0], -2500, 2500);
-    this.pos.y = clamp(pos[1],-2500, 2500);
+    this.pos.x = clamp(pos[0], -(map/2), map/2);
+    this.pos.y = clamp(pos[1],-(map/2), map/2);
     }
 
-    if(this.pos.x <= -2500) this.pos.x = -2500;
-    if(this.pos.x >= 2500) this.pos.x = 2500;
-    if(this.pos.y <= -2500) this.pos.y = -2500;
-    if(this.pos.y >= 2500) this.pos.y = 2500;
+    if(this.pos.x <= -(map/2)) this.pos.x = -(map/2);
+    if(this.pos.x >= map/2) this.pos.x = map/2;
+    if(this.pos.y <= -(map/2)) this.pos.y = -(map/2);
+    if(this.pos.y >= map/2) this.pos.y = map/2;
 
     moveAngle = getCardinal(moveAngle);  
 
@@ -199,8 +200,8 @@ var move = true;
 
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*Math.PI/180 , player.power-this.resistance);
     
-    this.pos.x = clamp(pos[0], -2500, 2500);
-    this.pos.y = clamp(pos[1],-2500, 2500);
+    this.pos.x = clamp(pos[0], -(map/2), map/2);
+    this.pos.y = clamp(pos[1],-(map/2), map/2);
 
     if(this.touchingPlayer(player)) {
       this.pos = oldPos;
@@ -210,8 +211,8 @@ var move = true;
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          //this.coins += (this.ai?1:100);
-          this.coins++;
+          //this.coins += (this.ai?coin.value:100);
+          this.coins+= coin.value;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
 
@@ -371,18 +372,23 @@ return false;
               }
               //drop their coins
               var drop = [];
-              for (var i = 0; i < clamp(Math.round(enemy.coins*0.8), 10, 2000); i++) {
+              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 10000)
+              var dropped = 0;
+              while (dropped < dropAmount) {
                 var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
                 var theta = Math.random() * 2 * Math.PI;
                 var x = enemy.pos.x + r * Math.cos(theta);
                 var y = enemy.pos.y + r * Math.sin(theta);
+                var remaining = dropAmount - dropped;
+                var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
 
                 coins.push(
                   new Coin({
-                    x: clamp(x, -2500, 2500),
-                    y: clamp(y, -2500, 2500),
-                  })
+                    x: clamp(x, -(map/2), map/2),
+                    y: clamp(y, -(map/2), map/2),
+                  },value)
                 );
+                dropped += value;
                 drop.push(coins[coins.length - 1]);
               }
               if(!enemy.ai && socketById) {

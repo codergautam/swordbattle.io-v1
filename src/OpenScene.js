@@ -19,8 +19,8 @@ class OpenScene extends Phaser.Scene {
             fontSize: "64px",
             fill: "#FFFFFF"
         }).setOrigin(0.5);
-        this.load.plugin("rexvirtualjoystickplugin",    "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexvirtualjoystickplugin.min.js", true);
-        this.load.plugin("rexbbcodetextplugin", "https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js", true);
+        this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
+        this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
@@ -50,6 +50,7 @@ class OpenScene extends Phaser.Scene {
         this.load.image("signupbtn", "/assets/images/signup.png");
         this.load.image("playAgainBtn", "/assets/images/playAgain.png");
         this.load.image("settingsBtn", "/assets/images/settingsBtn.png");
+        this.load.image("shopBtn", "/assets/images/shop.png");
 
         this.load.audio("coin", "/assets/sound/coin.m4a");
         this.load.audio("damage", "/assets/sound/damage.mp3");
@@ -62,11 +63,13 @@ class OpenScene extends Phaser.Scene {
         this.load.html("title", "/title.html");
         this.load.html("promo", "/promo.html");
         this.load.html("login", "/login.html");
+        this.load.html("shop", "/shop");
         this.load.html("signup", "/signup.html");
         this.load.html("dropdown", "/dropdown.html");
         this.load.html("footer", "/footer.html");
         this.load.html("settings", "/settings.html");
         this.load.audio("openingsound", "/assets/sound/opening.mp3");
+
 
         this.scale.fullscreenTarget = document.getElementById("game");
     }

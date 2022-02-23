@@ -294,7 +294,15 @@ this.callback(myName, this.music, this.secret);
 
 
   };
-
+/*
+  this.shopBtn = new ImgButton(this, 10,10, "shopBtn", () => {
+    if(this.shop && this.shop.visible) return;
+    this.shop = this.add.dom(0, 0).createFromCache("shop").setOrigin(0.5).setVisible(true);
+    this.shop.x = this.canvas.width/2;
+    this.shop.y = this.canvas.height/2;
+  })
+  this.shopBtn.btn.setScale(this.canvas.width / 6000);
+*/
   var createButtons = () => {
     if(loggedIn) return;
   this.loginButton = new ImgButton(this, this.canvas.width-(this.canvas.width > 610? 300: 100), 0, "loginbtn",  ()=>{
@@ -455,12 +463,17 @@ try {
   const resize = (when=false)=>{
     
     this.game.scale.resize(this.canvas.width, this.canvas.height);
-  
+   
     try {
     const cameraWidth = this.cameras.main.width;
     const cameraHeight = this.cameras.main.height;
  
-    
+    //this.shopBtn.btn.setScale(clamp(this.canvas.width / 6000, 0.05, 0.2));
+    if(this.shop && this.shop.visible) {
+      this.shop.x = this.canvas.width/2 
+      this.shop.y = this.canvas.height/2 
+
+    }
     this.background.setScale(Math.max(cameraWidth / this.background.width, cameraHeight / this.background.height));
   
     this.background.x = 0 - ((this.background.displayWidth - cameraWidth)/2);

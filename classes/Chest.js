@@ -1,5 +1,6 @@
 const intersects = require("intersects");
 const Coin = require("./Coin");
+var map = 10000;
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -7,7 +8,7 @@ function getRandomInt(min, max) {
     return "_" + Math.random().toString(36).substr(2, 9);
   };
   class Chest { 
-    constructor(pos = {x: getRandomInt(-2500+352,2500-223), y: getRandomInt(-2500+352,2500-223)}) {
+    constructor(pos = {x: getRandomInt(-(map/2)+352,(map/2)-223), y: getRandomInt(-(map/2)+352,(map/2)-223)}) {
       this.id = ID();
       this.width = 352;
       this.height = 223;
@@ -23,7 +24,7 @@ function getRandomInt(min, max) {
     }
     open() {
       var drop = [];
-      for (var i = 0; i < getRandomInt(20,100); i++) {
+      for (var i = 0; i < getRandomInt(20,50); i++) {
         var x = getRandomInt(this.pos.x, this.pos.x + this.width);
         var y = getRandomInt(this.pos.y, this.pos.y + this.height);
 

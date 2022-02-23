@@ -1,0 +1,11 @@
+{
+    "skins": [
+        {
+            "name": "player",
+            "displayName": "Default",
+            "url": "/assets/images/player.png",
+            "price": 0,
+            "description": "The default skin"
+        }
+    ]
+}
