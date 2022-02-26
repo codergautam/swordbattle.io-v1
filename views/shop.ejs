@@ -20,6 +20,7 @@
 .main{
   max-width: 1200px;
   margin: 0 auto;
+  min-height: 90%;
 }
 
 h1 {
@@ -115,18 +116,18 @@ img {
         <h1 style="color: white;">Shop</h1>
         <ul class="cards">
             <% cosmetics.skins.forEach(function(skin) { %>
-                <% for(var i=0; i<20; i++) { %>
+        
           <li class="cards_item">
             <div class="card">
               <div class="card_image"><img src="https://picsum.photos/500/300/?image=10"></div>
               <div class="card_content">
-                <h2 class="card_title">Card Grid Layout</h2>
+                <h2 class="card_title">Card Grid Layout<i class="fa-solid fa-circle-xmark"></i></h2>
                 <p class="card_text">Demo of pixel perfect pure CSS simple responsive card grid layout</p>
                 <button class="btn card_btn">Read More</button>
               </div>
             </div>
           </li>
-         <% }}) %>
+         <% }) %>
 
         </ul>
       </div>

@@ -17,6 +17,16 @@
         margin: 0px;
         cursor:  crosshair;
       }
+      iframe {
+position: absolute;
+  
+    width: 100%;
+    height: 100%;
+    z-index: 1000;
+}
+canvas {
+  top: -400px;
+}
 
     </style>
 
@@ -49,6 +59,7 @@
   </head>
   <title>Swordbattle.io</title>
   <body>
+    <iframe src="/shop" id="shopFrame" style="display: none;"></iframe>
     <div id="game"><div id="preroll"></div></div>
     
     <script defer src="main.js" type="module"></script>
