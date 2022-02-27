@@ -6,6 +6,13 @@
             "url": "/assets/images/player.png",
             "price": 0,
             "description": "The default skin"
+        },
+        {
+            "name": "devil",
+            "displayName": "Devil",
+            "url": "/assets/images/devilPlayer.png",
+            "price": 0,
+            "description": "A devil skin"
         }
     ]
 }
