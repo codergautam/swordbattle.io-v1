@@ -1,3 +1,5 @@
+import axios from "axios";
+
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
       seconds = Math.floor((duration / 1000) % 60),
@@ -108,6 +110,28 @@ class OpenScene extends Phaser.Scene {
        
     }
 
+
+    async showServerSelector() {
+        var euUrl = "swordbattle.herokuapp.com";
+        var naUrl = "swordbattle.codergautamyt.repl.co";
+        var data = {};
+       try {
+         var eu = await   axios.get(`https://${euUrl}/api/serverinfo`);
+         data.eu = eu.data;
+       } catch(e) {
+           data.eu = {error: true};
+       }
+       
+        var us = await    axios.get(`https://${naUrl}/api/serverinfo`);
+        try {
+            data.us = us.data;
+        }
+        catch(e) {
+            data.us = {error: true};
+        }
+
+        
+    }
     update() {
         /*
         this.text.x = (document.documentElement.clientWidth / 2);
@@ -127,7 +151,7 @@ class OpenScene extends Phaser.Scene {
         if(this.loadProg > this.showProg) {
             this.showProg+= Math.round((this.loadProg - this.showProg) / 10);
             if(this.showProg == this.last) {
-                this.scene.start("title");
+                
             }
             else this.last = this.showProg;
             this.text.setText("Loading.. " + this.showProg + "%");

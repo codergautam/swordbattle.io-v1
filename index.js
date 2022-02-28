@@ -299,6 +299,8 @@ app.post("/api/loginsecret", async (req, res) => {
 
 
 });
+
+
 app.get("/skins", async (req, res) => {
 	res.redirect("/shop");
 });
@@ -377,6 +379,7 @@ var chests = [];
 var maxCoins = 250;
 var maxChests = 10;
 var maxAiPlayers = 10;
+var maxPlayers = 30;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -460,6 +463,11 @@ io.on("connection", async (socket) => {
 				"ban",
 				"You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
 			);
+			return socket.disconnect();
+		}
+		//console.log(Object.values(PlayerList.players).length);
+		if (Object.values(PlayerList.players).length >= maxPlayers) {
+			socket.emit("ban", "Server is full. Please try again later.");
 			return socket.disconnect();
 		}
 
@@ -546,6 +554,14 @@ io.on("connection", async (socket) => {
 var secondStart = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
+var actps = 0;
+app.get("/api/serverinfo", (req, res) => {
+	var playerCount = Object.values(PlayerList.players).length;
+	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
+	res.send({
+		playerCount, lag, maxPlayers
+	});
+});
 
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
@@ -576,6 +592,7 @@ setInterval(async () => {
 	//emit tps to clients
 	if (Date.now() - secondStart >= 1000) {
 		io.sockets.emit("tps", tps);
+		actps = tps;
 		//console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
 		secondStart = Date.now();
 		tps = 0;
