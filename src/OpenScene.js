@@ -114,21 +114,27 @@ class OpenScene extends Phaser.Scene {
     async showServerSelector() {
         var euUrl = "swordbattle.herokuapp.com";
         var naUrl = "swordbattle.codergautamyt.repl.co";
+        var time = Date.now();
         var data = {};
        try {
          var eu = await   axios.get(`https://${euUrl}/api/serverinfo`);
+        
          data.eu = eu.data;
+         data.eu.ping = Date.now() - time;
        } catch(e) {
            data.eu = {error: true};
        }
-       
+
+       time = Date.now();
         var us = await    axios.get(`https://${naUrl}/api/serverinfo`);
         try {
             data.us = us.data;
+            data.us.ping = Date.now() - time;
         }
         catch(e) {
             data.us = {error: true};
         }
+        console.log(data)
 
         
     }
@@ -151,7 +157,13 @@ class OpenScene extends Phaser.Scene {
         if(this.loadProg > this.showProg) {
             this.showProg+= Math.round((this.loadProg - this.showProg) / 10);
             if(this.showProg == this.last) {
-                
+                if(this.text && this.text.visible) {
+                    console.log(
+                    'avc'
+                    )
+                    this.text.destroy();
+                this.showServerSelector();
+                }
             }
             else this.last = this.showProg;
             this.text.setText("Loading.. " + this.showProg + "%");
