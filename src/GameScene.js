@@ -264,9 +264,8 @@ class GameScene extends Phaser.Scene {
 				};
 
 				window.addEventListener("resize", resize, true);
-				//go packet
-        var server = prompt("server")
-				this.socket = io(server);
+
+				this.socket = io();
 
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
