@@ -374,7 +374,7 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 500;
+var maxCoins = 400;
 var maxChests = 4;
 var maxAiPlayers = 10;
 
