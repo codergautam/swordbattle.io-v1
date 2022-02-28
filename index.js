@@ -48,11 +48,7 @@ const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
 
-const io = new Server(server, {
-	allowRequest: (req, callback) => {
-		callback(null, req.headers.origin === undefined);
-	},
-});
+const io = new Server(server, { cors: { origin: '*' }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -137,7 +133,7 @@ oldlevels.forEach((level, index)  =>{
 
 moderation.start(app);
 
-app.use(cors());
+//app.use(cors());
 
 
 app.use("/", express.static("dist"));
