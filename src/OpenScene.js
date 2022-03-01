@@ -113,11 +113,11 @@ class OpenScene extends Phaser.Scene {
 
     async showServerSelector() {
         var euUrl = "swordbattle.herokuapp.com";
-        var naUrl = "swordbattle.codergautamyt.repl.co";
+        var naUrl = "swordbattledev.codergautamyt.repl.co";
         var time = Date.now();
         var data = {};
        try {
-         var eu = await   axios.get(`https://${euUrl}/api/serverinfo`);
+         var eu = await axios.get(`https://${euUrl}/api/serverinfo`);
         
          data.eu = eu.data;
          data.eu.ping = Date.now() - time;
