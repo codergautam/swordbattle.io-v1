@@ -9,6 +9,7 @@ function msToTime(duration) {
     return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
   }
 
+
 class OpenScene extends Phaser.Scene {
     constructor(callback) {
         super();
@@ -17,10 +18,7 @@ class OpenScene extends Phaser.Scene {
     preload() {
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
-        this.text = this.add.text(document.documentElement.clientWidth / 2, document.documentElement.clientHeight / 2, "Loading.. 0%", {
-            fontSize: "64px",
-            fill: "#FFFFFF"
-        }).setOrigin(0.5);
+     
         this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
         this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
@@ -90,8 +88,7 @@ class OpenScene extends Phaser.Scene {
             this.background.height = document.documentElement.clientHeight;
             this.background.width = document.documentElement.clientWidth;
 
-            this.text.x = document.documentElement.clientWidth / 2;
-            this.text.y = document.documentElement.clientHeight / 2; 
+      
           
 
             if(!this.e) {
@@ -132,11 +129,7 @@ class OpenScene extends Phaser.Scene {
         } catch(e) {
             console.log(e);
         }
-        try {
-            if(this.e) this.text.setFontSize(this.canvas.width/50);
-        } catch(e) {
-            console.log(e);
-        };
+
     };
 
         window.addEventListener("resize", resize, true);
@@ -152,15 +145,30 @@ class OpenScene extends Phaser.Scene {
 
 
     async showServerSelector() {
-       this.text.setText("Loading.. 100%");
         
+        if(this.euRect && this.euRect.visible) {
+            this.euRect.destroy();
+            this.usRect.destroy();
+        }
+    
+        this.euRect = this.add.rectangle(this.canvas.width/3*2, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
+        this.usRect = this.add.rectangle(this.canvas.width/3, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
+        
+        this.euText = this.add.rexBBCodeText(this.canvas.width/3*2, (this.canvas.height/2)- (this.euRect.height/2), "[color=black][align=center]Europe\n\n0/0\n\nConnecting..[/align][/color]").setFontSize(this.canvas.width/30).setOrigin(0.5,0);
+
+
+        this.usText = this.add.rexBBCodeText(this.canvas.width/3, (this.canvas.height/2)- (this.usRect.height/2), "[color=black][align=center]USA\n\n0/0\n\nConnecting..[/align][/color]").setFontSize(this.canvas.width/30).setOrigin(0.5,0);
+        this.euText.y += ((this.euRect.height/2) - (this.euText.height/2));
+        this.usText.y += ((this.usRect.height/2) - (this.usText.height/2));
         var euUrl = "swordbattle.herokuapp.com";
         var naUrl = "swordbattledev.codergautamyt.repl.co";
         var time = Date.now();
         this.data = {};
+       
        try {
-         var eu = await axios.get(`https://${euUrl}/api/serverinfo`);
-        
+         var eu = await axios.get(`https://${euUrl}/api/serverinfo`).catch((e) => {
+            this.data.eu = {error: true};
+         });
          this.data.eu = eu.data;
          this.data.eu.ping = Date.now() - time;
        } catch(e) {
@@ -168,33 +176,33 @@ class OpenScene extends Phaser.Scene {
        }
 
        time = Date.now();
-        var us = await    axios.get(`https://${naUrl}/api/serverinfo`);
-        try {
+       try {
+        var us = await    axios.get(`https://${naUrl}/api/serverinfo`).catch((e) => {
+            this.data.us = {error: true};
+    });
+      
             this.data.us = us.data;
             this.data.us.ping = Date.now() - time;
+         
         }
         catch(e) {
             this.data.us = {error: true};
         }
         
-        if(this.euRect && this.euRect.visible) {
-            this.euRect.destroy();
-            this.usRect.destroy();
-        }
-        this.text.destroy();
-        this.euRect = this.add.rectangle(this.canvas.width/3*2, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
-        this.usRect = this.add.rectangle(this.canvas.width/3, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
-        
+
         this.euRect.setInteractive();
         this.usRect.setInteractive();
-        
-        this.euText = this.add.rexBBCodeText(this.canvas.width/3*2, (this.canvas.height/2)- (this.euRect.height/2), `[color=black][align=center]Europe\n\n${this.data.eu.playerCount}/${this.data.eu.maxPlayers}\n\n${this.data.eu.lag}\nPing: ${this.data.eu.ping}[/align][/color]`).setFontSize(this.canvas.width/30).setOrigin(0.5,0);
+        if(this.data.eu.error) this.euText.setText("[color=red][align=center]Europe\n\nOffline[/align][/color]");
+        else this.euText.setText(`[color=black][align=center]Europe\n\n${this.data.eu.playerCount}/${this.data.eu.maxPlayers}\n\n${this.data.eu.lag}\nPing: ${this.data.eu.ping}[/align][/color]`);
 
-
-        this.usText = this.add.rexBBCodeText(this.canvas.width/3, (this.canvas.height/2)- (this.usRect.height/2), `[color=black][align=center]USA\n\n${this.data.us.playerCount}/${this.data.us.maxPlayers}\n\n${this.data.us.lag}\nPing: ${this.data.us.ping}[/align][/color]`).setFontSize(this.canvas.width/30).setOrigin(0.5,0);
+        if(this.data.us.error) this.usText.setText("[color=red][align=center]USA\n\nOffline[/align][/color]");
+        else this.usText.setText(`[color=black][align=center]USA\n\n${this.data.us.playerCount}/${this.data.us.maxPlayers}\n\n${this.data.us.lag}\nPing: ${this.data.us.ping}[/align][/color]`);
   
+        this.usText.y = (this.canvas.height/2) - (this.usRect.height/2);
+        this.euText.y = (this.canvas.height/2) - (this.euRect.height/2);
         this.euText.y += ((this.euRect.height/2) - (this.euText.height/2));
         this.usText.y += ((this.usRect.height/2) - (this.usText.height/2));
+
 
         this.euRect.on("pointerdown", event => {
             this.server = "eu";
@@ -222,20 +230,15 @@ class OpenScene extends Phaser.Scene {
         */
 
         this.loadProg = Math.round(this.load.progress * 100);
-        
-        if(this.loadProg > this.showProg) {
-            this.showProg+= Math.round((this.loadProg - this.showProg) / 5);
-           
-            if(this.showProg == this.last) {
+
+     
                 if(this.e) {
                     this.e = false;
               
                 this.showServerSelector();
                 }
-            }
-            else this.last = this.showProg;
-            if(this.e) this.text.setText("Loading.. " + this.showProg + "%");
-        }
+            
+
    
             
           //  this.loadProg = newProg;
