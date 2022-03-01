@@ -4,7 +4,7 @@ class GameScene extends Phaser.Scene {
 	constructor(callback) {
 		super();
 		this.callback = callback;
-		this.server = "swordbattle.io";
+	
 	}
 
 	preload() {    
@@ -266,8 +266,8 @@ class GameScene extends Phaser.Scene {
 
 				window.addEventListener("resize", resize, true);
 				//go packet
-   
-				this.socket = io(this.server);
+				var server = this.scene.get("open").server == "us" ? "swordbattle.io" : "swordbattle.herokuapp.com";
+				this.socket = io(server);
 
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
