@@ -4,11 +4,11 @@ var http = require("http");
 require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
-var cors = require("cors");
 var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
+//var cors = require("cors");
 
 var server;
 /*
@@ -133,7 +133,24 @@ oldlevels.forEach((level, index)  =>{
 
 moderation.start(app);
 
-//app.use(cors());
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    // Request methods you wish to allow
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+
+    // Request headers you wish to allow
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader("Access-Control-Allow-Credentials", true);
+
+    // Pass to next layer of middleware
+    next();
+});
 
 
 app.use("/", express.static("dist"));
@@ -299,6 +316,8 @@ app.post("/api/loginsecret", async (req, res) => {
 
 
 });
+
+
 app.get("/skins", async (req, res) => {
 	res.redirect("/shop");
 });
@@ -377,6 +396,7 @@ var chests = [];
 var maxCoins = 400;
 var maxChests = 4;
 var maxAiPlayers = 10;
+var maxPlayers = 30;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -391,9 +411,6 @@ io.on("connection", async (socket) => {
 		socket.disconnect();
 	}
 
-	if (socket.handshake.xdomain) {
-		socket.disconnect();
-	}
 
 	socket.on("go", async (r, captchatoken, tryverify, options) => {
 		async function ready() {
@@ -460,6 +477,11 @@ io.on("connection", async (socket) => {
 				"ban",
 				"You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
 			);
+			return socket.disconnect();
+		}
+		//console.log(Object.values(PlayerList.players).length);
+		if (Object.values(PlayerList.players).length >= maxPlayers) {
+			socket.emit("ban", "Server is full. Please try again later.");
 			return socket.disconnect();
 		}
 
@@ -546,6 +568,14 @@ io.on("connection", async (socket) => {
 var secondStart = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
+var actps = 0;
+app.get("/api/serverinfo", (req, res) => {
+	var playerCount = Object.values(PlayerList.players).length;
+	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
+	res.send({
+		playerCount, lag, maxPlayers
+	});
+});
 
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
@@ -576,6 +606,7 @@ setInterval(async () => {
 	//emit tps to clients
 	if (Date.now() - secondStart >= 1000) {
 		io.sockets.emit("tps", tps);
+		actps = tps;
 		//console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
 		secondStart = Date.now();
 		tps = 0;

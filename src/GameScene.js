@@ -4,6 +4,7 @@ class GameScene extends Phaser.Scene {
 	constructor(callback) {
 		super();
 		this.callback = callback;
+	
 	}
 
 	preload() {    
@@ -264,8 +265,15 @@ class GameScene extends Phaser.Scene {
 				};
 
 				window.addEventListener("resize", resize, true);
-
-				this.socket = io();
+				//go packet
+				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
+				this.socket = io(server);
+				
+				function handleErr(err) {
+					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
+				}
+				this.socket.on("connect_error", handleErr);
+				this.socket.on("connect_failed",handleErr);
 
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
