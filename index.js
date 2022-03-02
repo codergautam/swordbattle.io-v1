@@ -8,7 +8,7 @@ var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
-var cors = require("cors")
+//var cors = require("cors");
 
 var server;
 /*

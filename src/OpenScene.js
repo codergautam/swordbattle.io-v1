@@ -161,7 +161,7 @@ class OpenScene extends Phaser.Scene {
         this.euText.y += ((this.euRect.height/2) - (this.euText.height/2));
         this.usText.y += ((this.usRect.height/2) - (this.usText.height/2));
         var euUrl = "swordbattle.herokuapp.com";
-        var naUrl = "swordbattledev.codergautamyt.repl.co";
+        var naUrl = "swordbattle.codergautamyt.repl.co";
         var time = Date.now();
         this.data = {};
        
@@ -205,11 +205,13 @@ class OpenScene extends Phaser.Scene {
 
 
         this.euRect.on("pointerdown", event => {
+            if(this.data.eu.error) return;
             this.server = "eu";
             this.scene.stop();
             this.scene.start("title");
          });
          this.usRect.on("pointerdown", event => {
+             if(this.data.us.error) return;
              this.server = "us";
              this.scene.stop();
              this.scene.start("title");
