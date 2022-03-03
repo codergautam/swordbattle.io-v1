@@ -38,6 +38,7 @@ var config = {
     scale: {
         mode:Phaser.Scale.RESIZE,
     }
+    
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);

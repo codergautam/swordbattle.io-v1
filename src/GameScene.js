@@ -83,10 +83,6 @@ class GameScene extends Phaser.Scene {
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
 				this.swordAnim = {go: false, added: 0};
-				this.goTo = {
-					x: undefined,
-					y: undefined
-				};
 				this.myObj = undefined;
 
 				//killcounter
@@ -153,6 +149,9 @@ class GameScene extends Phaser.Scene {
 							// forceMin: 16,
 							// enable: true
 						});
+						this.cameras.main.ignore(this.joyStick.base);
+						this.cameras.main.ignore(this.joyStick.thumb);
+
 				}
       
 				//bar
@@ -267,6 +266,7 @@ class GameScene extends Phaser.Scene {
 				window.addEventListener("resize", resize, true);
 				//go packet
 				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
+				//server = undefined
 				this.socket = io(server);
 				
 				function handleErr(err) {
@@ -338,10 +338,6 @@ class GameScene extends Phaser.Scene {
 					var enemy = {
 						id: player.id,
 						down: false,
-						toMove: {
-							x: undefined,
-							y: undefined
-						},
 						playerObj: undefined,
 						lastTick: Date.now(),
 						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
@@ -496,24 +492,27 @@ class GameScene extends Phaser.Scene {
 						this.mePlayer.x = player.pos.x;
 						this.mePlayer.y = player.pos.y;
 					} else {
-						this.goTo.x = player.pos.x;
-						this.goTo.y = player.pos.y;
+					this.tweens.add({
+						targets: this.mePlayer,
+						x: player.pos.x,
+						y: player.pos.y,
+						duration: 300,
+						ease: "Power2"
+					});
 					}
 					this.mePlayer.setScale(player.scale);
 					this.meBar.maxValue = player.maxHealth;
 					this.meBar.setHealth(player.health);
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
-					if(!(this.cameras.main.zoom <= 0.15)) {
-						 
-						if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale);
-						if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
-						else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
-            
-						else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3));
 
-
-
-					}
+					var show = 1000;
+					show += (this.mePlayer.width*this.mePlayer.scale)*5;
+					//var oldZoom = this.cameras.main.zoom;
+					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
+ 					this.cameras.main.setZoom(
+						newZoom
+					); 
+			
 					this.meSword.setScale(player.scale);
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
@@ -557,8 +556,13 @@ class GameScene extends Phaser.Scene {
 						enemy.bar.setHealth(player.health);
 
 						//update pos
-						enemy.toMove.x = player.pos.x;
-						enemy.toMove.y = player.pos.y;
+						this.tweens.add({
+							targets: enemy.player,
+							x: player.pos.x,
+							y: player.pos.y,
+							duration: 300,
+							ease: "Power2"
+						});
 
 						//update sword
 						var mousePos = player.mousePos;
@@ -951,23 +955,7 @@ try {
 		}
 		this.enemies.forEach(enemy => {
 			if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy);
-			// if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
-			/*        no lerp
-            if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
-            if (enemy.player.x > enemy.toMove.x) enemy.player.x -= speed
-            if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
-            if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
-            */
-			//yes lerp
-
-			if(enemy.toMove.x ) {
-				enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/500);
-				enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500);
-			}
-
-
-			// if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
-			// if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
+		
 			if(enemy.playerObj) var scale = enemy.playerObj.scale;
 			else var scale = 0.25;
 			enemy.bar.width = (enemy.player.height*scale / 0.9375);
@@ -1017,32 +1005,7 @@ try {
                 
 		});
  
-		/*    if(this.myObj) {
-            var speed = this.myObj.speed / fps
-        } else {
-            var speed = 700 /fps
-        }
-        
-   
-         //console.log(speed)
-     
-        if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
- //without lerp
-        if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
-        if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += speed
-        if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
-        if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
-        */
-		//with lerp
-
-		if(this.goTo.x ) {
-    
-			this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/500);
-			this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500);
-		}
-		//console.log(this.mePlayer.x, this.mePlayer.y)
-		//  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
-		//  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
+	
 		var myObj = this.myObj;
   
 		if(!myObj) myObj = {scale: 0.25};

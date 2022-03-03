@@ -14,6 +14,7 @@ function getRandomInt(min, max) {
       
       this.pos = pos;
       this.value = value;
+      //this.value = 100;
       this.size *= clamp(this.value/2,1,3);
       this.radius = ((1.59 *this.size) / 2);
       
