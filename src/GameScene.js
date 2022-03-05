@@ -47,9 +47,9 @@ class GameScene extends Phaser.Scene {
 		var map = 10000;
 
         this.levels = [];
-  
-		//recaptcha
 
+    
+		//recaptcha
 		grecaptcha.ready(() =>{
 			grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "join"}).then((thetoken) => {
 
