@@ -296,9 +296,27 @@ this.callback(myName, this.music, this.secret);
   };
 
   this.shopBtn = new ImgButton(this, 10,10, "shopBtn", () => {
+    var frameDoc = document.getElementById("shopFrame").contentWindow.document;
+
+    if(loggedIn) {
+      frameDoc.getElementById("login").style.display = "none";
+      frameDoc.getElementById("skins").style.display = "";
+    } else {
+      frameDoc.getElementById("login").style.display = "";
+      frameDoc.getElementById("skins").style.display = "none";
+    }
+
     document.getElementById("shopFrame").style.display = "";
+ 
+   frameDoc.getElementById("closeShop").onclick = () => {
+      document.getElementById("shopFrame").style.display = "none";
+    };
+
+
   });
   this.shopBtn.btn.setScale(this.canvas.width / 6000);
+  //increase scale times 5
+  this.shopBtn.btn.setScale(this.shopBtn.btn.scale * 4);
 
   var createButtons = () => {
     if(loggedIn) return;
@@ -466,6 +484,8 @@ try {
     const cameraHeight = this.cameras.main.height;
  
     this.shopBtn.btn.setScale(clamp(this.canvas.width / 6000, 0.05, 0.2));
+    //increase scale times 5
+    this.shopBtn.btn.setScale(this.shopBtn.btn.scale * 4);
     this.background.setScale(Math.max(cameraWidth / this.background.width, cameraHeight / this.background.height));
   
     this.background.x = 0 - ((this.background.displayWidth - cameraWidth)/2);

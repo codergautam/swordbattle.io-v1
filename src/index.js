@@ -24,6 +24,8 @@ function handleConnection() {
 }
 
 
+
+
 window.addEventListener("load", () => {
 if(!navigator.onLine) handleConnection();
 var config = {

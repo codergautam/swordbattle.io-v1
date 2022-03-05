@@ -122,13 +122,19 @@ img {
   font-weight: 400;
 }
 
+a {
+  font-size: 10em !important;
+}
 
 </style>
 <div class="body" >
     <div class="main" style="background-color: black;">
 
         <br/>
-        <h1 style="color: white; font-size: xx-large;">Shop</h1>
+        <h1 style="color: white; font-size: xx-large;">Skins (beta)</h1>
+      
+        <br>
+       <div id="skins" style="display: none;">
         <ul class="cards">
       
             <% cosmetics.skins.forEach(function(skin) { %>
@@ -143,11 +149,21 @@ img {
               </div>
             </div>
           </li>
-       
          <% }) %>
   
         </ul>
- 
+      </div>
+<div style="color: white;" id="login">
+  <h1>Please log in or sign up to get skins.</h1>
+</div>
+<div  id="yt">
+  <h1 style="color: white; ">Subscribe to the YouTube Channel to access skins!</h1>
+  <br>
+  <center><a target="_blank" style="color: red; font-size: 10em !important;" href="https://www.youtube.com/channel/UCOsM1dmWnI7fmvgkShMmyfA?sub_confirmation=1"><h1>Subscribe</h1></a></center>
+  <br>
+
+</div>
+        <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
       </div>
       
     
