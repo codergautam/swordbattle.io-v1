@@ -25,6 +25,11 @@ class GameScene extends Phaser.Scene {
 		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
 		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
+
+
+		this.euRect = this.add.rectangle(this.canvas.width/3*2, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF).setDepth(1000);
+		this.usRect = this.add.rectangle(this.canvas.width/3, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF).setDepth(1000);
+		
 	}
 
 	died(data) {
