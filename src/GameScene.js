@@ -25,6 +25,7 @@ class GameScene extends Phaser.Scene {
 		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
 		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
+
 	}
 
 	died(data) {
@@ -84,6 +85,9 @@ class GameScene extends Phaser.Scene {
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
+
+
+
 
 				//killcounter
 				try { 
@@ -157,6 +161,7 @@ class GameScene extends Phaser.Scene {
 				//bar
 				this.meBar = new HealthBar(this, 0, 0, 16, 80);
 				this.meBar.bar.setAlpha(0.5);
+				this.meBar.bar.setDepth(71);
 
 				//levelbar
 				this.lvlBar = new HealthBar(this, 0, 0, 0, 0, true);
@@ -205,6 +210,16 @@ class GameScene extends Phaser.Scene {
 				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
 				this.cameras.main.startFollow(this.mePlayer,true);
+
+				//bushes
+				this.bushes = [];
+				var locations = [{"x":730,"y":1885,"scale":1.0376209236313056},{"x":925,"y":-320,"scale":1.5186209845008154},{"x":1433,"y":754,"scale":3.330284753416469},{"x":4731,"y":4730,"scale":2.0686243258009513},{"x":-3023,"y":-4707,"scale":0.7038654598544245},{"x":4697,"y":418,"scale":1.802746456554166},{"x":1890,"y":-648,"scale":2.4500834253457233},{"x":2835,"y":2983,"scale":1.9362154580101363},{"x":-3012,"y":4669,"scale":1.546032408451703},{"x":-522,"y":-4917,"scale":3.2978158998596006},{"x":-4547,"y":-3990,"scale":0.9277566244553441},{"x":796,"y":-712,"scale":1.1184998043695427},{"x":-3766,"y":4544,"scale":1.4140888384465091},{"x":4882,"y":-1172,"scale":2.9802609570057004},{"x":-3496,"y":3954,"scale":2.3808287583935375},{"x":-3238,"y":-2996,"scale":2.526057254546086},{"x":-1389,"y":-358,"scale":0.8106953578091867},{"x":-4967,"y":-4055,"scale":3.0097164420138225},{"x":4495,"y":-529,"scale":2.534394803759131},{"x":-1338,"y":1861,"scale":2.928118076148369},{"x":1737,"y":-4743,"scale":2.263077224463025},{"x":-3911,"y":2248,"scale":0.7689489264893516},{"x":4896,"y":-3368,"scale":2.588709259426132},{"x":-3883,"y":-3703,"scale":1.731361865138802},{"x":950,"y":2029,"scale":2.8878029144744146},{"x":-173,"y":829,"scale":1.3048181525137694},{"x":2619,"y":1091,"scale":0.5879937552009757},{"x":-3017,"y":2308,"scale":2.264103933252742},{"x":1246,"y":1595,"scale":1.5130647587630643},{"x":-2598,"y":-262,"scale":3.0282547149681767},{"x":-3123,"y":-1763,"scale":2.0368365078668207},{"x":-684,"y":4420,"scale":2.5159608843125834},{"x":-1526,"y":-4429,"scale":1.0488795535338693},{"x":-1382,"y":1674,"scale":1.729326708118081},{"x":4954,"y":-1326,"scale":1.2051737116831303},{"x":-3769,"y":1367,"scale":3.0269153418946013},{"x":1237,"y":3494,"scale":3.2258158972294297},{"x":1683,"y":-3486,"scale":3.2527072679208078},{"x":419,"y":508,"scale":2.652076728813408},{"x":-4992,"y":2409,"scale":2.762880141675235},{"x":3056,"y":-3543,"scale":2.3900673234419982},{"x":3495,"y":-3043,"scale":1.3521516228090635},{"x":-4388,"y":3200,"scale":2.9916255625674655},{"x":1292,"y":-993,"scale":3.3641794453414664},{"x":1952,"y":2357,"scale":1.1450742110647643},{"x":-4831,"y":1835,"scale":1.2585290364415982},{"x":-1477,"y":-521,"scale":3.240414650997602},{"x":-4884,"y":1193,"scale":1.237036932117828},{"x":-4521,"y":-1972,"scale":1.554328117808823},{"x":1315,"y":3287,"scale":0.8727352911734498},{"x":1150,"y":-1059,"scale":1.335191874076673},{"x":-1293,"y":508,"scale":2.505831529572055},{"x":4333,"y":1306,"scale":2.3411772808523876},{"x":2896,"y":4913,"scale":2.465530835587337},{"x":-634,"y":-4615,"scale":2.1430471830680315},{"x":1355,"y":405,"scale":1.9967528611299323},{"x":3215,"y":-3646,"scale":2.5265313480752716},{"x":-2285,"y":-4338,"scale":2.8433396478871336},{"x":210,"y":4727,"scale":2.796103862725438},{"x":-465,"y":154,"scale":0.6770522495838267},{"x":3621,"y":-739,"scale":1.860257544095416},{"x":4421,"y":288,"scale":3.2011906741552547},{"x":3990,"y":-3216,"scale":0.6708087098641271},{"x":3413,"y":-1356,"scale":3.122881532340258},{"x":-3161,"y":-640,"scale":1.0600690011923222},{"x":3518,"y":411,"scale":1.2594288815012689},{"x":2584,"y":-3716,"scale":0.8464974155777956},{"x":4891,"y":4279,"scale":3.334059910907162},{"x":2550,"y":-1426,"scale":1.871614075133459},{"x":880,"y":-1400,"scale":1.2988510930930697},{"x":2897,"y":692,"scale":0.7811024064504772},{"x":18,"y":-1805,"scale":2.7979346816010358},{"x":4933,"y":-4731,"scale":3.4052415107942737},{"x":-3608,"y":-2643,"scale":3.0182716926485567},{"x":631,"y":3567,"scale":2.048644117075934},{"x":3412,"y":-2901,"scale":1.6173481014877604},{"x":-2965,"y":-3056,"scale":0.7452272417689609},{"x":-4221,"y":1948,"scale":3.0571964273080168},{"x":-2733,"y":-3481,"scale":1.7993863030259765},{"x":418,"y":-170,"scale":2.471839671977092},{"x":-2643,"y":2135,"scale":2.224174416443268},{"x":-3564,"y":-3646,"scale":1.123817873201157},{"x":-2594,"y":-194,"scale":2.8359960938485402},{"x":-3914,"y":-1779,"scale":1.669051229582097},{"x":-1282,"y":3667,"scale":3.397330925497699},{"x":1474,"y":-2638,"scale":3.1244654444686324},{"x":-4909,"y":-1278,"scale":2.4338719734410788},{"x":-3549,"y":2724,"scale":3.013256745783262},{"x":-2411,"y":3431,"scale":1.2631073582763315},{"x":-2421,"y":2356,"scale":1.9414196684081193},{"x":-4426,"y":43,"scale":2.611750089893035},{"x":494,"y":4517,"scale":1.6634604133591617},{"x":-3123,"y":45,"scale":1.2116242240774102},{"x":3297,"y":-3254,"scale":2.098822393550005},{"x":2230,"y":4430,"scale":1.949718190558567},{"x":3917,"y":719,"scale":0.5019871453063103},{"x":4225,"y":-3866,"scale":1.4486156579085072},{"x":113,"y":-3228,"scale":2.383273384336228},{"x":-1466,"y":-725,"scale":2.549875235972383},{"x":2284,"y":-1330,"scale":3.294659747724501}];
+
+				locations.forEach((l) => {
+					this.bushes.push(this.add.image(l.x, l.y, "bush").setScale(l.scale).setDepth(70));
+					this.UICam.ignore(this.bushes[this.bushes.length-1]);
+				});
+				
 
 
 				this.input.addPointer(3);
@@ -347,7 +362,7 @@ class GameScene extends Phaser.Scene {
 							fontFamily: "serif",
 							fill: player.verified?"#0000FF" :"#000000",
 							fontSize: "25px"
-						}).setDepth(100).setAlpha(player.verified?1:0.5),
+						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
 						toAngle: 0,
 					};
@@ -359,7 +374,7 @@ class GameScene extends Phaser.Scene {
             
 					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
-
+					enemy.bar.bar.setDepth(69);
           
 					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag, this.graphics]);
 					this.enemies.push(enemy);
@@ -539,6 +554,30 @@ class GameScene extends Phaser.Scene {
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 					miniMapPlayer.circle.radius = player.scale * convert(1280, 15, this.canvas.width);
+
+					function cc(p1x, p1y, r1, p2x, p2y, r2) {
+						var a;
+						var x;
+						var y;
+					  
+						a = r1 + r2;
+						x = p1x - p2x;
+						y = p1y - p2y;
+					  
+						if (a > Math.sqrt((x * x) + (y * y)) && r1 > r2/2) {
+						  return true;
+						} else {
+						  return false;
+						}
+					  }
+					//check if touching bush
+					if(this.bushes.filter(x => cc(x.x, x.y, x.displayWidth/2, this.mePlayer.x, this.mePlayer.y, this.mePlayer.displayWidth/2)).length > 0) {
+						this.meBar.bar.setAlpha(0.5);
+					} else {
+						if(this.meBar.bar.alpha != 1) {
+							this.meBar.bar.setAlpha(1);
+						}
+					}
 
 				});
 				this.socket.on("player", (player) => {
