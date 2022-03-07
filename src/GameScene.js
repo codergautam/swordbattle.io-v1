@@ -947,6 +947,7 @@ try {
 		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 		this.mePlayer.angle = this.meSword.angle + 45 +180;
 		//sword animation
+		/*
 		if (this.mouseDown ) {
 			if(this.swordAnim.added <= 0) this.swordAnim.go = true;
 		}
@@ -964,7 +965,55 @@ try {
 			this.swordAnim.added -= 10;
 			this.meSword.angle -= this.swordAnim.added;
 		}
-        
+		*/
+		var cooldown = (this.myObj ? this.myObj.damageCooldown : 120);
+		if(this.mouseDown && !this.swordAnim.go && this.swordAnim.added == 0) {
+			this.swordAnim.go = true;
+	
+
+			this.tweens.addCounter({
+				from: 0,
+				to: 50,
+				duration: cooldown,
+				onUpdate:  (tween)=>
+				{
+					console.log(tween.getValue());
+					//  tween.getValue = range between 0 and 360
+		
+					this.swordAnim.added = tween.getValue();
+				
+				},
+				onComplete: ()=>
+				{
+					//this.swordAnim.added = 0;
+					this.swordAnim.go = false;
+				}
+			});
+		} else if(!this.swordAnim.go && !this.mouseDown && this.swordAnim.added > 0) {
+			this.swordAnim.go = true;
+	
+
+			this.tweens.addCounter({
+				from: 50,
+				to: 0,
+				duration: cooldown,
+				onUpdate:  (tween)=>
+				{
+					console.log(tween.getValue());
+					//  tween.getValue = range between 0 and 360
+		
+					this.swordAnim.added = tween.getValue();
+				
+				},
+				onComplete: ()=>
+				{
+					//this.swordAnim.added = 0;
+					this.swordAnim.go = false;
+				}
+			});
+		}
+		console.log(this.swordAnim.added);
+        this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {
 			viewport: {
