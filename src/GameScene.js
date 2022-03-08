@@ -83,6 +83,7 @@ class GameScene extends Phaser.Scene {
         
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+        this.meChat = this.add.text(0,0,"")
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
 
@@ -210,6 +211,7 @@ class GameScene extends Phaser.Scene {
 						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
 						//set focus to chat
 						this.chat.obj.getChildByID("chat").focus();
+            
 					} else {
 
 						if(this.chat.obj) {
@@ -654,7 +656,16 @@ class GameScene extends Phaser.Scene {
 					}
 				});
 				this.socket.on("chat", (data) => {
-					//do smth
+					if(!this.myObj) return
+
+          if(data.id == this.myObj.id)  {
+           this.meChat.setFontSize(100*this.myObj.scale);
+				this.meChat.x = this.canvas.width/2
+            this.meChat.x -= this.meChat.width/2
+				this.meChat.y = (this.canvas.height/2) - (this.mePlayer.displayHeight) - this.meChat.height;
+            this.meChat.setText(data.msg)
+          }
+          
 
 				});
 				this.socket.on("playerLeave", this.removePlayer);
