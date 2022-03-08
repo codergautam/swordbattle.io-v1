@@ -371,28 +371,31 @@ app.get("/:user", async (req, res, next) => {
 		/*
 		TODO
 
-				SELECT A.DATE_ACTUAL,
+		SELECT A.dt,
 		B.NAME,
 		B.COINS
 		FROM
 		(
-		SELECT DATE_ACTUAL FROM d_date
+		SELECT distinct(DATE_ACTUAL) as dt FROM d_date
 			WHERE DATE_ACTUAL>='2022-01-01'
+		order by date_actual asc
 		) A
 		
-		LEFT JOIN 
+		LEFT outer JOIN 
 		(
 		SELECT
-		CREATED_AT::DATE AS PLAYED_DATE,
 		NAME,
-		COINS
+		CREATED_AT::DATE AS PLAYED_DATE,
+		sum(COINS) as coins
 		FROM
 		GAMES GMS
 		WHERE VERIFIED=TRUE
+		group by name,created_at::Date
 		) B
-		ON A.date_actual=B.PLAYED_DATE
+		ON A.dt=B.PLAYED_DATE
 		WHERE NAME='Dooku'
-		ORDER BY A.DATE_ACTUAL ASC
+		ORDER BY A.dt ASC
+	
 */
 
 
