@@ -178,6 +178,12 @@ class GameScene extends Phaser.Scene {
 
 				this.lvlBar.draw();
 
+				//chat
+				this.chat = {
+					obj: null,
+					toggled: false,
+				};
+
 				//coins array
 				this.coins = [];
 				this.chests = [];
@@ -193,8 +199,28 @@ class GameScene extends Phaser.Scene {
 					down: KeyCodes.DOWN,
 					left: KeyCodes.LEFT,
 					right: KeyCodes.RIGHT,
+					enter: KeyCodes.ENTER,
 				}, false);
 
+				this.cursors.enter.on("down", () => {
+					if(this.loadtext.visible) return;
+					this.chat.toggled = !this.chat.toggled;
+					if(this.chat.toggled) {
+						
+						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
+						//set focus to chat
+						this.chat.obj.getChildByID("chat").focus();
+					} else {
+
+						if(this.chat.obj) {
+							
+							var msg = this.chat.obj.getChildByID("chat").value.trim();
+							if(msg.length > 0) this.socket.emit("chat", msg);
+
+						this.chat.obj.destroy();
+						}
+					}
+				});
 				//lvl text
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
@@ -280,9 +306,9 @@ class GameScene extends Phaser.Scene {
 
 				window.addEventListener("resize", resize, true);
 				//go packet
-				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
+				//var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server);
+				this.socket = io();
 				
 				function handleErr(err) {
 					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
@@ -312,6 +338,9 @@ class GameScene extends Phaser.Scene {
 						this.socket.emit("mouseDown", false);
 					}
 				}, this);
+
+			
+
 				if(this.mobile) {
 					this.gamePoint = {x: 0, y: 0};
 					this.input.on("pointermove", (pointer) => {
@@ -623,6 +652,10 @@ class GameScene extends Phaser.Scene {
 					} catch (e) {
 						console.log(e);
 					}
+				});
+				this.socket.on("chat", (data) => {
+					//do smth
+
 				});
 				this.socket.on("playerLeave", this.removePlayer);
 				this.socket.on("playerDied", (id, data) => {
@@ -977,7 +1010,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
+					
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -999,9 +1032,6 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
-					//  tween.getValue = range between 0 and 360
-		
 					this.swordAnim.added = tween.getValue();
 				
 				},
@@ -1012,7 +1042,6 @@ try {
 				}
 			});
 		}
-		console.log(this.swordAnim.added);
         this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {

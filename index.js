@@ -555,6 +555,22 @@ io.on("connection", async (socket) => {
 	socket.on( "ping", function ( fn ) {
 		fn(); // Simply execute the callback on the client
 	} );
+	socket.on("chat", (msg) => {
+		msg = msg.trim().replace(/\\/g, "\\\\");
+		if (msg.length > 0) {
+			if (msg.length > 20) msg = msg.substring(0, 16);
+			if (!PlayerList.has(socket.id) || Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000) return;
+			var p = PlayerList.getPlayer(socket.id);
+			p.lastChat = Date.now();
+			PlayerList.setPlayer(socket.id, p);
+			filter.clean(msg).then((msg) => {
+				io.sockets.emit("chat", {
+					msg: msg,
+					id: socket.id,
+				});
+			});
+		}
+	});
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);

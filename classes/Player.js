@@ -21,6 +21,7 @@ class Player {
     this.scale = 0.25;
     this.damage = 10;
     this.level = 1;
+    this.lastChat = Date.now();
     this.damageCooldown = 100;
     this.verified = false;
     

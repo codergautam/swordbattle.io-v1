@@ -69,6 +69,7 @@ class OpenScene extends Phaser.Scene {
         this.load.html("dropdown", "/dropdown.html");
         this.load.html("footer", "/footer.html");
         this.load.html("settings", "/settings.html");
+        this.load.html("chat", "/chatbox.html");
         this.load.audio("openingsound", "/assets/sound/opening.mp3");
 
 
