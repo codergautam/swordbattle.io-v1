@@ -367,14 +367,48 @@ app.get("/:user", async (req, res, next) => {
 		next();
 	} else {
 		var yo = await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+
+		/*
+		TODO
+
+		SELECT A.dt,
+		B.NAME,
+		B.COINS
+		FROM
+		(
+		SELECT distinct(DATE_ACTUAL) as dt FROM d_date
+			WHERE DATE_ACTUAL>='2022-01-01'
+		order by date_actual asc
+		) A
+		
+		LEFT outer JOIN 
+		(
+		SELECT
+		NAME,
+		CREATED_AT::DATE AS PLAYED_DATE,
+		sum(COINS) as coins
+		FROM
+		GAMES GMS
+		WHERE VERIFIED=TRUE
+		group by name,created_at::Date
+		) B
+		ON A.dt=B.PLAYED_DATE
+		WHERE NAME='Dooku'
+		ORDER BY A.dt ASC
+	
+*/
+
+
 		var stats = await sql`
 		select a.dt,b.name,b.xp,b.kills from
 		(
-		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 order by created_at::date 
+		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 
+		order by created_at::date 
 		) a
 		left join
 		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,
+		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
 		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;

@@ -211,6 +211,7 @@ class GameScene extends Phaser.Scene {
 						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
 						//set focus to chat
 						this.chat.obj.getChildByID("chat").focus();
+            
 					} else {
 
 						if(this.chat.obj) {
