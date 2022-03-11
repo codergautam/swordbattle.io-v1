@@ -83,6 +83,7 @@ class GameScene extends Phaser.Scene {
         
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.meChat = this.add.text(0,0,"").setOrigin(0.5).setDepth(70);
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
 
@@ -234,7 +235,7 @@ class GameScene extends Phaser.Scene {
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
 				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
-				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
+				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 				//bushes
@@ -655,6 +656,18 @@ class GameScene extends Phaser.Scene {
 				});
 				this.socket.on("chat", (data) => {
 					//do smth
+					if(!this.myObj) return
+
+          if(data.id == this.myObj.id)  {
+           this.meChat.setFontSize(100*this.myObj.scale);
+
+            this.meChat.setText(data.msg)
+			this.meChat.x = this.mePlayer.x
+			this.meChat.y = (this.mePlayer.y) - (this.mePlayer.displayHeight*this.cameras.main.zoom) - (this.meChat.displayHeight/2)
+			console.log(this.cameras.main.zoom)
+			console.log(this.mePlayer.displayHeight*this.cameras.main.zoom)
+          }
+
 
 				});
 				this.socket.on("playerLeave", this.removePlayer);
