@@ -211,7 +211,7 @@ var move = true;
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          //this.coins += (this.ai?coin.value:100);
+         // this.coins += (this.ai?coin.value:100);
           this.coins+= coin.value;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
@@ -253,11 +253,13 @@ var move = true;
 
       return coins;
   }
+
+
   hittingPlayer(player) {
 
   
   var deep = 0;
-  var angles = [-5,0,5,10,15,25,30,35,40,45, 50,55];
+  var angles = [-5,0,5,10,15,25,30,35,40,45];
 
   for (const increment of angles) {
 
@@ -268,19 +270,21 @@ var move = true;
     var factor = (100/(this.scale*100))*1.5;
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180));
     sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180));
-
-  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
-  var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
-
                           //get the values needed for line-circle-collison
                        
                           var radius = player.radius *player.scale;
 
                           //check if enemy and player colliding
-                          if(intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
+                  
+
+  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+  var base = [this.pos.x,this.pos.y];
+
+    if(intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return [true,false];
 
   }
-return false;
+    
+return [false];
   }
   touchingPlayer(player) {
         return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.6, player.pos.x, player.pos.y, (player.radius*player.scale)*0.5);
@@ -318,8 +322,9 @@ return false;
         if (enemy && enemy.id != this.id && !PlayerList.deadPlayers.includes(enemy.id)) {
           //get the values needed for line-circle-collison
           //check if enemy and player colliding
+          var [hitting,inside] = this.hittingPlayer(enemy)
           if (
-            this.hittingPlayer(enemy)
+            hitting
           ) {
             var socketById = io.sockets.sockets.get(enemy.id);
             var socket = io.sockets.sockets.get(this.id);
@@ -339,9 +344,10 @@ return false;
             if(Date.now() - enemy.joinTime >= 5000) {
             enemy.lastHit = Date.now();
             var oldHealth = enemy.health;
-            enemy.health -= this.damage;
+           if(!inside) { enemy.health -= this.damage;
             if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
               enemy.health = enemy.maxHealth * 0.1;
+                       }
             if (enemy.health <= 0) {
               if(!this.ai && socket) socket.emit("dealHit", enemy.id);
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
@@ -410,9 +416,7 @@ return false;
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
             }
           } else {
-            enemy.doKnockback(this);
-            if(!this.ai && socket) socket.emit("dealHit", enemy.id);
-            if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
+           
           }
         }
         }

@@ -45,6 +45,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+   // this.lines = [];
 		var map = 10000;
 
         this.levels = [];
@@ -458,6 +459,21 @@ class GameScene extends Phaser.Scene {
            
 					}
 				});
+/*
+        this.socket.on("angles", (angles) => {
+          this.lines.forEach((e) => {
+            e.destroy();
+          })
+          this.lines = [];
+          angles.forEach((e) => {
+            
+            this.lines.push(this.add.circle(e[0][0], e[0][1], 10,0xff0000).setDepth(1000));
+                   
+            this.lines.push(this.add.circle(e[1][0], e[1][1], 10,0xff0000).setDepth(1000));
+            this.UICam.ignore(this.lines[this.lines.length-1])
+            
+          })
+        })*/
 				this.socket.on("me", (player) => {
 					if(this.loadrect.visible) this.loadrect.destroy();
 					if(this.loadtext.visible) this.loadtext.destroy();
@@ -978,7 +994,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
+				///	console.log(tween.getValue());
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -1000,7 +1016,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
+				//	console.log(tween.getValue());
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -1013,7 +1029,7 @@ try {
 				}
 			});
 		}
-		console.log(this.swordAnim.added);
+		//console.log(this.swordAnim.added);
         this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {
