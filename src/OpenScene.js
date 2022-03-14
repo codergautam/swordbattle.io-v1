@@ -18,7 +18,11 @@ class OpenScene extends Phaser.Scene {
     preload() {
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
-     
+   this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
+      
+      this.loadText.setFontSize(this.canvas.width/20);
+      this.loadText.x = this.canvas.width/2;
+      this.loadText.y = this.canvas.height/2;
         this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
         this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
@@ -73,6 +77,7 @@ class OpenScene extends Phaser.Scene {
 
 
         this.scale.fullscreenTarget = document.getElementById("game");
+  
     }
 
     create() {
@@ -151,7 +156,7 @@ class OpenScene extends Phaser.Scene {
             this.euRect.destroy();
             this.usRect.destroy();
         }
-    
+        this.loadText.destroy();
         this.euRect = this.add.rectangle(this.canvas.width/3*2, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
         this.usRect = this.add.rectangle(this.canvas.width/3, this.canvas.height/2, this.canvas.width/4, this.canvas.height/2, 0xFFFFFF);
         
