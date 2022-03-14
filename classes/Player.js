@@ -410,6 +410,9 @@ return false;
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
             }
           } else {
+            enemy.doKnockback(this);
+            if(!this.ai && socket) socket.emit("dealHit", enemy.id);
+            if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
           }
         }
         }

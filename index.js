@@ -8,6 +8,8 @@ var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
+
+var map = 10000;
 //var cors = require("cors");
 
 var server;
@@ -555,9 +557,40 @@ io.on("connection", async (socket) => {
 	socket.on( "ping", function ( fn ) {
 		fn(); // Simply execute the callback on the client
 	} );
+	function clamp(num, min, max) {
+		return num <= min ? min : num >= max ? max : num;
+	}
+
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
+
+              //drop their coins
+              var drop = [];
+              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 10000);
+              var dropped = 0;
+              while (dropped < dropAmount) {
+                var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());
+                var theta = Math.random() * 2 * Math.PI;
+                var x = thePlayer.pos.x + r * Math.cos(theta);
+                var y = thePlayer.pos.y + r * Math.sin(theta);
+                var remaining = dropAmount - dropped;
+                var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
+
+                coins.push(
+                  new Coin({
+                    x: clamp(x, -(map/2), map/2),
+                    y: clamp(y, -(map/2), map/2),
+                  },value)
+                );
+                dropped += value;
+                drop.push(coins[coins.length - 1]);
+              }
+
+                io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+              
+
+
 		sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${thePlayer.id}, ${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);
