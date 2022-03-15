@@ -42,13 +42,13 @@ try {
       this.options = JSON.parse(window.localStorage.getItem("options"));
     } else {
       this.options = {
-        movementMode: "keys"
+        movementMode: (this.mobile?"keys":"mouse")
       };
       window.localStorage.setItem("options", JSON.stringify(this.options));
     }
   } else {
     this.options = {
-      movementMode: "keys"
+      movementMode: (this.mobile?"keys":"mouse")
     };
   }
 

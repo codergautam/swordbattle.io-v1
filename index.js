@@ -124,7 +124,6 @@ var oldlevels = [
 	{coins: 80000, scale: 4.7},
 	{coins: 90000, scale: 4.8},
 	{coins: 100000, scale: 4.9},
-  	{coins: 200000, scale: 5},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -598,7 +597,7 @@ io.on("connection", async (socket) => {
 	});
 });
 
-
+//tick
 var secondStart = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
@@ -610,7 +609,7 @@ app.get("/api/serverinfo", (req, res) => {
 		playerCount, lag, maxPlayers
 	});
 });
-//tick
+
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
@@ -686,10 +685,7 @@ setInterval(async () => {
 			sockets.forEach((socket) => {
 				if(!player.getSendObj()) console.log("gg");
 				if (player.id != socket.id) socket.emit("player", player.getSendObj());
-				else {
-          socket.emit("me", player);
-         // socket.emit("angles", player.getangles())
-        }
+				else socket.emit("me", player);
 			});
 		}
 	});
