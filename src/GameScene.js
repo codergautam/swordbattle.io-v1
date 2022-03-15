@@ -978,7 +978,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
+				//	console.log(tween.getValue());
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -1000,7 +1000,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-					console.log(tween.getValue());
+				//	console.log(tween.getValue());
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -1013,7 +1013,7 @@ try {
 				}
 			});
 		}
-		console.log(this.swordAnim.added);
+		//console.log(this.swordAnim.added);
         this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {
