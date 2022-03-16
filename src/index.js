@@ -8,6 +8,7 @@ if ("serviceWorker" in navigator) {
     // register service worker
     navigator.serviceWorker.register("sw.js");
   }
+
   
  window.addEventListener("online", handleConnection);
 window.addEventListener("offline", handleConnection);

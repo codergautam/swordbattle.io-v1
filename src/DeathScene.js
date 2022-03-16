@@ -17,6 +17,9 @@ class DeathScene extends Phaser.Scene {
         this.callback = callback;
     }
     preload() {
+
+
+  window.onbeforeunload = ()=>{};
     }
 
     create() {
