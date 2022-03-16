@@ -8,6 +8,12 @@ class GameScene extends Phaser.Scene {
 	}
 
 	preload() {    
+
+		window.onbeforeunload = confirmExit;
+		function confirmExit(e) {
+			e.preventDefault();
+			return "You are in game.. Do you really want to leave?";
+		}
 		try {       
 			document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
 		} catch(e) {
@@ -83,6 +89,8 @@ class GameScene extends Phaser.Scene {
         
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.meChat = this.add.text(0,0,"").setOrigin(0.5).setDepth(71);
+				this.meChatTween = undefined;
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
 
@@ -178,6 +186,12 @@ class GameScene extends Phaser.Scene {
 
 				this.lvlBar.draw();
 
+				//chat
+				this.chat = {
+					obj: null,
+					toggled: false,
+				};
+
 				//coins array
 				this.coins = [];
 				this.chests = [];
@@ -193,8 +207,29 @@ class GameScene extends Phaser.Scene {
 					down: KeyCodes.DOWN,
 					left: KeyCodes.LEFT,
 					right: KeyCodes.RIGHT,
+					enter: KeyCodes.ENTER,
 				}, false);
 
+				this.cursors.enter.on("down", () => {
+					if(this.loadtext.visible) return;
+					this.chat.toggled = !this.chat.toggled;
+					if(this.chat.toggled) {
+						
+						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
+						//set focus to chat
+						this.chat.obj.getChildByID("chat").focus();
+            
+					} else {
+
+						if(this.chat.obj) {
+							
+							var msg = this.chat.obj.getChildByID("chat").value.trim();
+							if(msg.length > 0) this.socket.emit("chat", msg);
+
+						this.chat.obj.destroy();
+						}
+					}
+				});
 				//lvl text
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
@@ -208,7 +243,7 @@ class GameScene extends Phaser.Scene {
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
 				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
-				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
+				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 				//bushes
@@ -281,9 +316,11 @@ class GameScene extends Phaser.Scene {
 
 				window.addEventListener("resize", resize, true);
 				//go packet
-				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
+				//var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server);
+				this.socket = io(undefined,{
+					closeOnBeforeunload: false
+				});
 				
 				function handleErr(err) {
 					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
@@ -313,6 +350,9 @@ class GameScene extends Phaser.Scene {
 						this.socket.emit("mouseDown", false);
 					}
 				}, this);
+
+			
+
 				if(this.mobile) {
 					this.gamePoint = {x: 0, y: 0};
 					this.input.on("pointermove", (pointer) => {
@@ -366,8 +406,13 @@ class GameScene extends Phaser.Scene {
 						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
 						toAngle: 0,
+						chatText: this.add.text(0,0, "", {
+							fontFamily: "serif",
+						}).setDepth(71).setOrigin(0.5),
+						chatTween: undefined,
 					};
          
+					
 					var factor = (100/(player.scale*100))*1.5;
        
 					enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
@@ -377,7 +422,7 @@ class GameScene extends Phaser.Scene {
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 					enemy.bar.bar.setDepth(69);
           
-					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag, this.graphics]);
+					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag,enemy.chatText, this.graphics]);
 					this.enemies.push(enemy);
 
 					var circle = this.add.circle(0, 0, 10, 0xFF0000);
@@ -573,7 +618,7 @@ class GameScene extends Phaser.Scene {
 					  }
 					//check if touching bush
 					if(this.bushes.filter(x => cc(x.x, x.y, x.displayWidth/2, this.mePlayer.x, this.mePlayer.y, this.mePlayer.displayWidth/2)).length > 0) {
-						this.meBar.bar.setAlpha(0.5);
+						this.meBar.bar.setAlpha(0.3);
 					} else {
 						if(this.meBar.bar.alpha != 1) {
 							this.meBar.bar.setAlpha(1);
@@ -624,6 +669,68 @@ class GameScene extends Phaser.Scene {
 					} catch (e) {
 						console.log(e);
 					}
+				});
+				this.socket.on("chat", (data) => {
+					//do smth
+					if(!this.myObj) return;
+
+          if(data.id == this.myObj.id)  {
+            this.meChat.setText(data.msg);
+			this.meChat.setAlpha(0);
+
+			if(this.meChatTween) this.meChatTween.stop();
+
+			this.meChatTween = this.tweens.add({
+				targets: this.meChat,
+				duration: 200,
+				alpha: 1,
+				completeDelay: 2000,
+				onComplete: () => {
+					this.meChatTween = this.tweens.add({
+						targets: this.meChat,
+						duration: 200,
+						alpha: 0,
+						onComplete: () => {
+							this.meChat.setText("");
+						}
+					});
+
+				},
+				
+				ease: "Power2"
+			});
+
+          } else {
+			var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == data.id);
+			if(!enemy) return;
+
+			enemy.chatText.setText(data.msg);
+			enemy.chatText.setAlpha(0);
+
+			if(enemy.chatTween) enemy.chatTween.stop();
+
+			enemy.chatTween = this.tweens.add({
+				targets: enemy.chatText,
+				duration: 200,
+				alpha: 1,
+				completeDelay: 2000,
+				onComplete: () => {
+					enemy.chatTween = this.tweens.add({
+						targets: enemy.chatText,
+						duration: 200,
+						alpha: 0,
+						onComplete: () => {
+							enemy.chatText.setText("");
+						}
+					});
+
+				}
+			});
+
+
+		  }
+
+
 				});
 				this.socket.on("playerLeave", this.removePlayer);
 				this.socket.on("playerDied", (id, data) => {
@@ -947,6 +1054,8 @@ try {
 
 		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 		this.mePlayer.angle = this.meSword.angle + 45 +180;
+
+
 		//sword animation
 		/*
 		if (this.mouseDown ) {
@@ -978,7 +1087,7 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-				//	console.log(tween.getValue());
+					
 					//  tween.getValue = range between 0 and 360
 		
 					this.swordAnim.added = tween.getValue();
@@ -1000,9 +1109,6 @@ try {
 				duration: cooldown,
 				onUpdate:  (tween)=>
 				{
-				//	console.log(tween.getValue());
-					//  tween.getValue = range between 0 and 360
-		
 					this.swordAnim.added = tween.getValue();
 				
 				},
@@ -1013,7 +1119,6 @@ try {
 				}
 			});
 		}
-		//console.log(this.swordAnim.added);
         this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {
@@ -1051,6 +1156,7 @@ try {
 			enemy.bar.height = (enemy.player.height*scale*0.150);
 			enemy.bar.x = enemy.player.x  - enemy.bar.width / 2;
 			enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2);
+		
 
 			enemy.bar.draw();
 			try {
@@ -1060,6 +1166,12 @@ try {
 			} catch(e) {
 				console.log(e);
 			}
+
+			if(enemy.playerObj) enemy.chatText.setFontSize(100*enemy.playerObj.scale);
+			enemy.chatText.x = enemy.player.x;
+			enemy.chatText.y = enemy.nameTag.y - enemy.bar.height;
+
+
 			if(enemy.playerObj) {
 				var factor = (100/(enemy.playerObj.scale*100))*1.5;
 			} else {
@@ -1103,6 +1215,9 @@ try {
 		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);
 		this.meBar.x = this.mePlayer.x  - this.meBar.width / 2;
 		this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2);
+		if(this.myObj) this.meChat.setFontSize(100*this.myObj.scale);
+		this.meChat.x = this.mePlayer.x;
+		this.meChat.y = this.meBar.y - this.meBar.height;
 		this.meBar.draw();
 		if(this.myObj) { 
 			var factor1 = (100/(this.myObj.scale*100))*1.5;

@@ -124,6 +124,17 @@ var oldlevels = [
 	{coins: 80000, scale: 4.7},
 	{coins: 90000, scale: 4.8},
 	{coins: 100000, scale: 4.9},
+	{coins: 110000, scale: 5},
+	{coins: 120000, scale: 5.1},
+	{coins: 130000, scale: 5.2},
+	{coins: 140000, scale: 5.3},
+	{coins: 150000, scale: 5.4},
+	{coins: 160000, scale: 5.5},
+	{coins: 170000, scale: 5.6},
+	{coins: 180000, scale: 5.7},
+	{coins: 190000, scale: 5.8},
+	{coins: 200000, scale: 5.9},
+	{coins: 300000, scale: 6},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -369,14 +380,48 @@ app.get("/:user", async (req, res, next) => {
 		next();
 	} else {
 		var yo = await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+
+		/*
+		TODO
+
+		SELECT A.dt,
+		B.NAME,
+		B.COINS
+		FROM
+		(
+		SELECT distinct(DATE_ACTUAL) as dt FROM d_date
+			WHERE DATE_ACTUAL>='2022-01-01'
+		order by date_actual asc
+		) A
+		
+		LEFT outer JOIN 
+		(
+		SELECT
+		NAME,
+		CREATED_AT::DATE AS PLAYED_DATE,
+		sum(COINS) as coins
+		FROM
+		GAMES GMS
+		WHERE VERIFIED=TRUE
+		group by name,created_at::Date
+		) B
+		ON A.dt=B.PLAYED_DATE
+		WHERE NAME='Dooku'
+		ORDER BY A.dt ASC
+	
+*/
+
+
 		var stats = await sql`
 		select a.dt,b.name,b.xp,b.kills from
 		(
-		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 order by created_at::date 
+		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 
+		order by created_at::date 
 		) a
 		left join
 		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,
+		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
 		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
@@ -557,10 +602,25 @@ io.on("connection", async (socket) => {
 	socket.on( "ping", function ( fn ) {
 		fn(); // Simply execute the callback on the client
 	} );
+	socket.on("chat", (msg) => {
+		msg = msg.trim().replace(/\\/g, "\\\\");
+		if (msg.length > 0) {
+			if (msg.length > 20) msg = msg.substring(0, 16);
+			if (!PlayerList.has(socket.id) || Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000) return;
+			var p = PlayerList.getPlayer(socket.id);
+			p.lastChat = Date.now();
+			PlayerList.setPlayer(socket.id, p);
+			filter.clean(msg).then((msg) => {
+				io.sockets.emit("chat", {
+					msg: msg,
+					id: socket.id,
+				});
+			});
+		}
+	});
 	function clamp(num, min, max) {
 		return num <= min ? min : num >= max ? max : num;
 	}
-
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
