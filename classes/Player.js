@@ -200,7 +200,7 @@ var move = true;
     
     var oldPos = this.pos;
 
-    var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*Math.PI/180 , player.power-this.resistance);
+  var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*Math.PI/180 , Math.max(player.power-this.resistance,50));
     
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);
