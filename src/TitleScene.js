@@ -111,7 +111,10 @@ return;
   } else if(this.options.sound == "off") {
     this.music.volume = 0;
   } else {
+    this.options.sound = "normal";
     this.music.volume = 0.5;
+
+    if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
   }
 
   this.settingsBtn = new ImgButton(this, 0,0, "settingsBtn", () => {
