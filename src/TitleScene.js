@@ -42,13 +42,15 @@ try {
       this.options = JSON.parse(window.localStorage.getItem("options"));
     } else {
       this.options = {
-        movementMode: (this.mobile?"keys":"mouse")
+        movementMode: (this.mobile?"keys":"mouse"),
+        sound: "normal",
       };
       window.localStorage.setItem("options", JSON.stringify(this.options));
     }
   } else {
     this.options = {
-      movementMode: (this.mobile?"keys":"mouse")
+      movementMode: (this.mobile?"keys":"mouse"),
+      sound: "normal"
     };
   }
 
@@ -100,6 +102,17 @@ return;
     fill: "#000000"
   }).setOrigin(0.5);
 
+  if(this.options.sound == "normal") {
+    this.music.volume = 0.5;
+  } else if(this.options.sound == "high") {
+    this.music.volume = 1;
+  }  else if(this.options.sound == "low") {
+    this.music.volume = 0.2;
+  } else if(this.options.sound == "off") {
+    this.music.volume = 0;
+  } else {
+    this.music.volume = 0.5;
+  }
 
   this.settingsBtn = new ImgButton(this, 0,0, "settingsBtn", () => {
     if(this.promo && this.promo.visible) return;
@@ -113,9 +126,24 @@ return;
       this.settings.destroy();
     };
     document.getElementById("movement").value = this.options.movementMode;
+    document.getElementById("sound").value = this.options.sound;
     document.getElementById("movement").onchange = () => {
       this.options.movementMode = document.getElementById("movement").value;
       if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+    };
+    document.getElementById("sound").onchange = () => {
+      this.options.sound = document.getElementById("sound").value;
+      if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+
+      if(this.options.sound == "normal") {
+        this.music.volume = 0.6;
+      } else if(this.options.sound == "high") {
+        this.music.volume = 1.2;
+      }  else if(this.options.sound == "low") {
+        this.music.volume = 0.2;
+      } else if(this.options.sound == "off") {
+        this.music.volume = 0;
+      }
     };
 
 
