@@ -208,8 +208,15 @@ class GameScene extends Phaser.Scene {
 					left: KeyCodes.LEFT,
 					right: KeyCodes.RIGHT,
 					enter: KeyCodes.ENTER,
+					esc: KeyCodes.ESC,
 				}, false);
 
+				this.cursors.esc.on("down", () => {
+					if(this.chat.toggled) {
+						this.chat.obj.destroy();
+						this.chat.toggled = false;
+					}
+				});
 				this.cursors.enter.on("down", () => {
 					if(this.loadtext.visible) return;
 					this.chat.toggled = !this.chat.toggled;
@@ -316,9 +323,9 @@ class GameScene extends Phaser.Scene {
 
 				window.addEventListener("resize", resize, true);
 				//go packet
-				//var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
+				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(undefined,{
+				this.socket = io(server,{
 					closeOnBeforeunload: false
 				});
 				

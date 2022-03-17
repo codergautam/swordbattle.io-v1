@@ -215,8 +215,8 @@ var move = true;
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          this.coins += (this.ai?coin.value:1000);
-          //this.coins+= coin.value;
+          //this.coins += (this.ai?coin.value:1000);
+          this.coins+= coin.value;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
 
