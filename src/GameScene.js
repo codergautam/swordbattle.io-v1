@@ -71,7 +71,18 @@ class GameScene extends Phaser.Scene {
 					loop: false,
 					delay: 0
 				};
-    
+
+				if(this.options.sound == "normal") {
+					config.volume = 0.5;
+				  } else if(this.options.sound == "high") {
+					config.volume = 1;
+				  }  else if(this.options.sound == "low") {
+					config.volume = 0.2;
+				  } else if(this.options.sound == "off") {
+					config.volume = 0;
+				  } else {
+					config.volume = 0.5;
+				  }
 
 				this.coin = this.sound.add("coin", config);
 				this.chestOpen = this.sound.add("chestOpen", config);
