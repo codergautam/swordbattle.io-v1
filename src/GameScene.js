@@ -249,12 +249,15 @@ class GameScene extends Phaser.Scene {
 					}
 				});
 				//lvl text
+				try {
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
 
 				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
 				this.lvlState.y = this.lvlBar.y - (this.lvlState.height / 2);
-
+				} catch(e) {
+					console.log(e);
+				}
 				//camera follow
 				this.cameras.main.setZoom(1);
         
@@ -1184,12 +1187,13 @@ try {
 			} catch(e) {
 				console.log(e);
 			}
-
+			try {
 			if(enemy.playerObj) enemy.chatText.setFontSize(100*enemy.playerObj.scale);
 			enemy.chatText.x = enemy.player.x;
 			enemy.chatText.y = enemy.nameTag.y - enemy.bar.height;
-
-
+			} catch(e) {
+				console.log(e);
+			}
 			if(enemy.playerObj) {
 				var factor = (100/(enemy.playerObj.scale*100))*1.5;
 			} else {
@@ -1228,7 +1232,7 @@ try {
 		var myObj = this.myObj;
   
 		if(!myObj) myObj = {scale: 0.25};
-
+		try {
 		this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375);
 		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);
 		this.meBar.x = this.mePlayer.x  - this.meBar.width / 2;
@@ -1244,7 +1248,9 @@ try {
 		}
 		this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180);
 		this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180);
-
+	} catch(e) {
+		console.log(e);
+	}
 
         function conv(num) {
 			return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
