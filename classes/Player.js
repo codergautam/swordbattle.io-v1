@@ -19,7 +19,6 @@ class Player {
     this.kills = 0;
     this.speed = 700;
     this.scale = 0.25;
-    this.actualScale = 0.25;
     this.damage = 10;
     this.level = 1;
     this.lastChat = Date.now();
@@ -215,38 +214,23 @@ var move = true;
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          //this.coins += (this.ai?coin.value:1000);
-          this.coins+= coin.value;
+          this.coins += (this.ai?coin.value:10000);
+         // this.coins+= coin.value;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
+            if(this.level != levels.length) {
 
-            if (this.level == levels.length) {
-              //yay you won!
-              if(!this.ai) {
-              var socketById = io.sockets.sockets.get(this.id);
-              
-             sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${this.id}, ${this.name}, ${this.coins}, ${this.kills}, ${Date.now() - this.joinTime}, ${this.verified})`;
-              
-              socketById.emit("youWon", {
-                timeSurvived: Date.now() - this.joinTime,
-              });
-              socketById.broadcast.emit("playerDied", this.id);
-              } else {
-    io.sockets.emit("playerDied", this.id);
-              }
-    
-              //delete the player
-              PlayerList.deletePlayer(this.id);
-    
-              //disconnect the player
-              if(!this.ai) socketById.disconnect();
-            } else {
+            
+   
               var lvl = levels[this.level-1];
+    
               this.level += 1;
-              this.scale = Math.min(lvl.scale, 2);
-              this.actualScale = lvl.scale;
+         
+              this.scale = lvl.scale;
             }
+            
           }
+
 
           var index = coins.findIndex((e) => e.id == coin.id);
           coins.splice(index, 1);
@@ -297,13 +281,13 @@ return false;
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num;
     var percent = this.health / this.maxHealth;
-    this.maxHealth = this.actualScale * 400;
+    this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
-    this.damage =  (80 * this.actualScale > 30 ? 30 +(((80 * this.actualScale) - 30) / 5) : 80 * this.actualScale );
+    this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
     this.speed = clamp(740 - (convert(0.25, 1, this.scale) * 40),200,700);
 
-    this.power = convert(0.25, 200, this.actualScale);
-    this.resistance = convert(0.25, 20, this.actualScale);
+    this.power = convert(0.25, 200, this.scale);
+    this.resistance = convert(0.25, 20, this.scale);
 
     this.damageCooldown = 50 + (this.level * 5);
 
