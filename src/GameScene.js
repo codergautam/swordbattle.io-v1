@@ -620,13 +620,13 @@ class GameScene extends Phaser.Scene {
 							}
 						);
 					}
-
+					if(!this.spectating) {
 					var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 					miniMapPlayer.circle.radius = player.scale * convert(1280, 15, this.canvas.width);
-
+					}
 					function cc(p1x, p1y, r1, p2x, p2y, r2) {
 						var a;
 						var x;
@@ -684,6 +684,7 @@ class GameScene extends Phaser.Scene {
 						enemy.down = player.mouseDown;
 
 						//minimap
+						if(this.spectating) return;
 						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
         
@@ -692,26 +693,7 @@ class GameScene extends Phaser.Scene {
 						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 						miniMapPlayer.circle.radius = convert(1280, 15, this.canvas.width) * player.scale;
 
-						if(this.spectating && player.id == this.spectatingPlayer.playerObj.id) {
-							
-							var show = 1000;
-							show += (this.spectatingPlayer.player.width*player.scale)*5;
-							
-							
-							//var oldZoom = this.cameras.main.zoom;
-							var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
-							 this.cameras.main.setZoom(
-								newZoom
-							); 
-						
 		
-							  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
-							  this.background.displayHeight = this.cameras.main.displayHeight;
-							  this.background.displayWidth = this.cameras.main.displayWidth;
-						
-							//console
-		
-						}
 
 					} catch (e) {
 						console.log(e);
@@ -1012,14 +994,17 @@ class GameScene extends Phaser.Scene {
 					this.lvlState.destroy();
 					this.killCount.destroy();
 					this.leaderboard.destroy();
+					this.miniGraphics.destroy();
+					this.playerCount.destroy();
+					this.miniMap.people.forEach((person) => {
+						person.circle.destroy();
+					});
+					this.miniMap.people = [];
 
-					var killedById = data.killedById;
-					var enemy = this.enemies.find(e => e.id == killedById);
-					this.spectatingPlayer = enemy;
-					console.log(enemy, killedById);
-					if(enemy) {
-					this.cameras.main.startFollow(enemy.player);
-					}
+
+					
+					
+
 				});
 				this.socket.on("youWon", (data) => {
 					this.win(data);
@@ -1371,7 +1356,7 @@ try {
 		});
 
 		//background movement
-		var player = this.spectating ? this.spectatingPlayer : this.mePlayer;
+		var player = this.mePlayer;
 		this.background.setTilePosition(
 			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.cameras.main.midPoint.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
 			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.cameras.main.midPoint.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
