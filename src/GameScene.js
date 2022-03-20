@@ -211,6 +211,7 @@ class GameScene extends Phaser.Scene {
 				//enemies array
 				this.enemies = [];
 				this.dead = false;
+				this.spectating = false;
 				//arrow keys
 				var KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 				this.cursors = this.input.keyboard.addKeys({
@@ -339,7 +340,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server,{
+				this.socket = io(undefined,{
 					closeOnBeforeunload: false
 				});
 				
@@ -589,7 +590,7 @@ class GameScene extends Phaser.Scene {
 					this.meBar.maxValue = player.maxHealth;
 					this.meBar.setHealth(player.health);
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
-
+					
 					var show = 1000;
 					show += (this.mePlayer.width*this.mePlayer.scale)*5;
 					//var oldZoom = this.cameras.main.zoom;
@@ -602,6 +603,7 @@ class GameScene extends Phaser.Scene {
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
 					this.background.displayHeight = this.cameras.main.displayHeight;
+		
 
 					this.killCount.setText("[img=kill] " + player.kills+"\n[img=coin] "+player.coins);
 					this.myObj = player;
@@ -689,6 +691,27 @@ class GameScene extends Phaser.Scene {
 						miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 						miniMapPlayer.circle.radius = convert(1280, 15, this.canvas.width) * player.scale;
+
+						if(this.spectating && player.id == this.spectatingPlayer.playerObj.id) {
+							
+							var show = 1000;
+							show += (this.spectatingPlayer.player.width*player.scale)*5;
+							
+							
+							//var oldZoom = this.cameras.main.zoom;
+							var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
+							 this.cameras.main.setZoom(
+								newZoom
+							); 
+						
+		
+							  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
+							  this.background.displayHeight = this.cameras.main.displayHeight;
+							  this.background.displayWidth = this.cameras.main.displayWidth;
+						
+							//console
+		
+						}
 
 					} catch (e) {
 						console.log(e);
@@ -979,7 +1002,24 @@ class GameScene extends Phaser.Scene {
 				});
 
 				this.socket.on("youDied", (data) => {
-					this.died(data);
+					//this.died(data);
+					this.spectating = true;
+					
+					this.mePlayer.destroy();
+					this.meBar.destroy();
+					this.meSword.destroy();
+					this.lvlBar.destroy();
+					this.lvlState.destroy();
+					this.killCount.destroy();
+					this.leaderboard.destroy();
+
+					var killedById = data.killedById;
+					var enemy = this.enemies.find(e => e.id == killedById);
+					this.spectatingPlayer = enemy;
+					console.log(enemy, killedById);
+					if(enemy) {
+					this.cameras.main.startFollow(enemy.player);
+					}
 				});
 				this.socket.on("youWon", (data) => {
 					this.win(data);
@@ -1281,10 +1321,10 @@ try {
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 				text += `...\n#${myIndex+1}: ${this.myObj.verified? "[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
 			}
-
+			if(!this.spectating) {
 			this.leaderboard.setText(text);
 			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
-
+			}
 		} catch(e) {
 			//we shall try next frame
 			console.log(e);
@@ -1331,12 +1371,13 @@ try {
 		});
 
 		//background movement
+		var player = this.spectating ? this.spectatingPlayer : this.mePlayer;
 		this.background.setTilePosition(
-			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.mePlayer.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
-			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.mePlayer.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
+			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.cameras.main.midPoint.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
+			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.cameras.main.midPoint.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
 		);
-		this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2);
-		this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2);
+		this.background.x = player.x - (this.cameras.main.displayWidth / 2);
+		this.background.y = player.y - (this.cameras.main.displayHeight/ 2);
 
 		if (this.ready && !this.dead && !this.socket.connected) {
 			document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");

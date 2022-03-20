@@ -353,6 +353,7 @@ return false;
               socketById.emit("youDied", {
                 killedBy: this.name,
                 killerVerified: this.verified,
+                killedById: this.id,
                 timeSurvived: Date.now() - enemy.joinTime,
               });
             
@@ -397,7 +398,7 @@ return false;
               PlayerList.deletePlayer(enemy.id);
 
               //disconnect the socket
-              if(!enemy.ai && socketById) socketById.disconnect();
+            //  if(!enemy.ai && socketById) socketById.disconnect();
             } else {
               enemy.doKnockback(this);
               if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
