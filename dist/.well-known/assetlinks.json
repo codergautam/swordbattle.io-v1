@@ -1,0 +1,6 @@
+[{
+        "relation": ["delegate_permission/common.handle_all_urls"],
+        "target" : { "namespace": "android_app", "package_name": "com.codergautamyt.swordbattle",
+                     "sha256_cert_fingerprints": ["95:71:75:D9:33:35:77:53:2B:13:4A:52:61:65:6B:E8:CF:E6:C0:E9:47:C7:46:B9:01:F8:19:3C:1D:6D:4A:0A"] }
+      }
+]

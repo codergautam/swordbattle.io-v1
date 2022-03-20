@@ -55,10 +55,10 @@ class Player {
     var power = distance(this.mousePos.x, this.mousePos.y, this.mousePos.viewport.width/2, this.mousePos.viewport.height/2);
 power = (power/((this.mousePos.viewport.height+this.mousePos.viewport.width)/2))*100;
 
-if(power > 15) power = 100;
-else power *= 100/15;
+if(power > 20) power = 100;
+else power *= 100/20;
 
-if(power < 10)  power = 0;
+if(power < 15)  power = 0;
 go *= power/100;
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
