@@ -214,19 +214,23 @@ var move = true;
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
         touching.forEach((coin) => {
-          this.coins += (this.ai?coin.value:10000);
-         // this.coins+= coin.value;
+          //this.coins += (this.ai?coin.value:140);
+          this.coins+= coin.value;
           if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
+          
             if(this.level != levels.length) {
 
             
    
-              var lvl = levels[this.level-1];
-    
-              this.level += 1;
-         
-              this.scale = lvl.scale;
+                //calculate new level
+                levels.forEach((level, i) => {
+                  if(this.coins >= level.coins) {
+                    this.level = i+2;
+                    this.scale = level.scale;
+                  }
+                });
+                
             }
             
           }
@@ -284,12 +288,13 @@ return false;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
-    this.speed = clamp(740 - (convert(0.25, 1, this.scale) * 40),200,700);
+    this.speed = clamp(740 -  (this.scale* 160),350,570);
 
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 5);
+    this.damageCooldown = 50 + (this.level * 6);
+
 
   }
   down(down, coins, io, chests) {
@@ -361,7 +366,7 @@ return false;
               }
               //drop their coins
               var drop = [];
-              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 10000);
+              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 20000);
               var dropped = 0;
               while (dropped < dropAmount) {
                 var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());

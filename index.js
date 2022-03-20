@@ -422,8 +422,8 @@ var coins = [];
 var chests = [];
 
 var maxCoins = 400;
-var maxChests = 10;
-var maxAiPlayers = 10;
+var maxChests = 8;
+var maxAiPlayers = 13;
 var maxPlayers = 30;
 
 io.on("connection", async (socket) => {
@@ -608,7 +608,7 @@ io.on("connection", async (socket) => {
 
               //drop their coins
               var drop = [];
-              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 10000);
+              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
               var dropped = 0;
               while (dropped < dropAmount) {
                 var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());
