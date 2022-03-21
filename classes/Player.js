@@ -386,11 +386,9 @@ return false;
                 dropped += value;
                 drop.push(coins[coins.length - 1]);
               }
-              if(!enemy.ai && socketById) {
-              socketById.broadcast.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
-              } else {
+  
                 io.sockets.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
-              }
+              
               //log a message
               console.log(this.name+" killed " + enemy.name);
 

@@ -104,19 +104,9 @@ var oldlevels = [
 	{coins: 8000, scale: 1.7},
 	{coins: 8500, scale: 1.8},
 	{coins: 9000, scale: 1.9},
-	{coins: 9500, scale: 2},
-	{coins: 10000, scale: 2.2},
-	{coins: 11000, scale: 2.3},
-	{coins: 12000, scale: 2.35},
-	{coins: 13000, scale: 2.5},
-	{coins: 14000, scale: 2.55},
-	{coins: 15000, scale: 2.7},
-	{coins: 16000, scale: 2.75},
-	{coins: 17000, scale: 2.9},
-	{coins: 18000, scale: 2.93},
-	{coins: 19000, scale: 2.95},
-	{coins: 20000, scale: 3},
+	{coins: 10000, scale: 2},
 ];
+console.log(oldlevels[24])
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) levels.push(Object.assign({start: 0},level)); 

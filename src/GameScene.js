@@ -314,6 +314,7 @@ class GameScene extends Phaser.Scene {
 						this.background.height =  this.canvas.height;
             
 						padding = (this.canvas.width / 2);
+            if(this.spectating) return
 						this.lvlBar.x = padding / 2;
                 
 						this.lvlBar.width = this.canvas.width- padding;
@@ -495,9 +496,11 @@ class GameScene extends Phaser.Scene {
 								enemy.bar.destroy();
 								enemy.nameTag.destroy();
 								enemy.sword.destroy();
+                if(!this.spectating) {
 								var miniMapPlayer = this.miniMap.people.find(x => x.id === id);
 								miniMapPlayer.circle.destroy();
 								this.miniMap.people = this.miniMap.people.filter(p => p.id != id);
+                }
 							}
 						});
 								
@@ -1358,8 +1361,8 @@ try {
 		//background movement
 		var player = this.mePlayer;
 		this.background.setTilePosition(
-			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.cameras.main.midPoint.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
-			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.cameras.main.midPoint.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
+			((this.cameras.main.scrollX*this.cameras.main.zoom)+(player.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
+			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(player.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
 		);
 		this.background.x = player.x - (this.cameras.main.displayWidth / 2);
 		this.background.y = player.y - (this.cameras.main.displayHeight/ 2);
