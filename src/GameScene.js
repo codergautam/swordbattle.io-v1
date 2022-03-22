@@ -1,4 +1,5 @@
 import HealthBar from "./HealthBar.js";
+import ImgButton from './PhaserImgButton'
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -1003,9 +1004,18 @@ class GameScene extends Phaser.Scene {
 						person.circle.destroy();
 					});
 					this.miniMap.people = [];
+          function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+  
+    return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
+  }
 
 					//wait 2 sec
-					this.time.delayedCall(2000, () => {
+					this.time.delayedCall(1000, () => {
 						//show death screen
 						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
 						this.tweens.add({
@@ -1025,8 +1035,33 @@ class GameScene extends Phaser.Scene {
 							this.dataText.y += this.dataText.height*1.5;
 
 							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
-								this.statsText.setFontSize(this.canvas.width/30);
-							this.statsText.y += this.statsText.height;
+								this.statsText.setFontSize(this.canvas.width/35);
+							this.statsText.y += this.statsText.height
+
+
+      this.playAgain = new ImgButton(this, this.canvas.width/2,this.statsText.y, "playAgainBtn",()=>{
+          this.scene.start("title");
+      });
+      this.playAgain.btn.setScale();
+
+			this.tweens.addCounter({
+				from: 0,
+				to: 100,
+				duration: 1000,
+				onUpdate:  (tween)=>
+				{
+					
+					//  tween.getValue = range between 0 and 360
+		
+					var coins = Math.round(this.myObj.coins * (tween.getValue()/100))
+          var kills = Math.round(this.myObj.kills * (tween.getValue()/100))
+          var time = Math.round(data.timeSurvived * (tween.getValue()/100))
+
+          this.statsText.setText("Killed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time))
+          
+				
+				}
+			});    
 						}
 						});
 
