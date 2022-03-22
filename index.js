@@ -106,7 +106,6 @@ var oldlevels = [
 	{coins: 9000, scale: 1.9},
 	{coins: 10000, scale: 2},
 ];
-console.log(oldlevels[24])
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) levels.push(Object.assign({start: 0},level)); 

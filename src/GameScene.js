@@ -1004,6 +1004,33 @@ class GameScene extends Phaser.Scene {
 					});
 					this.miniMap.people = [];
 
+					//wait 2 sec
+					this.time.delayedCall(2000, () => {
+						//show death screen
+						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
+						this.tweens.add({
+							targets: this.deathRect,
+							alpha: 1,
+							duration: 250,
+							ease: "Sine2",
+							onComplete: () => {
+								this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.deadText.setFontSize(this.canvas.width/25);
+								this.deadText.y += this.deadText.height;
+								
+								var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
+								var msg = msgs[Math.floor(Math.random() * msgs.length)];
+								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.dataText.setFontSize(this.canvas.width/40);
+							this.dataText.y += this.dataText.height*1.5;
+
+							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.statsText.setFontSize(this.canvas.width/30);
+							this.statsText.y += this.statsText.height;
+						}
+						});
+
+					});
 
 					
 					
@@ -1320,7 +1347,7 @@ try {
 		//playercount
 		
 		try {
-			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+		if(!this.spectating)	this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}
