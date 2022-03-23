@@ -1,5 +1,5 @@
 import HealthBar from "./HealthBar.js";
-import ImgButton from "./PhaserImgButton"
+import ImgButton from "./PhaserImgButton";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -218,12 +218,15 @@ class GameScene extends Phaser.Scene {
 					if(this.loadtext.visible) return;
 					this.chat.toggled = !this.chat.toggled;
           if(this.spectating) {
-                       this.callback()
+			  if(this.deadText.visible) {
+                       this.callback();
                     this.socket.disconnect();
           this.scene.start("title");
+			  }
             
           }
-					else if(this.chat.toggled) {
+		  if(this.spectating) return;
+				 if(this.chat.toggled) {
 						
 						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
 						//set focus to chat
@@ -317,37 +320,37 @@ class GameScene extends Phaser.Scene {
   }
 
 							this.deathRect.destroy();
-							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90)
-              this.deadText.destroy()
+							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90);
+              this.deadText.destroy();
 				this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
 								this.deadText.y += this.deadText.height;
 								
 								var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
 								var msg = msgs[Math.floor(Math.random() * msgs.length)];
-              this.dataText.destroy()
+              this.dataText.destroy();
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
 							this.dataText.y += this.dataText.height*1.5;	
 
-              this.statsText.destroy()
+              this.statsText.destroy();
               					this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+this.dtas.killedBy+"\nCoins: "+this.myObj.coins+"\nKills: "+this.myObj.kills+"\nSurvived: "+msToTime(this.dtas.timeSurvived), {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
-							this.statsText.y += this.statsText.height
-						this.playAgain.destroy()
+							this.statsText.y += this.statsText.height;
+						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
-                    this.callback()
+                    this.callback();
                     this.socket.disconnect();
           this.scene.start("title");
       });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
  
-              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight
-              this.playAgain.btn.x = this.canvas.width/2
+              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+              this.playAgain.btn.x = this.canvas.width/2;
               this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
                
                                                                                                                                                                                                                                           
             }
-            if(this.spectating) return
+            if(this.spectating) return;
 						this.lvlBar.x = padding / 2;
                 
 						this.lvlBar.width = this.canvas.width- padding;
@@ -374,7 +377,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(undefined,{
+				this.socket = io(server,{
 					closeOnBeforeunload: false
 				});
 				
@@ -1029,7 +1032,7 @@ class GameScene extends Phaser.Scene {
           this.dtas = {
             killedBy: data.killedBy,
             timeSurvived: data.timeSurvived
-          }
+          };
 					this.spectating = true;
 					
 					this.mePlayer.destroy();
@@ -1041,7 +1044,8 @@ class GameScene extends Phaser.Scene {
 					this.leaderboard.destroy();
 					this.miniGraphics.destroy();
 					this.playerCount.destroy();
-          if(this.mobile) this.joyStick.destroy()
+					if(this.chat.obj) this.chat.obj.destroy();
+          if(this.mobile) this.joyStick.destroy();
 					this.miniMap.people.forEach((person) => {
 						person.circle.destroy();
 					});
@@ -1061,7 +1065,7 @@ class GameScene extends Phaser.Scene {
 						
 						//show death screen
 						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
-            this.cameras.main.ignore(this.deathRect)
+            this.cameras.main.ignore(this.deathRect);
 						this.tweens.add({
 							targets: this.deathRect,
 							alpha: 1,
@@ -1069,7 +1073,7 @@ class GameScene extends Phaser.Scene {
 							ease: "Sine2",
 							onComplete: () => {
 										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
-                this.cameras.main.ignore(this.deadText)
+                this.cameras.main.ignore(this.deadText);
 								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
 								this.deadText.y += this.deadText.height;
                 
@@ -1079,24 +1083,24 @@ class GameScene extends Phaser.Scene {
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
 					
 							this.dataText.y += this.dataText.height*1.5;
-                 this.cameras.main.ignore(this.dataText)
+                 this.cameras.main.ignore(this.dataText);
 
 							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
-							this.statsText.y += this.statsText.height
-                this.cameras.main.ignore(this.statsText)
+							this.statsText.y += this.statsText.height;
+                this.cameras.main.ignore(this.statsText);
 
 
       this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
-        this.callback()
+        this.callback();
         this.socket.disconnect();
         
           this.scene.start("title");
       });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
-                this.cameras.main.ignore(this.playAgain.btn)
+                this.cameras.main.ignore(this.playAgain.btn);
 
-                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight
-              this.playAgain.btn.x = this.canvas.width/2
+                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+              this.playAgain.btn.x = this.canvas.width/2;
               this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
                
 
@@ -1109,11 +1113,11 @@ class GameScene extends Phaser.Scene {
 					
 					//  tween.getValue = range between 0 and 360
 		
-					var coins = Math.round(this.myObj.coins * (tween.getValue()/100))
-          var kills = Math.round(this.myObj.kills * (tween.getValue()/100))
-          var time = Math.round(data.timeSurvived * (tween.getValue()/100))
+					var coins = Math.round(this.myObj.coins * (tween.getValue()/100));
+          var kills = Math.round(this.myObj.kills * (tween.getValue()/100));
+          var time = Math.round(data.timeSurvived * (tween.getValue()/100));
 
-          this.statsText.setText("Killed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time))
+          this.statsText.setText("Killed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time));
           
 				
 				}
