@@ -293,7 +293,7 @@ return false;
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 6);
+    this.damageCooldown = 50 + (this.level * 12);
 
 
   }
@@ -353,6 +353,7 @@ return false;
               socketById.emit("youDied", {
                 killedBy: this.name,
                 killerVerified: this.verified,
+                killedById: this.id,
                 timeSurvived: Date.now() - enemy.joinTime,
               });
             
@@ -385,11 +386,9 @@ return false;
                 dropped += value;
                 drop.push(coins[coins.length - 1]);
               }
-              if(!enemy.ai && socketById) {
-              socketById.broadcast.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
-              } else {
+  
                 io.sockets.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
-              }
+              
               //log a message
               console.log(this.name+" killed " + enemy.name);
 
@@ -397,7 +396,7 @@ return false;
               PlayerList.deletePlayer(enemy.id);
 
               //disconnect the socket
-              if(!enemy.ai && socketById) socketById.disconnect();
+            // if(!enemy.ai && socketById) socketById.disconnect();
             } else {
               enemy.doKnockback(this);
               if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);

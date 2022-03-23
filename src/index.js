@@ -77,13 +77,6 @@ var lastAd = 0;
 var adDelay = 300000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
-    if(data.win) {
-        winScene.data = data.data;
-        gameScene.scene.start("win");
-    } else {
-    deathScene.data = data.data;
-    gameScene.scene.start("death");
-    }
 });
 
 var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
