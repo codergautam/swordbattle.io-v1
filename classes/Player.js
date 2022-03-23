@@ -293,7 +293,7 @@ return false;
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 6);
+    this.damageCooldown = 50 + (this.level * 12);
 
 
   }
@@ -396,7 +396,7 @@ return false;
               PlayerList.deletePlayer(enemy.id);
 
               //disconnect the socket
-            //  if(!enemy.ai && socketById) socketById.disconnect();
+            // if(!enemy.ai && socketById) socketById.disconnect();
             } else {
               enemy.doKnockback(this);
               if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);

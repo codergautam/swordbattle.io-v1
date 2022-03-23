@@ -9,7 +9,6 @@ class GameScene extends Phaser.Scene {
 	}
 
 	preload() {    
-
 		window.onbeforeunload = confirmExit;
 		function confirmExit(e) {
 			e.preventDefault();
@@ -33,22 +32,6 @@ class GameScene extends Phaser.Scene {
 		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
 
-	}
-
-	died(data) {
-		this.loseSound.play();
-		this.children.list.forEach((b) => {
-			b.destroy();
-		});
-		this.dead = true;
-		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins});
-		this.callback({win:false, data: data});
-	}
-	win(data) {
-		this.winSound.play();
-		this.dead = true;  
-		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.levels[this.levels.length-1].coins});
-		this.callback({win: true, data:data});
 	}
 
 	create() {
@@ -231,9 +214,16 @@ class GameScene extends Phaser.Scene {
 					}
 				});
 				this.cursors.enter.on("down", () => {
+        
 					if(this.loadtext.visible) return;
 					this.chat.toggled = !this.chat.toggled;
-					if(this.chat.toggled) {
+          if(this.spectating) {
+                       this.callback()
+                    this.socket.disconnect();
+          this.scene.start("title");
+            
+          }
+					else if(this.chat.toggled) {
 						
 						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
 						//set focus to chat
@@ -316,11 +306,47 @@ class GameScene extends Phaser.Scene {
             
 						padding = (this.canvas.width / 2);
 						if(this.spectating) {
-				
+				          function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+  
+    return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
+  }
+
 							this.deathRect.destroy();
 							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90)
-		
-						}
+              this.deadText.destroy()
+				this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
+								this.deadText.y += this.deadText.height;
+								
+								var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
+								var msg = msgs[Math.floor(Math.random() * msgs.length)];
+              this.dataText.destroy()
+								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+							this.dataText.y += this.dataText.height*1.5;	
+
+              this.statsText.destroy()
+              					this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+this.dtas.killedBy+"\nCoins: "+this.myObj.coins+"\nKills: "+this.myObj.kills+"\nSurvived: "+msToTime(this.dtas.timeSurvived), {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
+							this.statsText.y += this.statsText.height
+						this.playAgain.destroy()
+                  this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+                    this.callback()
+                    this.socket.disconnect();
+          this.scene.start("title");
+      });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
+ 
+              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight
+              this.playAgain.btn.x = this.canvas.width/2
+              this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+               
+                                                                                                                                                                                                                                          
+            }
             if(this.spectating) return
 						this.lvlBar.x = padding / 2;
                 
@@ -992,16 +1018,18 @@ class GameScene extends Phaser.Scene {
 						addChest(chest);
 					}
 				});
-				this.time.delayedCall(3000, () => {
-				//this.socket.on("youDied", (data) => {
+				//this.time.delayedCall(3000, () => {
+				this.socket.on("youDied", (data) => {
 					//this.died(data);
 
-					var data = {
-						coins: 1000,
-						kills: 5,
-						killedBy: "me",
-						timeSurvived: 100000
-					}
+					// var data = {
+					// 	killedBy: "me",
+					// 	timeSurvived: 100000
+					// }
+          this.dtas = {
+            killedBy: data.killedBy,
+            timeSurvived: data.timeSurvived
+          }
 					this.spectating = true;
 					
 					this.mePlayer.destroy();
@@ -1013,6 +1041,7 @@ class GameScene extends Phaser.Scene {
 					this.leaderboard.destroy();
 					this.miniGraphics.destroy();
 					this.playerCount.destroy();
+          if(this.mobile) this.joyStick.destroy()
 					this.miniMap.people.forEach((person) => {
 						person.circle.destroy();
 					});
@@ -1027,36 +1056,49 @@ class GameScene extends Phaser.Scene {
     return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
   }
 
-					//wait 2 sec
-					this.time.delayedCall(1000, () => {
+					//wait 1.5 sec
+					this.time.delayedCall(1500, () => {
 						
 						//show death screen
 						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
+            this.cameras.main.ignore(this.deathRect)
 						this.tweens.add({
 							targets: this.deathRect,
 							alpha: 1,
 							duration: 250,
 							ease: "Sine2",
 							onComplete: () => {
-								this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
-								this.deadText.setFontSize(this.canvas.width/25);
+										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+                this.cameras.main.ignore(this.deadText)
+								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
 								this.deadText.y += this.deadText.height;
-								
-								var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
+                
+																var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
 								var msg = msgs[Math.floor(Math.random() * msgs.length)];
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
-								this.dataText.setFontSize(this.canvas.width/40);
+								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+					
 							this.dataText.y += this.dataText.height*1.5;
+                 this.cameras.main.ignore(this.dataText)
 
 							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
-								this.statsText.setFontSize(this.canvas.width/35);
+								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
 							this.statsText.y += this.statsText.height
+                this.cameras.main.ignore(this.statsText)
 
 
-      this.playAgain = new ImgButton(this, this.canvas.width/2,this.statsText.y, "playAgainBtn",()=>{
+      this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+        this.callback()
+        this.socket.disconnect();
+        
           this.scene.start("title");
-      });
-      this.playAgain.btn.setScale();
+      });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
+                this.cameras.main.ignore(this.playAgain.btn)
+
+                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight
+              this.playAgain.btn.x = this.canvas.width/2
+              this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+               
 
 			this.tweens.addCounter({
 				from: 0,
