@@ -1,5 +1,5 @@
 import HealthBar from "./HealthBar.js";
-import ImgButton from './PhaserImgButton'
+import ImgButton from "./PhaserImgButton"
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -316,11 +316,9 @@ class GameScene extends Phaser.Scene {
             
 						padding = (this.canvas.width / 2);
 						if(this.spectating) {
-							this.deathRect.width = this.canvas.width / 2;
-							this.deathRect.height = this.canvas.height / 1.5;
-
-							this.deathRect.x = this.canvas.width / 2;
-							this.deathRect.y = this.canvas.height / 2;
+				
+							this.deathRect.destroy();
+							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90)
 		
 						}
             if(this.spectating) return
@@ -581,7 +579,7 @@ class GameScene extends Phaser.Scene {
 					  
 					}
 					}
-					if(this.mePlayer.texture.key+"Player" != player.skin) {
+					if(!this.spectating&&this.mePlayer.texture.key+"Player" != player.skin) {
 						this.mePlayer.setTexture(player.skin+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
 					}
