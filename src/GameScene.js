@@ -315,6 +315,14 @@ class GameScene extends Phaser.Scene {
 						this.background.height =  this.canvas.height;
             
 						padding = (this.canvas.width / 2);
+						if(this.spectating) {
+							this.deathRect.width = this.canvas.width / 2;
+							this.deathRect.height = this.canvas.height / 1.5;
+
+							this.deathRect.x = this.canvas.width / 2;
+							this.deathRect.y = this.canvas.height / 2;
+		
+						}
             if(this.spectating) return
 						this.lvlBar.x = padding / 2;
                 
@@ -986,9 +994,16 @@ class GameScene extends Phaser.Scene {
 						addChest(chest);
 					}
 				});
-
-				this.socket.on("youDied", (data) => {
+				this.time.delayedCall(3000, () => {
+				//this.socket.on("youDied", (data) => {
 					//this.died(data);
+
+					var data = {
+						coins: 1000,
+						kills: 5,
+						killedBy: "me",
+						timeSurvived: 100000
+					}
 					this.spectating = true;
 					
 					this.mePlayer.destroy();
@@ -1016,6 +1031,7 @@ class GameScene extends Phaser.Scene {
 
 					//wait 2 sec
 					this.time.delayedCall(1000, () => {
+						
 						//show death screen
 						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
 						this.tweens.add({
