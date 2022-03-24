@@ -76,7 +76,6 @@ var oldlevels = [
 	{coins: 125, scale: 0.55},
 	{coins: 150, scale: 0.6},
 	{coins: 200, scale: 0.7},
-	{coins: 250, scale: 0.75},
 	{coins: 350, scale: 0.8},
 	{coins: 500, scale: 0.85},
 	{coins: 600, scale: 0.87},
@@ -86,12 +85,13 @@ var oldlevels = [
 	{coins: 1100, scale: 0.97},
 	{coins: 1250, scale: 0.99},
 	{coins: 1500, scale: 1},
-	{coins: 1750, scale: 1.03},
 	{coins: 2000, scale: 1.04},
 	{coins: 2250, scale: 1.06},
 	{coins: 2500, scale: 1.07},
 	{coins: 2750, scale: 1.1},
 	{coins: 3000, scale: 1.15},
+	{coins: 5000, scale: 1.2},
+	{coins: 10000, scale: 1.3},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{

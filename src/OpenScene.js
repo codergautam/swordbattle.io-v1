@@ -116,6 +116,17 @@ class OpenScene extends Phaser.Scene {
         
                 this.usText = this.add.rexBBCodeText(this.canvas.width/3, (this.canvas.height/2)- (this.usRect.height/2), `[color=black][align=center]USA\n\n${this.data.us.playerCount}/${this.data.us.maxPlayers}\n\n${this.data.us.lag}\nPing: ${this.data.us.ping}[/align][/color]`).setFontSize(this.canvas.width/30).setOrigin(0.5,0);
 
+                if(!this.data.eu.playerCount) {
+                    //eu offline
+                    this.euText.setText("[color=red][align=center]Europe\n\nOffline[/align][/color]");
+                }
+                if(!this.data.us.playerCount) {
+                    //us offline
+                    this.usText.setText("[color=red][align=center]USA\n\nOffline[/align][/color]");
+                }
+
+                    
+
                 this.euText.y += ((this.euRect.height/2) - (this.euText.height/2));
                 this.usText.y += ((this.usRect.height/2) - (this.usText.height/2));
                 this.euRect.on("pointerdown", event => {
@@ -138,8 +149,14 @@ class OpenScene extends Phaser.Scene {
         }
 
     };
+    
 
-        window.addEventListener("resize", resize, true);
+    var doit;
+
+        window.addEventListener("resize", function(){
+            clearTimeout(doit);
+            doit = setTimeout(resize, 100);
+          });
         this.input.on("pointerdown", event => {
             this.go = true;
         });
@@ -173,7 +190,7 @@ class OpenScene extends Phaser.Scene {
         this.data = {};
        
        try {
-         var eu = await axios.get(`https://${euUrl}/api/serverinfo`).catch((e) => {
+         var eu = await axios.get(`https://${euUrl}/api/serverinfo?time=${Date.now()}`).catch((e) => {
             this.data.eu = {error: true};
          });
          this.data.eu = eu.data;
@@ -184,7 +201,7 @@ class OpenScene extends Phaser.Scene {
 
        time = Date.now();
        try {
-        var us = await    axios.get(`https://${naUrl}/api/serverinfo`).catch((e) => {
+        var us = await    axios.get(`https://${naUrl}/api/serverinfo?time=${Date.now()}`).catch((e) => {
             this.data.us = {error: true};
     });
       

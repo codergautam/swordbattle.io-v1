@@ -586,7 +586,12 @@ try {
  
   };
 
-    window.addEventListener("resize", resize, false);
+    var doit;
+
+        window.addEventListener("resize", function(){
+            clearTimeout(doit);
+            doit = setTimeout(resize, 100);
+          });
 
 resize(true);
     

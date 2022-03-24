@@ -373,7 +373,12 @@ class GameScene extends Phaser.Scene {
 					}
 				};
 
-				window.addEventListener("resize", resize, true);
+				var doit;
+
+				window.addEventListener("resize", function(){
+					clearTimeout(doit);
+					doit = setTimeout(resize, 100);
+				  });
 				//go packet
 				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined

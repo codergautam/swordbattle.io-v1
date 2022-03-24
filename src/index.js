@@ -1,7 +1,5 @@
 import TitleScene from "./TitleScene.js";
 import GameScene from "./GameScene.js";
-import DeathScene from "./DeathScene.js";
-import WonScene from "./WonScene.js";
 import OpenScene from "./OpenScene.js";
 
 if ("serviceWorker" in navigator) {
@@ -44,8 +42,6 @@ var config = {
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
 
-var deathScene = new DeathScene();
-var winScene = new WonScene();
 var openScene = new OpenScene();
 
 function storageAvailable(type) {
@@ -111,12 +107,6 @@ function canvas() {
 Object.defineProperty(titleScene, "canvas", {
     get: canvas
 });
-Object.defineProperty(deathScene, "canvas", {
-    get: canvas
-});
-Object.defineProperty(winScene, "canvas", {
-    get: canvas
-});
 Object.defineProperty(gameScene, "canvas", {
     get: canvas
 });
@@ -128,8 +118,6 @@ Object.defineProperty(openScene, "canvas", {
 
 game.scene.add("title", titleScene);
 game.scene.add("game", gameScene);
-game.scene.add("death", deathScene);
-game.scene.add("win", winScene);
 game.scene.add("open", openScene);
 
 game.scene.start("open");
