@@ -585,7 +585,7 @@ class GameScene extends Phaser.Scene {
                     this.lvlBar.setLerpValue((lvlcoins / diff)*100);
 
 					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
-					if(player.level == this.levels.length) {
+					if(player.level > this.levels.length+1) {
 						this.lvlState.setText("Max Level");
 					}
 					if(this.myObj && player.level > this.myObj.level) {
