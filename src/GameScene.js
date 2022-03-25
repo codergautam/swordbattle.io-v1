@@ -117,18 +117,13 @@ class GameScene extends Phaser.Scene {
 						align: "right"
 					}).setFontSize(20).setDepth(101).setOrigin(1);
 					this.playerCount.setScrollFactor(1);
-					this.playerCount.setFontSize(25*this.cameras.main.zoom);
 
 					//leaderboard
 					this.leaderboard = this.add.rexBBCodeText(0, 10, "", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(20).setDepth(101);
 
-				if(this.canvas.height < 550) {
-					this.leaderboard.setFontSize(30*this.cameras.main.zoom);
-				} else {
-				this.leaderboard.setFontSize(20*this.cameras.main.zoom);
-				}
+
 				
 					
 					this.leaderboard.setScrollFactor(0);
@@ -659,6 +654,12 @@ class GameScene extends Phaser.Scene {
 						newZoom
 					); 
 			
+					if(this.canvas.height < 550) {
+						this.leaderboard.setFontSize(30*this.cameras.main.zoom);
+					} else {
+					this.leaderboard.setFontSize(20*this.cameras.main.zoom);
+					}
+					this.playerCount.setFontSize(25*this.cameras.main.zoom);
 					this.meSword.setScale(player.scale);
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
