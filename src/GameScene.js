@@ -356,12 +356,7 @@ class GameScene extends Phaser.Scene {
                                                                                                                                                                                                                                           
             }
             if(this.spectating) return;
-			if(this.canvas.height < 550) {
-				this.leaderboard.setFontSize(30*this.cameras.main.zoom);
-			} else {
-			this.leaderboard.setFontSize(20*this.cameras.main.zoom);
-			}
-			this.playerCount.setFontSize(25*this.cameras.main.zoom);
+
 						this.lvlBar.x = padding / 2;
                 
 						this.lvlBar.width = this.canvas.width- padding;
@@ -654,12 +649,7 @@ class GameScene extends Phaser.Scene {
 						newZoom
 					); 
 			
-					if(this.canvas.height < 550) {
-						this.leaderboard.setFontSize(30*this.cameras.main.zoom);
-					} else {
-					this.leaderboard.setFontSize(20*this.cameras.main.zoom);
-					}
-					this.playerCount.setFontSize(25*this.cameras.main.zoom);
+	
 					this.meSword.setScale(player.scale);
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
