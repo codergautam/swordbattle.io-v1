@@ -124,7 +124,7 @@ game.scene.start("open");
 
 document.addEventListener("contextmenu",function(e) {
     e.preventDefault();
-    });
+});
 
 
 //for debugging on the school chromebooks they fricking banned dev console

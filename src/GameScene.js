@@ -306,6 +306,8 @@ class GameScene extends Phaser.Scene {
 
 						this.background.width = this.canvas.width;
 						this.background.height =  this.canvas.height;
+
+						
             
 						padding = (this.canvas.width / 2);
 						if(this.spectating) {
@@ -351,6 +353,12 @@ class GameScene extends Phaser.Scene {
                                                                                                                                                                                                                                           
             }
             if(this.spectating) return;
+			if(this.canvas.height < 550) {
+				this.leaderboard.setFontSize(30*this.cameras.main.zoom);
+			} else {
+			this.leaderboard.setFontSize(20*this.cameras.main.zoom);
+			}
+			this.playerCount.setFontSize(25*this.cameras.main.zoom);
 						this.lvlBar.x = padding / 2;
                 
 						this.lvlBar.width = this.canvas.width- padding;
@@ -1447,7 +1455,7 @@ try {
 		//playercount
 		
 		try {
-		if(!this.spectating)	this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+		if(!this.spectating)	this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}
