@@ -94,7 +94,7 @@ class GameScene extends Phaser.Scene {
 
 				//killcounter
 				try { 
-				this.killCount = this.add.rexBBCodeText(15, 10, "Kills: 0", {
+				this.killCount = this.add.rexBBCodeText(15, 10, "Stabs: 0", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(40).setDepth(101);
 				this.killCount.addImage("coin", {
@@ -327,7 +327,7 @@ class GameScene extends Phaser.Scene {
 							this.deathRect.destroy();
 							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90);
               this.deadText.destroy();
-				this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+				this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You got stabbed", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
 								this.deadText.y += this.deadText.height;
 								
@@ -339,7 +339,7 @@ class GameScene extends Phaser.Scene {
 							this.dataText.y += this.dataText.height*1.5;	
 
               this.statsText.destroy();
-              					this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+this.dtas.killedBy+"\nCoins: "+this.myObj.coins+"\nKills: "+this.myObj.kills+"\nSurvived: "+msToTime(this.dtas.timeSurvived), {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+              					this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Stabbed By: "+this.dtas.killedBy+"\nCoins: "+this.myObj.coins+"\nKills: "+this.myObj.kills+"\nSurvived: "+msToTime(this.dtas.timeSurvived), {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
@@ -836,7 +836,7 @@ class GameScene extends Phaser.Scene {
 						} else {
 
 						this.streak = 0;
-					var txt = `[b][color=#e82a1f]Killed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
+					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
 						}
 					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
 					text.setData("index", this.killtxts.length);
@@ -1084,7 +1084,7 @@ class GameScene extends Phaser.Scene {
 							duration: 250,
 							ease: "Sine2",
 							onComplete: () => {
-										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You Died", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You got stabbed", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
                 this.cameras.main.ignore(this.deadText);
 								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
 								this.deadText.y += this.deadText.height;
@@ -1097,7 +1097,7 @@ class GameScene extends Phaser.Scene {
 							this.dataText.y += this.dataText.height*1.5;
                  this.cameras.main.ignore(this.dataText);
 
-							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Killed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Stabbed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
 							this.statsText.y += this.statsText.height;
                 this.cameras.main.ignore(this.statsText);
@@ -1129,7 +1129,7 @@ class GameScene extends Phaser.Scene {
           var kills = Math.round(this.myObj.kills * (tween.getValue()/100));
           var time = Math.round(data.timeSurvived * (tween.getValue()/100));
 
-          this.statsText.setText("Killed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time));
+          this.statsText.setText("Stabbed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time));
           
 				
 				}
