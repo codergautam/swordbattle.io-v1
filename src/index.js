@@ -19,7 +19,12 @@ function handleConnection() {
   } else {
     		document.write("<h1>You're back online! Refresh to play!</h1>");
   }
-  
+  try {
+    screen.orientation.lock("landscape");
+
+  } catch (err) {
+      console.log("failed to lock orientation", err);
+  }
 }
 
 
