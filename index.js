@@ -13,19 +13,21 @@ var map = 10000;
 //var cors = require("cors");
 
 var server;
-/*
+
+//console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
+
+
 if(process.env.PRODUCTION==="true") {
 	var options = {
-		key: fs.readFileSync("./ssl/privatekey.pem"),
-		cert: fs.readFileSync("./ssl/certificate.pem"),
+		key: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/privkey.pem"),
+		cert: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/fullchain.pem"),
 	};
- server = https.createServer(options, app);
-} else {
- server = http.createServer(app);
-} 
-*/
+ https.createServer(options, app).listen(443);
+}
+ server = http.createServer(app); 
 
-server = http.createServer(app);
+
+//server = http.createServer(app);
 
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
