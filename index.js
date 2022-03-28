@@ -13,16 +13,18 @@ var map = 10000;
 //var cors = require("cors");
 
 var server;
+var httpsserver;
 
 //console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
 
-
+var usinghttps = false;
 if(process.env.PRODUCTION==="true") {
+	usinghttps = true;
 	var options = {
 		key: fs.readFileSync("/etc/letsencrypt/live/www.swordbattle.io/privkey.pem"),
 		cert: fs.readFileSync("/etc/letsencrypt/live/www.swordbattle.io/fullchain.pem"),
 	};
- https.createServer(options, app).listen(443);
+ httpsserver = https.createServer(options, app).listen(443);
 }
  server = http.createServer(app); 
 
@@ -52,7 +54,7 @@ const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
 
-const io = new Server(server, { cors: { origin: "*" }});
+const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
