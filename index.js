@@ -19,8 +19,8 @@ var server;
 
 if(process.env.PRODUCTION==="true") {
 	var options = {
-		key: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/privkey.pem"),
-		cert: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/fullchain.pem"),
+		key: fs.readFileSync("/etc/letsencrypt/live/www.swordbattle.io/privkey.pem"),
+		cert: fs.readFileSync("/etc/letsencrypt/live/www.swordbattle.io/fullchain.pem"),
 	};
  https.createServer(options, app).listen(443);
 }
