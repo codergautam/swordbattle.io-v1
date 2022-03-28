@@ -185,7 +185,7 @@ class OpenScene extends Phaser.Scene {
         this.euText.y += ((this.euRect.height/2) - (this.euText.height/2));
         this.usText.y += ((this.usRect.height/2) - (this.usText.height/2));
         var euUrl = "swordbattle.herokuapp.com";
-        var naUrl = "swordbattle.io";
+        var naUrl = "www.swordbattle.io";
         var time = Date.now();
         this.data = {};
        
