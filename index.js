@@ -77,8 +77,6 @@ var oldlevels = [
 	{coins: 50, scale: 0.45},
 	{coins: 75, scale: 0.47},
 	{coins: 100, scale: 0.5},
-	{coins: 125, scale: 0.55},
-	{coins: 150, scale: 0.6},
 	{coins: 200, scale: 0.7},
 	{coins: 350, scale: 0.8},
 	{coins: 500, scale: 0.85},
@@ -96,6 +94,8 @@ var oldlevels = [
 	{coins: 3000, scale: 1.15},
 	{coins: 5000, scale: 1.2},
 	{coins: 10000, scale: 1.3},
+	{coins: 20000, scale: 1.5},
+	{coins: 20000, scale: 1.5},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -129,6 +129,104 @@ app.use(function (req, res, next) {
 
 app.use("/", express.static("dist"));
 app.use("/assets", express.static("assets"));
+
+app.post("/api/buy", async (req, res) => {
+
+		//read cosmetics.json
+	var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
+
+	//get user data
+	var secret = req.body.secret;
+	var item = req.body.item;
+
+
+	if(!item || item == "undefined") {
+		res.status(400).send("No item specified");
+		return;
+	}
+	var item = cosmetics.skins.find(e=> e.name == item);
+	if(!item) {
+		res.status(400).send("Item not found");
+		return;
+	}
+
+	var acc;
+	if(secret && secret!="undefined") {
+		var account = await sql`select skins,coins,username from accounts where secret=${secret}`;
+		if(account[0]) {
+			acc = account[0];
+			var yo = await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
+			acc.bal = yo[0].sum + acc.coins;
+			if(acc.skins.collected.includes(item.name)) {
+				res.status(400).send("Skin already owned");
+				return;
+			}
+			if(acc.bal < item.price) {
+				res.status(406).send("Not enough coins");
+				return;
+			}
+
+			var newbal = acc.coins - item.price;
+			var newskins = acc.skins;
+			newskins.collected.push(item.name);
+			await sql`UPDATE accounts SET skins=${JSON.stringify(newskins)},coins=${newbal} WHERE secret=${secret}`;
+			res.send("Success");
+			return;
+
+		} else {
+			res.status(400).send("Invalid secret");
+			return;
+		}
+	} else {
+		res.status(400).send("No secret provided");
+		return;
+	}
+});
+app.post("/api/equip", async (req, res) => {
+
+	//read cosmetics.json
+var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
+
+//get user data
+var secret = req.body.secret;
+var item = req.body.item;
+
+
+if(!item || item == "undefined") {
+	res.status(400).send("No item specified");
+	return;
+}
+var item = cosmetics.skins.find(e=> e.name == item);
+if(!item) {
+	res.status(400).send("Item not found");
+	return;
+}
+
+var acc;
+if(secret && secret!="undefined") {
+	var account = await sql`select skins,coins,username from accounts where secret=${secret}`;
+	if(account[0]) {
+		acc = account[0];
+		if(acc.skins.collected.includes(item.name)) {
+			var newskins = acc.skins;
+			newskins.selected = item.name;
+			await sql`UPDATE accounts SET skins=${JSON.stringify(newskins)} WHERE secret=${secret}`;
+			res.send("Success");
+			return;
+		
+		} else {
+			res.status(400).send("Item not owned");
+			return;
+		}
+	} else {
+		res.status(400).send("Invalid secret");
+		return;
+	}
+} else {
+	res.status(400).send("No secret provided");
+	return;
+}
+});
 
 app.post("/api/signup", async (req, res) => {
 	if(!req.body || req.body.password == undefined || req.body.username == undefined) {	
@@ -312,7 +410,7 @@ app.get("/shop", async (req, res) => {
 		}
 	}
 
-	res.render("shop.ejs", {cosmetics: cosmetics, account: acc});
+	res.render("shop.ejs", {cosmetics: cosmetics, account: acc, secret: secret});
 });
 
 app.get("/leaderboard", async (req, res) => {

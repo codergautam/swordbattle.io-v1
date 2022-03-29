@@ -334,13 +334,7 @@ this.callback(myName, this.music, this.secret);
     frame.onload = () => {
       var frameDoc = document.getElementById("shopFrame").contentWindow.document;
      
-    if(loggedIn) {
-      frameDoc.getElementById("login").style.display = "none";
-      frameDoc.getElementById("skins").style.display = "";
-    } else {
-      frameDoc.getElementById("login").style.display = "";
-      frameDoc.getElementById("skins").style.display = "none";
-    }
+
 
     document.getElementById("shopFrame").style.display = "";
  

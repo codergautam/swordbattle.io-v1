@@ -91,8 +91,7 @@ img {
 }
 
 .card {
-  background-color: white;
-
+  background: linear-gradient(to bottom left, #0a3e0a 5%, green 100%);
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
   display: flex;
   flex-direction: column;
@@ -102,7 +101,7 @@ img {
 .card_content {
   padding: 1rem;
   text-align: center;
-  background: linear-gradient(to bottom left, #0a3e0a 5%, green 100%);
+ 
 }
 
 .card_title {
@@ -125,27 +124,130 @@ img {
 a {
   font-size: 10em !important;
 }
+<%
+
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+%>
 
 </style>
 <div class="body" >
+  <% if(account) { %>
+    <script>
+      function numberWithCommas(x) {
+        return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+      }
+
+      var secret = "<%= secret %>";
+      var bal = "<%= account.bal %>";
+      function buy(skin,price,obj) {
+        obj.innerHTML = "Buying...";
+        var endpoint = "/api/buy";
+        var data = {
+          item: skin,
+          secret: secret
+        };
+        fetch(endpoint, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(function(data) {
+          
+          if(data.status == 200) {
+            bal -= price;
+           document.getElementById("balt").innerHTML = "Balance: "+numberWithCommas(bal)+" ";
+           //append image to balt
+          document.getElementById("balt").appendChild(document.createElement("img")).src = "/assets/images/coin.png";
+          //set size of image
+          document.getElementById("balt").lastChild.style.width = "30";
+          obj.innerHTML = "EQUIP"
+          obj.onclick = function() {
+            equip(skin,obj);
+          }
+          } else {
+           data.text().then(function(text) {
+            obj.innerHTML = numberWithCommas(price)+" ";
+            obj.appendChild(document.createElement("img")).src = "/assets/images/coin.png";
+            obj.lastChild.style.width = "20";
+            alert(text);
+
+           });
+
+          }
+        });
+
+      }
+
+      function equip(skin,obj) {
+        obj.innerHTML = "Equipping...";
+        var endpoint = "/api/equip";
+        var data = {
+          item: skin,
+          secret: secret
+        };
+        fetch(endpoint, {
+          method: "POST",
+          body: JSON.stringify(data),
+          headers: {
+            "Content-Type": "application/json"
+          }
+        }).then(function(data) {
+          if(data.status == 200) {
+            obj.innerHTML = "EQUIPPED";
+            obj.onclick = function() {}
+            document.querySelectorAll(".card_btn").forEach(function(obj) {
+              var skinb = obj.getAttribute("skin");
+
+              if(skinb != skin ) {
+                if(obj.innerHTML.trim() == "EQUIPPED") {
+                  obj.innerHTML = "EQUIP";
+                  obj.onclick = function() {
+                    equip(skinb,obj);
+                  }
+                }
+              }
+          
+            });
+          } else {
+            data.text().then(function(text) {
+              obj.innerHTML = "EQUIP";
+              alert(text);
+            });
+          }
+        });
+      
+
+      }
+
+    </script>
     <div class="main" style="background-color: black;">
 
         <br/>
-        <h1 style="color: white; font-size: xx-large;">Shop</h1>
+        <h1 style="color: white; font-size: xx-large;">Shop</h1><h1 id="balt" style="color: white; font-size: xx-large;">Balance: <%=numberWithCommas(account.bal)%> <img width="30" src="/assets/images/coin.png"></h1>
       
         <br>
-       <div id="skins" style="display: none;">
+       <div id="skins">
         <ul class="cards">
-      
+  
             <% cosmetics.skins.forEach(function(skin) { %>
+ 
         
           <li class="cards_item">
             <div class="card">
               <div class="card_image"><center><img src="<%= skin.url %>"></center></div>
               <div class="card_content">
-                <h2 class="card_title"><%= skin.name %><i class="fa-solid fa-circle-xmark"></i></h2>
+                <h2 class="card_title"><%= skin.displayName %><i class="fa-solid fa-circle-xmark"></i></h2>
                 <p class="card_text"><%= skin.description %></p>
-                <button class="btn card_btn">BUY</button>
+                <% if(account.skins.selected.toLowerCase() == skin.name.toLowerCase()) {%>
+                  <button class="btn card_btn" skin="<%=skin.name%>"> EQUIPPED</button> 
+                <%} else if(account.skins.collected.includes(skin.name.toLowerCase())) {%>
+                  <button class="btn card_btn" skin="<%=skin.name%>" onclick="equip('<%=skin.name%>',this)"> EQUIP </button>
+                  <% } else {%>
+                <button class="btn card_btn" skin="<%=skin.name%>" onclick="buy('<%=skin.name%>', '<%=skin.price%>',this)"> <%= numberWithCommas(skin.price) %> <img width="20" src="/assets/images/coin.png"></button>
+              <% } %>
               </div>
             </div>
           </li>
@@ -153,9 +255,11 @@ a {
   
         </ul>
       </div>
+      <% } else { %>
 <div style="color: white;" id="login">
   <h1>Please log in or sign up to access the shop.</h1>
 </div>
+<% }  %>
         <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
       </div>
       
