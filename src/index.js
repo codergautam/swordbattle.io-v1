@@ -1,13 +1,12 @@
 import TitleScene from "./TitleScene.js";
 import GameScene from "./GameScene.js";
-import DeathScene from "./DeathScene.js";
-import WonScene from "./WonScene.js";
 import OpenScene from "./OpenScene.js";
 
 if ("serviceWorker" in navigator) {
     // register service worker
     navigator.serviceWorker.register("sw.js");
   }
+
   
  window.addEventListener("online", handleConnection);
 window.addEventListener("offline", handleConnection);
@@ -20,7 +19,12 @@ function handleConnection() {
   } else {
     		document.write("<h1>You're back online! Refresh to play!</h1>");
   }
-  
+  try {
+    screen.orientation.lock("landscape");
+
+  } catch (err) {
+      console.log("failed to lock orientation", err);
+  }
 }
 
 
@@ -40,12 +44,11 @@ var config = {
     scale: {
         mode:Phaser.Scale.RESIZE,
     }
+    
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
 
-var deathScene = new DeathScene();
-var winScene = new WonScene();
 var openScene = new OpenScene();
 
 function storageAvailable(type) {
@@ -77,13 +80,6 @@ var lastAd = 0;
 var adDelay = 300000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
-    if(data.win) {
-        winScene.data = data.data;
-        gameScene.scene.start("win");
-    } else {
-    deathScene.data = data.data;
-    gameScene.scene.start("death");
-    }
 });
 
 var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
@@ -118,12 +114,6 @@ function canvas() {
 Object.defineProperty(titleScene, "canvas", {
     get: canvas
 });
-Object.defineProperty(deathScene, "canvas", {
-    get: canvas
-});
-Object.defineProperty(winScene, "canvas", {
-    get: canvas
-});
 Object.defineProperty(gameScene, "canvas", {
     get: canvas
 });
@@ -135,15 +125,13 @@ Object.defineProperty(openScene, "canvas", {
 
 game.scene.add("title", titleScene);
 game.scene.add("game", gameScene);
-game.scene.add("death", deathScene);
-game.scene.add("win", winScene);
 game.scene.add("open", openScene);
 
 game.scene.start("open");
 
 document.addEventListener("contextmenu",function(e) {
     e.preventDefault();
-    });
+});
 
 
 //for debugging on the school chromebooks they fricking banned dev console

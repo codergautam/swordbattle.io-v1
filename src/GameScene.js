@@ -1,12 +1,19 @@
 import HealthBar from "./HealthBar.js";
+import ImgButton from "./PhaserImgButton";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
 		super();
 		this.callback = callback;
+	
 	}
 
 	preload() {    
+		window.onbeforeunload = confirmExit;
+		function confirmExit(e) {
+			e.preventDefault();
+			return "You are in game.. Do you really want to leave?";
+		}
 		try {       
 			document.getElementsByClassName("grecaptcha-badge")[0].style.opacity = 0;
 		} catch(e) {
@@ -24,31 +31,16 @@ class GameScene extends Phaser.Scene {
 		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
 		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
-	}
 
-	died(data) {
-		this.loseSound.play();
-		this.children.list.forEach((b) => {
-			b.destroy();
-		});
-		this.dead = true;
-		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.myObj.coins});
-		this.callback({win:false, data: data});
-	}
-	win(data) {
-		this.winSound.play();
-		this.dead = true;  
-		data = Object.assign(data, {name: this.myObj.name, kills: this.myObj.kills, coins: this.levels[this.levels.length-1].coins});
-		this.callback({win: true, data:data});
 	}
 
 	create() {
 		var map = 10000;
 
         this.levels = [];
-  
-		//recaptcha
 
+    
+		//recaptcha
 		grecaptcha.ready(() =>{
 			grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "join"}).then((thetoken) => {
 
@@ -63,7 +55,18 @@ class GameScene extends Phaser.Scene {
 					loop: false,
 					delay: 0
 				};
-    
+
+				if(this.options.sound == "normal") {
+					config.volume = 0.5;
+				  } else if(this.options.sound == "high") {
+					config.volume = 1;
+				  }  else if(this.options.sound == "low") {
+					config.volume = 0.2;
+				  } else if(this.options.sound == "off") {
+					config.volume = 0;
+				  } else {
+					config.volume = 0.5;
+				  }
 
 				this.coin = this.sound.add("coin", config);
 				this.chestOpen = this.sound.add("chestOpen", config);
@@ -81,16 +84,17 @@ class GameScene extends Phaser.Scene {
         
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.meChat = this.add.text(0,0,"").setOrigin(0.5).setDepth(71);
+				this.meChatTween = undefined;
 				this.swordAnim = {go: false, added: 0};
-				this.goTo = {
-					x: undefined,
-					y: undefined
-				};
 				this.myObj = undefined;
+
+
+
 
 				//killcounter
 				try { 
-				this.killCount = this.add.rexBBCodeText(15, 10, "Kills: 0", {
+				this.killCount = this.add.rexBBCodeText(15, 10, "Stabs: 0", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(40).setDepth(101);
 				this.killCount.addImage("coin", {
@@ -118,6 +122,9 @@ class GameScene extends Phaser.Scene {
 					this.leaderboard = this.add.rexBBCodeText(0, 10, "", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
 				}).setFontSize(20).setDepth(101);
+
+
+				
 					
 					this.leaderboard.setScrollFactor(0);
 				} catch(e) {
@@ -152,11 +159,15 @@ class GameScene extends Phaser.Scene {
 							// forceMin: 16,
 							// enable: true
 						});
+						this.cameras.main.ignore(this.joyStick.base);
+						this.cameras.main.ignore(this.joyStick.thumb);
+
 				}
       
 				//bar
 				this.meBar = new HealthBar(this, 0, 0, 16, 80);
 				this.meBar.bar.setAlpha(0.5);
+				this.meBar.bar.setDepth(71);
 
 				//levelbar
 				this.lvlBar = new HealthBar(this, 0, 0, 0, 0, true);
@@ -173,6 +184,12 @@ class GameScene extends Phaser.Scene {
 
 				this.lvlBar.draw();
 
+				//chat
+				this.chat = {
+					obj: null,
+					toggled: false,
+				};
+
 				//coins array
 				this.coins = [];
 				this.chests = [];
@@ -181,6 +198,7 @@ class GameScene extends Phaser.Scene {
 				//enemies array
 				this.enemies = [];
 				this.dead = false;
+				this.spectating = false;
 				//arrow keys
 				var KeyCodes = Phaser.Input.Keyboard.KeyCodes;
 				this.cursors = this.input.keyboard.addKeys({
@@ -188,23 +206,75 @@ class GameScene extends Phaser.Scene {
 					down: KeyCodes.DOWN,
 					left: KeyCodes.LEFT,
 					right: KeyCodes.RIGHT,
+					enter: KeyCodes.ENTER,
+					esc: KeyCodes.ESC,
 				}, false);
 
+				this.cursors.esc.on("down", () => {
+					if(this.chat.toggled) {
+						this.chat.obj.destroy();
+						this.chat.toggled = false;
+					}
+				});
+				this.cursors.enter.on("down", () => {
+        
+					if(this.loadtext.visible) return;
+					this.chat.toggled = !this.chat.toggled;
+          if(this.spectating) {
+			  if(this.deadText.visible) {
+                       this.callback();
+                    this.socket.disconnect();
+          this.scene.start("title");
+			  }
+            
+          }
+		  if(this.spectating) return;
+				 if(this.chat.toggled) {
+						
+						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
+						//set focus to chat
+						this.chat.obj.getChildByID("chat").focus();
+            
+					} else {
+
+						if(this.chat.obj) {
+							
+							var msg = this.chat.obj.getChildByID("chat").value.trim();
+							if(msg.length > 0) this.socket.emit("chat", msg);
+
+						this.chat.obj.destroy();
+						}
+					}
+				});
 				//lvl text
+				try {
 				this.lvlText = this.add.text(this.canvas.width / 2, this.canvas.height / 5,  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 75, this.canvas.width)).setDepth(75).setAlpha(0).setOrigin(0.5);
 				this.lvlTextTween = undefined;
 
 				this.lvlState = this.add.text(this.canvas.width / 2, this.lvlBar.y - (this.lvlBar.height),  "", { fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif" }).setFontSize(convert(1366, 50, this.canvas.width)).setDepth(75).setAlpha(1).setOrigin(0.5);
 				this.lvlState.y = this.lvlBar.y - (this.lvlState.height / 2);
-
+				} catch(e) {
+					console.log(e);
+				}
 				//camera follow
 				this.cameras.main.setZoom(1);
         
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
 				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
-				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background]);
+				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
+
+				//bushes
+				this.bushes = [];
+				var locations = [{"x":730,"y":1885,"scale":1.0376209236313056},{"x":925,"y":-320,"scale":1.5186209845008154},{"x":1433,"y":754,"scale":3.330284753416469},{"x":4731,"y":4730,"scale":2.0686243258009513},{"x":-3023,"y":-4707,"scale":0.7038654598544245},{"x":4697,"y":418,"scale":1.802746456554166},{"x":1890,"y":-648,"scale":2.4500834253457233},{"x":2835,"y":2983,"scale":1.9362154580101363},{"x":-3012,"y":4669,"scale":1.546032408451703},{"x":-522,"y":-4917,"scale":3.2978158998596006},{"x":-4547,"y":-3990,"scale":0.9277566244553441},{"x":796,"y":-712,"scale":1.1184998043695427},{"x":-3766,"y":4544,"scale":1.4140888384465091},{"x":4882,"y":-1172,"scale":2.9802609570057004},{"x":-3496,"y":3954,"scale":2.3808287583935375},{"x":-3238,"y":-2996,"scale":2.526057254546086},{"x":-1389,"y":-358,"scale":0.8106953578091867},{"x":-4967,"y":-4055,"scale":3.0097164420138225},{"x":4495,"y":-529,"scale":2.534394803759131},{"x":-1338,"y":1861,"scale":2.928118076148369},{"x":1737,"y":-4743,"scale":2.263077224463025},{"x":-3911,"y":2248,"scale":0.7689489264893516},{"x":4896,"y":-3368,"scale":2.588709259426132},{"x":-3883,"y":-3703,"scale":1.731361865138802},{"x":950,"y":2029,"scale":2.8878029144744146},{"x":-173,"y":829,"scale":1.3048181525137694},{"x":2619,"y":1091,"scale":0.5879937552009757},{"x":-3017,"y":2308,"scale":2.264103933252742},{"x":1246,"y":1595,"scale":1.5130647587630643},{"x":-2598,"y":-262,"scale":3.0282547149681767},{"x":-3123,"y":-1763,"scale":2.0368365078668207},{"x":-684,"y":4420,"scale":2.5159608843125834},{"x":-1526,"y":-4429,"scale":1.0488795535338693},{"x":-1382,"y":1674,"scale":1.729326708118081},{"x":4954,"y":-1326,"scale":1.2051737116831303},{"x":-3769,"y":1367,"scale":3.0269153418946013},{"x":1237,"y":3494,"scale":3.2258158972294297},{"x":1683,"y":-3486,"scale":3.2527072679208078},{"x":419,"y":508,"scale":2.652076728813408},{"x":-4992,"y":2409,"scale":2.762880141675235},{"x":3056,"y":-3543,"scale":2.3900673234419982},{"x":3495,"y":-3043,"scale":1.3521516228090635},{"x":-4388,"y":3200,"scale":2.9916255625674655},{"x":1292,"y":-993,"scale":3.3641794453414664},{"x":1952,"y":2357,"scale":1.1450742110647643},{"x":-4831,"y":1835,"scale":1.2585290364415982},{"x":-1477,"y":-521,"scale":3.240414650997602},{"x":-4884,"y":1193,"scale":1.237036932117828},{"x":-4521,"y":-1972,"scale":1.554328117808823},{"x":1315,"y":3287,"scale":0.8727352911734498},{"x":1150,"y":-1059,"scale":1.335191874076673},{"x":-1293,"y":508,"scale":2.505831529572055},{"x":4333,"y":1306,"scale":2.3411772808523876},{"x":2896,"y":4913,"scale":2.465530835587337},{"x":-634,"y":-4615,"scale":2.1430471830680315},{"x":1355,"y":405,"scale":1.9967528611299323},{"x":3215,"y":-3646,"scale":2.5265313480752716},{"x":-2285,"y":-4338,"scale":2.8433396478871336},{"x":210,"y":4727,"scale":2.796103862725438},{"x":-465,"y":154,"scale":0.6770522495838267},{"x":3621,"y":-739,"scale":1.860257544095416},{"x":4421,"y":288,"scale":3.2011906741552547},{"x":3990,"y":-3216,"scale":0.6708087098641271},{"x":3413,"y":-1356,"scale":3.122881532340258},{"x":-3161,"y":-640,"scale":1.0600690011923222},{"x":3518,"y":411,"scale":1.2594288815012689},{"x":2584,"y":-3716,"scale":0.8464974155777956},{"x":4891,"y":4279,"scale":3.334059910907162},{"x":2550,"y":-1426,"scale":1.871614075133459},{"x":880,"y":-1400,"scale":1.2988510930930697},{"x":2897,"y":692,"scale":0.7811024064504772},{"x":18,"y":-1805,"scale":2.7979346816010358},{"x":4933,"y":-4731,"scale":3.4052415107942737},{"x":-3608,"y":-2643,"scale":3.0182716926485567},{"x":631,"y":3567,"scale":2.048644117075934},{"x":3412,"y":-2901,"scale":1.6173481014877604},{"x":-2965,"y":-3056,"scale":0.7452272417689609},{"x":-4221,"y":1948,"scale":3.0571964273080168},{"x":-2733,"y":-3481,"scale":1.7993863030259765},{"x":418,"y":-170,"scale":2.471839671977092},{"x":-2643,"y":2135,"scale":2.224174416443268},{"x":-3564,"y":-3646,"scale":1.123817873201157},{"x":-2594,"y":-194,"scale":2.8359960938485402},{"x":-3914,"y":-1779,"scale":1.669051229582097},{"x":-1282,"y":3667,"scale":3.397330925497699},{"x":1474,"y":-2638,"scale":3.1244654444686324},{"x":-4909,"y":-1278,"scale":2.4338719734410788},{"x":-3549,"y":2724,"scale":3.013256745783262},{"x":-2411,"y":3431,"scale":1.2631073582763315},{"x":-2421,"y":2356,"scale":1.9414196684081193},{"x":-4426,"y":43,"scale":2.611750089893035},{"x":494,"y":4517,"scale":1.6634604133591617},{"x":-3123,"y":45,"scale":1.2116242240774102},{"x":3297,"y":-3254,"scale":2.098822393550005},{"x":2230,"y":4430,"scale":1.949718190558567},{"x":3917,"y":719,"scale":0.5019871453063103},{"x":4225,"y":-3866,"scale":1.4486156579085072},{"x":113,"y":-3228,"scale":2.383273384336228},{"x":-1466,"y":-725,"scale":2.549875235972383},{"x":2284,"y":-1330,"scale":3.294659747724501}];
+
+				locations.forEach((l,i) => {
+          if(i%2==0) return;
+					this.bushes.push(this.add.image(l.x, l.y, "bush").setScale(l.scale).setDepth(70));
+					this.UICam.ignore(this.bushes[this.bushes.length-1]);
+				});
+				
 
 
 				this.input.addPointer(3);
@@ -239,8 +309,54 @@ class GameScene extends Phaser.Scene {
 
 						this.background.width = this.canvas.width;
 						this.background.height =  this.canvas.height;
+
+						
             
 						padding = (this.canvas.width / 2);
+						if(this.spectating) {
+				          function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+  
+    return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
+  }
+
+							this.deathRect.destroy();
+							this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90);
+              this.deadText.destroy();
+				this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You got stabbed", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
+								this.deadText.y += this.deadText.height;
+								
+								var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
+								var msg = msgs[Math.floor(Math.random() * msgs.length)];
+              this.dataText.destroy();
+								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+							this.dataText.y += this.dataText.height*1.5;	
+
+              this.statsText.destroy();
+              					this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Stabbed By: "+this.dtas.killedBy+"\nCoins: "+this.myObj.coins+"\nKills: "+this.myObj.kills+"\nSurvived: "+msToTime(this.dtas.timeSurvived), {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
+							this.statsText.y += this.statsText.height;
+						this.playAgain.destroy();
+                  this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+                    this.callback();
+                    this.socket.disconnect();
+          this.scene.start("title");
+      });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
+ 
+              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+              this.playAgain.btn.x = this.canvas.width/2;
+              this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+               
+                                                                                                                                                                                                                                          
+            }
+            if(this.spectating) return;
+
 						this.lvlBar.x = padding / 2;
                 
 						this.lvlBar.width = this.canvas.width- padding;
@@ -263,9 +379,24 @@ class GameScene extends Phaser.Scene {
 					}
 				};
 
-				window.addEventListener("resize", resize, true);
+				var doit;
+
+				window.addEventListener("resize", function(){
+					clearTimeout(doit);
+					doit = setTimeout(resize, 100);
+				  });
 				//go packet
-				this.socket = io();
+				var server = this.scene.get("open").server == "us" ? "https://www.swordbattle.io/" : "https://swordbattle.herokuapp.com";
+				//server = undefined
+				this.socket = io(server,{
+					closeOnBeforeunload: false
+				});
+				
+				function handleErr(err) {
+					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
+				}
+				this.socket.on("connect_error", handleErr);
+				this.socket.on("connect_failed",handleErr);
 
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
@@ -289,6 +420,9 @@ class GameScene extends Phaser.Scene {
 						this.socket.emit("mouseDown", false);
 					}
 				}, this);
+
+			
+
 				if(this.mobile) {
 					this.gamePoint = {x: 0, y: 0};
 					this.input.on("pointermove", (pointer) => {
@@ -330,10 +464,6 @@ class GameScene extends Phaser.Scene {
 					var enemy = {
 						id: player.id,
 						down: false,
-						toMove: {
-							x: undefined,
-							y: undefined
-						},
 						playerObj: undefined,
 						lastTick: Date.now(),
 						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
@@ -343,11 +473,16 @@ class GameScene extends Phaser.Scene {
 							fontFamily: "serif",
 							fill: player.verified?"#0000FF" :"#000000",
 							fontSize: "25px"
-						}).setDepth(100).setAlpha(player.verified?1:0.5),
+						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
 						toAngle: 0,
+						chatText: this.add.text(0,0, "", {
+							fontFamily: "serif",
+						}).setDepth(71).setOrigin(0.5),
+						chatTween: undefined,
 					};
          
+					
 					var factor = (100/(player.scale*100))*1.5;
        
 					enemy.sword.angle = Math.atan2(player.mousePos.y - ((player.mousePos.viewport.height) / 2), player.mousePos.x - ((player.mousePos.viewport.width) / 2)) * 180 / Math.PI + 45;
@@ -355,9 +490,9 @@ class GameScene extends Phaser.Scene {
             
 					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
-
+					enemy.bar.bar.setDepth(69);
           
-					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag, this.graphics]);
+					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag,enemy.chatText, this.graphics]);
 					this.enemies.push(enemy);
 
 					var circle = this.add.circle(0, 0, 10, 0xFF0000);
@@ -408,9 +543,11 @@ class GameScene extends Phaser.Scene {
 								enemy.bar.destroy();
 								enemy.nameTag.destroy();
 								enemy.sword.destroy();
+                if(!this.spectating) {
 								var miniMapPlayer = this.miniMap.people.find(x => x.id === id);
 								miniMapPlayer.circle.destroy();
 								this.miniMap.people = this.miniMap.people.filter(p => p.id != id);
+                }
 							}
 						});
 								
@@ -448,6 +585,9 @@ class GameScene extends Phaser.Scene {
                     this.lvlBar.setLerpValue((lvlcoins / diff)*100);
 
 					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
+					if(player.level == this.levels.length && Math.round((lvlcoins/diff)*100) >= 100) {
+						this.lvlState.setText("Max Level");
+					}
 					if(this.myObj && player.level > this.myObj.level) {
 
 						if(this.lvlTextTween) this.lvlTextTween.stop();
@@ -479,7 +619,7 @@ class GameScene extends Phaser.Scene {
 					  
 					}
 					}
-					if(this.mePlayer.texture.key+"Player" != player.skin) {
+					if(!this.spectating&&this.mePlayer.texture.key+"Player" != player.skin) {
 						this.mePlayer.setTexture(player.skin+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
 					}
@@ -488,28 +628,33 @@ class GameScene extends Phaser.Scene {
 						this.mePlayer.x = player.pos.x;
 						this.mePlayer.y = player.pos.y;
 					} else {
-						this.goTo.x = player.pos.x;
-						this.goTo.y = player.pos.y;
+					this.tweens.add({
+						targets: this.mePlayer,
+						x: player.pos.x,
+						y: player.pos.y,
+						duration: 300,
+						ease: "Power2"
+					});
 					}
 					this.mePlayer.setScale(player.scale);
 					this.meBar.maxValue = player.maxHealth;
 					this.meBar.setHealth(player.health);
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
-					if(!(this.cameras.main.zoom <= 0.15)) {
-						 
-						if(player.scale < 0.75) this.cameras.main.setZoom(1.25-player.scale);
-						if(player.scale >= 3) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
-						else if(player.scale >= 1) this.cameras.main.setZoom(0.56-((player.scale-1)/8));
-            
-						else if(player.scale >= 0.75) this.cameras.main.setZoom(0.56-((player.scale-0.75)/3));
-
-
-
-					}
+					
+					var show = 1000;
+					show += (this.mePlayer.width*this.mePlayer.scale)*5;
+					//var oldZoom = this.cameras.main.zoom;
+					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
+ 					this.cameras.main.setZoom(
+						newZoom
+					); 
+			
+	
 					this.meSword.setScale(player.scale);
 					  this.background.setTileScale(this.cameras.main.zoom, this.cameras.main.zoom);
 					this.background.displayWidth = this.cameras.main.displayWidth;
 					this.background.displayHeight = this.cameras.main.displayHeight;
+		
 
 					this.killCount.setText("[img=kill] " + player.kills+"\n[img=coin] "+player.coins);
 					this.myObj = player;
@@ -526,12 +671,36 @@ class GameScene extends Phaser.Scene {
 							}
 						);
 					}
-
+					if(!this.spectating) {
 					var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 					miniMapPlayer.circle.radius = player.scale * convert(1280, 15, this.canvas.width);
+					}
+					function cc(p1x, p1y, r1, p2x, p2y, r2) {
+						var a;
+						var x;
+						var y;
+					  
+						a = r1 + r2;
+						x = p1x - p2x;
+						y = p1y - p2y;
+					  
+						if (a > Math.sqrt((x * x) + (y * y)) && r1 > r2/2) {
+						  return true;
+						} else {
+						  return false;
+						}
+					  }
+					//check if touching bush
+					if(this.bushes.filter(x => cc(x.x, x.y, x.displayWidth/2, this.mePlayer.x, this.mePlayer.y, this.mePlayer.displayWidth/2)).length > 0) {
+						this.meBar.bar.setAlpha(0.3);
+					} else {
+						if(this.meBar.bar.alpha != 1) {
+							this.meBar.bar.setAlpha(1);
+						}
+					}
 
 				});
 				this.socket.on("player", (player) => {
@@ -549,8 +718,13 @@ class GameScene extends Phaser.Scene {
 						enemy.bar.setHealth(player.health);
 
 						//update pos
-						enemy.toMove.x = player.pos.x;
-						enemy.toMove.y = player.pos.y;
+						this.tweens.add({
+							targets: enemy.player,
+							x: player.pos.x,
+							y: player.pos.y,
+							duration: 300,
+							ease: "Power2"
+						});
 
 						//update sword
 						var mousePos = player.mousePos;
@@ -561,6 +735,7 @@ class GameScene extends Phaser.Scene {
 						enemy.down = player.mouseDown;
 
 						//minimap
+						if(this.spectating) return;
 						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
             
         
@@ -569,9 +744,73 @@ class GameScene extends Phaser.Scene {
 						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 						miniMapPlayer.circle.radius = convert(1280, 15, this.canvas.width) * player.scale;
 
+		
+
 					} catch (e) {
 						console.log(e);
 					}
+				});
+				this.socket.on("chat", (data) => {
+					//do smth
+					if(!this.myObj) return;
+
+          if(data.id == this.myObj.id)  {
+            this.meChat.setText(data.msg);
+			this.meChat.setAlpha(0);
+
+			if(this.meChatTween) this.meChatTween.stop();
+
+			this.meChatTween = this.tweens.add({
+				targets: this.meChat,
+				duration: 200,
+				alpha: 1,
+				completeDelay: 2000,
+				onComplete: () => {
+					this.meChatTween = this.tweens.add({
+						targets: this.meChat,
+						duration: 200,
+						alpha: 0,
+						onComplete: () => {
+							this.meChat.setText("");
+						}
+					});
+
+				},
+				
+				ease: "Power2"
+			});
+
+          } else {
+			var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == data.id);
+			if(!enemy) return;
+
+			enemy.chatText.setText(data.msg);
+			enemy.chatText.setAlpha(0);
+
+			if(enemy.chatTween) enemy.chatTween.stop();
+
+			enemy.chatTween = this.tweens.add({
+				targets: enemy.chatText,
+				duration: 200,
+				alpha: 1,
+				completeDelay: 2000,
+				onComplete: () => {
+					enemy.chatTween = this.tweens.add({
+						targets: enemy.chatText,
+						duration: 200,
+						alpha: 0,
+						onComplete: () => {
+							enemy.chatText.setText("");
+						}
+					});
+
+				}
+			});
+
+
+		  }
+
+
 				});
 				this.socket.on("playerLeave", this.removePlayer);
 				this.socket.on("playerDied", (id, data) => {
@@ -597,7 +836,7 @@ class GameScene extends Phaser.Scene {
 						} else {
 
 						this.streak = 0;
-					var txt = `[b][color=#e82a1f]Killed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
+					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
 						}
 					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
 					text.setData("index", this.killtxts.length);
@@ -794,9 +1033,115 @@ class GameScene extends Phaser.Scene {
 						addChest(chest);
 					}
 				});
-
+				//this.time.delayedCall(3000, () => {
 				this.socket.on("youDied", (data) => {
-					this.died(data);
+					//this.died(data);
+
+					// var data = {
+					// 	killedBy: "me",
+					// 	timeSurvived: 100000
+					// }
+          this.dtas = {
+            killedBy: data.killedBy,
+            timeSurvived: data.timeSurvived
+          };
+					this.spectating = true;
+					
+					this.mePlayer.destroy();
+					this.meBar.destroy();
+					this.meSword.destroy();
+					this.lvlBar.destroy();
+					this.lvlState.destroy();
+					this.killCount.destroy();
+					this.leaderboard.destroy();
+					this.miniGraphics.destroy();
+					this.playerCount.destroy();
+					if(this.chat.obj) this.chat.obj.destroy();
+          if(this.mobile) this.joyStick.destroy();
+					this.miniMap.people.forEach((person) => {
+						person.circle.destroy();
+					});
+					this.miniMap.people = [];
+          function msToTime(duration) {
+    var milliseconds = parseInt((duration % 1000) / 100),
+      seconds = Math.floor((duration / 1000) % 60),
+      minutes = Math.floor((duration / (1000 * 60)) % 60),
+      hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
+  
+  
+    return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
+  }
+
+					//wait 1.5 sec
+					this.time.delayedCall(1500, () => {
+						
+						//show death screen
+						this.deathRect = this.add.rectangle(this.canvas.width/2, this.canvas.height/2, this.canvas.width/2, this.canvas.height/1.5, 0x90EE90).setAlpha(0);
+            this.cameras.main.ignore(this.deathRect);
+						this.tweens.add({
+							targets: this.deathRect,
+							alpha: 1,
+							duration: 250,
+							ease: "Sine2",
+							onComplete: () => {
+										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You got stabbed", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+                this.cameras.main.ignore(this.deadText);
+								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
+								this.deadText.y += this.deadText.height;
+                
+																var msgs = ["Nooooooooo", "Rest in peace", "You can do better!", "Practice makes perfect!", "Keep trying!"];
+								var msg = msgs[Math.floor(Math.random() * msgs.length)];
+								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+					
+							this.dataText.y += this.dataText.height*1.5;
+                 this.cameras.main.ignore(this.dataText);
+
+							this.statsText = this.add.text(this.canvas.width/2, this.dataText.y, "Stabbed By: "+data.killedBy+"\nCoins: 0\nKills: 0\nSurvived: 0s", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
+								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
+							this.statsText.y += this.statsText.height;
+                this.cameras.main.ignore(this.statsText);
+
+
+      this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+        this.callback();
+        this.socket.disconnect();
+        
+          this.scene.start("title");
+      });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
+                this.cameras.main.ignore(this.playAgain.btn);
+
+                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+              this.playAgain.btn.x = this.canvas.width/2;
+              this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+               
+
+			this.tweens.addCounter({
+				from: 0,
+				to: 100,
+				duration: 1000,
+				onUpdate:  (tween)=>
+				{
+					
+					//  tween.getValue = range between 0 and 360
+		
+					var coins = Math.round(this.myObj.coins * (tween.getValue()/100));
+          var kills = Math.round(this.myObj.kills * (tween.getValue()/100));
+          var time = Math.round(data.timeSurvived * (tween.getValue()/100));
+
+          this.statsText.setText("Stabbed By: "+data.killedBy+"\nCoins: "+coins+"\nKills: "+kills+"\nSurvived: "+msToTime(time));
+          
+				
+				}
+			});    
+						}
+						});
+
+					});
+
+					
+					
+
 				});
 				this.socket.on("youWon", (data) => {
 					this.win(data);
@@ -895,7 +1240,10 @@ try {
 
 		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 		this.mePlayer.angle = this.meSword.angle + 45 +180;
+
+
 		//sword animation
+		/*
 		if (this.mouseDown ) {
 			if(this.swordAnim.added <= 0) this.swordAnim.go = true;
 		}
@@ -913,7 +1261,51 @@ try {
 			this.swordAnim.added -= 10;
 			this.meSword.angle -= this.swordAnim.added;
 		}
-        
+		*/
+		var cooldown = (this.myObj ? this.myObj.damageCooldown : 120);
+		if(this.mouseDown && !this.swordAnim.go && this.swordAnim.added == 0) {
+			this.swordAnim.go = true;
+	
+
+			this.tweens.addCounter({
+				from: 0,
+				to: 50,
+				duration: cooldown,
+				onUpdate:  (tween)=>
+				{
+					
+					//  tween.getValue = range between 0 and 360
+		
+					this.swordAnim.added = tween.getValue();
+				
+				},
+				onComplete: ()=>
+				{
+					//this.swordAnim.added = 0;
+					this.swordAnim.go = false;
+				}
+			});
+		} else if(!this.swordAnim.go && !this.mouseDown && this.swordAnim.added > 0) {
+			this.swordAnim.go = true;
+	
+
+			this.tweens.addCounter({
+				from: 50,
+				to: 0,
+				duration: cooldown,
+				onUpdate:  (tween)=>
+				{
+					this.swordAnim.added = tween.getValue();
+				
+				},
+				onComplete: ()=>
+				{
+					//this.swordAnim.added = 0;
+					this.swordAnim.go = false;
+				}
+			});
+		}
+        this.meSword.angle -= this.swordAnim.added;
         
 		var mousePos2 = {
 			viewport: {
@@ -943,35 +1335,27 @@ try {
 		}
 		this.enemies.forEach(enemy => {
 			if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy);
-			// if (enemy.player.x != enemy.toMove.x && enemy.player.y !=enemy.toMove.y) speed = speed *0.707
-			/*        no lerp
-            if (enemy.player.x < enemy.toMove.x) enemy.player.x += speed
-            if (enemy.player.x > enemy.toMove.x) enemy.player.x -= speed
-            if (enemy.player.y < enemy.toMove.y) enemy.player.y += speed
-            if (enemy.player.y > enemy.toMove.y) enemy.player.y -= speed
-            */
-			//yes lerp
-
-			if(enemy.toMove.x ) {
-				enemy.player.x = lerp(enemy.player.x, enemy.toMove.x,fps/500);
-				enemy.player.y = lerp(enemy.player.y, enemy.toMove.y, fps/500);
-			}
-
-
-			// if(difference(enemy.player.x, enemy.toMove.x) < speed) enemy.player.x = enemy.toMove.x
-			// if(difference(enemy.player.y, enemy.toMove.y) < speed) enemy.player.y = enemy.toMove.y
+		
 			if(enemy.playerObj) var scale = enemy.playerObj.scale;
 			else var scale = 0.25;
 			enemy.bar.width = (enemy.player.height*scale / 0.9375);
 			enemy.bar.height = (enemy.player.height*scale*0.150);
 			enemy.bar.x = enemy.player.x  - enemy.bar.width / 2;
 			enemy.bar.y = enemy.player.y - (enemy.player.height*scale/1.2);
+		
 
 			enemy.bar.draw();
 			try {
 				enemy.nameTag.setFontSize(100*scale);
 				enemy.nameTag.x = enemy.player.x  - enemy.nameTag.width / 2;
 				enemy.nameTag.y = enemy.player.y - (enemy.player.height*scale) - enemy.nameTag.height;
+			} catch(e) {
+				console.log(e);
+			}
+			try {
+			if(enemy.playerObj) enemy.chatText.setFontSize(100*enemy.playerObj.scale);
+			enemy.chatText.x = enemy.player.x;
+			enemy.chatText.y = enemy.nameTag.y - enemy.bar.height;
 			} catch(e) {
 				console.log(e);
 			}
@@ -1009,40 +1393,18 @@ try {
                 
 		});
  
-		/*    if(this.myObj) {
-            var speed = this.myObj.speed / fps
-        } else {
-            var speed = 700 /fps
-        }
-        
-   
-         //console.log(speed)
-     
-        if (this.goTo.x != this.mePlayer.x && this.goTo.y != this.mePlayer.y) speed = speed *0.707
- //without lerp
-        if (this.goTo.x < this.mePlayer.x) this.mePlayer.x -= speed
-        if (this.goTo.x > this.mePlayer.x) this.mePlayer.x += speed
-        if (this.goTo.y < this.mePlayer.y) this.mePlayer.y -= speed
-        if (this.goTo.y > this.mePlayer.y) this.mePlayer.y += speed
-        */
-		//with lerp
-
-		if(this.goTo.x ) {
-    
-			this.mePlayer.x = lerp(this.mePlayer.x, this.goTo.x, fps/500);
-			this.mePlayer.y = lerp(this.mePlayer.y, this.goTo.y,fps/500);
-		}
-		//console.log(this.mePlayer.x, this.mePlayer.y)
-		//  if(difference(this.goTo.x, this.mePlayer.x) < 10) this.mePlayer.x = this.goTo.x
-		//  if(difference(this.goTo.y, this.mePlayer.y) < 10) this.mePlayer.y = this.goTo.y
+	
 		var myObj = this.myObj;
   
 		if(!myObj) myObj = {scale: 0.25};
-
+		try {
 		this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375);
 		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);
 		this.meBar.x = this.mePlayer.x  - this.meBar.width / 2;
 		this.meBar.y = this.mePlayer.y - (this.mePlayer.height*myObj.scale/1.2);
+		if(this.myObj) this.meChat.setFontSize(100*this.myObj.scale);
+		this.meChat.x = this.mePlayer.x;
+		this.meChat.y = this.meBar.y - this.meBar.height;
 		this.meBar.draw();
 		if(this.myObj) { 
 			var factor1 = (100/(this.myObj.scale*100))*1.5;
@@ -1051,7 +1413,9 @@ try {
 		}
 		this.meSword.x = this.mePlayer.x + this.mePlayer.width / factor1 * Math.cos(this.meSword.angle * Math.PI / 180);
 		this.meSword.y = this.mePlayer.y + this.mePlayer.width / factor1 * Math.sin(this.meSword.angle * Math.PI / 180);
-
+	} catch(e) {
+		console.log(e);
+	}
 
         function conv(num) {
 			return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
@@ -1079,10 +1443,10 @@ try {
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 				text += `...\n#${myIndex+1}: ${this.myObj.verified? "[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
 			}
-
+			if(!this.spectating) {
 			this.leaderboard.setText(text);
 			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
-
+			}
 		} catch(e) {
 			//we shall try next frame
 			console.log(e);
@@ -1090,7 +1454,7 @@ try {
 		//playercount
 		
 		try {
-			this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.mobile ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+		if(!this.spectating)	this.playerCount.setText("Players: " + (Object.keys(this.enemies).length + 1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}
@@ -1129,12 +1493,13 @@ try {
 		});
 
 		//background movement
+		var player = this.mePlayer;
 		this.background.setTilePosition(
-			((this.cameras.main.scrollX*this.cameras.main.zoom)+(this.mePlayer.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
-			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(this.mePlayer.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
+			((this.cameras.main.scrollX*this.cameras.main.zoom)+(player.x -  (this.cameras.main.scrollX*this.cameras.main.zoom)- (this.canvas.width/2)))
+			, ((this.cameras.main.scrollY*this.cameras.main.zoom)+(player.y -  (this.cameras.main.scrollY*this.cameras.main.zoom) - (this.canvas.height/2)))
 		);
-		this.background.x = this.mePlayer.x - (this.cameras.main.displayWidth / 2);
-		this.background.y = this.mePlayer.y- (this.cameras.main.displayHeight/ 2);
+		this.background.x = player.x - (this.cameras.main.displayWidth / 2);
+		this.background.y = player.y - (this.cameras.main.displayHeight/ 2);
 
 		if (this.ready && !this.dead && !this.socket.connected) {
 			document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");

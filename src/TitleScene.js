@@ -42,13 +42,15 @@ try {
       this.options = JSON.parse(window.localStorage.getItem("options"));
     } else {
       this.options = {
-        movementMode: (this.mobile?"keys":"mouse")
+        movementMode: "keys",
+        sound: "normal",
       };
       window.localStorage.setItem("options", JSON.stringify(this.options));
     }
   } else {
     this.options = {
-      movementMode: (this.mobile?"keys":"mouse")
+      movementMode: "keys",
+      sound: "normal"
     };
   }
 
@@ -100,6 +102,20 @@ return;
     fill: "#000000"
   }).setOrigin(0.5);
 
+  if(this.options.sound == "normal") {
+    this.music.volume = 0.5;
+  } else if(this.options.sound == "high") {
+    this.music.volume = 1;
+  }  else if(this.options.sound == "low") {
+    this.music.volume = 0.2;
+  } else if(this.options.sound == "off") {
+    this.music.volume = 0;
+  } else {
+    this.options.sound = "normal";
+    this.music.volume = 0.5;
+
+    if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+  }
 
   this.settingsBtn = new ImgButton(this, 0,0, "settingsBtn", () => {
     if(this.promo && this.promo.visible) return;
@@ -113,9 +129,24 @@ return;
       this.settings.destroy();
     };
     document.getElementById("movement").value = this.options.movementMode;
+    document.getElementById("sound").value = this.options.sound;
     document.getElementById("movement").onchange = () => {
       this.options.movementMode = document.getElementById("movement").value;
       if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+    };
+    document.getElementById("sound").onchange = () => {
+      this.options.sound = document.getElementById("sound").value;
+      if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+
+      if(this.options.sound == "normal") {
+        this.music.volume = 0.6;
+      } else if(this.options.sound == "high") {
+        this.music.volume = 1.2;
+      }  else if(this.options.sound == "low") {
+        this.music.volume = 0.2;
+      } else if(this.options.sound == "off") {
+        this.music.volume = 0;
+      }
     };
 
 
@@ -296,8 +327,13 @@ this.callback(myName, this.music, this.secret);
   };
 
   this.shopBtn = new ImgButton(this, 10,10, "shopBtn", () => {
-    var frameDoc = document.getElementById("shopFrame").contentWindow.document;
+    document.getElementById("shopFrame").src = "/shop?secret=" + this.secret;
+    var frame = document.getElementById("shopFrame");
+   
 
+    frame.onload = () => {
+      var frameDoc = document.getElementById("shopFrame").contentWindow.document;
+     
     if(loggedIn) {
       frameDoc.getElementById("login").style.display = "none";
       frameDoc.getElementById("skins").style.display = "";
@@ -310,6 +346,7 @@ this.callback(myName, this.music, this.secret);
  
    frameDoc.getElementById("closeShop").onclick = () => {
       document.getElementById("shopFrame").style.display = "none";
+    };
     };
 
 
@@ -567,7 +604,12 @@ try {
  
   };
 
-    window.addEventListener("resize", resize, false);
+    var doit;
+
+        window.addEventListener("resize", function(){
+            clearTimeout(doit);
+            doit = setTimeout(resize, 100);
+          });
 
 resize(true);
     

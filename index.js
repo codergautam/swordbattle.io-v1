@@ -4,26 +4,32 @@ var http = require("http");
 require("dotenv").config();
 const { Server } = require("socket.io");
 const app = express();
-var cors = require("cors");
 var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
 
-var server;
-/*
-if(process.env.PRODUCTION==="true") {
-	var options = {
-		key: fs.readFileSync("./ssl/privatekey.pem"),
-		cert: fs.readFileSync("./ssl/certificate.pem"),
-	};
- server = https.createServer(options, app);
-} else {
- server = http.createServer(app);
-} 
-*/
+var map = 10000;
+//var cors = require("cors");
 
-server = http.createServer(app);
+var server;
+var httpsserver;
+
+//console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
+
+var usinghttps = false;
+if(process.env.PRODUCTION==="true") {
+	usinghttps = true;
+	var options = {
+		key: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/privkey.pem"),
+		cert: fs.readFileSync("/etc/letsencrypt/live/swordbattle.io/fullchain.pem"),
+	};
+ httpsserver = https.createServer(options, app).listen(443);
+}
+ server = http.createServer(app); 
+
+
+//server = http.createServer(app);
 
 const axios = require("axios").default;
 const Filter = require("purgomalum-swear-filter");
@@ -48,11 +54,7 @@ const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
 
-const io = new Server(server, {
-	allowRequest: (req, callback) => {
-		callback(null, req.headers.origin === undefined);
-	},
-});
+const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -75,57 +77,25 @@ var oldlevels = [
 	{coins: 50, scale: 0.45},
 	{coins: 75, scale: 0.47},
 	{coins: 100, scale: 0.5},
-	{coins: 125, scale: 0.51},
-	{coins: 150, scale: 0.52},
-	{coins: 200, scale: 0.53},
-	{coins: 250, scale: 0.55},
-	{coins: 350, scale: 0.57},
-	{coins: 500, scale: 0.6},
-	{coins: 600, scale: 0.61},
-	{coins: 750, scale: 0.63},
-	{coins: 900, scale: 0.65},
-	{coins: 1000, scale: 0.7},
-	{coins: 1100, scale: 0.71},
-	{coins: 1250, scale: 0.72},
-	{coins: 1500, scale: 0.74},
-	{coins: 1750, scale: 0.76},
-	{coins: 2000, scale: 0.77},
-	{coins: 2250, scale: 0.77},
-	{coins: 2500, scale: 0.85},
-	{coins: 2750, scale: 0.87},
-	{coins: 3000, scale: 0.9},
-	{coins: 3250, scale: 0.95},
-	{coins: 3500, scale: 1},
-	{coins: 4000, scale: 1.02},
-	{coins: 5000, scale: 1.05},
-	{coins: 5500, scale: 1.07},
-	{coins: 6000, scale: 1.1},
-	{coins: 6500, scale: 1.2},
-	{coins: 7000, scale: 1.4},
-	{coins: 7500, scale: 1.55},
-	{coins: 8000, scale: 1.7},
-	{coins: 8500, scale: 1.8},
-	{coins: 9000, scale: 1.9},
-	{coins: 9500, scale: 2},
-	{coins: 10000, scale: 2.2},
-	{coins: 11000, scale: 2.4},
-	{coins: 12000, scale: 2.6},
-	{coins: 13000, scale: 2.8},
-	{coins: 14000, scale: 3},
-	{coins: 15000, scale: 3.2},
-	{coins: 16000, scale: 3.4},
-	{coins: 17000, scale: 3.6},
-	{coins: 18000, scale: 3.8},
-	{coins: 19000, scale: 4},
-	{coins: 20000, scale: 4.1},
-	{coins: 30000, scale: 4.2},
-	{coins: 40000, scale: 4.3},
-	{coins: 50000, scale: 4.4},
-	{coins: 60000, scale: 4.5},
-	{coins: 70000, scale: 4.6},
-	{coins: 80000, scale: 4.7},
-	{coins: 90000, scale: 4.8},
-	{coins: 100000, scale: 4.9},
+	{coins: 125, scale: 0.55},
+	{coins: 150, scale: 0.6},
+	{coins: 200, scale: 0.7},
+	{coins: 350, scale: 0.8},
+	{coins: 500, scale: 0.85},
+	{coins: 600, scale: 0.87},
+	{coins: 750, scale: 0.89},
+	{coins: 900, scale: 0.9},
+	{coins: 1000, scale: 0.95},
+	{coins: 1100, scale: 0.97},
+	{coins: 1250, scale: 0.99},
+	{coins: 1500, scale: 1},
+	{coins: 2000, scale: 1.04},
+	{coins: 2250, scale: 1.06},
+	{coins: 2500, scale: 1.07},
+	{coins: 2750, scale: 1.1},
+	{coins: 3000, scale: 1.15},
+	{coins: 5000, scale: 1.2},
+	{coins: 10000, scale: 1.3},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -137,7 +107,24 @@ oldlevels.forEach((level, index)  =>{
 
 moderation.start(app);
 
-app.use(cors());
+app.use(function (req, res, next) {
+
+    // Website you wish to allow to connect
+    res.setHeader("Access-Control-Allow-Origin", "*");
+
+    // Request methods you wish to allow
+    res.setHeader("Access-Control-Allow-Methods", "GET, POST, OPTIONS, PUT, PATCH, DELETE");
+
+    // Request headers you wish to allow
+    res.setHeader("Access-Control-Allow-Headers", "X-Requested-With,content-type");
+
+    // Set to true if you need the website to include cookies in the requests sent
+    // to the API (e.g. in case you use sessions)
+    res.setHeader("Access-Control-Allow-Credentials", true);
+
+    // Pass to next layer of middleware
+    next();
+});
 
 
 app.use("/", express.static("dist"));
@@ -303,6 +290,8 @@ app.post("/api/loginsecret", async (req, res) => {
 
 
 });
+
+
 app.get("/skins", async (req, res) => {
 	res.redirect("/shop");
 });
@@ -310,7 +299,20 @@ app.get("/skins", async (req, res) => {
 app.get("/shop", async (req, res) => {
 	//read cosmetics.json
 	var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
-	res.render("shop.ejs", {cosmetics: cosmetics});
+
+	//get user data
+	var secret = req.query.secret;
+	var acc;
+	if(secret!="undefined") {
+		var account = await sql`select skins,coins,username from accounts where secret=${secret}`;
+		if(account[0]) {
+			acc = account[0];
+			var yo = await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
+			acc.bal = yo[0].sum + acc.coins;
+		}
+	}
+
+	res.render("shop.ejs", {cosmetics: cosmetics, account: acc});
 });
 
 app.get("/leaderboard", async (req, res) => {
@@ -352,14 +354,48 @@ app.get("/:user", async (req, res, next) => {
 		next();
 	} else {
 		var yo = await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+
+		/*
+		TODO
+
+		SELECT A.dt,
+		B.NAME,
+		B.COINS
+		FROM
+		(
+		SELECT distinct(DATE_ACTUAL) as dt FROM d_date
+			WHERE DATE_ACTUAL>='2022-01-01'
+		order by date_actual asc
+		) A
+		
+		LEFT outer JOIN 
+		(
+		SELECT
+		NAME,
+		CREATED_AT::DATE AS PLAYED_DATE,
+		sum(COINS) as coins
+		FROM
+		GAMES GMS
+		WHERE VERIFIED=TRUE
+		group by name,created_at::Date
+		) B
+		ON A.dt=B.PLAYED_DATE
+		WHERE NAME='Dooku'
+		ORDER BY A.dt ASC
+	
+*/
+
+
 		var stats = await sql`
 		select a.dt,b.name,b.xp,b.kills from
 		(
-		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 order by created_at::date 
+		select distinct(created_at::date) as Dt from games where created_at >= ${dbuser[0].created_at}::date-1 
+		order by created_at::date 
 		) a
 		left join
 		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,
+		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
 		var lb = await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
@@ -378,9 +414,10 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 250;
-var maxChests = 10;
-var maxAiPlayers = 10;
+var maxCoins = 400;
+var maxChests = 8;
+var maxAiPlayers = 13;
+var maxPlayers = 30;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -395,9 +432,6 @@ io.on("connection", async (socket) => {
 		socket.disconnect();
 	}
 
-	if (socket.handshake.xdomain) {
-		socket.disconnect();
-	}
 
 	socket.on("go", async (r, captchatoken, tryverify, options) => {
 		async function ready() {
@@ -464,6 +498,11 @@ io.on("connection", async (socket) => {
 				"ban",
 				"You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
 			);
+			return socket.disconnect();
+		}
+		//console.log(Object.values(PlayerList.players).length);
+		if (Object.values(PlayerList.players).length >= maxPlayers) {
+			socket.emit("ban", "Server is full. Please try again later.");
 			return socket.disconnect();
 		}
 
@@ -537,9 +576,55 @@ io.on("connection", async (socket) => {
 	socket.on( "ping", function ( fn ) {
 		fn(); // Simply execute the callback on the client
 	} );
+	socket.on("chat", (msg) => {
+		msg = msg.trim().replace(/\\/g, "\\\\");
+		if (msg.length > 0) {
+			if (msg.length > 20) msg = msg.substring(0, 16);
+			if (!PlayerList.has(socket.id) || Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000) return;
+			var p = PlayerList.getPlayer(socket.id);
+			p.lastChat = Date.now();
+			PlayerList.setPlayer(socket.id, p);
+			filter.clean(msg).then((msg) => {
+				io.sockets.emit("chat", {
+					msg: msg,
+					id: socket.id,
+				});
+			});
+		}
+	});
+	function clamp(num, min, max) {
+		return num <= min ? min : num >= max ? max : num;
+	}
 	socket.on("disconnect", () => {
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
+
+              //drop their coins
+              var drop = [];
+              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
+              var dropped = 0;
+              while (dropped < dropAmount) {
+                var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());
+                var theta = Math.random() * 2 * Math.PI;
+                var x = thePlayer.pos.x + r * Math.cos(theta);
+                var y = thePlayer.pos.y + r * Math.sin(theta);
+                var remaining = dropAmount - dropped;
+                var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
+
+                coins.push(
+                  new Coin({
+                    x: clamp(x, -(map/2), map/2),
+                    y: clamp(y, -(map/2), map/2),
+                  },value)
+                );
+                dropped += value;
+                drop.push(coins[coins.length - 1]);
+              }
+
+                io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+              
+
+
 		sql`INSERT INTO games (id, name, coins, kills, time, verified) VALUES (${thePlayer.id}, ${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);
@@ -550,6 +635,14 @@ io.on("connection", async (socket) => {
 var secondStart = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
+var actps = 0;
+app.get("/api/serverinfo", (req, res) => {
+	var playerCount = Object.values(PlayerList.players).length;
+	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
+	res.send({
+		playerCount, lag, maxPlayers
+	});
+});
 
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
@@ -580,6 +673,7 @@ setInterval(async () => {
 	//emit tps to clients
 	if (Date.now() - secondStart >= 1000) {
 		io.sockets.emit("tps", tps);
+		actps = tps;
 		//console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
 		secondStart = Date.now();
 		tps = 0;

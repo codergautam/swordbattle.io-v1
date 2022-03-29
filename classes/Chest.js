@@ -24,7 +24,7 @@ function getRandomInt(min, max) {
     }
     open() {
       var drop = [];
-      for (var i = 0; i < getRandomInt(20,50); i++) {
+      for (var i = 0; i < getRandomInt(50,100); i++) {
         var x = getRandomInt(this.pos.x, this.pos.x + this.width);
         var y = getRandomInt(this.pos.y, this.pos.y + this.height);
 
