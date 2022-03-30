@@ -579,15 +579,16 @@ class GameScene extends Phaser.Scene {
 					if(this.loadrect.visible) this.loadrect.destroy();
 					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
-
+						if(player.level >= this.levels.length-1 ) {
+							this.lvlState.setText("Max Level");
+							this.lvlBar.setLerpValue(100);
+						} else {
                     var diff = this.levels[player.level-1].coins - this.levels[player.level-1].start;
                     var lvlcoins = player.coins - this.levels[player.level-1].start;
                     this.lvlBar.setLerpValue((lvlcoins / diff)*100);
 
 					this.lvlState.setText("Level: " + player.level +" ("+Math.round((lvlcoins/diff)*100)+"%)");
-					if(player.level == this.levels.length && Math.round((lvlcoins/diff)*100) >= 100) {
-						this.lvlState.setText("Max Level");
-					}
+
 					if(this.myObj && player.level > this.myObj.level) {
 
 						if(this.lvlTextTween) this.lvlTextTween.stop();
@@ -618,6 +619,7 @@ class GameScene extends Phaser.Scene {
 
 					  
 					}
+				}
 					}
 					if(!this.spectating&&this.mePlayer.texture.key+"Player" != player.skin) {
 						this.mePlayer.setTexture(player.skin+"Player");
