@@ -327,7 +327,7 @@ this.callback(myName, this.music, this.secret);
   };
 
   this.shopBtn = new ImgButton(this, 10,10, "shopBtn", () => {
-    document.getElementById("shopFrame").src = "/shop?secret=" + this.secret;
+    document.getElementById("shopFrame").contentWindow.location.replace("/shop?secret=" + this.secret);
     var frame = document.getElementById("shopFrame");
    
 
