@@ -142,7 +142,13 @@ function numberWithCommas(x) {
       var secret = "<%= secret %>";
       var bal = "<%= account.bal %>";
       function buy(skin,price,obj) {
+
+        if(Number(bal) < price) {
+          alert("Not enough coins");
+          return;
+        }
         obj.innerHTML = "Buying...";
+        obj.onclick = () => {};
         var endpoint = "/api/buy";
         var data = {
           item: skin,
@@ -172,6 +178,9 @@ function numberWithCommas(x) {
             obj.innerHTML = numberWithCommas(price)+" ";
             obj.appendChild(document.createElement("img")).src = "/assets/images/coin.png";
             obj.lastChild.style.width = "20";
+            obj.onclick = function() {
+              buy(skin,price,obj);
+            }
             alert(text);
 
            });
@@ -252,9 +261,12 @@ function numberWithCommas(x) {
             </div>
           </li>
          <% }) %>
-         <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
          <br>
+     
         </ul>
+        <br>
+        <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
+        <br>
       </div>
       <% } else { %>
         <div style="background-color: black;">
