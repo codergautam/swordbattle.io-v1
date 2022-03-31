@@ -386,10 +386,11 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.scene.get("open").server == "us" ? "https://www.swordbattle.io/" : "https://swordbattle.herokuapp.com";
+				var server = this.scene.get("open").server == "us" ? "https://swordbattle.codergautamyt.repl.co" : "https://swordbattle.herokuapp.com";
 				//server = undefined
 				this.socket = io(server,{
-					closeOnBeforeunload: false
+					closeOnBeforeunload: false,
+          transports: ["websocket"]
 				});
 				
 				function handleErr(err) {
