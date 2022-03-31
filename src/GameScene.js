@@ -1,5 +1,6 @@
 import HealthBar from "./HealthBar.js";
 import ImgButton from "./PhaserImgButton";
+import { subscribe, isSupported } from "on-screen-keyboard-detector";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -93,6 +94,7 @@ class GameScene extends Phaser.Scene {
 
 
 				//killcounter
+				
 				try { 
 				this.killCount = this.add.rexBBCodeText(15, 10, "Stabs: 0", {
 					fontFamily: "Georgia, \"Goudy Bookletter 1911\", Times, serif",
@@ -109,6 +111,8 @@ class GameScene extends Phaser.Scene {
 				});
 				
 				this.killCount.setScrollFactor(0);
+
+		
 
 				//player+fpscounter
 
@@ -188,7 +192,60 @@ class GameScene extends Phaser.Scene {
 				this.chat = {
 					obj: null,
 					toggled: false,
+					btn: new ImgButton(this, 0, 0, "chatbtn", () => {
+						
+					if(this.loadtext.visible) return;
+					this.chat.toggled = !this.chat.toggled;
+          if(this.spectating) {
+			  if(this.deadText.visible) {
+                       this.callback();
+                    this.socket.disconnect();
+          this.scene.start("title");
+			  }
+            
+          }
+		  if(this.spectating) return;
+				 if(this.chat.toggled) {
+						
+						this.chat.obj = this.add.dom(this.canvas.width / 2, (this.canvas.height / 2)-this.canvas.height/5).createFromCache("chat");
+						//set focus to chat
+						this.chat.obj.getChildByID("chat").focus();
+						if (isSupported()) {
+							const unsubscribe = subscribe(visibility => {
+								if (visibility === "hidden") {
+									
+									this.chat.toggled = false;
+									this.chat.obj.destroy();
+								
+									unsubscribe();
+								}
+							});
+							
+							// After calling unsubscribe() the callback will no longer be invoked.
+						   
+						}
+            
+					} else {
+
+						if(this.chat.obj) {
+							
+							var msg = this.chat.obj.getChildByID("chat").value.trim();
+							if(msg.length > 0) this.socket.emit("chat", msg);
+
+						this.chat.obj.destroy();
+						}
+					}
+					}),
 				};
+				this.chat.btn.btn.setScale(Math.min(this.canvas.height / 1000, this.canvas.width / 1500));
+				this.chat.btn.btn.x = this.killCount.width;
+
+				if(!this.mobile) {
+					this.chat.btn.destroy();
+				} else {
+					this.cameras.main.ignore(this.chat.btn.btn);
+				}
+				
 
 				//coins array
 				this.coins = [];
@@ -297,7 +354,8 @@ class GameScene extends Phaser.Scene {
 						
 						this.UICam.x = this.cameras.main.x;
 						this.UICam.y = this.cameras.main.y;
-
+						this.chat.btn.btn.setScale((Math.min(this.canvas.height / 1000, this.canvas.width / 1500)));
+						this.chat.btn.btn.x = this.killCount.width;
 						this.miniGraphics.clear();
 						var padding = 13;
 						this.miniMap.scaleFactor = convert(1189, 96, this.canvas.width);
@@ -392,6 +450,7 @@ class GameScene extends Phaser.Scene {
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
+			
 				
 				function handleErr(err) {
 					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
@@ -1060,7 +1119,10 @@ class GameScene extends Phaser.Scene {
 					this.miniGraphics.destroy();
 					this.playerCount.destroy();
 					if(this.chat.obj) this.chat.obj.destroy();
-          if(this.mobile) this.joyStick.destroy();
+          if(this.mobile) {
+			  this.joyStick.destroy();
+			  this.chat.btn.destroy();
+		  }
 					this.miniMap.people.forEach((person) => {
 						person.circle.destroy();
 					});
