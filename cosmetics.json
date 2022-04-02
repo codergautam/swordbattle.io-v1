@@ -14,12 +14,20 @@
             "price": 100,
             "description": "Ahhh.. So bright!"
         },
+
         {
             "name": "fox",
             "displayName": "Fox",
             "url": "/assets/images/foxPlayer.png",
             "price": 500,
             "description": "Very sneaky"
+        },
+        {
+            "name": "spring",
+            "displayName": "Spring",
+            "url": "/assets/images/springPlayer.png",
+            "price": 1000,
+            "description": "Spring is here!"
         },
         {
             "name": "chef",
