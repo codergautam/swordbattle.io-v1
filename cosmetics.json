@@ -58,6 +58,13 @@
             "description": "Now this will scare everyone!"
         },
         {
+            "name": "scythe",
+            "displayName": "Scythe",
+            "url": "/assets/images/scythePlayer.png",
+            "price": 5000000,
+            "description": "I'm coming for you!"
+        },
+        {
             "name": "codergautamyt",
             "displayName": "Coder Gautam YT",
             "url": "/assets/images/codergautamytPlayer.png",
