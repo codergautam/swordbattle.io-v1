@@ -23,6 +23,13 @@
             "description": "Very sneaky"
         },
         {
+            "name": "spring",
+            "displayName": "Spring",
+            "url": "/assets/images/springPlayer.png",
+            "price": 1000,
+            "description": "Spring is here!"
+        },
+        {
             "name": "chef",
             "displayName": "Chef",
             "url": "/assets/images/chefPlayer.png",
