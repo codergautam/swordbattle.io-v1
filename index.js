@@ -677,7 +677,7 @@ io.on("connection", async (socket) => {
 	socket.on("chat", (msg) => {
 		msg = msg.trim().replace(/\\/g, "\\\\");
 		if (msg.length > 0) {
-			if (msg.length > 20) msg = msg.substring(0, 16);
+			if (msg.length > 35) msg = msg.substring(0, 35);
 			if (!PlayerList.has(socket.id) || Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000) return;
 			var p = PlayerList.getPlayer(socket.id);
 			p.lastChat = Date.now();

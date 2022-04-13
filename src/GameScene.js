@@ -85,7 +85,9 @@ class GameScene extends Phaser.Scene {
         
 				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
 				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
-				this.meChat = this.add.text(0,0,"").setOrigin(0.5).setDepth(71);
+				this.meChat = this.add.text(0,0,"", {
+					fontFamily: "Georgia",
+				}).setOrigin(0.5).setDepth(71);
 				this.meChatTween = undefined;
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
@@ -537,7 +539,7 @@ class GameScene extends Phaser.Scene {
 						swordAnim: {go: false, added: 0},
 						toAngle: 0,
 						chatText: this.add.text(0,0, "", {
-							fontFamily: "serif",
+							fontFamily: "Georgia",
 						}).setDepth(71).setOrigin(0.5),
 						chatTween: undefined,
 					};

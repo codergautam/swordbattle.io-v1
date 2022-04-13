@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "watch": "webpack --config webpack.config.js --watch --progress",
     "test": "node index.js --unhandled-rejections=strict",
     "start": "node index.js --unhandled-rejections=strict"
   },
