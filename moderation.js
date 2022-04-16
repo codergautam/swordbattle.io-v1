@@ -22,7 +22,7 @@ module.exports = {
               });
               res.send(txt);
             } else {
-              res.send("idot hackrs");
+              res.send("idot heckrs");
             }
           });
           
@@ -40,6 +40,10 @@ module.exports = {
           
           app.get("/ipunban/:token", (req, res) => {
             var token = req.params.token == process.env.TOKEN;
+            if(typeof req.query.ip !== "string"){
+                res.send("estúpido");
+                return;
+            }
             if (token) {
                 var ip = req.query.ip.replace(/%20/g, " ");
 

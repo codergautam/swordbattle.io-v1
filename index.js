@@ -229,7 +229,7 @@ if(secret && secret!="undefined") {
 });
 
 app.post("/api/signup", async (req, res) => {
-	if(!req.body || req.body.password == undefined || req.body.username == undefined) {	
+	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
 		res.send({error: "Missing fields"});
 		return;
 	}
@@ -291,7 +291,7 @@ app.post("/api/signup", async (req, res) => {
 });
 
 app.post("/api/login", async (req, res) => { 
-	if(!req.body || req.body.password == undefined || req.body.username == undefined || req.body.captcha == undefined) {	
+	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
 		res.send({error: "Missing fields"});
 		return;
 	}
@@ -319,7 +319,7 @@ app.post("/api/login", async (req, res) => {
 		response: req.body.captcha,
 		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
 	};
-	if(recaptcha) {
+	if(typeof req.body.captcha !== "string") {
 		axios
 			.post(
 				"https://www.google.com/recaptcha/api/siteverify?" +
@@ -337,7 +337,7 @@ app.post("/api/login", async (req, res) => {
 				}
 				doit();
 			});
-	} else doit();
+	}
 
 
 });
