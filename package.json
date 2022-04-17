@@ -14,7 +14,7 @@
   "license": "ISC",
   "dependencies": {
     "@faker-js/faker": "^6.0.0-alpha.7",
-    "axios": "^0.24.0",
+    "axios": "^0.26.1",
     "bcrypt": "^5.0.1",
     "cors": "^2.8.5",
     "dotenv": "^10.0.0",
