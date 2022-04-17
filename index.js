@@ -319,7 +319,7 @@ app.post("/api/login", async (req, res) => {
 		response: req.body.captcha,
 		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
 	};
-	if(typeof req.body.captcha !== "string") {
+	if(recaptcha) {
 		axios
 			.post(
 				"https://www.google.com/recaptcha/api/siteverify?" +
@@ -337,7 +337,7 @@ app.post("/api/login", async (req, res) => {
 				}
 				doit();
 			});
-	}
+	}else doit();
 
 
 });
