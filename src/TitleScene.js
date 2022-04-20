@@ -21,7 +21,75 @@ try {
 
  }
  create() {
+this.optimalServer = "us2";
+const pingServers = (sethtml=true) => {
+  var servers = {
+    "us1": "https://sword-io-game.herokuapp.com",
+    "us2": "https://us2.swordbattle.io",
+    "eu1": "https://swordbattle.herokuapp.com",
+  };
 
+  var ping = (server) => {
+    return new Promise((resolve, reject) => {
+    var now = Date.now();
+    var output = {
+      error: false,
+      ping: 0,
+      info: {
+
+      }
+    };
+    fetch(servers[server]+"/api/serverinfo").then(res => {
+      if(res.status == 200) {
+        output.ping = Date.now() - now;
+        res.json().then(data => {
+       //   console.log(server, data);
+          output.info = data;
+          resolve(output);
+        }).catch(e => {
+          output.error = true;
+          resolve(output);
+        });
+      } else {
+        output.error = true;
+        resolve(output);
+      }
+    }).catch(e => {
+      output.error = true;
+      resolve(output);
+    });
+  });
+  };
+  var pings = [];
+  var e = ["us1", "us2", "eu1"];
+  var f = ["USA 1", "USA 2", "Europe"];
+  ping("us1").then(res1 => {
+    pings.push(res1);
+    ping("us2").then(res2 => {
+      pings.push(res2);
+      ping("eu1").then(res3 => {
+        pings.push(res3);
+        //now calculate the optimal server.
+       if(pings.filter(p => p.error).length == pings.length) {
+        alert("Could not find an available server. Please try again later.");
+       } else {
+        var scores = pings.map(p=>(p.ping)-(p.info.playerCount*10)+(p.info.lag=="No lag" ? 0 : p.info.lag == "Moderate lag" ? 200 : 500));
+        var best = e[scores.indexOf(Math.min(...scores))];
+        console.log("optimal server found: "+best+" with score: "+Math.min(...scores));
+        this.optimalServer = best;
+        console.log(sethtml);
+        if(sethtml) {
+        e.forEach((s,i) => {
+          document.getElementById(s).innerHTML = f[i] + (pings[i].error ? " (OFFLINE)": ` (${pings[i].ping}ms, ${pings[i].info.playerCount} players)`);
+        });
+        document.getElementById("auto").innerHTML = "Auto ("+f[scores.indexOf(Math.min(...scores))]+")";
+        }
+      }
+    });
+  });
+});
+};
+pingServers(false);
           var clamp = (val, min, max) => {
     if(val < min) return min;
     if(val > max) return max;
@@ -44,13 +112,15 @@ try {
       this.options = {
         movementMode: "keys",
         sound: "normal",
+        server: "auto"
       };
       window.localStorage.setItem("options", JSON.stringify(this.options));
     }
   } else {
     this.options = {
       movementMode: "keys",
-      sound: "normal"
+      sound: "normal",
+      server: "auto"
     };
   }
 
@@ -117,6 +187,11 @@ return;
     if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
   }
 
+  if(!this.options.hasOwnProperty("server")) {
+    this.options.server = "auto";
+    if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
+  }
+
   this.settingsBtn = new ImgButton(this, 0,0, "settingsBtn", () => {
     if(this.promo && this.promo.visible) return;
     if(this.login && this.login.visible) return;
@@ -130,6 +205,13 @@ return;
     };
     document.getElementById("movement").value = this.options.movementMode;
     document.getElementById("sound").value = this.options.sound;
+    document.getElementById("server").value = this.options.server;
+
+    //ping servers
+   pingServers();
+
+
+
     document.getElementById("movement").onchange = () => {
       this.options.movementMode = document.getElementById("movement").value;
       if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
@@ -147,6 +229,10 @@ return;
       } else if(this.options.sound == "off") {
         this.music.volume = 0;
       }
+    };
+    document.getElementById("server").onchange = () => {
+      this.options.server = document.getElementById("server").value;
+      if(access) window.localStorage.setItem("options", JSON.stringify(this.options));
     };
 
 

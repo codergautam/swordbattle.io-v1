@@ -340,7 +340,7 @@ return false;
               if(!this.ai && socket) socket.emit("dealHit", enemy.id);
               if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
               //enemy has 0 or less than 0 health, time to kill
-            if(!enemy.ai) sql`INSERT INTO games (id, name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.id}, ${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
+            if(!enemy.ai) sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
 
               //increment killcount by 1
               this.kills += 1;

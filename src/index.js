@@ -85,6 +85,7 @@ var gameScene = new GameScene((data) => {
 var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
     gameScene.name = name;
     gameScene.options = titleScene.options;
+    if(gameScene.options.server == "auto") gameScene.options.server = titleScene.optimalServer;
     gameScene.openingBgm = music;
     gameScene.secret = secret;
 
