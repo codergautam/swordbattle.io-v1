@@ -89,7 +89,7 @@ const pingServers = (sethtml=true) => {
   });
 });
 };
-pingServers(false);
+
           var clamp = (val, min, max) => {
     if(val < min) return min;
     if(val > max) return max;
@@ -159,6 +159,7 @@ return;
     this.promo.getChildByName("close").onclick = () => {
       this.promo.destroy();
     };
+    pingServers(false);
 
   }
 
