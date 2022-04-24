@@ -36,7 +36,7 @@ const Filter = require("purgomalum-swear-filter");
 var filter = new Filter();
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = false;
+var recaptcha = process.env.PRODUCTION === "true";
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
