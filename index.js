@@ -68,7 +68,7 @@ if (production) {
 	});
 	app.use("/", limiter);
 }
-
+/*
 var oldlevels = [
 	{coins: 5, scale: 0.28},
 	{coins: 15, scale: 0.32},
@@ -96,6 +96,10 @@ var oldlevels = [
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
 	{coins: 10000, scale: 1.51},
+];
+*/
+var oldlevels = [
+	{coins: 5, scale: 0.28},
 ];
 var levels = [];
 oldlevels.forEach((level, index)  =>{
