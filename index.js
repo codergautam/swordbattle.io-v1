@@ -16,9 +16,6 @@ var server;
 var httpsserver;
 
 //console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
-process.on("uncaughtException", function (err) {
-    console.log(err);
-}); 
 var usinghttps = false;
 if(process.env.PRODUCTION==="true") {
 	usinghttps = true;
