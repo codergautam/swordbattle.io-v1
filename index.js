@@ -58,14 +58,14 @@ function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = false;
+var production = true;
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
-		windowMs: 60 * 1000, // 1 second
-		max: 25, // limit each IP to 100 requests per second
+		windowMs: 60 * 1000, // 1 min
+		max: 500, // limit each IP to 500 requests per min
 	});
-	app.use("/", limiter);
+	app.use(limiter);
 }
 
 var oldlevels = [
@@ -96,6 +96,15 @@ var oldlevels = [
 	{coins: 20000, scale: 1.5},
 	{coins: 20010, scale: 1.51},
 ];
+
+app.set('trust proxy', true);
+
+app.use((req, res, next) => {
+	console.log('URL:', req.url)
+	console.log("IP:", req.ip)
+	next()
+});
+
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) levels.push(Object.assign({start: 0},level)); 

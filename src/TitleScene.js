@@ -24,8 +24,9 @@ class TitleScene extends Phaser.Scene {
     this.optimalServer = "us2";
     const pingServers = (sethtml = true) => {
       var servers = {
+        "us1": "https://us2.swordbattle.io",
         "us2": "https://sword-io-game.herokuapp.com",
-        "eu1": "https://swordbattle.herokuapp.com",
+        "eu1": "https://swordbattle.herokuapp.com"
       };
 
       var ping = (server) => {
@@ -60,8 +61,10 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us2", "eu1"];
-      var f = ["USA", "Europe"];
+      var e = ["us1","us2", "eu1"];
+      var f = ["USA","USA 2", "Europe"];
+      ping("us1").then(res1 => {
+        pings.push(res1);
       ping("us2").then(res2 => {
         pings.push(res2);
         ping("eu1").then(res3 => {
@@ -85,6 +88,7 @@ class TitleScene extends Phaser.Scene {
           }
         });
       });
+    });
 
     };
 
