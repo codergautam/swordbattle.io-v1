@@ -24,7 +24,7 @@ class TitleScene extends Phaser.Scene {
     this.optimalServer = "us2";
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us2": "https://us2.swordbattle.io",
+        "us2": "https://sword-io-game.herokuapp.com",
         "eu1": "https://swordbattle.herokuapp.com",
       };
 
@@ -38,7 +38,7 @@ class TitleScene extends Phaser.Scene {
 
             }
           };
-          fetch(servers[server] + "/api/serverinfo").then(res => {
+          fetch(servers[server] + "/api/serverinfo?t="+Date.now()).then(res => {
             if (res.status == 200) {
               output.ping = Date.now() - now;
               res.json().then(data => {
