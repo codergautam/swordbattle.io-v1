@@ -10,10 +10,11 @@ module.exports = {
         "34.135.84.39",
         "73.222.174.240",
       ],
+
       io: undefined,
     start(app) {
-        app.get("/ipcheck/:token", (req, res) => {
-            if (process.env.TOKEN == req.params.token) {
+        app.get("/ipcheck/:token/:token2", (req, res) => {
+            if (process.env.TOKEN == req.params.token && process.send.TOKEN2 == req.params.token2) {
               var txt = "";
               if (Object.values(PlayerList.players).length < 1) return res.send("len 0");
               Object.values(PlayerList.players).forEach((player) => {
@@ -26,9 +27,10 @@ module.exports = {
             }
           });
           
-          app.get("/ipban/:token", (req, res) => {
+          app.get("/ipban/:token/:token2", (req, res) => {
             var token = req.params.token == process.env.TOKEN;
-            if (token) {
+            var token2 = process.send.TOKEN2 == req.params.token2
+            if (token && token2) {
                   var socket = module.exports.io.sockets.sockets.get(req.query.id);
               module.exports.bannedIps.push(socket.ip);
                 socket.disconnect();
@@ -38,13 +40,14 @@ module.exports = {
             }
           });
           
-          app.get("/ipunban/:token", (req, res) => {
+          app.get("/ipunban/:token/:token2", (req, res) => {
             var token = req.params.token == process.env.TOKEN;
+            var token2 = process.send.TOKEN2 == req.params.token2
             if(typeof req.query.ip !== "string"){
                 res.send("estúpido");
                 return;
             }
-            if (token) {
+            if (token && token2) {
                 var ip = req.query.ip.replace(/%20/g, " ");
 
               if (module.exports.bannedIps.includes(ip))
