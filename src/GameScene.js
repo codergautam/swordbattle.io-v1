@@ -463,24 +463,44 @@ class GameScene extends Phaser.Scene {
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
 				//mouse down
 
-				this.input.on("pointerdown", function (pointer) {
+				const mouseDown = (pointer) => {
 					if(this.mobile && this.joyStick &&this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (!this.mouseDown) {
+						if(pointer) {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
+						}
 						this.mouseDown = true;
 						this.socket.emit("mouseDown", true);
 
 					}
-				}, this);
-				this.input.on("pointerup", function (pointer) {
-            
+				};
+
+				const mouseUp = (pointer) => {
 					if(this.mobile && this.joyStick && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (this.mouseDown) {
-						this.gamePoint = {x: pointer.x, y: pointer.y};
+						if(pointer) {
+							this.gamePoint = {x: pointer.x, y: pointer.y};
+							}
 						this.mouseDown = false;
 						this.socket.emit("mouseDown", false);
 					}
+				};
+				
+					this.input.keyboard.on("keydown-SPACE", () => {
+						mouseDown();
+					}, this);
+						
+					this.input.keyboard.on("keyup-SPACE", () => {
+						mouseUp();
+					}, this);
+				this.input.on("pointerdown", function (pointer) {
+					mouseDown(pointer);
 				}, this);
+				this.input.on("pointerup", function (pointer) {
+						mouseUp(pointer);
+				}, this);
+
+			
 
 			
 
