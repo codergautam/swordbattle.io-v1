@@ -447,14 +447,16 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server,{
+				this.socket = io(undefined,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
 			
-				
+				var showed = false;
 				function handleErr(err) {
+					if(showed) return;
 					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
+					showed = true;
 				}
 				this.socket.on("connect_error", handleErr);
 				this.socket.on("connect_failed",handleErr);
@@ -520,6 +522,7 @@ class GameScene extends Phaser.Scene {
 
 				});
 				this.socket.on("ban", (data) => {
+					showed = true;
 					document.write(data);
 				});
 

@@ -8,6 +8,9 @@ var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
+var process = require("process");
+
+var serverState = "running";
 
 var map = 10000;
 //var cors = require("cors");
@@ -35,7 +38,7 @@ const Filter = require("purgomalum-swear-filter");
 var filter = new Filter();
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = process.env.PRODUCTION === "true";
+var recaptcha = true;
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
@@ -52,6 +55,7 @@ const Chest = require("./classes/Chest");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
+const { players } = require("./classes/PlayerList");
 
 const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
@@ -100,12 +104,12 @@ var oldlevels = [
 	{coins: 30050, scale: 1.71},
 ];
 
-app.set('trust proxy', true);
+app.set("trust proxy", true);
 
 app.use((req, res, next) => {
-	console.log('URL:', req.url)
-	console.log("IP:", req.ip)
-	next()
+	console.log("URL:", req.url);
+	console.log("IP:", req.ip);
+	next();
 });
 
 var levels = [];
@@ -705,6 +709,7 @@ io.on("connection", async (socket) => {
 		return num <= min ? min : num >= max ? max : num;
 	}
 	socket.on("disconnect", () => {
+		if(serverState == "exiting") return;
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
 
@@ -838,6 +843,56 @@ setInterval(async () => {
 server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");
 });
+
+
+process.on("SIGTERM", () => {
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+process.on("SIGINT", () => {
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+//unhandledRejection
+process.on("unhandledRejection", (reason, p) => {
+	console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+
+async function cleanExit() {
+	console.log("exiting cleanly...");
+	serverState = "exiting";
+
+	var sockets = await io.fetchSockets();
+
+		for (var player of Object.values(PlayerList.players)) {
+		if (player && !player.ai) {
+			var socket = sockets.find((s) => s.id == player.id);
+			if (socket) {
+				socket.emit("ban", "<h1>Server is shutting down, we'll be right back!<br>Sorry for the inconvenience.<br><br>"+(player.verified ? " Your Progress has been saved in your account":"")+"</h1><hr>");
+				socket.disconnect();
+			await sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${player.name}, ${player.coins}, ${player.kills}, ${Date.now() - player.joinTime}, ${player.verified})`;
+	
+		}
+		}
+	};
+}
 
 /*
 http.createServer(function (req, res) {
