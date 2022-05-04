@@ -55,7 +55,6 @@ const Chest = require("./classes/Chest");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
-const { players } = require("./classes/PlayerList");
 
 const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
@@ -754,7 +753,7 @@ app.get("/api/serverinfo", (req, res) => {
 	var playerCount = Object.values(PlayerList.players).length;
 	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
 	res.send({
-		playerCount, lag, maxPlayers
+		playerCount, lag, maxPlayers, tps: actps
 	});
 });
 
