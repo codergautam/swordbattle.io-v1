@@ -753,7 +753,7 @@ app.get("/api/serverinfo", (req, res) => {
 	var playerCount = Object.values(PlayerList.players).length;
 	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
 	res.send({
-		playerCount, lag, maxPlayers, tps: actps
+		playerCount, lag, maxPlayers, tps: actps, actualPlayercount: Object.values(PlayerList.players).filter((p) => p.ai).length,
 	});
 });
 
