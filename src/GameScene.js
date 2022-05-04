@@ -455,6 +455,7 @@ class GameScene extends Phaser.Scene {
 				var showed = false;
 				function handleErr(err) {
 					if(showed) return;
+					console.log(err);
 					document.write("<b>Failed to contact the server, try a different server from settings (bottom left)</b><br><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
 					showed = true;
 				}
