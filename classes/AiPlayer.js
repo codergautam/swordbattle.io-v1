@@ -6,7 +6,7 @@ function getRandomInt(min, max) {
 const { faker } = require("@faker-js/faker");
 class AiPlayer extends Player {
     constructor(id) {
-      const aiName = faker.name.findName().split(" ");
+      var aiName = faker.name.findName().split(" ");
       // this is because some names have Mr. or Ms. in them
       if (aiName.length > 2) aiName = aiName[1];
       else aiName = aiName[0];
