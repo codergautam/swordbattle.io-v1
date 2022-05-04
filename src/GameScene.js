@@ -30,7 +30,7 @@ class GameScene extends Phaser.Scene {
 		this.loadrect.setScale(Math.max(cameraWidth / this.loadrect.width, cameraHeight / this.loadrect.height));
 	
 		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
-		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
+		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Connecting...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
 
 	}
@@ -455,7 +455,7 @@ class GameScene extends Phaser.Scene {
 				var showed = false;
 				function handleErr(err) {
 					if(showed) return;
-					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
+					document.write("<b>Failed to contact the server, try a different server from settings (bottom left)</b><br><br>Refresh the page");
 					showed = true;
 				}
 				this.socket.on("connect_error", handleErr);
