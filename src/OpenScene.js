@@ -38,16 +38,14 @@ class OpenScene extends Phaser.Scene {
         this.load.image("chefSword", "/assets/images/chefSword.png");
         this.load.image("medicPlayer", "/assets/images/medicPlayer.png");
         this.load.image("medicSword", "/assets/images/medicSword.png");
-        this.load.image("indiaPlayer", "/assets/images/indiaPlayer.png");
-        this.load.image("indiaSword", "/assets/images/indiaSword.png");
-        this.load.image("shoePlayer", "/assets/images/shoePlayer.png");
-        this.load.image("shoeSword", "/assets/images/shoeSword.png");
         this.load.image("foxPlayer", "/assets/images/foxPlayer.png");
         this.load.image("foxSword", "/assets/images/devilSword.png");
         this.load.image("springPlayer", "/assets/images/springPlayer.png");
         this.load.image("springSword", "/assets/images/springSword.png");
         this.load.image("scythePlayer", "/assets/images/scythePlayer.png");
         this.load.image("scytheSword", "/assets/images/scytheSword.png");
+        this.load.image("angelPlayer", "/assets/images/angelPlayer.png");
+        this.load.image("angelSword", "/assets/images/sword.png");
         this.load.image("neonPlayer", "/assets/images/neonPlayer.png");
         this.load.image("neonSword", "/assets/images/neonSword.png");
         this.load.image("background", "/assets/images/background.jpeg");

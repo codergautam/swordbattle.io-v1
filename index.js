@@ -8,6 +8,9 @@ var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
+var process = require("process");
+
+var serverState = "running";
 
 var map = 10000;
 //var cors = require("cors");
@@ -16,7 +19,6 @@ var server;
 var httpsserver;
 
 //console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
-
 var usinghttps = false;
 if(process.env.PRODUCTION==="true") {
 	usinghttps = true;
@@ -36,7 +38,7 @@ const Filter = require("purgomalum-swear-filter");
 var filter = new Filter();
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = process.env.PRODUCTION === "true";
+var recaptcha = true;
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
@@ -53,20 +55,21 @@ const Chest = require("./classes/Chest");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
-
+const Tank = require("./classes/evolutions/Tank");
+const Berserker = require("./classes/evolutions/Tank");
 const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = false;
+var production = true;
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
-		windowMs: 60 * 1000, // 1 second
-		max: 25, // limit each IP to 100 requests per second
+		windowMs: 60 * 1000, // 1 min
+		max: 500, // limit each IP to 500 requests per min
 	});
-	app.use("/", limiter);
+	app.use(limiter);
 }
 /*
 var oldlevels = [
@@ -99,11 +102,24 @@ var oldlevels = [
 ];
 */
 var oldlevels = [
-	{coins: 5, scale: 0.28},
+	{coins: 5, scale: 0.55},
+	{coins: 15, scale: 2, evolutions: [new Tank(), new Berserker()]},
+	{coins: 25, scale: 2.5},
 ];
+
+app.set("trust proxy", true);
+
+app.use((req, res, next) => {
+	console.log("URL:", req.url);
+	console.log("IP:", req.ip);
+	next();
+});
+
 var levels = [];
 oldlevels.forEach((level, index)  =>{
-	if(index == 0) levels.push(Object.assign({start: 0},level)); 
+	if(index == 0) {
+		levels.push(Object.assign({start: 0},level)); 
+	}
 	else {
 		levels.push(Object.assign({start: levels[index - 1].coins}, level));
 	}
@@ -516,10 +532,10 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 400;
-var maxChests = 8;
-var maxAiPlayers = 13;
-var maxPlayers = 30;
+var maxCoins = 500;
+var maxChests = 10;
+var maxAiPlayers = 15;
+var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
 	socket.joinTime = Date.now();
@@ -698,6 +714,7 @@ io.on("connection", async (socket) => {
 		return num <= min ? min : num >= max ? max : num;
 	}
 	socket.on("disconnect", () => {
+		if(serverState == "exiting") return;
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
 
@@ -742,7 +759,7 @@ app.get("/api/serverinfo", (req, res) => {
 	var playerCount = Object.values(PlayerList.players).length;
 	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
 	res.send({
-		playerCount, lag, maxPlayers
+		playerCount, lag, maxPlayers, tps: actps, actualPlayercount: Object.values(PlayerList.players).filter((p) => !p.ai).length,
 	});
 });
 
@@ -831,6 +848,56 @@ setInterval(async () => {
 server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");
 });
+
+
+process.on("SIGTERM", () => {
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+process.on("SIGINT", () => {
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+//unhandledRejection
+process.on("unhandledRejection", (reason, p) => {
+	console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
+	cleanExit().then(() => {
+		console.log("exited cleanly");
+		process.exit(1);
+	}).catch(() => {
+		console.log("failed to exit cleanly");
+		process.exit(1);
+	});
+});
+
+async function cleanExit() {
+	console.log("exiting cleanly...");
+	serverState = "exiting";
+
+	var sockets = await io.fetchSockets();
+
+		for (var player of Object.values(PlayerList.players)) {
+		if (player && !player.ai) {
+			var socket = sockets.find((s) => s.id == player.id);
+			if (socket) {
+				socket.emit("ban", "<h1>Server is shutting down, we'll be right back!<br>Sorry for the inconvenience.<br><br>"+(player.verified ? " Your Progress has been saved in your account":"")+"</h1><hr>");
+				socket.disconnect();
+			await sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${player.name}, ${player.coins}, ${player.kills}, ${Date.now() - player.joinTime}, ${player.verified})`;
+	
+		}
+		}
+	};
+}
 
 /*
 http.createServer(function (req, res) {

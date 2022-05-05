@@ -24,8 +24,9 @@ class TitleScene extends Phaser.Scene {
     this.optimalServer = "us2";
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us2": "https://us2.swordbattle.io",
-        "eu1": "https://swordbattle.herokuapp.com",
+        "us1": "https://us2.swordbattle.io",
+        "us2": "https://sword-io-game.herokuapp.com",
+        "eu1": "https://swordbattle.herokuapp.com"
       };
 
       var ping = (server) => {
@@ -38,7 +39,7 @@ class TitleScene extends Phaser.Scene {
 
             }
           };
-          fetch(servers[server] + "/api/serverinfo").then(res => {
+          fetch(servers[server] + "/api/serverinfo?t="+Date.now()).then(res => {
             if (res.status == 200) {
               output.ping = Date.now() - now;
               res.json().then(data => {
@@ -60,8 +61,10 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us2", "eu1"];
-      var f = ["USA", "Europe"];
+      var e = ["us1","us2", "eu1"];
+      var f = ["USA","USA 2", "Europe"];
+      ping("us1").then(res1 => {
+        pings.push(res1);
       ping("us2").then(res2 => {
         pings.push(res2);
         ping("eu1").then(res3 => {
@@ -71,7 +74,7 @@ class TitleScene extends Phaser.Scene {
             alert("Could not find an available server. Please try again later.");
           } else {
 
-            var scores = pings.map(p => (p.ping) - (p.info.playerCount * 10) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 200 : 500)).map((p) => !p ? Infinity : p);
+            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 30 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 15 ? Math.abs(15-p.info.playerCount)*75 : 0)).map((p) => !p ? Infinity : p);
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
@@ -85,6 +88,7 @@ class TitleScene extends Phaser.Scene {
           }
         });
       });
+    });
 
     };
 

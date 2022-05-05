@@ -216,22 +216,25 @@ var move = true;
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
           this.coins+= coin.value;
-          if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
+          if(this.level <= levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
-          
-            if(this.level != levels.length) {
+  
 
-            
-   
+            var oldLevel = this.level;
+          var levelsPassed = [];
                 //calculate new level
                 levels.forEach((level, i) => {
                   if(this.coins >= level.coins) {
+                    if(i+2 > this.level) levelsPassed.push(level);
                     this.level = i+2;
                     this.scale = level.scale;
                   }
                 });
-                
-            }
+                if(!this.ai) {
+                var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions || level.upgrade);
+                //TODO: evolution queue
+              }
+            
             
           }
 

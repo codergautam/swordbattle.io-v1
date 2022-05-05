@@ -30,7 +30,7 @@ class GameScene extends Phaser.Scene {
 		this.loadrect.setScale(Math.max(cameraWidth / this.loadrect.width, cameraHeight / this.loadrect.height));
 	
 		this.loadrect.x = 0 - ((this.loadrect.displayWidth - cameraWidth)/2);
-		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Loading...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
+		this.loadtext= this.add.text(this.canvas.width/2, this.canvas.height/2, "Connecting...", {fontFamily: "Arial", fontSize: "32px", color: "#ffffff"}).setOrigin(0.5).setScrollFactor(0, 0).setDepth(200);
 		this.ping = 0;
 
 	}
@@ -445,16 +445,19 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "us2" ? "https://us2.swordbattle.io/" : this.options.server == "us1" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
+				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server,{
+				this.socket = io(undefined,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
 			
-				
+				var showed = false;
 				function handleErr(err) {
-					document.write("Failed to connect to the server, please try a different server or contact devs.<br>" + err+"<br><br>");
+					if(showed) return;
+					console.log(err);
+					document.write("<b>Failed to contact the server, try a different server from settings (bottom left)</b><br><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
+					showed = true;
 				}
 				this.socket.on("connect_error", handleErr);
 				this.socket.on("connect_failed",handleErr);
@@ -463,24 +466,45 @@ class GameScene extends Phaser.Scene {
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
 				//mouse down
 
-				this.input.on("pointerdown", function (pointer) {
+				const mouseDown = (pointer) => {
 					if(this.mobile && this.joyStick &&this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (!this.mouseDown) {
+						if(pointer) {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
+						}
 						this.mouseDown = true;
 						this.socket.emit("mouseDown", true);
 
 					}
-				}, this);
-				this.input.on("pointerup", function (pointer) {
-            
+				};
+
+				const mouseUp = (pointer) => {
 					if(this.mobile && this.joyStick && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
 					if (this.mouseDown) {
-						this.gamePoint = {x: pointer.x, y: pointer.y};
+						if(pointer) {
+							this.gamePoint = {x: pointer.x, y: pointer.y};
+							}
 						this.mouseDown = false;
 						this.socket.emit("mouseDown", false);
 					}
+				};
+				
+					this.input.keyboard.on("keydown-SPACE", () => {
+						if(this.chat.toggled) return;
+						mouseDown();
+					}, this);
+						
+					this.input.keyboard.on("keyup-SPACE", () => {
+						mouseUp();
+					}, this);
+				this.input.on("pointerdown", function (pointer) {
+					mouseDown(pointer);
 				}, this);
+				this.input.on("pointerup", function (pointer) {
+						mouseUp(pointer);
+				}, this);
+
+			
 
 			
 
@@ -500,6 +524,7 @@ class GameScene extends Phaser.Scene {
 
 				});
 				this.socket.on("ban", (data) => {
+					showed = true;
 					document.write(data);
 				});
 
@@ -532,7 +557,7 @@ class GameScene extends Phaser.Scene {
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
 						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
 							fontFamily: "serif",
-							fill: player.verified?"#0000FF" :"#000000",
+							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam" ?"#FF0000":"#0000FF" :"#000000",
 							fontSize: "25px"
 						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
@@ -640,7 +665,7 @@ class GameScene extends Phaser.Scene {
 					if(this.loadrect.visible) this.loadrect.destroy();
 					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
-						if(player.level >= this.levels.length-1 ) {
+						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {
 							this.lvlState.setText("Max Level");
 							this.lvlBar.setLerpValue(100);
 						} else {
@@ -1503,11 +1528,11 @@ try {
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
 				if(entry.playerObj.id == this.myObj.id) amIinit = true;
 				var playerObj = entry.playerObj;
-				text += `#${i+1}: ${playerObj.verified? "[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}- ${conv(playerObj.coins)}\n`;
 			});
 			if(!amIinit) {
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${this.myObj.verified? "[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${this.myObj.verified? this.myObj.name.toLowerCase()=="mitblade"||this.myObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
 			}
 			if(!this.spectating) {
 			this.leaderboard.setText(text);

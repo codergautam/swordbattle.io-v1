@@ -10,6 +10,18 @@ class Evolution {
 
     applyTo(player) {
         player.evolution = this.name;
+        player.evolutionData = {default: this.default(), ability: this.ability()};
+    }
+
+    default() {
+    return {
+        speed: undefined,
+        scale: undefined,
+        power: undefined,
+        resistance: undefined,
+        damage: undefined,
+        hitCooldown: undefined,
+    };   
     }
 
     ability() {
@@ -22,5 +34,6 @@ class Evolution {
             hitCooldown: undefined,
         };
     }
-
 }
+
+module.exports = Evolution;

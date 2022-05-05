@@ -51,6 +51,13 @@
             "description": "I like it cold."
         },
         {
+            "name": "angel",
+            "displayName": "ANGEL",
+            "url": "/assets/images/angelPlayer.png",
+            "price": 500000,
+            "description": "Dedicated to ANGEL, worlds #1 player"
+        },
+        {
             "name": "devil",
             "displayName": "Devil",
             "url": "/assets/images/devilPlayer.png",
