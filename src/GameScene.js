@@ -1361,7 +1361,7 @@ try {
 			this.tweens.addCounter({
 				from: 0,
 				to: 50,
-				duration: cooldown,
+				duration: cooldown/2,
 				onUpdate:  (tween)=>
 				{
 					
@@ -1383,11 +1383,10 @@ try {
 			this.tweens.addCounter({
 				from: 50,
 				to: 0,
-				duration: cooldown,
+				duration: cooldown/2,
 				onUpdate:  (tween)=>
 				{
 					this.swordAnim.added = tween.getValue();
-				
 				},
 				onComplete: ()=>
 				{

@@ -22,7 +22,7 @@ class Player {
     this.damage = 10;
     this.level = 1;
     this.lastChat = Date.now();
-    this.damageCooldown = 100;
+    this.damageCooldown = 200;
     this.verified = false;
     
    this.skin = "player";
@@ -293,7 +293,7 @@ return false;
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 12);
+    this.damageCooldown = (50 + (this.level * 12))*2;
 
 
   }
