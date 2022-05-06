@@ -118,7 +118,7 @@ go *= power/100;
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var go = since * this.speed;
-    if(this.ai || this.movementMode == "keys") {
+    if(this.movementMode == "keys") {
 
     if(this.pos.x <= -(map/2)) controller.left = false;
     if(this.pos.x >= map/2) controller.right = false;

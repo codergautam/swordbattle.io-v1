@@ -447,7 +447,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(server,{
+				this.socket = io(undefined,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
@@ -720,7 +720,7 @@ class GameScene extends Phaser.Scene {
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
-						duration: 300,
+						duration: 200,
 						ease: "Power2"
 					});
 					}
@@ -810,7 +810,7 @@ class GameScene extends Phaser.Scene {
 							targets: enemy.player,
 							x: player.pos.x,
 							y: player.pos.y,
-							duration: 300,
+							duration: 200,
 							ease: "Power2"
 						});
 

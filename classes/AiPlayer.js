@@ -18,6 +18,7 @@ class AiPlayer extends Player {
         this.mousePos.viewport.width = 1000;
         this.mousePos.viewport.height = 1000;
         this.chaseTime = 0;
+        this.movementMode = "mouse";
         
     }
     tick(coins, io, levels, chests) {
@@ -46,8 +47,9 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
         this.mousePos.y = lerp(this.mousePos.y, this.toSword.y, 0.2);
 
       }
-      var controller = this.getController();
-      this.move(controller);
+    //  var controller = this.getController();
+    //  this.move(controller);
+    this.move();
      coins = this.collectCoins(coins, io, levels);
       }
       return [coins,chests];
