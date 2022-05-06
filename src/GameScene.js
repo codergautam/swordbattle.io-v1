@@ -720,7 +720,7 @@ class GameScene extends Phaser.Scene {
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
-						duration: 200,
+						duration: 300,
 						ease: "Power2"
 					});
 					}
@@ -810,7 +810,7 @@ class GameScene extends Phaser.Scene {
 							targets: enemy.player,
 							x: player.pos.x,
 							y: player.pos.y,
-							duration: 200,
+							duration: 300,
 							ease: "Power2"
 						});
 
