@@ -447,7 +447,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				//server = undefined
-				this.socket = io(undefined,{
+				this.socket = io(server,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
@@ -716,7 +716,7 @@ class GameScene extends Phaser.Scene {
 						this.mePlayer.x = player.pos.x;
 						this.mePlayer.y = player.pos.y;
 					} else {
-					this.tweens.add({
+						this.tweens.add({
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
@@ -1175,6 +1175,7 @@ class GameScene extends Phaser.Scene {
 							duration: 250,
 							ease: "Sine2",
 							onComplete: () => {
+								window.onbeforeunload = () => {};
 										this.deadText = this.add.text(this.canvas.width/2, (this.deathRect.y- (this.deathRect.height/2)), "You got stabbed", {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
                 this.cameras.main.ignore(this.deadText);
 								this.deadText.setFontSize(Math.min(this.canvas.width/25,this.canvas.height/20));
@@ -1565,7 +1566,7 @@ try {
                             coin.item.destroy();
                             this.coins = this.coins.filter((el) => el.id != coin.id);
                             return;
-                        }
+			}
 					} catch(e) {
 						console.log(e);
 						return;
