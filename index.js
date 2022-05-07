@@ -528,7 +528,7 @@ var chests = [];
 
 var maxCoins = 500;
 var maxChests = 10;
-var maxAiPlayers = 50;
+var maxAiPlayers = 10;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
@@ -776,7 +776,7 @@ setInterval(async () => {
 	// console.log(aiNeeded)
 
 
-	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,5) == 5) {
+	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
 		var id = uuidv4();
 		var theAi = new AiPlayer(id);
 		console.log("AI Player Joined -> "+theAi.name);
