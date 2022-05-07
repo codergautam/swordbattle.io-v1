@@ -534,7 +534,7 @@ var chests = [];
 
 var maxCoins = 500;
 var maxChests = 10;
-var maxAiPlayers = 15;
+var maxAiPlayers = 10;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
@@ -757,7 +757,7 @@ var tps = 0;
 var actps = 0;
 app.get("/api/serverinfo", (req, res) => {
 	var playerCount = Object.values(PlayerList.players).length;
-	var lag = (actps > 26 ? "No lag" : actps > 15 ? "Moderate lag" : "Extreme lag" );
+	var lag = (actps > 15 ? "No lag" : actps > 6 ? "Moderate lag" : "Extreme lag" );
 	res.send({
 		playerCount, lag, maxPlayers, tps: actps, actualPlayercount: Object.values(PlayerList.players).filter((p) => !p.ai).length,
 	});
@@ -843,7 +843,7 @@ setInterval(async () => {
 		}
 	});
 	tps += 1;
-}, 1000 / 30);
+}, 1000 / 20);
 
 server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");

@@ -22,7 +22,7 @@ class Player {
     this.damage = 10;
     this.level = 1;
     this.lastChat = Date.now();
-    this.damageCooldown = 100;
+    this.damageCooldown = 200;
     this.verified = false;
     
    this.skin = "player";
@@ -118,7 +118,7 @@ go *= power/100;
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var go = since * this.speed;
-    if(this.ai || this.movementMode == "keys") {
+    if(this.movementMode == "keys") {
 
     if(this.pos.x <= -(map/2)) controller.left = false;
     if(this.pos.x >= map/2) controller.right = false;
@@ -296,7 +296,7 @@ return false;
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
 
-    this.damageCooldown = 50 + (this.level * 12);
+    this.damageCooldown = (50 + (this.level * 12))*2;
 
 
   }
