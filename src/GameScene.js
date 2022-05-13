@@ -1,5 +1,7 @@
-import HealthBar from "./HealthBar.js";
-import ImgButton from "./PhaserImgButton";
+import HealthBar from "./components/HealthBar.js";
+import ImgButton from "./components/PhaserImgButton";
+import EvolutionSelector from "./components/EvolutionSelector";
+
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
 
 class GameScene extends Phaser.Scene {
@@ -665,6 +667,10 @@ class GameScene extends Phaser.Scene {
 					if(this.loadrect.visible) this.loadrect.destroy();
 					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
+						if(this.myObj?.evolutionQueue) {
+							if(this.myObj.evolutionQueue.length > 0) {
+							}
+						}
 						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {
 							this.lvlState.setText("Max Level");
 							this.lvlBar.setLerpValue(100);

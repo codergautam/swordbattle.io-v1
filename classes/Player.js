@@ -24,6 +24,8 @@ class Player {
     this.lastChat = Date.now();
     this.damageCooldown = 200;
     this.verified = false;
+
+    this.evolutionQueue = [];
     
    this.skin = "player";
 
@@ -231,10 +233,12 @@ var move = true;
                   }
                 });
                 if(!this.ai) {
-                var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions || level.upgrade);
-                //TODO: evolution queue
+                var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions)?.map((e)=>e.evolutions).map((e)=>e.map((f)=>f.name));
+                console.log("evo",evoLevels);
+                this.evolutionQueue = [...this.evolutionQueue, ...evoLevels].filter((e)=>e);
+                console.log("q",this.evolutionQueue);
               }
-            
+              
             
           }
 

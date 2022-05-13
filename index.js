@@ -55,8 +55,10 @@ const Chest = require("./classes/Chest");
 const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
+
 const Tank = require("./classes/evolutions/Tank");
-const Berserker = require("./classes/evolutions/Tank");
+const Berserker = require("./classes/evolutions/Berserker");
+
 const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
@@ -104,7 +106,7 @@ var oldlevels = [
 var oldlevels = [
 	{coins: 5, scale: 0.55},
 	{coins: 15, scale: 2, evolutions: [new Tank(), new Berserker()]},
-	{coins: 25, scale: 2.5},
+	{coins: 20, scale: 2},
 ];
 
 app.set("trust proxy", true);

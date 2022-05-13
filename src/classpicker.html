@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+      }
+
+      #parent {
+        display: flex;
+        justify-content: space-around;
+        padding-top: 5vh;
+        padding-right: 40vw;
+        transform: translateX(20%);
+      }
+
+      #left {
+        border: 1px solid black;
+        width: 20%;
+        min-width: 75px;
+        height: 25vh;
+        max-height: 150px;
+        min-height: 100px;
+        font-size: 2vw;
+        font-size: max(2vw, 15px);
+      }
+
+      #right {
+        border: 1px solid black;
+        width: 20%;
+        min-width: 75px;
+        height: 25vh;
+        max-height: 150px;
+        min-height: 100px;
+        font-size: max(2vw, 15px);
+      }
+    </style>
+  </head>
+  <body>
+      <center><h1>Pick a class</h1><p class="" style="margin: 2px;"></p><h4>auto in x seconds </h2></center>
+    <div id="parent">
+      <div id="left"><center id="op1">Tank</center></div>
+      <div id="right"><center id="op2">Berserker</center></div>
+    </div>
+  </body>
+</html>

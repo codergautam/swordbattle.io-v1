@@ -11,7 +11,6 @@ node_modules/
 *.o
 *.so
 out/
-ads.txt
 
 # Packages #
 ############
