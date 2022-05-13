@@ -12,7 +12,7 @@ var process = require("process");
 
 var serverState = "running";
 
-var map = 10000;
+var map = 20000;
 //var cors = require("cors");
 
 var server;
@@ -528,7 +528,7 @@ var chests = [];
 
 var maxCoins = 500;
 var maxChests = 10;
-var maxAiPlayers = 10;
+var maxAiPlayers = 20;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
