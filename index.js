@@ -12,7 +12,7 @@ var process = require("process");
 
 var serverState = "running";
 
-var map = 10000;
+var map = 20000;
 //var cors = require("cors");
 
 var server;

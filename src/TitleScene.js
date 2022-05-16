@@ -1,4 +1,4 @@
-import ImgButton from "./PhaserImgButton";
+import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
 
 class TitleScene extends Phaser.Scene {

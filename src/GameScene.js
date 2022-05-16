@@ -1,6 +1,5 @@
 import HealthBar from "./components/HealthBar.js";
 import ImgButton from "./components/PhaserImgButton";
-import EvolutionSelector from "./components/EvolutionSelector";
 
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
 
@@ -38,7 +37,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-		var map = 10000;
+		var map = 20000;
 
         this.levels = [];
     
@@ -443,7 +442,7 @@ class GameScene extends Phaser.Scene {
 				var doit;
 
 				window.addEventListener("resize", function(){
-					clearTimeout(doit);
+					clearTimeout(doit); 
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
@@ -540,6 +539,27 @@ class GameScene extends Phaser.Scene {
 				this.graphics.lineStyle(10, 0xffff00, 1);
 
 				this.graphics.strokeRoundedRect(-(map/2), -(map/2), map, map, 0);
+
+				// class picker
+				// 2 evenly spaced rectangle buttons inside the container
+
+				var rect = new Phaser.Geom.Rectangle(this.canvas.width/7, this.canvas.height/15, this.canvas.width/7, this.canvas.height/5);
+				var rect2 = new Phaser.Geom.Rectangle(rect.x*2.4, rect.y, rect.width, rect.height);
+
+
+
+				this.classGraphic = this.add.graphics({ fillStyle: { color: 0xffffff } });
+				this.classGraphic.fillRectShape(rect);
+				this.classGraphic.fillRectShape(rect2);
+				this.classGraphic.setDepth(50);
+				this.classGraphic.setAlpha(0.9);
+				this.classGraphic.setInteractive(rect, Phaser.Geom.Rectangle.Contains);
+
+
+
+
+				this.cameras.main.ignore(this.classGraphic);
+				
 
 				//server -> client
 
@@ -669,6 +689,8 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {
+								console.log(this.myObj.evolutionQueue);
+								
 							}
 						}
 						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {

@@ -1,6 +1,6 @@
 const intersects = require("intersects");
 const Coin = require("./Coin");
-var map = 10000;
+var map = 20000;
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
