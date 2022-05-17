@@ -1,6 +1,6 @@
 var fs = require('fs');
 var map = 20000;
-var bushCount = 300;
+var bushCount = 500;
 var locations = [];
 
 function getRandom(min, max) {

@@ -1,5 +1,5 @@
 const intersects = require("intersects");
-var map = 10000;
+var map = 20000;
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
