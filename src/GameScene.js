@@ -765,7 +765,9 @@ class GameScene extends Phaser.Scene {
             
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
-					miniMapPlayer.circle.radius = player.scale * convert(1280, 15, this.canvas.width);
+					var bruh = map / 10000;
+
+					miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 					}
 					function cc(p1x, p1y, r1, p2x, p2y, r2) {
 						var a;
@@ -831,7 +833,9 @@ class GameScene extends Phaser.Scene {
 
 						miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 						miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
-						miniMapPlayer.circle.radius = convert(1280, 15, this.canvas.width) * player.scale;
+						var bruh = map / 10000;
+
+						miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 
 		
 
