@@ -544,8 +544,13 @@ class GameScene extends Phaser.Scene {
 				// class picker
 				// 2 evenly spaced rectangle buttons inside the container
 
-				var rect = new Phaser.Geom.Rectangle(this.canvas.width/7, this.canvas.height/15, this.canvas.width/7, this.canvas.height/5);
-				var rect2 = new Phaser.Geom.Rectangle(rect.x*2.4, rect.y, rect.width, rect.height);
+				var rect = new Phaser.Geom.Rectangle(this.canvas.width/2, this.canvas.height/15, this.canvas.width/7, this.canvas.height/5);
+				var rect2 = new Phaser.Geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
+			var gap = this.canvas.width/10;
+			rect.x -= rect.width/2;
+			rect2.x -= rect2.width/2;
+			rect2.x += gap;
+			rect.x -= gap;
 
 
 
