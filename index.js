@@ -534,9 +534,9 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 500;
-var maxChests = 10;
-var maxAiPlayers = 10;
+var maxCoins = 2000;
+var maxChests = 20;
+var maxAiPlayers = 15;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
