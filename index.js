@@ -66,7 +66,7 @@ if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
-		max: 100, // limit each IP to 80 requests per min. 52 is not enough because it requests multiple things at once reload so it would just break
+		max: 100, // limit each IP to 100 requests per min. 52 is not enough because it requests multiple things at once reload so it would just break
 	});
 	app.use(limiter);
 }
