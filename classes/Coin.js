@@ -24,7 +24,7 @@ function getRandomInt(min, max) {
         return intersects.circleEllipse(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, rey, rey);
     }
     inRange(player) {
-      var show = 1500+((200*player.scale)*5);
+      var show = 1500+((300*player.scale)*5);
       var dist = Math.sqrt(Math.pow(this.pos.x - player.pos.x, 2) + Math.pow(this.pos.y - player.pos.y, 2));
         return dist <= show;
     }
