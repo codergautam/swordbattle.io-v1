@@ -761,12 +761,6 @@ io.on("connection", async (socket) => {
         msg,
         id: socket.id,
       });
-      // filter.clean(msg).then((msg) => {
-      //   io.sockets.emit("chat", {
-      //     msg: msg,
-      //     id: socket.id,
-      //   });
-      // });
     }
   });
   function clamp(num, min, max) {
