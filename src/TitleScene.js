@@ -373,7 +373,17 @@ class TitleScene extends Phaser.Scene {
           }).catch((err) => {
             console.log("Login Error: ");
             console.log(err);
-            alert("Failed to login automatically, please try manually.");
+            alert("Failed to login automatically.");
+
+            try {
+              if (window.localStorage.getItem("secret")) window.localStorage.removeItem("secret");
+            } catch (e) {
+
+            }
+
+            createButtons();
+            console.log(res);
+            return;
           });
         });
       });

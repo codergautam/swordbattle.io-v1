@@ -12,7 +12,7 @@ var process = require("process");
 
 var serverState = "running";
 
-var map = 20000;
+var map = 10000;
 //var cors = require("cors");
 
 var server;
@@ -38,7 +38,7 @@ const Filter = require("purgomalum-swear-filter");
 var filter = new Filter();
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = true;
+var recaptcha = false;
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
@@ -587,7 +587,8 @@ io.on("connection", async (socket) => {
 				allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
 				if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers);
-				socket.emit("coins", coins);
+				//TODO: Make coins emit only within range
+				socket.emit("coins", coins.filter((coin) => coin.inRange(thePlayer)));
 				socket.emit("chests", chests);
 
 				socket.joined = true;
@@ -735,6 +736,7 @@ io.on("connection", async (socket) => {
               }
 
                 io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+								
               
 
 		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
@@ -746,6 +748,7 @@ io.on("connection", async (socket) => {
 
 //tick
 var secondStart = Date.now();
+var lastChestSend = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
 var actps = 0;
@@ -791,11 +794,10 @@ setInterval(async () => {
 		secondStart = Date.now();
 		tps = 0;
 	}
-	if (Date.now() - lastCoinSend >= 10000) {
-		io.sockets.emit("coins", coins);
+	if (Date.now() - lastChestSend >= 10000) {
 		io.sockets.emit("chests", chests);
 
-		lastCoinSend = Date.now();
+		lastChestSend = Date.now();
 	}
 
 	//health regen
@@ -806,11 +808,12 @@ setInterval(async () => {
 		if (!b.joined && Date.now() - b.joinTime > 10000) {
 			b.emit(
 				"ban",
-				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your pc."
+				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device."
 			);
 			b.disconnect();
 		}
 	});
+
 	playersarray.forEach((player) => {
 		if(player) {
 			//   player.moveWithMouse(players)
@@ -832,12 +835,20 @@ setInterval(async () => {
 			sockets.forEach((socket) => {
 				if(!player.getSendObj()) console.log("gg");
 				if (player.id != socket.id) socket.emit("player", player.getSendObj());
-				else socket.emit("me", player);
+				else {
+					socket.emit("me", player);
+				if(Date.now() - lastCoinSend >= 1000) {
+					socket.emit("coins", coins.filter((coin) => coin.inRange(player)));
+				}
+				}
 			});
 		}
 	});
+	if(Date.now() - lastCoinSend >= 1000) {
+		lastCoinSend = Date.now();
+	}
 	tps += 1;
-}, 1000 / 20);
+}, 1000 / 30);
 
 server.listen(process.env.PORT || 3000, () => {
 	console.log("server started");

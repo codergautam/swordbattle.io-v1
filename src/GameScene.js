@@ -38,7 +38,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-		var map = 20000;
+		var map = 10000;
 
         this.levels = [];
     
@@ -769,29 +769,6 @@ class GameScene extends Phaser.Scene {
 
 					miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 					}
-					function cc(p1x, p1y, r1, p2x, p2y, r2) {
-						var a;
-						var x;
-						var y;
-					  
-						a = r1 + r2;
-						x = p1x - p2x;
-						y = p1y - p2y;
-					  
-						if (a > Math.sqrt((x * x) + (y * y)) && r1 > r2/2) {
-						  return true;
-						} else {
-						  return false;
-						}
-					  }
-					//check if touching bush
-					if(this.bushes.filter(x => cc(x.x, x.y, x.displayWidth/2, this.mePlayer.x, this.mePlayer.y, this.mePlayer.displayWidth/2)).length > 0) {
-						this.meBar.bar.setAlpha(0.3);
-					} else {
-						if(this.meBar.bar.alpha != 1) {
-							this.meBar.bar.setAlpha(1);
-						}
-					}
 
 				});
 				this.socket.on("player", (player) => {
@@ -970,7 +947,7 @@ class GameScene extends Phaser.Scene {
 
 				this.socket.on("dealHit", (playerId, pPos) => {
 					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
-					if(player) {
+					if(player && this.sys.game.loop.actualFps >= 30) {
 						var particles = this.add.particles("hitParticle");
 
 						var emitter = particles.createEmitter({
@@ -988,6 +965,7 @@ class GameScene extends Phaser.Scene {
 					this.hit.play();
 				});
 				this.socket.on("takeHit", (playerId, pPos) => {
+					if(this.sys.game.loop.actualFps < 30) return;
 					this.damage.play();
 					var particles = this.add.particles("hitParticle");
 
@@ -1063,6 +1041,7 @@ class GameScene extends Phaser.Scene {
 				};
 
 				this.socket.on("coins", (coinsArr) => {
+				//	console.log("recieved coins", coinsArr.length);
            
 					coinsArr.forEach((coin) => {
 						if(this.coins.filter(e => e.id == coin.id).length == 0) {
@@ -1249,7 +1228,9 @@ class GameScene extends Phaser.Scene {
 					}
 					// eslint-disable-next-line semi
 					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
-					else if(this.chests.find(chest => chest.id == coinId)) this.tweens.add({
+					else if(this.chests.find(chest => chest.id == coinId)) { 
+						if(this.sys.game.loop.actualFps < 30) this.chests.find(chest => chest.id == coinId).item.destroy();
+						else this.tweens.add({
 						targets: this.chests.find(chest => chest.id == coinId).item,
 						alpha: 0,
 						duration: 500,
@@ -1259,7 +1240,7 @@ class GameScene extends Phaser.Scene {
 							t.targets[0].destroy();
 						}
 					});
-				
+					}
 				});
 
 				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
@@ -1471,7 +1452,7 @@ try {
 			} else if(enemy.swordAnim.added >= 50) enemy.swordAnim.go = false;
 
 			if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
-				var increase = (50 / enemy.playerObj.damageCooldown) * delta;
+				var increase = ((50 / enemy.playerObj.damageCooldown) * delta)*2;
 				if(enemy.swordAnim.added < 50) enemy.swordAnim.added += increase;
 			}
 

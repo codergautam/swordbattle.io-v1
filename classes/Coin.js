@@ -1,5 +1,5 @@
 const intersects = require("intersects");
-var map = 20000;
+var map = 10000;
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -22,6 +22,11 @@ function getRandomInt(min, max) {
     touchingPlayer(player) {
       var rey = player.radius * player.scale * 1.2;
         return intersects.circleEllipse(this.pos.x, this.pos.y, this.radius, player.pos.x, player.pos.y, rey, rey);
+    }
+    inRange(player) {
+      var show = 1500+((200*player.scale)*5);
+      var dist = Math.sqrt(Math.pow(this.pos.x - player.pos.x, 2) + Math.pow(this.pos.y - player.pos.y, 2));
+        return dist <= show;
     }
 
   }
