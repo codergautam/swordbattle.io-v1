@@ -66,7 +66,8 @@ if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
-		max: 500, // limit each IP to 500 requests per min
+		max: 52, // limit each IP to 52 requests per min 
+		//Edited from 500 to 52 requests per min. bc 500 is too much and people can abuse API, in clonclusion it is not working as you want it to work. #FixByLuis
 	});
 	app.use(limiter);
 }
