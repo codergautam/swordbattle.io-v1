@@ -61,12 +61,12 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us1","us2", "eu1"];
-      var f = ["USA","USA 2", "Europe"];
+      var e = ["us1","us2","eu1"];
+      var f = ["USA","USA 2","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
-      ping("us2").then(res2 => {
-        pings.push(res2);
+        ping("us2").then(res2 => {
+          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -87,8 +87,8 @@ class TitleScene extends Phaser.Scene {
             }
           }
         });
-      });
     });
+  });
 
     };
 
@@ -112,7 +112,7 @@ class TitleScene extends Phaser.Scene {
         this.options = JSON.parse(window.localStorage.getItem("options"));
       } else {
         this.options = {
-          movementMode: "keys",
+          movementMode: "mouse",
           sound: "normal",
           server: "auto"
         };
@@ -120,7 +120,7 @@ class TitleScene extends Phaser.Scene {
       }
     } else {
       this.options = {
-        movementMode: "keys",
+        movementMode: "mouse",
         sound: "normal",
         server: "auto"
       };
@@ -373,7 +373,17 @@ class TitleScene extends Phaser.Scene {
           }).catch((err) => {
             console.log("Login Error: ");
             console.log(err);
-            alert("Failed to login automatically, please try manually.");
+            alert("Failed to login automatically.");
+
+            try {
+              if (window.localStorage.getItem("secret")) window.localStorage.removeItem("secret");
+            } catch (e) {
+
+            }
+
+            createButtons();
+            console.log(res);
+            return;
           });
         });
       });

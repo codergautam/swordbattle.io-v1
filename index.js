@@ -70,12 +70,13 @@ function getRandomInt(min, max) {
 
 var production = true;
 if (production) {
-  const rateLimit = require("express-rate-limit");
-  const limiter = rateLimit({
-    windowMs: 60 * 1000, // 1 min
-    max: 500, // limit each IP to 500 requests per min
-  });
-  app.use(limiter);
+	const rateLimit = require("express-rate-limit");
+	const limiter = rateLimit({
+		windowMs: 60 * 1000, // 1 min
+		max: 300, // limit each IP to 52 requests per min 
+		//Edited from 500 to 300 requests per min. bc 500 is too much and people can abuse API, in clonclusion it is not working as you want it to work. #FixByLuis
+	});
+	app.use(limiter);
 }
 
 var oldlevels = [
@@ -586,9 +587,9 @@ Object.filter = (obj, predicate) =>
 var coins = [];
 var chests = [];
 
-var maxCoins = 500;
-var maxChests = 10;
-var maxAiPlayers = 10;
+var maxCoins = 2000;
+var maxChests = 20;
+var maxAiPlayers = 15;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
@@ -632,186 +633,183 @@ io.on("connection", async (socket) => {
         thePlayer.movementMode = options.movementMode;
       }
 
-      if (tryverify) {
-        thePlayer.verified = true;
-        thePlayer.skin = accounts[0].skins.selected;
-      }
 
-      PlayerList.setPlayer(socket.id, thePlayer);
-      console.log("player joined -> " + socket.id);
-      socket.broadcast.emit("new", thePlayer);
+				if(tryverify) {
+					thePlayer.verified = true;
+					thePlayer.skin = accounts[0].skins.selected;
+				}
 
-      var allPlayers = Object.values(PlayerList.players);
-      allPlayers = allPlayers.filter((player) => player.id != socket.id);
+				
+				PlayerList.setPlayer(socket.id, thePlayer);
+				console.log("player joined -> " + socket.id);
+				socket.broadcast.emit("new", thePlayer);
 
-      if (allPlayers && allPlayers.length > 0)
-        socket.emit("players", allPlayers);
-      socket.emit("coins", coins);
-      socket.emit("chests", chests);
+				var allPlayers = Object.values(PlayerList.players);
+				allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
-      socket.joined = true;
-      socket.emit("levels", levels);
-    }
-    if (!captchatoken && recaptcha) {
-      socket.emit(
-        "ban",
-        "You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug."
-      );
-      return socket.disconnect();
-    }
-    if (!r) {
-      socket.emit("ban", "You were kicked for not sending a name. ");
-      return socket.disconnect();
-    }
-    if (PlayerList.has(socket.id)) {
-      socket.emit(
-        "ban",
-        "You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
-      );
-      return socket.disconnect();
-    }
-    //console.log(Object.values(PlayerList.players).length);
-    if (Object.values(PlayerList.players).length >= maxPlayers) {
-      socket.emit("ban", "Server is full. Please try again later.");
-      return socket.disconnect();
-    }
+				if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers);
+				//TODO: Make coins emit only within range
+				socket.emit("coins", coins.filter((coin) => coin.inRange(thePlayer)));
+				socket.emit("chests", chests);
 
-    var send = {
-      secret: process.env.CAPTCHASECRET,
-      response: captchatoken,
-      remoteip: socket.ip,
-    };
-    if (recaptcha) {
-      axios
-        .post(
-          "https://www.google.com/recaptcha/api/siteverify?" +
-            new URLSearchParams(send)
-        )
-        .then((f) => {
-          f = f.data;
-          if (!f.success) {
-            socket.emit(
-              "ban",
-              "Error while verifying captcha<br>" + f["error-codes"].toString()
-            );
-            socket.disconnect();
-            return;
-          }
-          if (f.score < 0.3) {
-            socket.emit(
-              "ban",
-              `Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact gautamgxtv@gmail.com`
-            );
-            socket.disconnect();
-            return;
-          }
-          ready();
-        });
-    } else ready();
-  });
+				socket.joined = true;
+        socket.emit("levels", levels);
 
-  socket.on("mousePos", (mousePos) => {
-    if (PlayerList.has(socket.id)) {
-      var thePlayer = PlayerList.getPlayer(socket.id);
-      thePlayer.mousePos = mousePos;
-      PlayerList.updatePlayer(thePlayer);
-    } else socket.emit("refresh");
+		}
+		if (!captchatoken && recaptcha) {
+			socket.emit(
+				"ban",
+				"You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug."
+			);
+			return socket.disconnect();
+		}
+		if (!r) {
+			socket.emit("ban", "You were kicked for not sending a name. ");
+			return socket.disconnect();
+		}
+		if (PlayerList.has(socket.id)) {
+			socket.emit(
+				"ban",
+				"You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
+			);
+			return socket.disconnect();
+		}
+		//console.log(Object.values(PlayerList.players).length);
+		if (Object.values(PlayerList.players).length >= maxPlayers) {
+			socket.emit("ban", "Server is full. Please try again later.");
+			return socket.disconnect();
+		}
 
-    //console.log(mousePos.x +" , "+mousePos.y )
-  });
+		var send = {
+			secret: process.env.CAPTCHASECRET,
+			response: captchatoken,
+			remoteip: socket.ip,
+		};
+		if(recaptcha) {
+			axios
+				.post(
+					"https://www.google.com/recaptcha/api/siteverify?" +
+          new URLSearchParams(send)
+				)
+				.then((f) => {
+					f = f.data;
+					if (!f.success) {
+						socket.emit(
+							"ban",
+							"Error while verifying captcha<br>" + f["error-codes"].toString()
+						);
+						socket.disconnect();
+						return;
+					}
+					if (f.score < 0.3) {
+						socket.emit(
+							"ban",
+							`Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact gautamgxtv@gmail.com`
+						);
+						socket.disconnect();
+						return;
+					}
+					ready();
+				});
+		} else ready();
+	});
 
-  socket.on("mouseDown", (down) => {
-    if (PlayerList.has(socket.id)) {
-      var player = PlayerList.getPlayer(socket.id);
-      if (player.mouseDown == down) return;
-      [coins, chests] = player.down(down, coins, io, chests);
-      PlayerList.updatePlayer(player);
-    } else socket.emit("refresh");
-  });
+	socket.on("mousePos", (mousePos) => {
+		if (PlayerList.has(socket.id)) {
+			var thePlayer = PlayerList.getPlayer(socket.id);
+			thePlayer.mousePos = mousePos;
+			PlayerList.updatePlayer(thePlayer);
+     
+		}
+		else socket.emit("refresh");
 
-  socket.on("move", (controller) => {
-    if (!controller) return;
-    try {
-      if (PlayerList.has(socket.id)) {
-        var player = PlayerList.getPlayer(socket.id);
-        player.move(controller);
-        coins = player.collectCoins(coins, io, levels);
-      }
-    } catch (e) {
-      console.log(e);
-    }
-  });
-  socket.on("ping", function (fn) {
-    fn(); // Simply execute the callback on the client
-  });
-  socket.on("chat", (msg) => {
-    msg = msg.trim().replace(/\\/g, "\\\\");
-    if (msg.length > 0) {
-      if (msg.length > 35) msg = msg.substring(0, 35);
-      if (
-        !PlayerList.has(socket.id) ||
-        Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000
-      )
-        return;
-      var p = PlayerList.getPlayer(socket.id);
-      p.lastChat = Date.now();
-      PlayerList.setPlayer(socket.id, p);
-      msg = filter.clean(msg);
-      io.sockets.emit("chat", {
-        msg,
-        id: socket.id,
-      });
-    }
-  });
-  function clamp(num, min, max) {
-    return num <= min ? min : num >= max ? max : num;
-  }
-  socket.on("disconnect", () => {
-    if (serverState == "exiting") return;
-    if (!PlayerList.has(socket.id)) return;
-    var thePlayer = PlayerList.getPlayer(socket.id);
+		//console.log(mousePos.x +" , "+mousePos.y )
+	});
+  
+	socket.on("mouseDown", (down) => {
+		if (PlayerList.has(socket.id)) {
+			var player = PlayerList.getPlayer(socket.id);
+			if (player.mouseDown == down) return;
+			[coins,chests] = player.down(down, coins, io, chests);
+			PlayerList.updatePlayer(player);
+		} else socket.emit("refresh");
+	});
 
-    //drop their coins
-    var drop = [];
-    var dropAmount = clamp(Math.round(thePlayer.coins * 0.8), 10, 20000);
-    var dropped = 0;
-    while (dropped < dropAmount) {
-      var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());
-      var theta = Math.random() * 2 * Math.PI;
-      var x = thePlayer.pos.x + r * Math.cos(theta);
-      var y = thePlayer.pos.y + r * Math.sin(theta);
-      var remaining = dropAmount - dropped;
-      var value =
-        remaining > 50 ? 50 : remaining > 10 ? 10 : remaining > 5 ? 5 : 1;
+	socket.on("move", (controller) => {
+		if (!controller) return;
+		try {
+			if (PlayerList.has(socket.id)) {
+				var player = PlayerList.getPlayer(socket.id);
+				player.move(controller);
+				coins = player.collectCoins(coins, io, levels);
+			}
+		} catch (e) {
+			console.log(e);
+		}
+	});
+	socket.on( "ping", function ( fn ) {
+		fn(); // Simply execute the callback on the client
+	} );
+	socket.on("chat", (msg) => {
+		msg = msg.trim().replace(/\\/g, "\\\\");
+		if (msg.length > 0) {
+			if (msg.length > 35) msg = msg.substring(0, 35);
+			if (!PlayerList.has(socket.id) || Date.now() - PlayerList.getPlayer(socket.id).lastChat < 1000) return;
+			var p = PlayerList.getPlayer(socket.id);
+			p.lastChat = Date.now();
+			PlayerList.setPlayer(socket.id, p);
+			filter.clean(msg).then((msg) => {
+				io.sockets.emit("chat", {
+					msg: msg,
+					id: socket.id,
+				});
+			});
+		}
+	});
+	function clamp(num, min, max) {
+		return num <= min ? min : num >= max ? max : num;
+	}
+	socket.on("disconnect", () => {
+		if(serverState == "exiting") return;
+		if (!PlayerList.has(socket.id)) return;
+		var thePlayer = PlayerList.getPlayer(socket.id);
 
-      coins.push(
-        new Coin(
-          {
-            x: clamp(x, -(map / 2), map / 2),
-            y: clamp(y, -(map / 2), map / 2),
-          },
-          value
-        )
-      );
-      dropped += value;
-      drop.push(coins[coins.length - 1]);
-    }
+              //drop their coins
+              var drop = [];
+              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
+              var dropped = 0;
+              while (dropped < dropAmount) {
+                var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());
+                var theta = Math.random() * 2 * Math.PI;
+                var x = thePlayer.pos.x + r * Math.cos(theta);
+                var y = thePlayer.pos.y + r * Math.sin(theta);
+                var remaining = dropAmount - dropped;
+                var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
 
-    io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+                coins.push(
+                  new Coin({
+                    x: clamp(x, -(map/2), map/2),
+                    y: clamp(y, -(map/2), map/2),
+                  },value)
+                );
+                dropped += value;
+                drop.push(coins[coins.length - 1]);
+              }
 
-    sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${
-      thePlayer.name
-    }, ${thePlayer.coins}, ${thePlayer.kills}, ${
-      Date.now() - thePlayer.joinTime
-    }, ${thePlayer.verified})`;
+                io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+								
+              
 
-    PlayerList.deletePlayer(socket.id);
-    socket.broadcast.emit("playerLeave", socket.id);
-  });
+		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
+
+		PlayerList.deletePlayer(socket.id);
+		socket.broadcast.emit("playerLeave", socket.id);
+	});
 });
 
 //tick
 var secondStart = Date.now();
+var lastChestSend = Date.now();
 var lastCoinSend = Date.now();
 var tps = 0;
 var actps = 0;
@@ -829,91 +827,94 @@ app.get("/api/serverinfo", (req, res) => {
 });
 
 setInterval(async () => {
-  //const used = process.memoryUsage().heapUsed / 1024 / 1024;
-  //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
-  PlayerList.clean();
-  moderation.io = io;
-  if (coins.length < maxCoins) {
-    coins.push(new Coin());
-    io.sockets.emit("coin", coins[coins.length - 1]);
-  }
-  if (chests.length < maxChests) {
-    chests.push(new Chest());
-    io.sockets.emit("chest", chests[chests.length - 1]);
-  }
-  var normalPlayers = Object.values(PlayerList.players).filter(
-    (p) => p && !p.ai
-  ).length;
-  var aiPlayers = Object.keys(PlayerList.players).length;
+	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
+//console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
+	PlayerList.clean();
+	moderation.io = io;
+	if (coins.length < maxCoins) {
+		coins.push(new Coin());
+		io.sockets.emit("coin", coins[coins.length - 1]);
+	}
+	if(chests.length < maxChests) {
+		chests.push(new Chest());
+		io.sockets.emit("chest", chests[chests.length - 1]);
+	}
+	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
+	var aiPlayers = Object.keys(PlayerList.players).length;
+  
+	// console.log(aiNeeded)
 
-  // console.log(aiNeeded)
 
-  if (
-    normalPlayers > 0 &&
-    aiPlayers < maxAiPlayers &&
-    getRandomInt(0, 100) == 5
-  ) {
-    var id = uuidv4();
-    var theAi = new AiPlayer(id);
-    console.log("AI Player Joined -> " + theAi.name);
-    PlayerList.setPlayer(id, theAi);
-    io.sockets.emit("new", theAi);
-  }
-  //emit tps to clients
-  if (Date.now() - secondStart >= 1000) {
-    io.sockets.emit("tps", tps);
-    actps = tps;
-    //console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
-    secondStart = Date.now();
-    tps = 0;
-  }
-  if (Date.now() - lastCoinSend >= 10000) {
-    io.sockets.emit("coins", coins);
-    io.sockets.emit("chests", chests);
+	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
+		var id = uuidv4();
+		var theAi = new AiPlayer(id);
+		console.log("AI Player Joined -> "+theAi.name);
+		PlayerList.setPlayer(id, theAi);
+		io.sockets.emit("new", theAi);
+	}
+	//emit tps to clients
+	if (Date.now() - secondStart >= 1000) {
+		io.sockets.emit("tps", tps);
+		actps = tps;
+		//console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
+		secondStart = Date.now();
+		tps = 0;
+	}
+	if (Date.now() - lastChestSend >= 10000) {
+		io.sockets.emit("chests", chests);
 
-    lastCoinSend = Date.now();
-  }
+		lastChestSend = Date.now();
+	}
 
-  //health regen
-  var playersarray = Object.values(PlayerList.players);
-  var sockets = await io.fetchSockets();
+	//health regen
+	var playersarray = Object.values(PlayerList.players);
+	var sockets = await io.fetchSockets();
 
-  sockets.forEach((b) => {
-    if (!b.joined && Date.now() - b.joinTime > 10000) {
-      b.emit(
-        "ban",
-        "You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your pc."
-      );
-      b.disconnect();
-    }
-  });
-  playersarray.forEach((player) => {
-    if (player) {
-      //   player.moveWithMouse(players)
-      if (player.ai) {
-        [coins, chests] = player.tick(coins, io, levels, chests);
-      }
-      if (
-        Date.now() - player.lastHit > 5000 &&
-        Date.now() - player.lastRegen > 75 &&
-        player.health < player.maxHealth
-      ) {
-        //if its been 5 seconds since player got hit, regen then every 100 ms
-        player.lastRegen = Date.now();
-        player.health += player.health / 100;
-      }
-      PlayerList.updatePlayer(player);
+	sockets.forEach((b) => {
+		if (!b.joined && Date.now() - b.joinTime > 10000) {
+			b.emit(
+				"ban",
+				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device."
+			);
+			b.disconnect();
+		}
+	});
 
-      //emit player data to all clients
-      sockets.forEach((socket) => {
-        if (!player.getSendObj()) console.log("gg");
-        if (player.id != socket.id) socket.emit("player", player.getSendObj());
-        else socket.emit("me", player);
-      });
-    }
-  });
-  tps += 1;
-}, 1000 / 20);
+	playersarray.forEach((player) => {
+		if(player) {
+			//   player.moveWithMouse(players)
+			if(player.ai) {
+				[coins,chests] = player.tick(coins, io, levels, chests);
+			}
+			if (
+				Date.now() - player.lastHit > 5000 &&
+      Date.now() - player.lastRegen > 75 &&
+      player.health < player.maxHealth
+			) {
+				//if its been 5 seconds since player got hit, regen then every 100 ms
+				player.lastRegen = Date.now();
+				player.health += player.health / 100;
+			}
+			PlayerList.updatePlayer(player);
+
+			//emit player data to all clients
+			sockets.forEach((socket) => {
+				if(!player.getSendObj()) console.log("gg");
+				if (player.id != socket.id) socket.emit("player", player.getSendObj());
+				else {
+					socket.emit("me", player);
+				if(Date.now() - lastCoinSend >= 1000) {
+					socket.emit("coins", coins.filter((coin) => coin.inRange(player)));
+				}
+				}
+			});
+		}
+	});
+	if(Date.now() - lastCoinSend >= 1000) {
+		lastCoinSend = Date.now();
+	}
+	tps += 1;
+}, 1000 / 30);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log("server started");
