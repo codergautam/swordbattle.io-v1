@@ -23,11 +23,11 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.5.0",
     "intersects": "^2.7.2",
+    "leo-profanity": "^1.5.0",
     "on-screen-keyboard-detector": "^2.3.0",
     "password-validator": "^5.2.1",
     "postgres": "^1.0.2",
     "potato-detection": "^1.0.2",
-    "purgomalum-swear-filter": "^1.0.2",
     "socket.io": "^4.2.0",
     "uui": "^1.0.7",
     "uuid": "^8.3.2"
