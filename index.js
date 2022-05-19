@@ -61,9 +61,20 @@ const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
 
+
+
+const checkifMissingFields = () => {
+return (req,res) => if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
+		res.send({error: "Missing fields"});
+		return;
+	}
+	
+}
+
 const io = new Server(usinghttps ? httpsserver : server, {
   cors: { origin: "*" },
 });
+
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -255,140 +266,114 @@ app.post("/api/equip", async (req, res) => {
   }
 });
 
-app.post("/api/signup", async (req, res) => {
-  if (
-    typeof req.body !== "object" ||
-    typeof req.body.password !== "string" ||
-    typeof req.body.username !== "string"
-  ) {
-    res.send({ error: "Missing fields" });
-    return;
-  }
-  if (req.body.email && req.body.email.length > 30) {
-    res.send({ error: "Email too long" });
-    return;
-  }
-  if (req.body.email && !emailValidator.validate(req.body.email)) {
-    res.send({ error: "Invalid email" });
-    return;
-  }
-  if (!schema.validate(req.body.password)) {
-    res.send({
-      error: schema.validate(req.body.password, { details: true })[0].message,
-    });
-    return;
-  }
-  var username = req.body.username;
-  if (username.length > 20) {
-    res.send({ error: "Username has to be shorter than 20 characters" });
-    return;
-  }
-  if (
-    username.charAt(0) == " " ||
-    username.charAt(username.length - 1) == " "
-  ) {
-    res.send({ error: "Username can't start or end with a space" });
-    return;
-  }
-  if (username.includes("  ")) {
-    res.send({ error: "Username can't have two spaces in a row" });
-    return;
-  }
-  var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;
-  if (!username.match(regex)) {
-    res.send({
-      error:
-        "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*+,-=[]^_{|}<>~`",
-    });
-    return;
-  }
 
-  var containsProfanity = filter.check(username);
-  if (containsProfanity) {
-    res.send({
-      error:
-        "Username contains a bad word!\nIf this is a mistake, please contact an admin.",
-    });
-    return;
-  }
-  var exists =
-    await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
+app.post("/api/signup",checkifMissingFields, async (req, res) => {
+	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
+		res.send({error: "Missing fields"});
+		return;
+	}
+	if(req.body.email && req.body.email.length > 30) {
+		res.send({error: "Email too long"});
+		return;
+	}
+	if(req.body.email && !emailValidator.validate(req.body.email)) {
+		res.send({error: "Invalid email"});
+		return;
+	}
+	if(!schema.validate(req.body.password)) {
+		res.send({error:schema.validate(req.body.password, { details: true })[0].message});
+		return;
+	}
+	var username = req.body.username;
+	if(username.length >= 20) {
+		res.send({error: "Username has to be shorter than 20 characters"});
+		return;
+	}
+	if(username.charAt(0) == " " || username.charAt(username.length - 1) == " ") {
+		res.send({error: "Username can't start or end with a space"});
+		return;
+	}
+	if(username.includes("  ")) {
+		res.send({error: "Username can't have two spaces in a row"});
+		return;
+	}
+	var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;
+	if(!username.match(regex)) {
+		res.send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
+		return;
+	}
+	
+	var containsProfanity = await filter.containsProfanity(username);
+	if(containsProfanity) {
+		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+		return;
+	}
+	var exists = await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
 
-  if (exists[0].exists) {
-    res.send({ error: "Username already taken" });
-    return;
-  }
+	if (exists[0].exists) {
+		res.send({error: "Username already taken"});
+		return;
+	}
 
-  bcrypt.hash(req.body.password, 10, (err, hash) => {
-    if (err) {
-      res.status(500).send({ error: "Internal server error" });
-      return;
-    }
-    var secret = uuid.v4();
-    sql`insert into accounts(username, password, email, secret, skins, lastlogin) values(${username}, ${hash}, ${
-      req.body.email
-    }, ${secret}, ${JSON.stringify({
-      collected: ["player"],
-      selected: "player",
-    })}, ${Date.now()})`;
-    res.send({ secret: secret });
-  });
+	bcrypt.hash(req.body.password, 10, (err, hash) => {
+		if (err) {
+			res.status(500).send({error:"Internal server error"});
+			return;
+		}
+		var secret = uuid.v4();
+		sql`insert into accounts(username, password, email, secret, skins, lastlogin) values(${username}, ${hash}, ${req.body.email}, ${secret}, ${JSON.stringify({collected: ["player"], selected: "player"})}, ${Date.now()})`;
+		res.send({secret: secret});
+	});
+
+
+
 });
 
-app.post("/api/login", async (req, res) => {
-  if (
-    typeof req.body !== "object" ||
-    typeof req.body.password !== "string" ||
-    typeof req.body.username !== "string" ||
-    typeof req.body.captcha !== "string"
-  ) {
-    res.send({ error: "Missing fields" });
-    return;
-  }
+app.post("/api/login",checkifMissingFields, async (req, res) => { 
 
-  async function doit() {
-    var username = req.body.username;
-    var password = req.body.password;
-    var account =
-      await sql`select * from accounts where lower(username)=lower(${username})`;
 
-    if (!account[0]) {
-      res.send({ error: "Invalid username" });
-      return;
-    }
+	async function doit() {
+	var username = req.body.username;
+	var password = req.body.password;
+	var account = await sql`select * from accounts where lower(username)=lower(${username})`;
 
-    const match = await bcrypt.compare(password, account[0].password);
-    if (!match) {
-      res.send({ error: "Invalid password" });
-      return;
-    }
+	if(!account[0]) {
+		res.send({error: "Invalid username"});
+		return;
+	}
 
-    res.send(account[0]);
-  }
-  var send = {
-    secret: process.env.CAPTCHASECRET,
-    response: req.body.captcha,
-    remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress,
-  };
-  if (recaptcha) {
-    axios
-      .post(
-        "https://www.google.com/recaptcha/api/siteverify?" +
-          new URLSearchParams(send)
-      )
-      .then(async (f) => {
-        f = f.data;
-        if (!f.success) {
-          res.status(403).send("Captcha failed " + f["error-codes"].toString());
-          return;
-        }
-        if (f.score < 0.3) {
-          res.status(403).send("Captcha score too low");
-          return;
-        }
-        doit();
-      });
-  } else doit();
+	const match = await bcrypt.compare(password, account[0].password);
+	if(!match) {
+		res.send({error: "Invalid password"});
+		return;
+	}
+	
+	res.send(account[0]);
+	}
+	var send = {
+		secret: process.env.CAPTCHASECRET,
+		response: req.body.captcha,
+		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
+	};
+	if(recaptcha) {
+		axios
+			.post(
+				"https://www.google.com/recaptcha/api/siteverify?" +
+	  new URLSearchParams(send)
+			)
+			.then(async (f) => {
+				f = f.data;
+				if (!f.success) {
+					res.status(403).send("Captcha failed " +  f["error-codes"].toString());
+					return;
+				}
+				if (f.score < 0.3) {
+					res.status(403).send("Captcha score too low");
+					return;
+				}
+				doit();
+			});
+	}else doit();
 });
 
 app.post("/api/loginsecret", async (req, res) => {
