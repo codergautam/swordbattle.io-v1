@@ -56,6 +56,14 @@ const AiPlayer = require("./classes/AiPlayer");
 const PlayerList = require("./classes/PlayerList");
 const { sql } = require("./database");
 
+
+const checkifMissingFields = () => {
+return (req,res) => if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
+		res.send({error: "Missing fields"});
+		return;
+	}
+	
+}
 const io = new Server(usinghttps?httpsserver:server, { cors: { origin: "*" }});
 function getRandomInt(min, max) {
 	return min + Math.floor(Math.random() * (max - min + 1));
@@ -243,7 +251,7 @@ if(secret && secret!="undefined") {
 }
 });
 
-app.post("/api/signup", async (req, res) => {
+app.post("/api/signup",checkifMissingFields, async (req, res) => {
 	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
 		res.send({error: "Missing fields"});
 		return;
@@ -261,7 +269,7 @@ app.post("/api/signup", async (req, res) => {
 		return;
 	}
 	var username = req.body.username;
-	if(username.length > 20) {
+	if(username.length >= 20) {
 		res.send({error: "Username has to be shorter than 20 characters"});
 		return;
 	}
@@ -305,11 +313,8 @@ app.post("/api/signup", async (req, res) => {
 
 });
 
-app.post("/api/login", async (req, res) => { 
-	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
-		res.send({error: "Missing fields"});
-		return;
-	}
+app.post("/api/login",checkifMissingFields, async (req, res) => { 
+
 
 	async function doit() {
 	var username = req.body.username;
