@@ -63,13 +63,13 @@ const { sql } = require("./database");
 
 
 
-const checkifMissingFields = () => {
-return (req,res) => if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
+const checkifMissingFields = (req,res,next) => {
+if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
 		res.send({error: "Missing fields"});
 		return;
-	}
-	
 }
+next();
+};
 
 const io = new Server(usinghttps ? httpsserver : server, {
   cors: { origin: "*" },
