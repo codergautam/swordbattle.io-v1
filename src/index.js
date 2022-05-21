@@ -1,6 +1,7 @@
 import TitleScene from "./TitleScene.js";
 import GameScene from "./GameScene.js";
 import OpenScene from "./OpenScene.js";
+import Phaser from "phaser";
 
 if ("serviceWorker" in navigator) {
     // register service worker

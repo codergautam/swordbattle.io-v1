@@ -1,4 +1,4 @@
-import axios from "axios";
+import Phaser from "phaser";
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
       seconds = Math.floor((duration / 1000) % 60),

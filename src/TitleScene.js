@@ -1,5 +1,6 @@
 import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
+import Phaser from "phaser";
 
 class TitleScene extends Phaser.Scene {
   constructor(playPreroll, callback) {

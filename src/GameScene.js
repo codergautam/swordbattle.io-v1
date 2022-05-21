@@ -2,8 +2,11 @@ import HealthBar from "./components/HealthBar.js";
 import ImgButton from "./components/PhaserImgButton";
 
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
-
+import ClassPicker from "./components/ClassPicker.js";
 import {locations} from "./bushes.json";
+import Phaser from "phaser";
+
+import { io } from "socket.io-client";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -320,9 +323,10 @@ class GameScene extends Phaser.Scene {
 				//camera follow
 				this.cameras.main.setZoom(1);
         
+				this.classPicker = new ClassPicker(this);
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.classGraphic ]);
 				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
@@ -541,31 +545,6 @@ class GameScene extends Phaser.Scene {
 
 				this.graphics.strokeRoundedRect(-(map/2), -(map/2), map, map, 0);
 
-				// class picker
-				// 2 evenly spaced rectangle buttons inside the container
-
-				var rect = new Phaser.Geom.Rectangle(this.canvas.width/2, this.canvas.height/15, this.canvas.width/7, this.canvas.height/5);
-				var rect2 = new Phaser.Geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
-			var gap = this.canvas.width/10;
-			rect.x -= rect.width/2;
-			rect2.x -= rect2.width/2;
-			rect2.x += gap;
-			rect.x -= gap;
-
-
-
-				this.classGraphic = this.add.graphics({ fillStyle: { color: 0xffffff } });
-				this.classGraphic.fillRectShape(rect);
-				this.classGraphic.fillRectShape(rect2);
-				this.classGraphic.setDepth(50);
-				this.classGraphic.setAlpha(0.9);
-				this.classGraphic.setInteractive(rect, Phaser.Geom.Rectangle.Contains);
-
-
-
-
-				this.cameras.main.ignore(this.classGraphic);
-				
 
 				//server -> client
 

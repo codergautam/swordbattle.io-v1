@@ -1,4 +1,4 @@
-
+import Phaser from "phaser";
 export default class ImgButton extends Phaser.GameObjects.Container {
     constructor(scene, x, y, key, onClick) {
         super(scene);

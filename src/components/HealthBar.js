@@ -1,3 +1,4 @@
+import Phaser from "phaser";
 class HealthBar {
 
     constructor (game, x, y, width, height, custom=false)
