@@ -9,7 +9,7 @@
     "test": "node index.js --unhandled-rejections=strict",
     "start": "node index.js --unhandled-rejections=strict"
   },
-  "heroku-run-build-script": true,
+  "heroku-run-build-script": false,
   "keywords": [],
   "author": "",
   "license": "ISC",
