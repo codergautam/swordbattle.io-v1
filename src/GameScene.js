@@ -1,6 +1,7 @@
 import HealthBar from "./HealthBar.js";
 import ImgButton from "./PhaserImgButton";
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
+import {CAPTCHASITE, localServer} from "../config.json";
 
 import {locations} from "./bushes.json";
 
@@ -44,7 +45,7 @@ class GameScene extends Phaser.Scene {
     
 		//recaptcha
 		grecaptcha.ready(() =>{
-			grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "join"}).then((thetoken) => {
+			grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
 
 				this.readyt = true;
 				this.openingBgm.stop();
@@ -448,7 +449,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
-				this.socket = io(server,{
+				this.socket = io(localServer?undefined:server,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
@@ -1257,6 +1258,8 @@ class GameScene extends Phaser.Scene {
 							yoyo: false
 						});
 				},5000);
+			}).catch((e) => {
+				console.log(e);
 			});
 		});
 	}
