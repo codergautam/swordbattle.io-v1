@@ -1,7 +1,7 @@
 
 const fs = require("fs");
 const {execSync} = require("child_process"); 
-
+require("dotenv").config();
 var testenv =
 `TOKEN=test
 CAPTCHASECRET=6LeIewsgAAAAABWjEVCnFPR7POHFJbzZJM_OqKdQ
@@ -30,8 +30,7 @@ if(!theConfig.hasOwnProperty("localServer")) {
 	theConfig = require("./config.json");
 	execSync("npm run build");
 }
-
-if(!process.env.TOKEN) {
+if(!process.env.hasOwnProperty("TOKEN")) {
 	console.log("👀 First run? No worries, we're setting you up.");
 	fs.writeFileSync(".env", testenv);
 	fs.writeFileSync("config.json", defaultconfig);
