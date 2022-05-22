@@ -304,7 +304,7 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		return;
 	}
 	
-	var containsProfanity = await filter.containsProfanity(username);
+	var containsProfanity = filter.check(username);
 	if(containsProfanity) {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
@@ -744,12 +744,12 @@ io.on("connection", async (socket) => {
 			var p = PlayerList.getPlayer(socket.id);
 			p.lastChat = Date.now();
 			PlayerList.setPlayer(socket.id, p);
-			filter.clean(msg).then((msg) => {
+			
 				io.sockets.emit("chat", {
-					msg: msg,
+					msg: filter.clean(msg),
 					id: socket.id,
 				});
-			});
+			}
 		}
 	});
 	function clamp(num, min, max) {
