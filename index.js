@@ -750,8 +750,7 @@ io.on("connection", async (socket) => {
 					id: socket.id,
 				});
 			}
-		}
-	});
+		});
 	function clamp(num, min, max) {
 		return num <= min ? min : num >= max ? max : num;
 	}
