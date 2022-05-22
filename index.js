@@ -10,7 +10,7 @@ var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
 
-
+serverState = "started";
 
 //console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
 var usinghttps = false;
