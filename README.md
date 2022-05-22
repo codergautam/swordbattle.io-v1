@@ -11,3 +11,9 @@ Swordbattle.io is a multiplayer game where you PvP with 2D swords, and try to ga
 ## Contributing
 
 I'm working on a detailed guide so you can help out with the code! Stay tuned.
+
+Right now, just clone, run `npm i`, run `node setup` (only first run), and run `npm run build` (always), and start with `node .`
+
+Before making a PR, set `PRODUCTION=true` in the `.env` file, and run `node setup` and `npm run build`. This will make a production build which can be deployed on our servers.
+
+Thanks!
