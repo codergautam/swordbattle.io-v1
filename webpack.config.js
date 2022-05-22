@@ -13,7 +13,7 @@ const config = {
         { from: "src/index.html", to: "",  transform(content) {
           return content
             .toString()
-            .replace("INSERT_RECAPTCHA_SITE_KEY", CAPTCHASITE)
+            .replace("INSERT_RECAPTCHA_SITE_KEY", CAPTCHASITE);
         }},
         { from: "src/title.html", to: "" },
         { from: "src/about.html", to: "" },
