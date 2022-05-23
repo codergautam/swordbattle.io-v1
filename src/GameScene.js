@@ -3,6 +3,7 @@ import ImgButton from "./components/PhaserImgButton";
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
 import {CAPTCHASITE, localServer} from "../config.json";
 //import ClassPicker from "./components/ClassPicker.js";
+import ClassPicker from "./components/ClassPicker.ts";
 import {locations} from "./bushes.json";
 import Phaser from "phaser";
 
@@ -323,11 +324,11 @@ class GameScene extends Phaser.Scene {
 				//camera follow
 				this.cameras.main.setZoom(1);
         
-		//		this.classPicker = new ClassPicker(this);
+				this.classPicker = new ClassPicker(this);
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-			//	this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.classGraphic ]);
-			this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.rect1 ]);
+			// this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
