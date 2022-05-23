@@ -1,6 +1,7 @@
 import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
 import Phaser from "phaser";
+import {CAPTCHASITE} from "../config.json";
 
 class TitleScene extends Phaser.Scene {
   constructor(playPreroll, callback) {
@@ -330,7 +331,7 @@ class TitleScene extends Phaser.Scene {
       this.nameBox.getChildByName("btn").disabled = true;
       console.log("Attempting to login");
       grecaptcha.ready(() => {
-        grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", { action: "relogin" }).then((thetoken) => {
+        grecaptcha.execute(CAPTCHASITE, { action: "relogin" }).then((thetoken) => {
           axios.post("/api/loginsecret", {
             secret: secret,
             captcha: thetoken
@@ -374,7 +375,17 @@ class TitleScene extends Phaser.Scene {
           }).catch((err) => {
             console.log("Login Error: ");
             console.log(err);
-            alert("Failed to login automatically, please try manually.");
+            alert("Failed to login automatically.");
+
+            try {
+              if (window.localStorage.getItem("secret")) window.localStorage.removeItem("secret");
+            } catch (e) {
+
+            }
+
+            createButtons();
+            console.log(res);
+            return;
           });
         });
       });
@@ -457,7 +468,7 @@ class TitleScene extends Phaser.Scene {
         };
         this.login.getChildByName("login").onclick = () => {
           grecaptcha.ready(() => {
-            grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", { action: "login" }).then((thetoken) => {
+            grecaptcha.execute(CAPTCHASITE, { action: "login" }).then((thetoken) => {
 
               try {
                 var username = this.login.getChildByName("username").value;
@@ -524,7 +535,7 @@ class TitleScene extends Phaser.Scene {
         };
         this.signup.getChildByName("signup").onclick = () => {
           grecaptcha.ready(() => {
-            grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", { action: "signup" }).then((thetoken) => {
+            grecaptcha.execute(CAPTCHASITE, { action: "signup" }).then((thetoken) => {
 
               try {
                 var username = this.signup.getChildByName("username").value;

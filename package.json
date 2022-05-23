@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "heroku-postbuild": "node setup && npm run build",
     "watch": "webpack --config webpack.config.js --watch --progress",
     "test": "node index.js --unhandled-rejections=strict",
     "start": "node index.js --unhandled-rejections=strict"
@@ -23,12 +24,12 @@
     "express": "^4.17.1",
     "express-rate-limit": "^5.5.0",
     "intersects": "^2.7.2",
+    "leo-profanity": "^1.5.0",
     "on-screen-keyboard-detector": "^2.3.0",
     "password-validator": "^5.2.1",
     "phaser": "^3.55.2",
     "postgres": "^1.0.2",
     "potato-detection": "^1.0.2",
-    "purgomalum-swear-filter": "^1.0.2",
     "socket.io": "^4.2.0",
     "socket.io-client": "^4.5.1",
     "uui": "^1.0.7",

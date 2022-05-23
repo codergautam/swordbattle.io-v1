@@ -1,8 +1,8 @@
 import HealthBar from "./components/HealthBar.js";
 import ImgButton from "./components/PhaserImgButton";
-
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
-import ClassPicker from "./components/ClassPicker.js";
+import {CAPTCHASITE, localServer} from "../config.json";
+//import ClassPicker from "./components/ClassPicker.js";
 import {locations} from "./bushes.json";
 import Phaser from "phaser";
 
@@ -42,13 +42,13 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-		var map = 20000;
+		var map = 10000;
 
         this.levels = [];
     
 		//recaptcha
 		grecaptcha.ready(() =>{
-			grecaptcha.execute("6LdVxgYdAAAAAPtvjrXLAzSd2ANyzIkiSqk_yFpt", {action: "join"}).then((thetoken) => {
+			grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
 
 				this.readyt = true;
 				this.openingBgm.stop();
@@ -323,11 +323,12 @@ class GameScene extends Phaser.Scene {
 				//camera follow
 				this.cameras.main.setZoom(1);
         
-				this.classPicker = new ClassPicker(this);
+		//		this.classPicker = new ClassPicker(this);
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.classGraphic ]);
-				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
+			//	this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.classGraphic ]);
+			this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
+			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 				//bushes
@@ -452,8 +453,8 @@ class GameScene extends Phaser.Scene {
 				  });
 				//go packet
 				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
-				//server = undefined
-				this.socket = io(undefined,{
+				// server = undefined; // Enable for localhost/development
+				this.socket = io(localServer?undefined:server,{
 					closeOnBeforeunload: false,
           transports: ["websocket"]
 				});
@@ -781,29 +782,6 @@ class GameScene extends Phaser.Scene {
 
 					miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 					}
-					function cc(p1x, p1y, r1, p2x, p2y, r2) {
-						var a;
-						var x;
-						var y;
-					  
-						a = r1 + r2;
-						x = p1x - p2x;
-						y = p1y - p2y;
-					  
-						if (a > Math.sqrt((x * x) + (y * y)) && r1 > r2/2) {
-						  return true;
-						} else {
-						  return false;
-						}
-					  }
-					//check if touching bush
-					if(this.bushes.filter(x => cc(x.x, x.y, x.displayWidth/2, this.mePlayer.x, this.mePlayer.y, this.mePlayer.displayWidth/2)).length > 0) {
-						this.meBar.bar.setAlpha(0.3);
-					} else {
-						if(this.meBar.bar.alpha != 1) {
-							this.meBar.bar.setAlpha(1);
-						}
-					}
 
 				});
 				this.socket.on("player", (player) => {
@@ -982,7 +960,7 @@ class GameScene extends Phaser.Scene {
 
 				this.socket.on("dealHit", (playerId, pPos) => {
 					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
-					if(player) {
+					if(player && this.sys.game.loop.actualFps >= 30) {
 						var particles = this.add.particles("hitParticle");
 
 						var emitter = particles.createEmitter({
@@ -1000,6 +978,7 @@ class GameScene extends Phaser.Scene {
 					this.hit.play();
 				});
 				this.socket.on("takeHit", (playerId, pPos) => {
+					if(this.sys.game.loop.actualFps < 30) return;
 					this.damage.play();
 					var particles = this.add.particles("hitParticle");
 
@@ -1075,6 +1054,7 @@ class GameScene extends Phaser.Scene {
 				};
 
 				this.socket.on("coins", (coinsArr) => {
+				//	console.log("recieved coins", coinsArr.length);
            
 					coinsArr.forEach((coin) => {
 						if(this.coins.filter(e => e.id == coin.id).length == 0) {
@@ -1261,7 +1241,9 @@ class GameScene extends Phaser.Scene {
 					}
 					// eslint-disable-next-line semi
 					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
-					else if(this.chests.find(chest => chest.id == coinId)) this.tweens.add({
+					else if(this.chests.find(chest => chest.id == coinId)) { 
+						if(this.sys.game.loop.actualFps < 30) this.chests.find(chest => chest.id == coinId).item.destroy();
+						else this.tweens.add({
 						targets: this.chests.find(chest => chest.id == coinId).item,
 						alpha: 0,
 						duration: 500,
@@ -1271,7 +1253,7 @@ class GameScene extends Phaser.Scene {
 							t.targets[0].destroy();
 						}
 					});
-				
+					}
 				});
 
 				this.playerCount.x = this.miniGraphics.x + (this.miniMap.scaleFactor * 2 );
@@ -1288,6 +1270,8 @@ class GameScene extends Phaser.Scene {
 							yoyo: false
 						});
 				},5000);
+			}).catch((e) => {
+				console.log(e);
 			});
 		});
 	}
@@ -1483,7 +1467,7 @@ try {
 			} else if(enemy.swordAnim.added >= 50) enemy.swordAnim.go = false;
 
 			if(enemy.swordAnim.go && enemy.swordAnim.added < 50) {
-				var increase = (50 / enemy.playerObj.damageCooldown) * delta;
+				var increase = ((50 / enemy.playerObj.damageCooldown) * delta)*2;
 				if(enemy.swordAnim.added < 50) enemy.swordAnim.added += increase;
 			}
 

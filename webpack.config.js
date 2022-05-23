@@ -2,6 +2,7 @@
 const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
+const {CAPTCHASITE} = require("./config.json");
 
 const config = {
   entry: "./src/index.js",
@@ -9,7 +10,11 @@ const config = {
     new CopyPlugin({
       patterns: [
         { from: "src/promo.html", to: "" },
-        { from: "src/index.html", to: "" },
+        { from: "src/index.html", to: "",  transform(content) {
+          return content
+            .toString()
+            .replace("INSERT_RECAPTCHA_SITE_KEY", CAPTCHASITE);
+        }},
         { from: "src/title.html", to: "" },
         { from: "src/about.html", to: "" },
         { from: "src/footer.html", to: "" },
@@ -28,7 +33,7 @@ const config = {
     filename: "main.js",
   },
   devtool: "source-map",
-  mode: "production",
+  mode: "production"
 };
 
 module.exports = config;

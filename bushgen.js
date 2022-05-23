@@ -1,6 +1,6 @@
-var fs = require('fs');
-var map = 20000;
-var bushCount = 700;
+var fs = require("fs");
+var map = 10000;
+var bushCount = 150;
 var locations = [];
 
 function getRandom(min, max) {
@@ -8,8 +8,8 @@ function getRandom(min, max) {
 }
 
 function getRandomBush() {
-    var x = Math.floor(getRandom(-1*map, map));
-    var y = Math.floor(getRandom(-1*map, map));
+    var x = Math.floor(getRandom((-1*map)/2, map/2));
+    var y = Math.floor(getRandom((-1*map)/2, map/2));
     var scale = getRandom(0.5, 5);
     return { x: x, y: y, scale };
 }
@@ -21,4 +21,4 @@ for(var i = 0; i < bushCount; i++) {
 var json = {locations};
 json = JSON.stringify(json);
 
-fs.writeFileSync('src/bushes.json', json);
+fs.writeFileSync("src/bushes.json", json);
