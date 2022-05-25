@@ -1,9 +1,9 @@
 
-const webpack = require("webpack");
+//const webpack = require("webpack");
 const path = require("path");
 const CopyPlugin = require("copy-webpack-plugin");
 const {CAPTCHASITE} = require("./config.json");
-
+console.log(CAPTCHASITE);
 const config = {
   entry: "./src/index.js",
   plugins: [
