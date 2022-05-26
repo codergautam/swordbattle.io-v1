@@ -583,7 +583,7 @@ var chests = [];
 
 var maxCoins = 2000;
 var maxChests = 20;
-var maxAiPlayers = 15;
+var maxAiPlayers = 0;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
@@ -793,7 +793,7 @@ io.on("connection", async (socket) => {
 								
               
 
-		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
+//		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);

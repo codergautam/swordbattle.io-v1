@@ -326,7 +326,7 @@ class GameScene extends Phaser.Scene {
 				this.classPicker = new ClassPicker(this);
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState, this.classPicker.rect1 ]);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState]);
 			// this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
@@ -351,6 +351,7 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
+						if(this.classPicker.shown) this.classPicker.draw(this);
 						if(this.mobile && this.options.movementMode =="keys") {
 
 							this.joyStick.x = this.canvas.width / 8;
@@ -675,8 +676,19 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {
-								console.log(this.myObj.evolutionQueue);
+								// console.log(this.myObj.evolutionQueue);
+								// console.log(this.classPicker)
+								if(!this.classPicker.shown) {
+									this.classPicker.draw(this);
+									this.classPicker.on("class-selected", (k) => {
+										console.log(k);
+									});
+								}
 								
+							} else {
+								if(this.classPicker.shown) {
+								this.classPicker.clear();
+								}
 							}
 						}
 						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {
