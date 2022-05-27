@@ -14,7 +14,7 @@ class Tank extends Evolution {
             power: 2,
             resistance: 2,
             damage: 1.25,
-            hitCooldown: 2,
+            damageCooldown: 2,
         };
     }
     ability() {

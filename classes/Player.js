@@ -26,9 +26,11 @@ class Player {
     this.verified = false;
 
     this.evolutionQueue = [];
-    this.class = "";
+    this.evolution = "";
+    this.evolutionData = {};
     
    this.skin = "player";
+    this.levelScale = 0.25;
 
     this.resistance = 20;
     this.power = 200;
@@ -231,6 +233,7 @@ var move = true;
                     if(i+2 > this.level) levelsPassed.push(level);
                     this.level = i+2;
                     this.scale = level.scale;
+                    this.levelScale = level.scale;
                   }
                 });
                 if(!this.ai) {
@@ -293,6 +296,7 @@ return false;
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num;
     var percent = this.health / this.maxHealth;
+    this.scale = this.levelScale;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
@@ -303,6 +307,12 @@ return false;
 
     this.damageCooldown = (50 + (this.level * 12))*2;
 
+    if(Object.keys(this.evolutionData).length > 0) {
+      Object.keys(this.evolutionData.default).forEach((prop) => {
+        this[prop] *= this.evolutionData.default[prop]
+      })
+    }
+    
 
   }
   down(down, coins, io, chests) {

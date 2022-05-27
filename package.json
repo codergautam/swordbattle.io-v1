@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
-    "heroku-postbuild": "node setup && npm run build",
+    "prod": "webpack --config webpackprod.config.js",
+    "heroku-postbuild": "node setup && npm run prod",
     "watch": "webpack --config webpack.config.js --watch --progress",
     "test": "node index.js --unhandled-rejections=strict",
     "start": "node index.js --unhandled-rejections=strict"
