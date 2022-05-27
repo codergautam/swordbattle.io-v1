@@ -676,12 +676,13 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {
+								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 								// console.log(this.myObj.evolutionQueue);
 								// console.log(this.classPicker)
 								if(!this.classPicker.shown) {
 									this.classPicker.draw(this);
 									this.classPicker.on("class-selected", (k) => {
-										console.log(k);
+										this.socket.emit("evolve", k);
 									});
 								}
 								

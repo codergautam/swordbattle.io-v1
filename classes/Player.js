@@ -26,6 +26,7 @@ class Player {
     this.verified = false;
 
     this.evolutionQueue = [];
+    this.class = "";
     
    this.skin = "player";
 

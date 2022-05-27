@@ -708,6 +708,20 @@ io.on("connection", async (socket) => {
 		} else ready();
 	});
 
+  socket.on("evolve", (eclass) => {
+    if(!PlayerList.has(socket.id)) return socket.emit("refresh");
+    var player = PlayerList.getPlayer(socket.id);
+    if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
+      eclass = eclass.toLowerCase();
+      player.evolutionQueue.shift();
+      player.class = eclass;
+      console.log(player.name + " evolved to " + eclass);
+      player.updateValues();
+      socket.emit("refresh");
+      return;
+    }
+  });
+
 	socket.on("mousePos", (mousePos) => {
 		if (PlayerList.has(socket.id)) {
 			var thePlayer = PlayerList.getPlayer(socket.id);

@@ -22,7 +22,7 @@ this.text2 = "Tank";
     this.clear();
     console.log("ClassPicker draw");
     this.shown = true;
-   var rect = new Phaser.Geom.Rectangle(scene.canvas.width/2, scene.canvas.height/15, scene.canvas.width/7, scene.canvas.height/5);
+   var rect = new Phaser.Geom.Rectangle(scene.canvas.width/2, scene.canvas.height/20, scene.canvas.width/7, scene.canvas.height/5);
     var rect2 = new Phaser.Geom.Rectangle(rect.x, rect.y, rect.width, rect.height);
   var gap = scene.canvas.width/10;
   rect.x -= rect.width/2;
@@ -84,6 +84,10 @@ while(this.textObj1.width>rect.width && this.textObj1.height>rect.height/10) {
     this.textObj2?.destroy();
 
     this.shown = false;
+  }
+  setEvoQueue(evoQueue: string[]) {
+    this.text1 = evoQueue[0][0];
+    this.text2 = evoQueue[0][1];
   }
 
   update() {
