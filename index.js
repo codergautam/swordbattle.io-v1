@@ -76,8 +76,7 @@ const io = new Server(usinghttps ? httpsserver : server, {
   cors: { origin: "*" },
 });
 
-const Tank = require("./classes/evolutions/Tank");
-const Berserker = require("./classes/evolutions/Berserker");
+const evolutions = require("./classes/evolutions")
 
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -125,7 +124,7 @@ var oldlevels = [
 */
 var oldlevels = [
 	{coins: 5, scale: 0.55},
-	{coins: 15, scale: 2, evolutions: [new Tank(), new Berserker()]},
+	{coins: 15, scale: 2, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 20, scale: 2},
 ];
 
@@ -711,11 +710,15 @@ io.on("connection", async (socket) => {
   socket.on("evolve", (eclass) => {
     if(!PlayerList.has(socket.id)) return socket.emit("refresh");
     var player = PlayerList.getPlayer(socket.id);
+    console.log(eclass)
     if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
       eclass = eclass.toLowerCase();
       player.evolutionQueue.shift();
-      player.class = eclass;
+      var evo = evolutions[eclass]
       console.log(player.name + " evolved to " + eclass);
+          
+        player.evolutionData = {default: evo.default(), ability: evo.ability()};
+      player.evolution =evo.name;
       player.updateValues();
       socket.emit("refresh");
       return;

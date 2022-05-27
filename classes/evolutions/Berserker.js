@@ -13,7 +13,7 @@ class Berserker extends Evolution {
             power: 1.5,
             resistance: 0.9,
             damage: 1.1,
-            hitCooldown: 0.8,
+            danageCooldown: 0.8,
         };
     }
     ability() {

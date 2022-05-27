@@ -33,7 +33,7 @@ if(!theConfig.hasOwnProperty("localServer")) {
 	execSync("npm run build");
 }
 if(!process.env.hasOwnProperty("TOKEN")) {
-	console.log("👀 First run? No worries, we're setting you up.\n");
+	console.log("👀 We're getting you set up.\n");
 	fs.writeFileSync(".env", testenv);
 	fs.writeFileSync("config.json", defaultconfig);
 	console.log("⚒️ Building latest code... \n");
