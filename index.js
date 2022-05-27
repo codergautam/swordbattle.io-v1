@@ -40,7 +40,7 @@ const axios = require("axios").default;
 var filter = require("leo-profanity");
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = true;
+const {recaptcha} = require("./config.json");
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
@@ -130,12 +130,12 @@ var oldlevels = [
 ];
 
 app.set("trust proxy", true);
-
+/*
 app.use((req, res, next) => {
   console.log("URL:", req.url);
   console.log("IP:", req.ip);
   next();
-});
+});*/
 
 var levels = [];
 oldlevels.forEach((level, index)  =>{
