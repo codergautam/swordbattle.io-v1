@@ -156,7 +156,7 @@ class GameScene extends Phaser.Scene {
 				this.abilityButton = this.add.image((this.canvas.width /5)*4, this.canvas.height /5, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
 				this.abilityButton.setInteractive();
 				this.abilityButton.on("pointerdown", () => {
-					console.log("ability");
+					this.socket.emit("ability");
 				});
 
         

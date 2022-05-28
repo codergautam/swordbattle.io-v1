@@ -28,6 +28,13 @@ class Player {
     this.evolutionQueue = [];
     this.evolution = "";
     this.evolutionData = {};
+
+    //note these are hardcoded below in updatevalues() overriding doesn't work
+     this.healWait = 5000;
+    this.healAmount = 1;
+    // end of hardcoded values
+
+    this.ability = 0;
     
    this.skin = "player";
     this.levelScale = 0.25;
@@ -306,11 +313,13 @@ return false;
     this.resistance = convert(0.25, 20, this.scale);
 
     this.damageCooldown = (50 + (this.level * 12))*2;
+    this.healAmount = 1;
+    this.healWait = 5000;
 
     if(Object.keys(this.evolutionData).length > 0) {
       Object.keys(this.evolutionData.default).forEach((prop) => {
-        this[prop] *= this.evolutionData.default[prop]
-      })
+       if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.default[prop];
+      });
     }
     
 

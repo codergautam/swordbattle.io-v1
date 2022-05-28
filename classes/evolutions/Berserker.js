@@ -4,7 +4,7 @@ class Berserker extends Evolution {
         super();
         this.name = "berserker";
         this.abilityDuration = 10000;
-        this.abilityCooldown = 60000;
+        this.abilityCooldown = 10000;
         this.subEvolutions = [];
     }
     default() {

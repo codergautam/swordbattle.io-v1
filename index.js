@@ -710,7 +710,6 @@ io.on("connection", async (socket) => {
   socket.on("evolve", (eclass) => {
     if(!PlayerList.has(socket.id)) return socket.emit("refresh");
     var player = PlayerList.getPlayer(socket.id);
-    console.log(eclass)
     if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
       eclass = eclass.toLowerCase();
       player.evolutionQueue.shift();
@@ -722,6 +721,24 @@ io.on("connection", async (socket) => {
       player.updateValues();
       socket.emit("refresh");
       return;
+    }
+  });
+  socket.on("ability", () => {
+    var player = PlayerList.getPlayer(socket.id);
+    if(player.evolution != "") {
+      // check if ability activated already
+      if(player.ability <= Date.now()) {
+        player.ability = evolutions[player.evolution].abilityCooldown + evolutions[player.evolution].abilityDuration + Date.now();
+        console.log("ability activated for "+player.name);
+      } else {
+        if(player.ability <= Date.now() +evolutions[player.evolution].abilityDuration ) {
+          console.log("ability cooldown for "+player.name);
+
+        } else {
+          console.log("ability in use for "+player.name);
+
+        }
+      }
     }
   });
 
@@ -897,13 +914,13 @@ setInterval(async () => {
 				[coins,chests] = player.tick(coins, io, levels, chests);
 			}
 			if (
-				Date.now() - player.lastHit > 5000 &&
+				Date.now() - player.lastHit > player.healWait &&
       Date.now() - player.lastRegen > 75 &&
       player.health < player.maxHealth
 			) {
-				//if its been 5 seconds since player got hit, regen then every 100 ms
+				//if its been x seconds since player got hit, regen then every 100 ms
 				player.lastRegen = Date.now();
-				player.health += player.health / 100;
+				player.health += (player.health / 100)*player.healAmount;
 			}
 			PlayerList.updatePlayer(player);
 
