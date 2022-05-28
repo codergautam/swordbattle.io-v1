@@ -16,6 +16,7 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback;
     }
     preload() {
+      console.time("load");
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
@@ -54,13 +55,14 @@ class OpenScene extends Phaser.Scene {
         this.load.image("kill", "/assets/images/kill.png");
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
         this.load.image("bush", "/assets/images/bush.png");
+        
         this.load.image("chatbtn", "/assets/images/chat.png");
-
         this.load.image("loginbtn", "/assets/images/login.png");
         this.load.image("signupbtn", "/assets/images/signup.png");
         this.load.image("playAgainBtn", "/assets/images/playAgain.png");
         this.load.image("settingsBtn", "/assets/images/settingsBtn.png");
         this.load.image("shopBtn", "/assets/images/shop.png");
+        this.load.image("abilityBtn", "/assets/images/ability.png");
 
         this.load.audio("coin", "/assets/sound/coin.m4a");
         this.load.audio("damage", "/assets/sound/damage.mp3");
@@ -83,6 +85,7 @@ class OpenScene extends Phaser.Scene {
 
 
         this.scale.fullscreenTarget = document.getElementById("game");
+        console.timeEnd("load");
   
     }
 

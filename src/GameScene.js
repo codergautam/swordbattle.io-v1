@@ -152,8 +152,15 @@ class GameScene extends Phaser.Scene {
 				this.miniGraphics.y = this.canvas.height - ((this.miniMap.scaleFactor * 2) + padding);
 				this.miniGraphics.lineStyle(5, 0xffff00, 1);
 				this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0);
+
+				this.abilityButton = this.add.image((this.canvas.width /5)*4, this.canvas.height /5, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
+				this.abilityButton.setInteractive();
+				this.abilityButton.on("pointerdown", () => {
+					console.log("ability");
+				});
+
         
-				this.cameras.main.ignore(this.miniGraphics);
+				this.cameras.main.ignore([this.miniGraphics, this.abilityButton]);
 
 				//
 				//joystick
@@ -351,6 +358,7 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
+						this.abilityButton.setPosition((this.canvas.width /5)*4, this.canvas.height / 5);
 						if(this.classPicker.shown) this.classPicker.draw(this);
 						if(this.mobile && this.options.movementMode =="keys") {
 
@@ -675,7 +683,7 @@ class GameScene extends Phaser.Scene {
 					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
-							if(this.myObj.evolutionQueue.length > 0) {
+							if(this.myObj.evolutionQueue.length > 0) {						
 								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 								// console.log(this.myObj.evolutionQueue);
 								// console.log(this.classPicker)
@@ -738,6 +746,8 @@ class GameScene extends Phaser.Scene {
 						this.mePlayer.setTexture(player.skin+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
 					}
+
+					if(player.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
 
 					if (!this.myObj) {
 						this.mePlayer.x = player.pos.x;

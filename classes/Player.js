@@ -470,7 +470,7 @@ return false;
 
 
   getSendObj() {
-    return {verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 
