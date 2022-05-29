@@ -361,6 +361,7 @@ class GameScene extends Phaser.Scene {
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
 						this.abilityButton.setPosition((this.canvas.width /5)*4, this.canvas.height / 5);
+						this.ability.setY(this.abilityButton.y - 100);
 						if(this.classPicker.shown) this.classPicker.draw(this);
 						if(this.mobile && this.options.movementMode =="keys") {
 
@@ -562,7 +563,7 @@ class GameScene extends Phaser.Scene {
 
                 this.socket.on("levels", (l)=>this.levels=l);
 								this.socket.on("ability", (e) => {
-									console.log(e);
+								//	console.log(e);
 									var [cooldown, duration, now] = e;
 									
 									duration -= Date.now() - now;
@@ -573,17 +574,23 @@ class GameScene extends Phaser.Scene {
 										duration: duration+cooldown,
 										onUpdate: (tween) => {
 									var left = Math.abs(tween.getValue() - (duration+cooldown)/1000);
+									console.log(left - ((duration/1000) + (cooldown/1000)));
 									if(left - (cooldown/1000) >= 0) {
 										//still going
+										this.ability.visible=true;
 										this.ability.setText((left-(cooldown/1000)).toFixed(1));
-									} else if(left - (duration/1000) >= 0) {
+									} else if(cooldown/1000 >= left) {
 										//cooldown
 										this.abilityButton.visible = false;
-										this.ability.setText((left-(duration/1000)).toFixed(1));
+										
+										this.ability.setText((left).toFixed(1));
 									} else {
 										this.abilityButton.visible = true;
-										this.ability.setText("");
+										
 									}
+										},
+										onComplete: () => {
+											this.ability.setText("");
 										}
 									});
 								});
