@@ -92,9 +92,9 @@ if (production) {
 	});
 	app.use(limiter);
 }
-/*
+
 var oldlevels = [
-	{coins: 5, scale: 0.28},
+	{coins: 5, scale: 0.28, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 15, scale: 0.32},
 	{coins: 25, scale: 0.35},
 	{coins: 35, scale: 0.4},
@@ -119,13 +119,7 @@ var oldlevels = [
 	{coins: 5000, scale: 1.2},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
-	{coins: 10000, scale: 1.51},
-];
-*/
-var oldlevels = [
-	{coins: 5, scale: 0.55},
-	{coins: 15, scale: 2, evolutions: [evolutions.tank, evolutions.berserker]},
-	{coins: 20, scale: 2},
+	{coins: 10000, scale: 1.51, evolutions: [evolutions.tank, evolutions.berserker]},
 ];
 
 app.set("trust proxy", true);
@@ -718,6 +712,7 @@ io.on("connection", async (socket) => {
           
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
+      player.skin = evo.name;
       player.updateValues();
       socket.emit("refresh");
       return;
@@ -729,15 +724,8 @@ io.on("connection", async (socket) => {
       // check if ability activated already
       if(player.ability <= Date.now()) {
         player.ability = evolutions[player.evolution].abilityCooldown + evolutions[player.evolution].abilityDuration + Date.now();
-        console.log("ability activated for "+player.name);
-      } else {
-        if(player.ability <= Date.now() +evolutions[player.evolution].abilityDuration ) {
-          console.log("ability cooldown for "+player.name);
-
-        } else {
-          console.log("ability in use for "+player.name);
-
-        }
+        console.log(player.name + " activated ability");
+        socket.emit("ability", [evolutions[player.evolution].abilityCooldown , evolutions[player.evolution].abilityDuration, Date.now()]);
       }
     }
   });
@@ -908,7 +896,9 @@ setInterval(async () => {
 	});
 
 	playersarray.forEach((player) => {
+    
 		if(player) {
+      player.updateValues()
 			//   player.moveWithMouse(players)
 			if(player.ai) {
 				[coins,chests] = player.tick(coins, io, levels, chests);

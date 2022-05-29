@@ -6,6 +6,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 var map = 10000;
+const evolutions = require("./evolutions");
 
 class Player { 
   constructor(id, name) {
@@ -320,6 +321,12 @@ return false;
       Object.keys(this.evolutionData.default).forEach((prop) => {
        if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.default[prop];
       });
+      if(this.ability > Date.now() +evolutions[this.evolution].abilityCooldown) {
+      //  console.log("ability",this.ability);
+        Object.keys(this.evolutionData.ability).forEach((prop) => {
+         if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.ability[prop];
+        });
+      }
     }
     
 

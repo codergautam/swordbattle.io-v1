@@ -158,9 +158,11 @@ class GameScene extends Phaser.Scene {
 				this.abilityButton.on("pointerdown", () => {
 					this.socket.emit("ability");
 				});
+				this.ability = this.add.text(this.abilityButton.x, this.abilityButton.y-100, "").setDepth(101).setVisible(false).setFontSize(50).setFontFamily("Georgia, \"Goudy Bookletter 1911\", Times, serif").setOrigin(0.5);
+
 
         
-				this.cameras.main.ignore([this.miniGraphics, this.abilityButton]);
+				this.cameras.main.ignore([this.miniGraphics, this.abilityButton, this.ability]);
 
 				//
 				//joystick
@@ -559,6 +561,32 @@ class GameScene extends Phaser.Scene {
 				//server -> client
 
                 this.socket.on("levels", (l)=>this.levels=l);
+								this.socket.on("ability", (e) => {
+									console.log(e);
+									var [cooldown, duration, now] = e;
+									
+									duration -= Date.now() - now;
+									
+									this.tweens.addCounter({
+										from: 0,
+										to: (duration+cooldown)/1000,
+										duration: duration+cooldown,
+										onUpdate: (tween) => {
+									var left = Math.abs(tween.getValue() - (duration+cooldown)/1000);
+									if(left - (cooldown/1000) >= 0) {
+										//still going
+										this.ability.setText((left-(cooldown/1000)).toFixed(1));
+									} else if(left - (duration/1000) >= 0) {
+										//cooldown
+										this.abilityButton.visible = false;
+										this.ability.setText((left-(duration/1000)).toFixed(1));
+									} else {
+										this.abilityButton.visible = true;
+										this.ability.setText("");
+									}
+										}
+									});
+								});
 
 				const addPlayer = (player) => {
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
@@ -748,6 +776,7 @@ class GameScene extends Phaser.Scene {
 					}
 
 					if(player.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
+					if(player.evolution != "" && !this.ability.visible) this.ability.visible = true;
 
 					if (!this.myObj) {
 						this.mePlayer.x = player.pos.x;

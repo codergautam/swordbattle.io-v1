@@ -3,8 +3,8 @@ class Tank extends Evolution {
     constructor() {
         super();
         this.name = "tank";
-        this.abilityDuration = 10000;
-        this.abilityCooldown = 30000;
+        this.abilityDuration = 1000;
+        this.abilityCooldown = 10000;
         this.subEvolutions = [];
     }
     default() {
@@ -21,6 +21,7 @@ class Tank extends Evolution {
         return {
             healWait: 0,
             healAmount: 5,
+            scale: 2,
         };
     }
 }
