@@ -801,8 +801,8 @@ class GameScene extends Phaser.Scene {
 						this.meSword.setTexture(player.skin+"Sword");
 					}
 
-					if(player.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
-					if(player.evolution != "" && !this.ability.visible) this.ability.visible = true;
+					if(player?.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
+					if(player?.evolution != "" && !this.ability.visible) this.ability.visible = true;
 
 					if (!this.myObj) {
 						this.mePlayer.x = player.pos.x;

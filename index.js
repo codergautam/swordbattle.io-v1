@@ -728,6 +728,7 @@ io.on("connection", async (socket) => {
   });
   socket.on("ability", () => {
     var player = PlayerList.getPlayer(socket.id);
+    if(!PlayerList.has(socket.id)) return socket.emit("refresh");
     if(player.evolution != "") {
       // check if ability activated already
       if(player.ability <= Date.now()) {
