@@ -76,7 +76,7 @@ const io = new Server(usinghttps ? httpsserver : server, {
   cors: { origin: "*" },
 });
 
-const evolutions = require("./classes/evolutions")
+const evolutions = require("./classes/evolutions");
 
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -88,13 +88,12 @@ if (production) {
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
 		max: 300, // limit each IP to 52 requests per min 
-		//Edited from 500 to 300 requests per min. bc 500 is too much and people can abuse API, in clonclusion it is not working as you want it to work. #FixByLuis
 	});
 	app.use(limiter);
 }
 
 var oldlevels = [
-	{coins: 5, scale: 0.28, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 5, scale: 0.28},
 	{coins: 15, scale: 0.32},
 	{coins: 25, scale: 0.35},
 	{coins: 35, scale: 0.4},
@@ -130,7 +129,7 @@ var oldlevels = [
   {coins: 100000, scale: 1.7},
   {coins: 200000, scale: 1.8},
 ];
-console.log(Object.keys(oldlevels).length)
+console.log(Object.keys(oldlevels).length);
 app.set("trust proxy", true);
 /*
 app.use((req, res, next) => {
@@ -716,7 +715,7 @@ io.on("connection", async (socket) => {
     if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
       eclass = eclass.toLowerCase();
       player.evolutionQueue.shift();
-      var evo = evolutions[eclass]
+      var evo = evolutions[eclass];
       console.log(player.name + " evolved to " + eclass);
           
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
@@ -907,7 +906,7 @@ setInterval(async () => {
 	playersarray.forEach((player) => {
     
 		if(player) {
-      player.updateValues()
+      player.updateValues();
 			//   player.moveWithMouse(players)
 			if(player.ai) {
 				[coins,chests] = player.tick(coins, io, levels, chests);
