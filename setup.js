@@ -28,8 +28,8 @@ if(!theConfig.hasOwnProperty("localServer")) {
 	console.log("Generating config.json");
 	fs.writeFileSync("./config.json", defaultconfig);
 	theConfig = require("./config.json");
-    console.log("⚡ Hold on...")
-  execSync("npm i");
+    console.log("⚡ Hold on...");
+  execSync("npm i --dev");
 	execSync("npm run build");
 }
 if(!process.env.hasOwnProperty("TOKEN")) {
@@ -40,8 +40,8 @@ if(!process.env.hasOwnProperty("TOKEN")) {
 	theConfig = require("./config.json");
 	//run npm run build
 
-  execSync("npm i");
-        console.log("\n❤️ Almost... done..\n")
+  execSync("npm i --dev");
+        console.log("\n❤️ Almost... done..\n");
 	execSync("npm run build");
 	console.log("✅ Done!");
 
@@ -59,7 +59,7 @@ if(process.env.PRODUCTION == "true") {
 	console.log("Note: We've updated the config.json file to reflect this.\n");
 	console.log("If you're running this during development, the game won't work\n");
 	console.log("🔥 Creating a production build...");
-  execSync("npm run i");
+  execSync("npm i --dev");
 	execSync("npm run build");
 	console.log("✅ Done!\n");
 
