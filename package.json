@@ -6,7 +6,7 @@
   "scripts": {
     "build": "webpack --config webpack.config.js",
     "prod": "webpack --config webpackprod.config.js",
-    "heroku-postbuild": "node setup && npm run prod",
+    "heroku-postbuild": "node setup",
     "watch": "webpack --config webpack.config.js --watch --progress",
     "test": "node index.js --unhandled-rejections=strict",
     "start": "node index.js --unhandled-rejections=strict"
