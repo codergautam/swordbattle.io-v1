@@ -6,6 +6,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 var map = 10000;
+const evolutions = require("./evolutions");
 
 class Player { 
   constructor(id, name) {
@@ -24,8 +25,21 @@ class Player {
     this.lastChat = Date.now();
     this.damageCooldown = 200;
     this.verified = false;
+
+    this.evolutionQueue = [];
+    this.evolution = "";
+    this.evolutionData = {};
+
+    //note these are hardcoded below in updatevalues() overriding doesn't work
+     this.healWait = 5000;
+    this.healAmount = 1;
+    // end of hardcoded values
+
+    this.ability = 0;
+    this.abilityActive = false;
     
    this.skin = "player";
+    this.levelScale = 0.25;
 
     this.resistance = 20;
     this.power = 200;
@@ -216,22 +230,28 @@ var move = true;
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
           this.coins+= coin.value;
-          if(this.level-1 != levels.length && this.coins >= levels[this.level-1].coins) {
+          if(this.level <= levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
-          
-            if(this.level != levels.length) {
+  
 
-            
-   
+            var oldLevel = this.level;
+          var levelsPassed = [];
                 //calculate new level
                 levels.forEach((level, i) => {
                   if(this.coins >= level.coins) {
+                    if(i+2 > this.level) levelsPassed.push(level);
                     this.level = i+2;
                     this.scale = level.scale;
+                    this.levelScale = level.scale;
                   }
                 });
-                
-            }
+                if(!this.ai) {
+                var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions)?.map((e)=>e.evolutions).map((e)=>e.map((f)=>f.name));
+                console.log("evo",evoLevels);
+                this.evolutionQueue = [...this.evolutionQueue, ...evoLevels].filter((e)=>e);
+                console.log("q",this.evolutionQueue);
+              }
+              
             
           }
 
@@ -285,6 +305,7 @@ return false;
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num;
     var percent = this.health / this.maxHealth;
+    this.scale = this.levelScale;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
@@ -294,7 +315,23 @@ return false;
     this.resistance = convert(0.25, 20, this.scale);
 
     this.damageCooldown = (50 + (this.level * 12))*2;
+    this.healAmount = 1;
+    this.healWait = 5000;
 
+    if(Object.keys(this.evolutionData).length > 0) {
+      Object.keys(this.evolutionData.default).forEach((prop) => {
+       if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.default[prop];
+      });
+      if(this.ability > Date.now() +evolutions[this.evolution].abilityCooldown) {
+      //  console.log("ability",this.ability);
+        Object.keys(this.evolutionData.ability).forEach((prop) => {
+         if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.ability[prop];
+        });
+        this.abilityActive = true;
+
+      } else this.abilityActive = false;
+    }
+    
 
   }
   down(down, coins, io, chests) {
@@ -452,7 +489,7 @@ return false;
 
 
   getSendObj() {
-    return {verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 

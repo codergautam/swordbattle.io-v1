@@ -1,9 +1,12 @@
-import HealthBar from "./HealthBar.js";
-import ImgButton from "./PhaserImgButton";
+import HealthBar from "./components/HealthBar.js";
+import ImgButton from "./components/PhaserImgButton";
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
-import {CAPTCHASITE, localServer} from "../config.json";
-
+import ClassPicker from "./components/ClassPicker.ts";
 import {locations} from "./bushes.json";
+import Phaser from "phaser";
+import {CAPTCHASITE,localServer} from "./../config.json";
+
+import { io } from "socket.io-client";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -149,8 +152,17 @@ class GameScene extends Phaser.Scene {
 				this.miniGraphics.y = this.canvas.height - ((this.miniMap.scaleFactor * 2) + padding);
 				this.miniGraphics.lineStyle(5, 0xffff00, 1);
 				this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0);
+
+				this.abilityButton = this.add.image((this.canvas.width /5), (this.canvas.height /5)*4, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
+				this.abilityButton.setInteractive();
+				this.abilityButton.on("pointerdown", () => {
+					this.socket.emit("ability");
+				});
+				this.ability = this.add.text(this.abilityButton.x, this.abilityButton.y-100, "").setDepth(101).setVisible(false).setFontSize(50).setFontFamily("Georgia, \"Goudy Bookletter 1911\", Times, serif").setOrigin(0.5);
+
+
         
-				this.cameras.main.ignore(this.miniGraphics);
+				this.cameras.main.ignore([this.miniGraphics, this.abilityButton, this.ability]);
 
 				//
 				//joystick
@@ -320,10 +332,12 @@ class GameScene extends Phaser.Scene {
 				//camera follow
 				this.cameras.main.setZoom(1);
         
+				this.classPicker = new ClassPicker(this);
         
 				this.UICam = this.cameras.add(this.cameras.main.x, this.cameras.main.y, this.canvas.width, this.canvas.height);
-				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
-				this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
+				this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState]);
+			// this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
+			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 				//bushes
@@ -346,6 +360,9 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
+						this.abilityButton.setPosition((this.canvas.width /5), (this.canvas.height / 5)*4);
+						this.ability.setY(this.abilityButton.y - 100);
+						if(this.classPicker.shown) this.classPicker.draw(this);
 						if(this.mobile && this.options.movementMode =="keys") {
 
 							this.joyStick.x = this.canvas.width / 8;
@@ -443,7 +460,7 @@ class GameScene extends Phaser.Scene {
 				var doit;
 
 				window.addEventListener("resize", function(){
-					clearTimeout(doit);
+					clearTimeout(doit); 
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
@@ -541,9 +558,42 @@ class GameScene extends Phaser.Scene {
 
 				this.graphics.strokeRoundedRect(-(map/2), -(map/2), map, map, 0);
 
+
 				//server -> client
 
                 this.socket.on("levels", (l)=>this.levels=l);
+								this.socket.on("ability", (e) => {
+								//	console.log(e);
+									var [cooldown, duration, now] = e;
+									
+									duration -= Date.now() - now;
+									
+									this.tweens.addCounter({
+										from: 0,
+										to: (duration+cooldown)/1000,
+										duration: duration+cooldown,
+										onUpdate: (tween) => {
+									var left = Math.abs(tween.getValue() - (duration+cooldown)/1000);
+								//	console.log(left - ((duration/1000) + (cooldown/1000)));
+									if(left - (cooldown/1000) >= 0) {
+										//still going
+										this.ability.visible=true;
+										this.ability.setText((left-(cooldown/1000)).toFixed(1));
+									} else if(cooldown/1000 >= left) {
+										//cooldown
+										this.abilityButton.visible = false;
+										
+										this.ability.setText((left).toFixed(1));
+									} else {
+										this.abilityButton.visible = true;
+										
+									}
+										},
+										onComplete: () => {
+											this.ability.setText("");
+										}
+									});
+								});
 
 				const addPlayer = (player) => {
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
@@ -667,7 +717,25 @@ class GameScene extends Phaser.Scene {
 					if(this.loadrect.visible) this.loadrect.destroy();
 					if(this.loadtext.visible) this.loadtext.destroy();
 					if(this.levels.length > 0) {
-						if(player.level >= this.levels.length-1 ) {
+						if(this.myObj?.evolutionQueue) {
+							if(this.myObj.evolutionQueue.length > 0) {						
+								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
+								// console.log(this.myObj.evolutionQueue);
+								// console.log(this.classPicker)
+								if(!this.classPicker.shown) {
+									this.classPicker.draw(this);
+									this.classPicker.on("class-selected", (k) => {
+										this.socket.emit("evolve", k);
+									});
+								}
+								
+							} else {
+								if(this.classPicker.shown) {
+								this.classPicker.clear();
+								}
+							}
+						}
+						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {
 							this.lvlState.setText("Max Level");
 							this.lvlBar.setLerpValue(100);
 						} else {
@@ -709,10 +777,32 @@ class GameScene extends Phaser.Scene {
 					}
 				}
 					}
+					if(player.abilityActive && this.sys.game.loop.actualFps > 5) {
+						var particles = this.add.particles("starParticle");
+
+						var emitter = particles.createEmitter({
+							
+							maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+							scale: 0.05
+						});
+						function getRandomInt(min, max) {
+							min = Math.ceil(min);
+							max = Math.floor(max);
+							return Math.floor(Math.random() * (max - min + 1)) + min;
+						}
+						emitter.setPosition(this.mePlayer.x+getRandomInt(-0.5*this.mePlayer.displayWidth, this.mePlayer.displayWidth/2),this.mePlayer.y+getRandomInt(-0.5*this.mePlayer.displayHeight, this.mePlayer.displayHeight/2));
+					
+						this.UICam.ignore(particles);
+						emitter.setSpeed(200);
+						particles.setDepth(105);
+					}
 					if(!this.spectating&&this.mePlayer.texture.key+"Player" != player.skin) {
 						this.mePlayer.setTexture(player.skin+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
 					}
+
+					if(player.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
+					if(player.evolution != "" && !this.ability.visible) this.ability.visible = true;
 
 					if (!this.myObj) {
 						this.mePlayer.x = player.pos.x;
@@ -806,6 +896,31 @@ class GameScene extends Phaser.Scene {
 						//minimap
 						if(this.spectating) return;
 						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
+
+						if(!this.spectating&&enemy.player.texture.key+"Player" != player.skin) {
+							enemy.player.setTexture(player.skin+"Player");
+							enemy.sword.setTexture(player.skin+"Sword");
+						}
+
+						if(player.abilityActive && this.sys.game.loop.actualFps > 5) {
+							var particles = this.add.particles("starParticle");
+	
+							var emitter = particles.createEmitter({
+								
+								maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+								scale: 0.05
+							});
+							function getRandomInt(min, max) {
+								min = Math.ceil(min);
+								max = Math.floor(max);
+								return Math.floor(Math.random() * (max - min + 1)) + min;
+							}
+							emitter.setPosition(enemy.player.x+getRandomInt(-0.5*enemy.player.displayWidth, enemy.player.displayWidth/2),enemy.player.y+getRandomInt(-0.5*enemy.player.displayHeight, enemy.player.displayHeight/2));
+						
+							this.UICam.ignore(particles);
+							emitter.setSpeed(200);
+							particles.setDepth(105);
+						}
             
         
 

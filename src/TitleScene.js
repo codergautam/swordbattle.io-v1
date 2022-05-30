@@ -1,5 +1,6 @@
-import ImgButton from "./PhaserImgButton";
+import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
+import Phaser from "phaser";
 import {CAPTCHASITE} from "../config.json";
 
 class TitleScene extends Phaser.Scene {

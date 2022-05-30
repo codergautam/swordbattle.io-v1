@@ -1,4 +1,4 @@
-import axios from "axios";
+import Phaser from "phaser";
 function msToTime(duration) {
     var milliseconds = parseInt((duration % 1000) / 100),
       seconds = Math.floor((duration / 1000) % 60),
@@ -16,6 +16,7 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback;
     }
     preload() {
+      console.time("load");
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
@@ -48,19 +49,25 @@ class OpenScene extends Phaser.Scene {
         this.load.image("angelSword", "/assets/images/sword.png");
         this.load.image("neonPlayer", "/assets/images/neonPlayer.png");
         this.load.image("neonSword", "/assets/images/neonSword.png");
+        this.load.image("berserkerPlayer", "/assets/images/berserkerSkin.png");
+        this.load.image("berserkerSword", "/assets/images/devilSword.png");
+        this.load.image("tankPlayer", "/assets/images/tankSkin.png");
+        this.load.image("tankSword", "/assets/images/sword.png");
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
         this.load.image("chest", "/assets/images/chest.png");
         this.load.image("kill", "/assets/images/kill.png");
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
+        this.load.image("starParticle", "/assets/images/star.png");
         this.load.image("bush", "/assets/images/bush.png");
+        
         this.load.image("chatbtn", "/assets/images/chat.png");
-
         this.load.image("loginbtn", "/assets/images/login.png");
         this.load.image("signupbtn", "/assets/images/signup.png");
         this.load.image("playAgainBtn", "/assets/images/playAgain.png");
         this.load.image("settingsBtn", "/assets/images/settingsBtn.png");
         this.load.image("shopBtn", "/assets/images/shop.png");
+        this.load.image("abilityBtn", "/assets/images/ability.png");
 
         this.load.audio("coin", "/assets/sound/coin.m4a");
         this.load.audio("damage", "/assets/sound/damage.mp3");
@@ -83,6 +90,7 @@ class OpenScene extends Phaser.Scene {
 
 
         this.scale.fullscreenTarget = document.getElementById("game");
+        console.timeEnd("load");
   
     }
 

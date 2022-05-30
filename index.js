@@ -40,7 +40,7 @@ const axios = require("axios").default;
 var filter = require("leo-profanity");
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-var recaptcha = true;
+const {recaptcha} = require("./config.json");
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
@@ -76,6 +76,8 @@ const io = new Server(usinghttps ? httpsserver : server, {
   cors: { origin: "*" },
 });
 
+const evolutions = require("./classes/evolutions");
+
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -86,57 +88,64 @@ if (production) {
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
 		max: 300, // limit each IP to 52 requests per min 
-		//Edited from 500 to 300 requests per min. bc 500 is too much and people can abuse API, in clonclusion it is not working as you want it to work. #FixByLuis
 	});
 	app.use(limiter);
 }
 
 var oldlevels = [
-  { coins: 5, scale: 0.28 },
-  { coins: 15, scale: 0.32 },
-  { coins: 25, scale: 0.35 },
-  { coins: 35, scale: 0.4 },
-  { coins: 50, scale: 0.45 },
-  { coins: 75, scale: 0.47 },
-  { coins: 100, scale: 0.5 },
-  { coins: 200, scale: 0.7 },
-  { coins: 350, scale: 0.8 },
-  { coins: 500, scale: 0.85 },
-  { coins: 600, scale: 0.87 },
-  { coins: 750, scale: 0.89 },
-  { coins: 900, scale: 0.9 },
-  { coins: 1000, scale: 0.95 },
-  { coins: 1100, scale: 0.97 },
-  { coins: 1250, scale: 0.99 },
-  { coins: 1500, scale: 1 },
-  { coins: 2000, scale: 1.04 },
-  { coins: 2250, scale: 1.06 },
-  { coins: 2500, scale: 1.07 },
-  { coins: 2750, scale: 1.1 },
-  { coins: 3000, scale: 1.15 },
-  { coins: 5000, scale: 1.2 },
-  { coins: 10000, scale: 1.3 },
-  { coins: 20000, scale: 1.5 },
-  { coins: 25000, scale: 1.6 },
-  { coins: 30010, scale: 1.71 },
-  { coins: 30020, scale: 1.71 },
-  { coins: 30050, scale: 1.71 },
+	{coins: 5, scale: 0.28},
+	{coins: 15, scale: 0.32},
+	{coins: 25, scale: 0.35},
+	{coins: 35, scale: 0.4},
+	{coins: 50, scale: 0.45},
+	{coins: 75, scale: 0.47},
+	{coins: 100, scale: 0.5},
+	{coins: 200, scale: 0.7},
+	{coins: 350, scale: 0.8},
+	{coins: 500, scale: 0.85},
+	{coins: 600, scale: 0.87},
+	{coins: 750, scale: 0.89},
+	{coins: 900, scale: 0.9},
+	{coins: 1000, scale: 0.95},
+	{coins: 1100, scale: 0.97},
+	{coins: 1250, scale: 0.99},
+	{coins: 1500, scale: 1},
+	{coins: 2000, scale: 1.04},
+	{coins: 2250, scale: 1.06},
+	{coins: 2500, scale: 1.07},
+	{coins: 2750, scale: 1.1},
+	{coins: 3000, scale: 1.15},
+	{coins: 5000, scale: 1.2, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 7500, scale: 1.3},
+	{coins: 9000, scale: 1.5},
+	{coins: 10000, scale: 1.53},
+  {coins: 15000, scale: 1.55},
+  {coins: 20000, scale: 1.56},
+  {coins: 25000, scale: 1.57},
+  {coins: 30000, scale: 1.58},
+  {coins: 40000, scale: 1.59},
+  {coins: 50000, scale: 1.62},
+  {coins: 60000, scale: 1.63},
+  {coins: 100000, scale: 1.7},
+  {coins: 200000, scale: 1.8},
 ];
-
+console.log(Object.keys(oldlevels).length);
 app.set("trust proxy", true);
-
+/*
 app.use((req, res, next) => {
   console.log("URL:", req.url);
   console.log("IP:", req.ip);
   next();
-});
+});*/
 
 var levels = [];
-oldlevels.forEach((level, index) => {
-  if (index == 0) levels.push(Object.assign({ start: 0 }, level));
-  else {
-    levels.push(Object.assign({ start: levels[index - 1].coins }, level));
-  }
+oldlevels.forEach((level, index)  =>{
+	if(index == 0) {
+		levels.push(Object.assign({start: 0},level)); 
+	}
+	else {
+		levels.push(Object.assign({start: levels[index - 1].coins}, level));
+	}
 });
 
 moderation.start(app);
@@ -575,7 +584,7 @@ var chests = [];
 
 var maxCoins = 2000;
 var maxChests = 20;
-var maxAiPlayers = 15;
+var maxAiPlayers = 0;
 var maxPlayers = 50;
 
 io.on("connection", async (socket) => {
@@ -699,6 +708,35 @@ io.on("connection", async (socket) => {
 				});
 		} else ready();
 	});
+
+  socket.on("evolve", (eclass) => {
+    if(!PlayerList.has(socket.id)) return socket.emit("refresh");
+    var player = PlayerList.getPlayer(socket.id);
+    if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
+      eclass = eclass.toLowerCase();
+      player.evolutionQueue.shift();
+      var evo = evolutions[eclass];
+      console.log(player.name + " evolved to " + eclass);
+          
+        player.evolutionData = {default: evo.default(), ability: evo.ability()};
+      player.evolution =evo.name;
+      player.skin = evo.name;
+      player.updateValues();
+      socket.emit("refresh");
+      return;
+    }
+  });
+  socket.on("ability", () => {
+    var player = PlayerList.getPlayer(socket.id);
+    if(player.evolution != "") {
+      // check if ability activated already
+      if(player.ability <= Date.now()) {
+        player.ability = evolutions[player.evolution].abilityCooldown + evolutions[player.evolution].abilityDuration + Date.now();
+        console.log(player.name + " activated ability");
+        socket.emit("ability", [evolutions[player.evolution].abilityCooldown , evolutions[player.evolution].abilityDuration, Date.now()]);
+      }
+    }
+  });
 
 	socket.on("mousePos", (mousePos) => {
 		if (PlayerList.has(socket.id)) {
@@ -866,19 +904,21 @@ setInterval(async () => {
 	});
 
 	playersarray.forEach((player) => {
+    
 		if(player) {
+      player.updateValues();
 			//   player.moveWithMouse(players)
 			if(player.ai) {
 				[coins,chests] = player.tick(coins, io, levels, chests);
 			}
 			if (
-				Date.now() - player.lastHit > 5000 &&
+				Date.now() - player.lastHit > player.healWait &&
       Date.now() - player.lastRegen > 75 &&
       player.health < player.maxHealth
 			) {
-				//if its been 5 seconds since player got hit, regen then every 100 ms
+				//if its been x seconds since player got hit, regen then every 100 ms
 				player.lastRegen = Date.now();
-				player.health += player.health / 100;
+				player.health += (player.health / 100)*player.healAmount;
 			}
 			PlayerList.updatePlayer(player);
 

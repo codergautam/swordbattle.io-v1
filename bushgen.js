@@ -1,4 +1,4 @@
-var fs = require('fs');
+var fs = require("fs");
 var map = 10000;
 var bushCount = 150;
 var locations = [];
@@ -21,4 +21,4 @@ for(var i = 0; i < bushCount; i++) {
 var json = {locations};
 json = JSON.stringify(json);
 
-fs.writeFileSync('src/bushes.json', json);
+fs.writeFileSync("src/bushes.json", json);
