@@ -3,28 +3,26 @@ class Berserker extends Evolution {
     constructor() {
         super();
         this.name = "berserker";
-        this.abilityDuration = 1000;
-        this.abilityCooldown = 1000;
+        this.abilityDuration = 15000;
+        this.abilityCooldown = 60000;
         this.subEvolutions = [];
     }
     default() {
         return {
-            speed: 1.25,
-            power: 1.5,
-            resistance: 0.9,
-            damage: 1.1,
-            danageCooldown: 0.8,
+            speed: 1,
+            power: 1,
+            resistance: 1.1,
+            damage: 1.25,
+            damageCooldown: 1,
         };
     }
     ability() {
         return {
-            healWait: 0.5,
-            healAmount: 1.25,
-            speed: 2,
+            speed: 1.5,
             power: 2,
-            resistance: 1.5,
-            damage: 3,
-            hitCooldown: 0.2,
+            resistance: 1.2,
+            damage: 2.5,
+            damageCooldown: 0.2,
         };
     }
 }

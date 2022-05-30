@@ -153,7 +153,7 @@ class GameScene extends Phaser.Scene {
 				this.miniGraphics.lineStyle(5, 0xffff00, 1);
 				this.miniGraphics.strokeRoundedRect(0, 0, this.miniMap.scaleFactor * 2,  this.miniMap.scaleFactor * 2, 0);
 
-				this.abilityButton = this.add.image((this.canvas.width /5)*4, this.canvas.height /5, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
+				this.abilityButton = this.add.image((this.canvas.width /5), (this.canvas.height /5)*4, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
 				this.abilityButton.setInteractive();
 				this.abilityButton.on("pointerdown", () => {
 					this.socket.emit("ability");
@@ -360,7 +360,7 @@ class GameScene extends Phaser.Scene {
 						this.game.scale.resize( this.canvas.width,  this.canvas.height);
 						this.lvlText.y = this.canvas.height / 5;
 						this.lvlText.x = this.canvas.width  /2;
-						this.abilityButton.setPosition((this.canvas.width /5)*4, this.canvas.height / 5);
+						this.abilityButton.setPosition((this.canvas.width /5), (this.canvas.height / 5)*4);
 						this.ability.setY(this.abilityButton.y - 100);
 						if(this.classPicker.shown) this.classPicker.draw(this);
 						if(this.mobile && this.options.movementMode =="keys") {

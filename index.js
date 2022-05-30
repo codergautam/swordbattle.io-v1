@@ -119,9 +119,18 @@ var oldlevels = [
 	{coins: 5000, scale: 1.2},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
-	{coins: 10000, scale: 1.51, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 10000, scale: 1.53, evolutions: [evolutions.tank, evolutions.berserker]},
+  {coins: 15000, scale: 1.55},
+  {coins: 20000, scale: 1.56},
+  {coins: 25000, scale: 1.57},
+  {coins: 30000, scale: 1.58},
+  {coins: 40000, scale: 1.59},
+  {coins: 50000, scale: 1.62},
+  {coins: 60000, scale: 1.63},
+  {coins: 100000, scale: 1.7},
+  {coins: 200000, scale: 1.8},
 ];
-
+console.log(Object.keys(oldlevels).length)
 app.set("trust proxy", true);
 /*
 app.use((req, res, next) => {
