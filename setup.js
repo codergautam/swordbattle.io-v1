@@ -60,7 +60,7 @@ if(process.env.PRODUCTION == "true") {
 	console.log("If you're running this during development, the game won't work\n");
 	console.log("🔥 Creating a production build...");
   execSync("npm i --dev");
-	execSync("npm run build");
+	execSync("npm run prod");
 	console.log("✅ Done!\n");
 
 }
