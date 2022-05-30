@@ -116,10 +116,10 @@ var oldlevels = [
 	{coins: 2500, scale: 1.07},
 	{coins: 2750, scale: 1.1},
 	{coins: 3000, scale: 1.15},
-	{coins: 5000, scale: 1.2},
+	{coins: 5000, scale: 1.2, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
-	{coins: 10000, scale: 1.53, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 10000, scale: 1.53},
   {coins: 15000, scale: 1.55},
   {coins: 20000, scale: 1.56},
   {coins: 25000, scale: 1.57},
@@ -824,7 +824,7 @@ io.on("connection", async (socket) => {
 								
               
 
-//		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
+		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.emit("playerLeave", socket.id);

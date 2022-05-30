@@ -22,7 +22,7 @@ class Berserker extends Evolution {
             power: 2,
             resistance: 1.2,
             damage: 2.5,
-            damageCooldown: 0.2,
+            damageCooldown: 0.5,
         };
     }
 }

@@ -36,6 +36,7 @@ class Player {
     // end of hardcoded values
 
     this.ability = 0;
+    this.abilityActive = false;
     
    this.skin = "player";
     this.levelScale = 0.25;
@@ -326,7 +327,9 @@ return false;
         Object.keys(this.evolutionData.ability).forEach((prop) => {
          if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.ability[prop];
         });
-      }
+        this.abilityActive = true;
+
+      } else this.abilityActive = false;
     }
     
 
@@ -486,7 +489,7 @@ return false;
 
 
   getSendObj() {
-    return {evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 

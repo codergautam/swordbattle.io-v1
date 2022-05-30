@@ -574,7 +574,7 @@ class GameScene extends Phaser.Scene {
 										duration: duration+cooldown,
 										onUpdate: (tween) => {
 									var left = Math.abs(tween.getValue() - (duration+cooldown)/1000);
-									console.log(left - ((duration/1000) + (cooldown/1000)));
+								//	console.log(left - ((duration/1000) + (cooldown/1000)));
 									if(left - (cooldown/1000) >= 0) {
 										//still going
 										this.ability.visible=true;
@@ -777,6 +777,25 @@ class GameScene extends Phaser.Scene {
 					}
 				}
 					}
+					if(player.abilityActive && this.sys.game.loop.actualFps > 5) {
+						var particles = this.add.particles("starParticle");
+
+						var emitter = particles.createEmitter({
+							
+							maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+							scale: 0.05
+						});
+						function getRandomInt(min, max) {
+							min = Math.ceil(min);
+							max = Math.floor(max);
+							return Math.floor(Math.random() * (max - min + 1)) + min;
+						}
+						emitter.setPosition(this.mePlayer.x+getRandomInt(-0.5*this.mePlayer.displayWidth, this.mePlayer.displayWidth/2),this.mePlayer.y+getRandomInt(-0.5*this.mePlayer.displayHeight, this.mePlayer.displayHeight/2));
+					
+						this.UICam.ignore(particles);
+						emitter.setSpeed(200);
+						particles.setDepth(105);
+					}
 					if(!this.spectating&&this.mePlayer.texture.key+"Player" != player.skin) {
 						this.mePlayer.setTexture(player.skin+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
@@ -877,6 +896,31 @@ class GameScene extends Phaser.Scene {
 						//minimap
 						if(this.spectating) return;
 						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
+
+						if(!this.spectating&&enemy.player.texture.key+"Player" != player.skin) {
+							enemy.player.setTexture(player.skin+"Player");
+							enemy.sword.setTexture(player.skin+"Sword");
+						}
+
+						if(player.abilityActive && this.sys.game.loop.actualFps > 5) {
+							var particles = this.add.particles("starParticle");
+	
+							var emitter = particles.createEmitter({
+								
+								maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+								scale: 0.05
+							});
+							function getRandomInt(min, max) {
+								min = Math.ceil(min);
+								max = Math.floor(max);
+								return Math.floor(Math.random() * (max - min + 1)) + min;
+							}
+							emitter.setPosition(enemy.player.x+getRandomInt(-0.5*enemy.player.displayWidth, enemy.player.displayWidth/2),enemy.player.y+getRandomInt(-0.5*enemy.player.displayHeight, enemy.player.displayHeight/2));
+						
+							this.UICam.ignore(particles);
+							emitter.setSpeed(200);
+							particles.setDepth(105);
+						}
             
         
 
