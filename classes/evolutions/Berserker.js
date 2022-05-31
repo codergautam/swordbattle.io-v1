@@ -3,7 +3,7 @@ class Berserker extends Evolution {
     constructor() {
         super();
         this.name = "berserker";
-        this.abilityDuration = 15000;
+        this.abilityDuration = 10000;
         this.abilityCooldown = 60000;
         this.subEvolutions = [];
     }
@@ -18,10 +18,10 @@ class Berserker extends Evolution {
     }
     ability() {
         return {
-            speed: 1.5,
+            speed: 1.8,
             power: 2,
             resistance: 1.2,
-            damage: 2.5,
+            damage: 2,
             damageCooldown: 0.5,
         };
     }
