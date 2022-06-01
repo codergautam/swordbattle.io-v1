@@ -10,7 +10,7 @@
     <script src="https://www.google.com/recaptcha/api.js?render=6LeIewsgAAAAAPp9VS21fBk7VWQX3wps40gWrUWH"></script>
     <link rel="manifest" href="manifest.json">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" integrity="sha512-Fo3rlrZj/k7ujTnHg4CGR2D7kSs0v4LLanw2qksYuRlEzO+tcaEPQogQ0KaoGN26/zrn20ImR1DfuLWnOo7aBA==" crossorigin="anonymous" referrerpolicy="no-referrer" />
-
+<script type="module" src="https://cdn.freshstatus.io/widget/index.js"></script>
 <meta name="viewport" id="viewport" content="width=device-width,minimum-scale=1.0,maximum-scale=1.0,initial-scale=1.0" />
     <style>
       body {
@@ -30,6 +30,9 @@ canvas {
   top: -400px;
 }
 
+.badge {
+  display: none;
+}
     </style>
 
     <!-- Global site tag (gtag.js) - Google Analytics -->
@@ -61,9 +64,18 @@ canvas {
   </head>
   <title>Swordbattle.io</title>
   <body>
-    <iframe src="/shop" id="shopFrame" style="display: none;"></iframe>
-    <div id="game"><div id="preroll"></div></div>
     
+
+    <iframe src="/shop" id="shopFrame" style="display: none;"></iframe>
+
+    <div id="game">        <div id="preroll"></div>  </div>
+    <a href="https://swordbattle.freshstatus.io" style="display: none;" class="badge" id="freshstatus-badge-root"
+    data-banner-style="tile"
+    data-brand-logo="https://swordbattle.io/assets/images/sword.png"
+    data-brand-title="Swordbattle.io" >
+    <img src="https://public-api.freshstatus.io/v1/public/badge.svg/?badge=20217466-1d43-4ed3-b4ae-d7e23ad73145" />
+    </a>
+
     <script defer src="main.js?v=6" type="module"></script>
   </body>
 </html>

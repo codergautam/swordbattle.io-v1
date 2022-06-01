@@ -15,7 +15,12 @@ class TitleScene extends Phaser.Scene {
     } catch (e) {
       console.log("captcha hasnt loaded yet");
     }
-
+    try {
+			document.getElementById("freshstatus-badge-root").style.opacity = 100;
+      document.getElementById("freshstatus-badge-root").style.display = "";
+		} catch(e) {
+			console.log("freshstatus hasnt loaded yet");
+		}
 
     // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 
@@ -24,6 +29,7 @@ class TitleScene extends Phaser.Scene {
   }
   create() {
     this.optimalServer = "us2";
+
     const pingServers = (sethtml = true) => {
       var servers = {
         "us1": "https://us2.swordbattle.io",
@@ -742,6 +748,13 @@ class TitleScene extends Phaser.Scene {
     if (this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
+
+    document.getElementById("freshstatus-badge-root").style.bottom = this.canvas.height/2 + "px";
+    if(this.canvas.height < 500 || this.canvas.width < 500) {
+      document.getElementById("freshstatus-badge-root").style.display = "none";
+    } else {
+      document.getElementById("freshstatus-badge-root").style.display = "";
+    }
   }
 }
 

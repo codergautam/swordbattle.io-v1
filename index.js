@@ -115,6 +115,7 @@ var oldlevels = [
 	{coins: 2500, scale: 1.07},
 	{coins: 2750, scale: 1.1},
 	{coins: 3000, scale: 1.15},
+  {coins: 4000, scale: 1.17},
 	{coins: 5000, scale: 1.2, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
@@ -148,7 +149,7 @@ oldlevels.forEach((level, index)  =>{
 	}
 });
 
-moderation.start(app);
+moderation.start(app, io);
 
 app.use(function (req, res, next) {
   // Website you wish to allow to connect
@@ -720,7 +721,6 @@ io.on("connection", async (socket) => {
           
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
-      player.skin = evo.name;
       player.updateValues();
       socket.emit("refresh");
       return;

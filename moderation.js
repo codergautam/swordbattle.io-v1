@@ -11,7 +11,30 @@ module.exports = {
         "73.222.174.240",
       ],
       io: undefined,
-    start(app) {
+    start(app, io) {
+      app.get("/announcement/:token", (req, res) => {
+        if (process.env.TOKEN == req.params.token && typeof req.query.message == "string") {
+          io.emit("announcement", req.query.message);
+          res.send("Announcement sent to all players");
+        } else {
+          res.send("idot heckrs");
+        }
+      });
+      app.get("/announcement1/:token", async (req, res) => {
+        if (process.env.TOKEN == req.params.token && typeof req.query.message == "string" && typeof req.query.id == "string") {
+          var all = await io.fetchSockets();
+          var socket = all.find(s => s.id == req.query.id);
+          if (socket) {
+            socket.emit("announcement", req.query.message);
+          res.send("Announcement sent");
+          } else {
+            res.send("Invalid id?");
+          }
+        } else {
+          res.send("idot heckrs");
+        }
+      });
+
         app.get("/ipcheck/:token", (req, res) => {
             if (process.env.TOKEN == req.params.token) {
               var txt = "";
