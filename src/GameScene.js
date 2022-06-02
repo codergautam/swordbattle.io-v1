@@ -26,11 +26,6 @@ class GameScene extends Phaser.Scene {
 		} catch(e) {
 			console.log(e);
 		}
-		try {
-			document.getElementById("freshstatus-badge-root").style.opacity = 0;
-		} catch(e) {
-			console.log(e);
-		}
 		this.ready = false;
 		this.loadrect = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2).setDepth(200);
   
@@ -801,7 +796,7 @@ class GameScene extends Phaser.Scene {
 						emitter.setSpeed(200);
 						particles.setDepth(105);
 					}
-					if(!this.spectating&&(this.mePlayer.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player"))) {
+					if((this.mePlayer.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player"))) {
 						if(player.evolution == "") this.mePlayer.setTexture(player.skin+"Player");
 						else this.mePlayer.setTexture(player.evolution+"Player");
 						this.meSword.setTexture(player.skin+"Sword");
@@ -902,7 +897,7 @@ class GameScene extends Phaser.Scene {
 						//minimap
 						if(this.spectating) return;
 						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
-						if(!this.spectating&&(enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player"))) {
+						if(enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player")) {
 						if(player.evolution == "")	enemy.player.setTexture(player.skin+"Player");
 						else enemy.player.setTexture(player.evolution+"Player");
 							enemy.sword.setTexture(player.skin+"Sword");
@@ -1253,9 +1248,16 @@ class GameScene extends Phaser.Scene {
 					this.leaderboard.destroy();
 					this.miniGraphics.destroy();
 					this.playerCount.destroy();
+					if(this.ability) this.ability.setVisible(false);
+					if(this.abilityButton) this.abilityButton.setVisible(false);
+					if(this.classPicker) this.classPicker.clear();
 					if(this.chat.obj) this.chat.obj.destroy();
           if(this.mobile) {
-			  this.joyStick.destroy();
+						try {
+			if( this.options.movementMode == "keys")  this.joyStick.destroy();
+						} catch(e) {
+							console.log("joystick not found");
+						}
 			  this.chat.btn.destroy();
 		  }
 					this.miniMap.people.forEach((person) => {

@@ -15,12 +15,6 @@ class TitleScene extends Phaser.Scene {
     } catch (e) {
       console.log("captcha hasnt loaded yet");
     }
-    try {
-			document.getElementById("freshstatus-badge-root").style.opacity = 100;
-      document.getElementById("freshstatus-badge-root").style.display = "";
-		} catch(e) {
-			console.log("freshstatus hasnt loaded yet");
-		}
 
     // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 
@@ -226,7 +220,6 @@ class TitleScene extends Phaser.Scene {
       document.getElementById("movement").onchange = () => {
         this.options.movementMode = this.mobile?"keys":document.getElementById("movement").value;
         if (access) window.localStorage.setItem("options", JSON.stringify(this.options));
-	      if(this.mobile) alert("sorry, but movement mode cannot be changed on a mobile device.")
       };
       document.getElementById("sound").onchange = () => {
         this.options.sound = document.getElementById("sound").value;
@@ -750,12 +743,6 @@ class TitleScene extends Phaser.Scene {
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
 
-    document.getElementById("freshstatus-badge-root").style.bottom = this.canvas.height/2 + "px";
-    if(this.canvas.height < 500 || this.canvas.width < 500) {
-      document.getElementById("freshstatus-badge-root").style.display = "none";
-    } else {
-      document.getElementById("freshstatus-badge-root").style.display = "";
-    }
   }
 }
 
