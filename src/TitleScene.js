@@ -120,7 +120,7 @@ class TitleScene extends Phaser.Scene {
         this.options = JSON.parse(window.localStorage.getItem("options"));
       } else {
         this.options = {
-          movementMode: "mouse",
+          movementMode: this.mobile?"keys":"mouse",
           sound: "normal",
           server: "auto"
         };
@@ -128,7 +128,7 @@ class TitleScene extends Phaser.Scene {
       }
     } else {
       this.options = {
-        movementMode: "mouse",
+        movementMode: this.mobile?"keys":"mouse",
         sound: "normal",
         server: "auto"
       };
@@ -224,8 +224,9 @@ class TitleScene extends Phaser.Scene {
 
 
       document.getElementById("movement").onchange = () => {
-        this.options.movementMode = document.getElementById("movement").value;
+        this.options.movementMode = this.mobile?"keys":document.getElementById("movement").value;
         if (access) window.localStorage.setItem("options", JSON.stringify(this.options));
+	      if(this.mobile) alert("sorry, but movement mode cannot be changed on a mobile device.")
       };
       document.getElementById("sound").onchange = () => {
         this.options.sound = document.getElementById("sound").value;
