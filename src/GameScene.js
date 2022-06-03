@@ -894,14 +894,16 @@ class GameScene extends Phaser.Scene {
 						enemy.sword.setScale(player.scale);
 						enemy.down = player.mouseDown;
 
-						//minimap
-						if(this.spectating) return;
-						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
+						//skin + evo update
 						if(enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player")) {
 						if(player.evolution == "")	enemy.player.setTexture(player.skin+"Player");
 						else enemy.player.setTexture(player.evolution+"Player");
 							enemy.sword.setTexture(player.skin+"Sword");
 						}
+						//minimap
+						if(this.spectating) return;
+						var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
+
 
 						if(player.abilityActive && this.sys.game.loop.actualFps > 5) {
 							var particles = this.add.particles("starParticle");
