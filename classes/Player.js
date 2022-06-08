@@ -26,6 +26,8 @@ class Player {
     this.damageCooldown = 200;
     this.verified = false;
 
+    this.swordInHand = true;
+
     this.evolutionQueue = [];
     this.evolution = "";
     this.evolutionData = {};
@@ -208,12 +210,12 @@ var move = true;
         point[1] - (Math.cos(angle) * distance)
     ];
   }
-  doKnockback(player) {
+  doKnockback(player, angle=player.calcSwordAngle()) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     
     var oldPos = this.pos;
 
-  var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (player.calcSwordAngle()+45)*Math.PI/180 , Math.max(player.power-this.resistance,50));
+  var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (angle+45)*Math.PI/180 , Math.max(player.power-this.resistance,50));
     
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);
@@ -331,6 +333,9 @@ return false;
 
       } else this.abilityActive = false;
     }
+
+    if(!this.swordInHand) this.speed *= 1.5;
+    if(!this.swordInHand) this.damage /= 2;
     
 
   }
@@ -338,10 +343,106 @@ return false;
     this.mouseDown = down;
     return this.checkCollisions(coins,chests, io);
   }
+  dealHit(enemy, coins, io, angle) {
+    const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+    var socketById = io.sockets.sockets.get(enemy.id);
+    var socket = io.sockets.sockets.get(this.id);
+
+    //if colliding
+
+    if(this.ai) {
+      this.target = this.getClosestEntity(this.getEntities(coins));
+      PlayerList.updatePlayer(this);
+    } 
+    if(enemy.ai) {
+      enemy.target = enemy.getClosestEntity(coins);
+    PlayerList.updatePlayer(enemy);
+    } 
+
+
+    if(Date.now() - enemy.joinTime >= 5000) {
+    enemy.lastHit = Date.now();
+    var oldHealth = enemy.health;
+    enemy.health -= this.damage;
+    if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
+      enemy.health = enemy.maxHealth * 0.1;
+    if (enemy.health <= 0) {
+      if(!this.ai && socket) socket.emit("dealHit", enemy.id);
+      if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
+      //enemy has 0 or less than 0 health, time to kill
+    if(!enemy.ai) sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
+
+      //increment killcount by 1
+      this.kills += 1;
+
+      //tell clients that this enemy died
+      if(!enemy.ai && socketById) {
+
+        
+        
+      socketById.emit("youDied", {
+        killedBy: this.name,
+        killerVerified: this.verified,
+        killedById: this.id,
+        timeSurvived: Date.now() - enemy.joinTime,
+      });
+    
+      socketById.broadcast.emit("playerDied", enemy.id, {
+        killedBy: {id: this.id, name: this.name},
+      });
+      } else {
+        io.sockets.emit("playerDied", enemy.id, {
+          killedBy: {id: this.id, name: this.name},
+        });
+      }
+      //drop their coins
+      var drop = [];
+      var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 20000);
+      var dropped = 0;
+      while (dropped < dropAmount) {
+        var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
+        var theta = Math.random() * 2 * Math.PI;
+        var x = enemy.pos.x + r * Math.cos(theta);
+        var y = enemy.pos.y + r * Math.sin(theta);
+        var remaining = dropAmount - dropped;
+        var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
+
+        coins.push(
+          new Coin({
+            x: clamp(x, -(map/2), map/2),
+            y: clamp(y, -(map/2), map/2),
+          },value)
+        );
+        dropped += value;
+        drop.push(coins[coins.length - 1]);
+      }
+
+        io.sockets.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
+      
+      //log a message
+      console.log(this.name+" killed " + enemy.name);
+
+      //delete the enemy
+      PlayerList.deletePlayer(enemy.id);
+
+      //disconnect the socket
+    // if(!enemy.ai && socketById) socketById.disconnect();
+    } else {
+      enemy.doKnockback(this, angle);
+      if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
+      if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
+    }
+  } else {
+    enemy.doKnockback(this, angle);
+    if(!this.ai && socket) socket.emit("dealHit", enemy.id);
+    if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
+  }
+  return coins;
+  }
   checkCollisions(coins, chests, io) {
     //hit cooldown
 
-        const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+        
     if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown) {
       this.lastSwing = Date.now();
       Object.values(PlayerList.players).forEach((enemy) => {
@@ -352,98 +453,7 @@ return false;
           if (
             this.hittingPlayer(enemy)
           ) {
-            var socketById = io.sockets.sockets.get(enemy.id);
-            var socket = io.sockets.sockets.get(this.id);
-    
-            //if colliding
-
-            if(this.ai) {
-              this.target = this.getClosestEntity(this.getEntities(coins));
-              PlayerList.updatePlayer(this);
-            } 
-            if(enemy.ai) {
-              enemy.target = enemy.getClosestEntity(coins);
-            PlayerList.updatePlayer(enemy);
-            } 
-
-
-            if(Date.now() - enemy.joinTime >= 5000) {
-            enemy.lastHit = Date.now();
-            var oldHealth = enemy.health;
-            enemy.health -= this.damage;
-            if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
-              enemy.health = enemy.maxHealth * 0.1;
-            if (enemy.health <= 0) {
-              if(!this.ai && socket) socket.emit("dealHit", enemy.id);
-              if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
-              //enemy has 0 or less than 0 health, time to kill
-            if(!enemy.ai) sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
-
-              //increment killcount by 1
-              this.kills += 1;
-
-              //tell clients that this enemy died
-              if(!enemy.ai && socketById) {
-
-                
-                
-              socketById.emit("youDied", {
-                killedBy: this.name,
-                killerVerified: this.verified,
-                killedById: this.id,
-                timeSurvived: Date.now() - enemy.joinTime,
-              });
-            
-              socketById.broadcast.emit("playerDied", enemy.id, {
-                killedBy: {id: this.id, name: this.name},
-              });
-              } else {
-                io.sockets.emit("playerDied", enemy.id, {
-                  killedBy: {id: this.id, name: this.name},
-                });
-              }
-              //drop their coins
-              var drop = [];
-              var dropAmount = clamp(Math.round(enemy.coins*0.8), 10, 20000);
-              var dropped = 0;
-              while (dropped < dropAmount) {
-                var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
-                var theta = Math.random() * 2 * Math.PI;
-                var x = enemy.pos.x + r * Math.cos(theta);
-                var y = enemy.pos.y + r * Math.sin(theta);
-                var remaining = dropAmount - dropped;
-                var value = remaining > 50 ? 50 : (remaining > 10 ? 10 : (remaining > 5 ? 5 : 1));
-
-                coins.push(
-                  new Coin({
-                    x: clamp(x, -(map/2), map/2),
-                    y: clamp(y, -(map/2), map/2),
-                  },value)
-                );
-                dropped += value;
-                drop.push(coins[coins.length - 1]);
-              }
-  
-                io.sockets.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
-              
-              //log a message
-              console.log(this.name+" killed " + enemy.name);
-
-              //delete the enemy
-              PlayerList.deletePlayer(enemy.id);
-
-              //disconnect the socket
-            // if(!enemy.ai && socketById) socketById.disconnect();
-            } else {
-              enemy.doKnockback(this);
-              if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
-              if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
-            }
-          } else {
-            enemy.doKnockback(this);
-            if(!this.ai && socket) socket.emit("dealHit", enemy.id);
-            if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
-          }
+            coins = this.dealHit(enemy,coins,io);
         }
         }
       });
@@ -489,7 +499,7 @@ return false;
 
 
   getSendObj() {
-    return {skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {swordInHand: this.swordInHand, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
   }
 }
 

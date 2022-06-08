@@ -30,11 +30,25 @@
             "description": "Spring is here!"
         },
         {
+            "name": "hacker",
+            "displayName": "Hacker",
+            "url": "/assets/images/hackerPlayer.png",
+            "price": 5000,
+            "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣"
+        },
+        {
             "name": "chef",
             "displayName": "Chef",
             "url": "/assets/images/chefPlayer.png",
             "price": 10000,
             "description": "Chop 'em up"
+        },
+        {
+            "name": "ninja",
+            "displayName": "Ninja",
+            "url": "/assets/images/ninjaPlayer.png",
+            "price": 20000,
+            "description": "A skilled warrior"
         },
         {
             "name": "medic",
@@ -63,6 +77,13 @@
             "url": "/assets/images/devilPlayer.png",
             "price": 1000000,
             "description": "Now this will scare everyone!"
+        },
+        {
+            "name": "mitblade",
+            "displayName": "MitBald",
+            "url": "/assets/images/mitbladePlayer.png",
+            "price": 2000000,
+            "description": "\"Buy channel membership only $3!!!!\""
         },
         {
             "name": "scythe",

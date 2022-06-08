@@ -18,6 +18,7 @@ var map = 10000;
 var server;
 var httpsserver;
 
+
 //console.log(fs.readFileSync("/etc/letsencrypt/live/test.swordbattle.io/fullchain.pem"))
 var usinghttps = false;
 if (process.env.USEFISHYSSL === "true") {
@@ -77,6 +78,8 @@ const io = new Server(usinghttps ? httpsserver : server, {
 });
 
 const evolutions = require("./classes/evolutions");
+const { lineCircle } = require("intersects");
+const { lineBox } = require("intersects");
 
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
@@ -503,7 +506,7 @@ app.get("/leaderboard", async (req, res) => {
 
 app.get("/settings", async (req, res) => {
   res.send(
-    "I'm still working on this page.<br><br>For now, if you want to change password, or change your username, please email me at<br>gautamgxtv@gmail.com"
+    "I'm still working on this page.<br><br>For now, if you want to change password, or change your username, please email<br>support@swordbattle.io"
   );
 });
 
@@ -582,6 +585,7 @@ Object.filter = (obj, predicate) =>
 
 var coins = [];
 var chests = [];
+var flyingSwords = [];
 
 var maxCoins = 2000;
 var maxChests = 20;
@@ -595,7 +599,7 @@ io.on("connection", async (socket) => {
   if (moderation.bannedIps.includes(socket.ip)) {
     socket.emit(
       "ban",
-      "You are banned. Appeal to gautamgxtv@gmail.com<br><br>BANNED IP: " +
+      "You are banned. Appeal to appeals@swordbattle.io<br><br>BANNED IP: " +
         socket.ip
     );
     socket.disconnect();
@@ -655,7 +659,7 @@ io.on("connection", async (socket) => {
 		if (!captchatoken && recaptcha) {
 			socket.emit(
 				"ban",
-				"You were kicked for not sending a captchatoken. Send this message to gautamgxtv@gmail.com if you think this is a bug."
+				"You were kicked for not sending a captchatoken. Send this message to bugs@swordbattle.io if you think this is a bug."
 			);
 			return socket.disconnect();
 		}
@@ -666,7 +670,7 @@ io.on("connection", async (socket) => {
 		if (PlayerList.has(socket.id)) {
 			socket.emit(
 				"ban",
-				"You were kicked for 2 players on 1 id. Send this message to gautamgxtv@gmail.com<br> In the meantime, try restarting your computer if this happens a lot. "
+				"You were kicked for 2 players on 1 id. Send this message to support@swordbattle.io<br> In the meantime, try restarting your computer if this happens a lot. "
 			);
 			return socket.disconnect();
 		}
@@ -700,7 +704,7 @@ io.on("connection", async (socket) => {
 					if (f.score < 0.3) {
 						socket.emit(
 							"ban",
-							`Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact gautamgxtv@gmail.com`
+							`Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact support@swordbattle.io`
 						);
 						socket.disconnect();
 						return;
@@ -713,7 +717,7 @@ io.on("connection", async (socket) => {
   socket.on("evolve", (eclass) => {
     if(!PlayerList.has(socket.id)) return socket.emit("refresh");
     var player = PlayerList.getPlayer(socket.id);
-    if(player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
+    if(player && player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
       eclass = eclass.toLowerCase();
       player.evolutionQueue.shift();
       var evo = evolutions[eclass];
@@ -727,8 +731,8 @@ io.on("connection", async (socket) => {
     }
   });
   socket.on("ability", () => {
-    var player = PlayerList.getPlayer(socket.id);
     if(!PlayerList.has(socket.id)) return socket.emit("refresh");
+    var player = PlayerList.getPlayer(socket.id);
     if(player.evolution != "") {
       // check if ability activated already
       if(player.ability <= Date.now()) {
@@ -750,11 +754,21 @@ io.on("connection", async (socket) => {
 
 		//console.log(mousePos.x +" , "+mousePos.y )
 	});
-  
+
+  socket.on("throw", () => {
+    if(PlayerList.has(socket.id)) {
+      var player = PlayerList.getPlayer(socket.id);
+      if(!player.swordInHand) return;
+      player.swordInHand = false;
+      flyingSwords.push({scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
+      PlayerList.updatePlayer(player);
+    } else socket.emit("refresh");
+  });
+
 	socket.on("mouseDown", (down) => {
 		if (PlayerList.has(socket.id)) {
 			var player = PlayerList.getPlayer(socket.id);
-			if (player.mouseDown == down) return;
+			if (player.mouseDown == down || !player.swordInHand) return;
 			[coins,chests] = player.down(down, coins, io, chests);
 			PlayerList.updatePlayer(player);
 		} else socket.emit("refresh");
@@ -865,9 +879,64 @@ setInterval(async () => {
 	}
 	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
 	var aiPlayers = Object.keys(PlayerList.players).length;
-  
 	// console.log(aiNeeded)
+  function degrees_to_radians(degrees)
+  {
+    var pi = Math.PI;
+    return degrees * (pi/180);
+  }
+ function movePointAtAngle(point, angle, distance) {
+    return [
+        point[0] + (Math.sin(angle) * distance),
+        point[1] - (Math.cos(angle) * distance)
+    ];
+  }
+  flyingSwords.forEach((sword, i) => {
+    var a = degrees_to_radians(sword.angle-45);
+    sword.x += Math.cos(a) * 100;
+    sword.y += Math.sin(a) * 100;
+    
+    //collision check
+      //HARDCODED
+    var tip = movePointAtAngle([sword.x, sword.y], a, (130*sword.scale));
+    var base = movePointAtAngle([sword.x, sword.y], a, (130*sword.scale)*-1);
+    Object.values(PlayerList.players).forEach((player, i) => {
+      if(player.id == sword.id) return;
+      if(Date.now() - player.joinTime < 5000) return;
+      var swordOwner = PlayerList.getPlayer(sword.id);
+      if(!swordOwner) return hit=true;
+    
 
+      // check line collision
+      if(lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, player.radius*player.scale)) {
+        coins = swordOwner.dealHit(player, coins, io, sword.angle+90);
+        hit = true;
+      }
+
+    });
+    // chest collisions
+    chests.forEach((chest, i) => {
+      if(lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) {
+        chests.splice(chests.indexOf(chest), 1);
+        io.sockets.emit("collected", chest.id, sword.id, false);
+
+        //drop coins at that spot
+        var drop = chest.open();
+
+        io.sockets.emit("coin", drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]);
+          coins.push(...drop);
+      }
+    });
+    if (Date.now() - sword.time > 1000) {
+      flyingSwords.splice(i, 1);
+      var player = PlayerList.getPlayer(sword.id);
+      if(player) {
+        player.swordInHand = true;
+        PlayerList.updatePlayer(player);
+      } 
+    }
+  });
+  io.emit("flyingSwords", flyingSwords);
 
 	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
 		var id = uuidv4();

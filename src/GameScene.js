@@ -253,13 +253,25 @@ class GameScene extends Phaser.Scene {
 					}
 					}),
 				};
+				this.throwBtn = new ImgButton(this, 0, 0, "throwbtn", () => {
+					this.socket.emit("throw");
+					var curPointer = this.gamePoint;
+					setTimeout(() => {
+						this.gamePoint = curPointer;
+					},100 );
+				});
 				this.chat.btn.btn.setScale(Math.min(this.canvas.height / 1000, this.canvas.width / 1500));
 				this.chat.btn.btn.x = this.killCount.width;
+				
+	
+
 
 				if(!this.mobile) {
 					this.chat.btn.destroy();
+					this.throwBtn.destroy();
 				} else {
 					this.cameras.main.ignore(this.chat.btn.btn);
+					this.cameras.main.ignore(this.throwBtn.btn);
 				}
 				
 
@@ -267,7 +279,8 @@ class GameScene extends Phaser.Scene {
 				this.coins = [];
 				this.chests = [];
 				// this.lastMove = Date.now()
-
+				this.flyingSwords = new Map();
+				this.flyingSwordsData = new Map();
 				//enemies array
 				this.enemies = [];
 				this.dead = false;
@@ -485,8 +498,11 @@ class GameScene extends Phaser.Scene {
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
 				//mouse down
 
+				
+
 				const mouseDown = (pointer) => {
 					if(this.mobile && this.joyStick &&this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+			
 					if (!this.mouseDown) {
 						if(pointer) {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
@@ -499,6 +515,7 @@ class GameScene extends Phaser.Scene {
 
 				const mouseUp = (pointer) => {
 					if(this.mobile && this.joyStick && this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+				
 					if (this.mouseDown) {
 						if(pointer) {
 							this.gamePoint = {x: pointer.x, y: pointer.y};
@@ -517,7 +534,9 @@ class GameScene extends Phaser.Scene {
 						mouseUp();
 					}, this);
 				this.input.on("pointerdown", function (pointer) {
-					mouseDown(pointer);
+					if(pointer.rightButtonDown() && this.meSword.visible) this.socket.emit("throw");
+					else mouseDown(pointer);
+					
 				}, this);
 				this.input.on("pointerup", function (pointer) {
 						mouseUp(pointer);
@@ -562,6 +581,68 @@ class GameScene extends Phaser.Scene {
 				//server -> client
 
                 this.socket.on("levels", (l)=>this.levels=l);
+								this.socket.on("flyingSwords", (swords) => {
+			
+									swords.forEach((sword) => {
+										if(!this.flyingSwords.has(sword.id)) {
+											var ability = false;
+											if(this.myObj && sword.id == this.myObj.id && this.myObj.abilityActive) ability = true;
+											else {
+												var owner = this.enemies.find(e=>e.playerObj.id == sword.id);
+												if(owner && owner.playerObj.abilityActive) ability = true;
+											}
+											sword.ability = ability;
+											this.flyingSwords.set(sword.id, sword);
+											var newSword = this.add.image(sword.x, sword.y, sword.skin+"Sword").setDepth(21).setScale(sword.scale);
+											newSword.setAngle(sword.angle);
+
+											this.UICam.ignore(newSword);
+											this.flyingSwordsData.set(sword.id, newSword);
+										} else {
+
+											var oldSword = this.flyingSwordsData.get(sword.id);
+											var obj = this.flyingSwords.get(sword.id);
+										
+											this.tweens.add({
+												targets: oldSword,
+												x: sword.x,
+												y: sword.y,
+												duration: 1000/30,
+												ease: "Linear",
+											});
+
+											if(obj.ability) {
+												var particles = this.add.particles("starParticle");
+
+												var emitter = particles.createEmitter({
+													
+													maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+													scale: 0.05
+												});
+												function getRandomInt(min, max) {
+													min = Math.ceil(min);
+													max = Math.floor(max);
+													return Math.floor(Math.random() * (max - min + 1)) + min;
+												}
+												emitter.setPosition(oldSword.x + getRandomInt(-10, 10), oldSword.y + getRandomInt(-10, 10));
+											
+												this.UICam.ignore(particles);
+												emitter.setSpeed(200);
+												particles.setDepth(105);
+										
+										}
+									}
+									});
+									this.flyingSwordsData.forEach((sword, id) => {
+										if(!swords.find((s) => s.id == id)) {
+											this.flyingSwordsData.delete(id);
+											this.flyingSwords.delete(id);
+											sword.destroy();
+										}
+									});
+								
+
+								});
 								this.socket.on("ability", (e) => {
 								//	console.log(e);
 									var [cooldown, duration, now] = e;
@@ -735,6 +816,16 @@ class GameScene extends Phaser.Scene {
 								}
 							}
 						}
+						if(!player.swordInHand) {
+							this.meSword.setVisible(false);
+							this.throwBtn.btn.setVisible(false);
+						}
+						else {
+							
+							this.meSword.setVisible(true);
+							this.throwBtn.btn.setVisible(true);
+						}
+
 						if(player.level >= this.levels.length  && player.coins >= this.levels[this.levels.length - 1].coins) {
 							this.lvlState.setText("Max Level");
 							this.lvlBar.setLerpValue(100);
@@ -893,6 +984,9 @@ class GameScene extends Phaser.Scene {
 						enemy.player.setScale(player.scale);
 						enemy.sword.setScale(player.scale);
 						enemy.down = player.mouseDown;
+
+						if(!player.swordInHand) enemy.sword.setVisible(false);
+						else enemy.sword.setVisible(true);
 
 						//skin + evo update
 						if(enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player")) {
@@ -1261,6 +1355,7 @@ class GameScene extends Phaser.Scene {
 							console.log("joystick not found");
 						}
 			  this.chat.btn.destroy();
+				this.throwBtn.destroy();
 		  }
 					this.miniMap.people.forEach((person) => {
 						person.circle.destroy();
@@ -1653,7 +1748,12 @@ try {
 			}
 			if(!this.spectating) {
 			this.leaderboard.setText(text);
+			
 			this.leaderboard.x = this.canvas.width - this.leaderboard.width - 15;
+			this.throwBtn.btn.setScale(this.chat.btn.btn.scale/2);
+			this.throwBtn.btn.y = this.miniGraphics.y+10	;
+			this.throwBtn.btn.x = this.miniGraphics.x - this.throwBtn.btn.displayWidth-10;
+
 			}
 		} catch(e) {
 			//we shall try next frame

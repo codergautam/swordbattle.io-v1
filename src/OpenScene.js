@@ -39,6 +39,12 @@ class OpenScene extends Phaser.Scene {
         this.load.image("chefSword", "/assets/images/chefSword.png");
         this.load.image("medicPlayer", "/assets/images/medicPlayer.png");
         this.load.image("medicSword", "/assets/images/medicSword.png");
+        this.load.image("ninjaPlayer", "/assets/images/ninjaPlayer.png");
+        this.load.image("ninjaSword", "/assets/images/ninjaSword.png");
+        this.load.image("hackerPlayer", "/assets/images/hackerPlayer.png");
+        this.load.image("hackerSword", "/assets/images/hackerSword.png");
+        this.load.image("mitbladeSword", "/assets/images/mitbladeSword.png");
+        this.load.image("mitbladePlayer", "/assets/images/mitbladePlayer.png");
         this.load.image("foxPlayer", "/assets/images/foxPlayer.png");
         this.load.image("foxSword", "/assets/images/devilSword.png");
         this.load.image("springPlayer", "/assets/images/springPlayer.png");
@@ -62,6 +68,7 @@ class OpenScene extends Phaser.Scene {
         this.load.image("bush", "/assets/images/bush.png");
         
         this.load.image("chatbtn", "/assets/images/chat.png");
+        this.load.image("throwbtn", "/assets/images/throw.png");
         this.load.image("loginbtn", "/assets/images/login.png");
         this.load.image("signupbtn", "/assets/images/signup.png");
         this.load.image("playAgainBtn", "/assets/images/playAgain.png");
