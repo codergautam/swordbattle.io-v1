@@ -336,7 +336,7 @@ return false;
 
     if(!this.swordInHand) this.speed *= 1.5;
     if(!this.swordInHand) this.damage /= 2;
-    
+    if(!this.swordInHand) this.power *= 1.5;
 
   }
   down(down, coins, io, chests) {

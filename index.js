@@ -760,7 +760,7 @@ io.on("connection", async (socket) => {
       var player = PlayerList.getPlayer(socket.id);
       if(!player.swordInHand) return;
       player.swordInHand = false;
-      flyingSwords.push({scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
+      flyingSwords.push({hit: [], scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
       PlayerList.updatePlayer(player);
     } else socket.emit("refresh");
   });
@@ -900,17 +900,19 @@ setInterval(async () => {
       //HARDCODED
     var tip = movePointAtAngle([sword.x, sword.y], a, (130*sword.scale));
     var base = movePointAtAngle([sword.x, sword.y], a, (130*sword.scale)*-1);
-    Object.values(PlayerList.players).forEach((player, i) => {
+    Object.values(PlayerList.players).forEach((player, _) => {
       if(player.id == sword.id) return;
       if(Date.now() - player.joinTime < 5000) return;
+      if(sword.hit.includes(player.id)) return;
       var swordOwner = PlayerList.getPlayer(sword.id);
       if(!swordOwner) return hit=true;
     
 
       // check line collision
       if(lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, player.radius*player.scale)) {
-        coins = swordOwner.dealHit(player, coins, io, sword.angle+90);
+        coins = swordOwner.dealHit(player, coins, io, sword.angle);
         hit = true;
+        flyingSwords[i].hit.push(player.id);
       }
 
     });
