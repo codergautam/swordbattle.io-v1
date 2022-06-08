@@ -11,7 +11,7 @@ class AiPlayer extends Player {
       if (aiName.length > 2) aiName = aiName[1];
       else aiName = aiName[0];
        
-        super(id,  "[AI] "+aiName);
+        super(id,  aiName);
         this.ai = true;
         this.target = undefined;
         this.lastHit = Date.now();
