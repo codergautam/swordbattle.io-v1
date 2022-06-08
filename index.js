@@ -452,6 +452,15 @@ app.get("/shop", async (req, res) => {
       acc = account[0];
       var yo =
         await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
+      var skinStats = await sql`SELECT skins->'collected' as collected from accounts;`;
+      var counts = {};
+      skinStats.forEach((x) => {
+        x.collected.forEach((y) => {
+          if (counts[y]) counts[y]++;
+          else counts[y] = 1;
+        });
+      });
+    
       acc.bal = yo[0].sum + acc.coins;
     }
   }
@@ -460,6 +469,7 @@ app.get("/shop", async (req, res) => {
     cosmetics: cosmetics,
     account: acc,
     secret: secret,
+    counts
   });
 });
 
@@ -726,7 +736,6 @@ io.on("connection", async (socket) => {
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
       player.updateValues();
-      socket.emit("refresh");
       return;
     }
   });
@@ -981,7 +990,7 @@ setInterval(async () => {
       player.updateValues();
 			//   player.moveWithMouse(players)
 			if(player.ai) {
-				[coins,chests] = player.tick(coins, io, levels, chests);
+				[coins,chests,flyingSwords] = player.tick(coins, io, levels, chests, flyingSwords);
 			}
 			if (
 				Date.now() - player.lastHit > player.healWait &&

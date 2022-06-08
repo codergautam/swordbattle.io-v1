@@ -247,12 +247,10 @@ var move = true;
                     this.levelScale = level.scale;
                   }
                 });
-                if(!this.ai) {
+              
                 var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions)?.map((e)=>e.evolutions).map((e)=>e.map((f)=>f.name));
-                console.log("evo",evoLevels);
                 this.evolutionQueue = [...this.evolutionQueue, ...evoLevels].filter((e)=>e);
-                console.log("q",this.evolutionQueue);
-              }
+              
               
             
           }

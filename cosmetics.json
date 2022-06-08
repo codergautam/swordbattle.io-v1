@@ -14,7 +14,13 @@
             "price": 100,
             "description": "Ahhh.. So bright!"
         },
-
+        {
+            "name": "vortex",
+            "displayName": "Vortex",
+            "url": "/assets/images/vortexPlayer.png",
+            "price": 200,
+            "description": "The power is too strong.."
+        },
         {
             "name": "fox",
             "displayName": "Fox",

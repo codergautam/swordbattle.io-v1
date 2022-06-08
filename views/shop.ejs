@@ -116,8 +116,7 @@ img {
 .card_text {
   color: #ffffff;
   font-size: 0.875rem;
-  line-height: 1.5;
-  margin-bottom: 1.25rem;    
+  line-height: 1.5; 
   font-weight: 400;
 }
 
@@ -235,8 +234,8 @@ function numberWithCommas(x) {
     <div class="main" style="background-color: black;">
 
         <br/>
-        <h1 style="color: white; font-size: xx-large;">Shop</h1><h1 id="balt" style="color: white; font-size: xx-large;">Balance: <%=numberWithCommas(account.bal)%> <img width="30" src="/assets/images/coin.png"></h1>
-      
+        <h1 style="color: white; font-size: xx-large;"><b>Shop</b></h1><h1 id="balt" style="color: white; font-size: xx-large;">Balance: <%=numberWithCommas(account.bal)%> <img width="30" src="/assets/images/coin.png"></h1>
+        <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
         <br>
        <div id="skins">
         <ul class="cards">
@@ -249,7 +248,25 @@ function numberWithCommas(x) {
               <div class="card_image"><center><img src="<%= skin.url %>"></center></div>
               <div class="card_content">
                 <h2 class="card_title"><%= skin.displayName %><i class="fa-solid fa-circle-xmark"></i></h2>
-                <p class="card_text"><%= skin.description %></p>
+              <b>  <p class="card_text"><%= skin.description %></p></b>
+                <p class="card_text">
+                  <% abbreviate_number = function(num, fixed) {
+                    if (num === null) { return null; } // terminate early
+                    if (num === 0) { return '0'; } // terminate early
+                    fixed = (!fixed || fixed < 0) ? 0 : fixed; // number of decimal places to show
+                    var b = (num).toPrecision(2).split("e"), // get power
+                        k = b.length === 1 ? 0 : Math.floor(Math.min(b[1].slice(1), 14) / 3), // floor at decimals, ceiling at trillions
+                        c = k < 1 ? num.toFixed(0 + fixed) : (num / Math.pow(10, k * 3) ).toFixed(1 + fixed), // divide by power
+                        d = c < 0 ? c : Math.abs(c), // enforce -0 is 0
+                        e = d + ['', 'K', 'M', 'B', 'T'][k]; // append power
+                    return e;
+                  } %>
+                  <% if(counts.hasOwnProperty(skin.name)) { %>
+                    <%= abbreviate_number(counts[skin.name]) %> buys
+                    <% } else {%>
+                    0 buys
+                  <% } %>
+                </p>
                 <% if(account.skins.selected.toLowerCase() == skin.name.toLowerCase()) {%>
                   <button class="btn card_btn" skin="<%=skin.name%>"> EQUIPPED</button> 
                 <%} else if(account.skins.collected.includes(skin.name.toLowerCase())) {%>
@@ -257,6 +274,8 @@ function numberWithCommas(x) {
                   <% } else {%>
                 <button class="btn card_btn" skin="<%=skin.name%>" onclick="buy('<%=skin.name%>', '<%=skin.price%>',this)"> <%= numberWithCommas(skin.price) %> <img width="20" src="/assets/images/coin.png"></button>
               <% } %>
+             
+            
               </div>
             </div>
           </li>
@@ -265,13 +284,13 @@ function numberWithCommas(x) {
      
         </ul>
         <br>
-        <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
+        <center><button id="closeShop1" style="font-size: xx-large;">Close</button></center>
         <br>
       </div>
       <% } else { %>
         <div style="background-color: black;">
   <h1 style="color: white;"><br>Please log in or sign up to access the shop.<br></h1>
-  <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
+
   <br>
 </div>
 <% }  %>

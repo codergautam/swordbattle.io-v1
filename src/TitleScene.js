@@ -427,13 +427,18 @@ class TitleScene extends Phaser.Scene {
 
 
     };
-
+this.shopLoading = false;
     this.shopBtn = new ImgButton(this, 10, 10, "shopBtn", () => {
+      if(this.shopLoading) return;
       document.getElementById("shopFrame").contentWindow.location.replace("/shop?secret=" + this.secret);
       var frame = document.getElementById("shopFrame");
+      this.shopLoading = true;
+      this.shopBtn.btn.visible = false;
 
 
       frame.onload = () => {
+        this.shopLoading = false;
+
         var frameDoc = document.getElementById("shopFrame").contentWindow.document;
 
 
@@ -442,6 +447,11 @@ class TitleScene extends Phaser.Scene {
 
         frameDoc.getElementById("closeShop").onclick = () => {
           document.getElementById("shopFrame").style.display = "none";
+          this.shopBtn.btn.visible = true;
+        };
+        frameDoc.getElementById("closeShop1").onclick = () => {
+          document.getElementById("shopFrame").style.display = "none";
+          this.shopBtn.btn.visible = true;
         };
       };
 
