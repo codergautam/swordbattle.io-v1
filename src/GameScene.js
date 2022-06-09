@@ -1509,6 +1509,7 @@ try {
 		var aKey = this.input.keyboard.addKey("A", false);
 		var sKey = this.input.keyboard.addKey("S", false);
 		var dKey = this.input.keyboard.addKey("D",false);
+		var cKey = this.input.keyboard.addKey("C", false);
 		
 		try {
 			this.key = this.mobile && this.joyStick ?  this.joyStick.createCursorKeys() : this.cursors;
@@ -1527,6 +1528,9 @@ try {
 			if (this.key.left.isDown || aKey.isDown) {
 				controller.left = true;
 
+			}
+			if (cKey.isDown && this.meSword.visible) {
+				this.socket.emit("throw");
 			}
     
 			this.socket.emit("move", controller);
