@@ -280,6 +280,78 @@ app.post("/api/equip", async (req, res) => {
   }
 });
 
+app.post("/api/changename", async (req,res) => {
+	if(typeof req.body!=="object" || typeof req.body.secret !== "string" || typeof req.body.username !== "string") {	
+		res.status(400).send({error: "Missing fields"});
+		return;
+	}
+  
+  //check if secret valid
+  var secret = req.body.secret;
+  var newUsername = req.body.username;
+  var account = await sql`select username from accounts where secret=${secret}`;
+  if(!account[0]) {
+    res.status(400).status(400).send({error: "Invalid secret"});
+    return;
+  }
+  var oldUsername = account[0].username;
+  var oldUsernameLower = oldUsername.toLowerCase();
+  if(oldUsername == newUsername) {
+    res.status(400).send({error: "You already have this username!"});
+    return;
+  }
+  //check if new username valid
+
+  if(newUsername.length >= 20) {
+		res.status(400).send({error: "Username has to be shorter than 20 characters"});
+		return;
+	}
+	if(newUsername.charAt(0) == " " || newUsername.charAt(newUsername.length - 1) == " ") {
+		res.status(400).send({error: "Username can't start or end with a space"});
+		return;
+	}
+	if(newUsername.includes("  ")) {
+		res.status(400).send({error: "Username can't have two spaces in a row"});
+		return;
+	}
+	var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;
+	if(!newUsername.match(regex)) {
+		res.status(400).send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
+		return;
+	}
+	
+	var containsProfanity = filter.check(newUsername);
+	if(containsProfanity) {
+		res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+		return;
+	}
+
+  //get days since lastchange
+  var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${secret}`;
+  console.log(daysSince[0].days);
+
+  if(daysSince[0].days !== null && daysSince[0].days < 7) {
+    res.status(400).send({error: `You can change your username again in ${7-daysSince[0].days} days`});
+    return;
+  }
+  
+
+
+  //check if new username exists
+  var account1 = await sql`select username from accounts where lower(username)=${newUsername.toLowerCase()}`;
+  if(account1[0]) {
+    res.status(400).send({error: "Username already taken"});
+    return;
+  }
+
+  //update username
+  await sql`UPDATE accounts SET username=${newUsername}, lastusernamechange=now() WHERE secret=${secret}`;
+  //update username in games
+  await sql`UPDATE games SET name=${newUsername} WHERE lower(name)=${oldUsernameLower}`;
+
+  res.status(200).send("Success");
+  
+});
 
 app.post("/api/signup",checkifMissingFields, async (req, res) => {
 	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
@@ -1027,6 +1099,7 @@ server.listen(process.env.PORT || 3000, () => {
 });
 
 process.on("SIGTERM", () => {
+  console.log("SIGTERM received");
   cleanExit()
     .then(() => {
       console.log("exited cleanly");
@@ -1038,6 +1111,7 @@ process.on("SIGTERM", () => {
     });
 });
 process.on("SIGINT", () => {
+  console.log("SIGINT received");
   cleanExit()
     .then(() => {
       console.log("exited cleanly");

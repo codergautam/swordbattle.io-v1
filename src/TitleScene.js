@@ -402,6 +402,36 @@ class TitleScene extends Phaser.Scene {
       document.getElementById("username").style.fontSize = "30px";
       this.dropdown.x = (this.canvas.width / 1.2) - (document.getElementById("username").getBoundingClientRect().width);
       this.dropdown.y = -20;
+      document.getElementById("changename").onclick = () => {
+        let person = prompt("Please enter your new username:", "");
+        if (person == null) {
+        } else {
+            if(person == "") alert("Username cannot be empty");
+            fetch("/api/changename", {
+              method: "POST",
+              headers: {
+                "Content-Type": "application/json"
+              },
+              body: JSON.stringify({
+                secret: this.secret,
+                username: person
+              })
+            }).then((res) => {
+              if (res.status == 200) {
+                this.accountData.username = person;
+                document.getElementById("username").innerHTML = person;
+                document.getElementById("profile").setAttribute("onclick", `location.href='/${person}'`);
+                //set namebox
+                this.nameBox.getChildByName("name").value = person;
+                alert("Username changed!");
+              } else {
+                res.json().then((data) => {
+                  alert(data.error);
+                });
+              }
+            });
+        }
+      };
       document.getElementById("logout").onclick = () => {
         this.dropdown.destroy();
         try {
