@@ -23,7 +23,7 @@ class Tank extends Evolution {
         return {
             healWait: 0,
             healAmount: 5,
-            scale: 2,
+            scale: 1.75,
             damageCooldown: 0.5,
             damage: 2,
             resistance: 0

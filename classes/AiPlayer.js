@@ -31,9 +31,9 @@ const lerp = (x, y, a) => x * (1 - a) + y * a;
 if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins, chests));
       if(this.target) {
         if(this.target.type == "player") this.chaseTime += 1;
-        if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(100, 700) && this.swordInHand) {
+        if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(300, 700) && this.swordInHand) {
           
-          if(this.chaseTime > 200) {
+          if(this.chaseTime > 100) {
             this.target = this.getClosestEntity(coins);
             this.chaseTime = 0;
           }
@@ -41,12 +41,13 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       
           
           this.lastHit = Date.now();
-          if(getRandomInt(1,5) != 1) {
+          if(getRandomInt(1,4) != 1) {
          [coins,chests] = this.down(!this.mouseDown, coins, io, chests);
 
-          } else {
+          } else if(Date.now() - this.lastSwordThrow >= 3000) {
             this.swordInHand = false;
             flyingSwords.push({hit: [], scale: this.scale, x: this.pos.x, y: this.pos.y, time: Date.now(), angle: this.calcSwordAngle(), skin: this.skin, id: this.id});
+            this.lastSwordThrow = Date.now();
           }
         } 
         }
