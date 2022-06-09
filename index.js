@@ -347,7 +347,7 @@ app.post("/api/changename", async (req,res) => {
   //update username
   await sql`UPDATE accounts SET username=${newUsername}, lastusernamechange=now() WHERE secret=${secret}`;
   //update username in games
-  await sql`UPDATE games SET name=${newUsername} WHERE lower(name)=${oldUsernameLower}`;
+  await sql`UPDATE games SET name=${newUsername} WHERE lower(name)=${oldUsernameLower} AND verified=true`;
 
   res.status(200).send("Success");
   
