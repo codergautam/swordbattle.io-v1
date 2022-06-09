@@ -1529,7 +1529,7 @@ try {
 				controller.left = true;
 
 			}
-			if (cKey.isDown && this.meSword.visible && !this.chat.) {
+			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
 				this.socket.emit("throw");
 			}
     
