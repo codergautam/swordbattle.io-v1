@@ -9,11 +9,11 @@ class Tank extends Evolution {
     }
     default() {
         return {
-            maxHealth: 1.5,
-            health: 1.5,
+            maxHealth: 1.6,
+            health: 1.6,
             speed: 0.75,
             scale: 1.25,
-            power: 2,
+            power: 1.5,
             resistance: 2,
             damage: 1.25,
             damageCooldown: 1.1,
@@ -22,7 +22,7 @@ class Tank extends Evolution {
     ability() {
         return {
             healWait: 0,
-            healAmount: 5,
+            healAmount: 4,
             scale: 1.75,
             damageCooldown: 0.5,
             damage: 2,

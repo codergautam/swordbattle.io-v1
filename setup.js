@@ -9,7 +9,10 @@ CAPTCHASITE=6LeIewsgAAAAAPp9VS21fBk7VWQX3wps40gWrUWH
 
 USEFISHYSSL=false
 DATABASE_URL=postgres://fishymine:P7oU3-qbHjgPTFnZRat7kw@free-tier14.aws-us-east-1.cockroachlabs.cloud:26257/bilked-blob-1224.defaultdb
-PRODUCTION=false`;
+PRODUCTION=false
+SERVER=localhost
+`
+;
 
 var defaultconfig = `{
   "CAPTCHASITE": "6LeIewsgAAAAAPp9VS21fBk7VWQX3wps40gWrUWH",

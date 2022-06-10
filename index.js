@@ -13,7 +13,21 @@ var process = require("process");
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
 
+var usewebhook = false;
+if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
+var Hook;
+if(usewebhook) {
+const webhook = require("webhook-discord");
+Hook = new webhook.Webhook(process.env.WEBHOOK_URL);
+Hook.custom = async (username, message) => {
+  const msg = new webhook.MessageBuilder()
+  .setName(username)
+  .setText("<@875067761557127178>\n"+message);
+return Hook.send(msg);
+};
+
+}
 var serverState = "running";
 
 var map = 10000;
@@ -1109,11 +1123,26 @@ process.on("SIGTERM", () => {
   cleanExit()
     .then(() => {
       console.log("exited cleanly");
-      process.exit(1);
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, "reason: SIGTERM\nexited cleanly").then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+      } else process.exit(1);
     })
-    .catch(() => {
+    .catch((err) => {
       console.log("failed to exit cleanly");
-      process.exit(1);
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, `reason: SIGTERM\nFailed to exit cleanly\n\n\`\`\`${err.stack}\`\`\``).then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+      } else process.exit(1);
+     
     });
 });
 process.on("SIGINT", () => {
@@ -1121,24 +1150,79 @@ process.on("SIGINT", () => {
   cleanExit()
     .then(() => {
       console.log("exited cleanly");
-      process.exit(1);
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, "reason: SIGINT\nexited cleanly").then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+      } else process.exit(1);
     })
-    .catch(() => {
+    .catch((err) => {
       console.log("failed to exit cleanly");
-      process.exit(1);
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, `reason: SIGINT\nFailed to exit cleanly\n\n\`\`\`${err.stack}\`\`\``).then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+      } else process.exit(1);
     });
 });
+
 //unhandledRejection
 process.on("unhandledRejection", (reason, p) => {
   console.log("Unhandled Rejection at: Promise", p, "reason:", reason);
   cleanExit()
     .then(() => {
       console.log("exited cleanly");
-      process.exit(1);
+      if(usewebhook) {
+      Hook.custom(process.env.SERVER, "reason: unhandledRejection\nexited cleanly\n\nError:```"+reason+"```\n\nPROMISE:```"+p+"```").then(() => {
+        process.exit(1);
+      }).catch((e) => {
+        console.log("Webhook failed", e);
+        process.exit(1);
+      });
+      } else process.exit(1);
     })
-    .catch(() => {
+    .catch((e) => {
       console.log("failed to exit cleanly");
-      process.exit(1);
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, "reason: unhandledRejection\nfailed to exit cleanly\n\nError:```"+reason+"```\n\nPROMISE:```"+p+"```\n\nWhy cleanExit failed:```"+e.stack+"```").then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+        } else process.exit(1);
+    });
+});
+process.on("uncaughtException", (err) => {
+  console.log("Uncaught Exception:", err.stack);
+  cleanExit()
+    .then(() => {
+      console.log("exited cleanly");
+      if(usewebhook) {
+      Hook.custom(process.env.SERVER, "reason: uncaughtException\nexited cleanly\n\nError:```"+err.stack+"```").then(() => {
+        process.exit(1);
+      }).catch((e) => {
+        console.log("Webhook failed", e);
+        process.exit(1);
+      });
+      } else process.exit(1);
+    })
+    .catch((e) => {
+      console.log("failed to exit cleanly");
+      if(usewebhook) {
+        Hook.custom(process.env.SERVER, "reason: unhandledRejection\nfailed to exit cleanly\n\nError:```"+err.stack+"```\nWhy cleanExit failed:```"+e.stack+"```").then(() => {
+          process.exit(1);
+        }).catch((e) => {
+          console.log("Webhook failed", e);
+          process.exit(1);
+        });
+        } else process.exit(1);
     });
 });
 
