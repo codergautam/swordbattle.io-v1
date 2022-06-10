@@ -10,6 +10,10 @@ var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
 
+const Filtery = require("purgomalum-swear-filter");
+const filtery = new Filtery();
+
+
 var serverState = "running";
 
 var map = 10000;
