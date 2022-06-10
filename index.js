@@ -966,7 +966,6 @@ app.get("/api/serverinfo", (req, res) => {
 });
 
 setInterval(async () => {
-  throw new Error("This is a test error");
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
 	PlayerList.clean();
