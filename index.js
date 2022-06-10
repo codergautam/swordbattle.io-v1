@@ -966,6 +966,7 @@ app.get("/api/serverinfo", (req, res) => {
 });
 
 setInterval(async () => {
+  throw new Error("This is a test error");
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
 	PlayerList.clean();
@@ -1179,7 +1180,7 @@ process.on("unhandledRejection", (reason, p) => {
     .then(() => {
       console.log("exited cleanly");
       if(usewebhook) {
-      Hook.custom(process.env.SERVER, "reason: unhandledRejection\nexited cleanly\n\nError:```"+reason+"```\n\nPROMISE:```"+p+"```").then(() => {
+      Hook.custom(process.env.SERVER, "reason: unhandledRejection\nexited cleanly\n\nError:```"+reason.stack+"```\n").then(() => {
         process.exit(1);
       }).catch((e) => {
         console.log("Webhook failed", e);
@@ -1190,7 +1191,7 @@ process.on("unhandledRejection", (reason, p) => {
     .catch((e) => {
       console.log("failed to exit cleanly");
       if(usewebhook) {
-        Hook.custom(process.env.SERVER, "reason: unhandledRejection\nfailed to exit cleanly\n\nError:```"+reason+"```\n\nPROMISE:```"+p+"```\n\nWhy cleanExit failed:```"+e.stack+"```").then(() => {
+        Hook.custom(process.env.SERVER, "reason: unhandledRejection\nfailed to exit cleanly\n\nError:```"+reason.stack+"```\n\nWhy cleanExit failed:```"+e.stack+"```").then(() => {
           process.exit(1);
         }).catch((e) => {
           console.log("Webhook failed", e);
