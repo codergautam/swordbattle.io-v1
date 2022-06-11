@@ -338,6 +338,9 @@ return false;
    this.resistance /= 1.5;
  this.maxHealth /= 1.5;
    this.health /= 1.5;
+   this.damage *= 1.5;
+   this.power *= 1.2;
+
     }
 
   }
