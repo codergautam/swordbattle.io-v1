@@ -1082,7 +1082,7 @@ setInterval(async () => {
       player.updateValues();
 			//   player.moveWithMouse(players)
 			if(player.ai) {
-				[coins,chests,flyingSwords] = player.tick(coins, io, levels, chests, flyingSwords);
+				[coins,chests] = player.tick(coins, io, levels, chests);
 			}
 			if (
 				Date.now() - player.lastHit > player.healWait &&
