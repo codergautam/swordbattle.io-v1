@@ -4,7 +4,7 @@ class Tank extends Evolution {
         super();
         this.name = "tank";
         this.abilityDuration = 5000;
-        this.abilityCooldown = 100000;
+        this.abilityCooldown = 60000;
         this.subEvolutions = [];
     }
     default() {
@@ -17,17 +17,18 @@ class Tank extends Evolution {
             resistance: 2,
             damage: 1.25,
             damageCooldown: 1.1,
+            healAmount: 1.25,
         };
     }
     ability() {
         return {
             healWait: 0,
-            healAmount: 4,
+            healAmount: 5,
             scale: 1.75,
             power: 1.75,
             damageCooldown: 0.5,
             damage: 2,
-            resistance: 0
+            resistance: 2,
         };
     }
 }

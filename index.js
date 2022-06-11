@@ -26,7 +26,7 @@ Hook.custom = async (username, message) => {
   .setText("<@875067761557127178>\n"+message);
 return Hook.send(msg);
 };
-
+Hook.success(process.env.SERVER, "Server started");
 }
 var serverState = "running";
 

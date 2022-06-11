@@ -76,7 +76,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
           this.updateValues();
         }
 
-        if(this.evolution != "" && this.ability <= Date.now()) {
+        if(this.evolution != "" && this.ability <= Date.now()+10000) {
           this.ability = evolutions[this.evolution].abilityCooldown + evolutions[this.evolution].abilityDuration + Date.now();
           console.log(this.name + " activated ability");
         }
