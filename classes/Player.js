@@ -339,7 +339,7 @@ return false;
  this.maxHealth /= 1.5;
    this.health /= 1.5;
    this.damage *= 1.5;
-   this.power *= 1.2;
+   this.power *= 0.8;
 
     }
 
