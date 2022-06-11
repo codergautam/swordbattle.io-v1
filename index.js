@@ -858,7 +858,7 @@ io.on("connection", async (socket) => {
     if(PlayerList.has(socket.id)) {
       var player = PlayerList.getPlayer(socket.id);
       if(!player.swordInHand) return;
-      if(Date.now() - player.lastSwordThrow < 3000) return;
+      if(Date.now() - player.lastSwordThrow < 10000) return;
       player.swordInHand = false;
       flyingSwords.push({hit: [], scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
       player.lastSwordThrow = Date.now();
@@ -1030,7 +1030,7 @@ setInterval(async () => {
           coins.push(...drop);
       }
     });
-    if (Date.now() - sword.time > 500) {
+    if (Date.now() - sword.time > 1000) {
       flyingSwords.splice(i, 1);
       var player = PlayerList.getPlayer(sword.id);
       if(player) {

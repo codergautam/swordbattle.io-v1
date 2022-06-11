@@ -333,8 +333,14 @@ return false;
       } else this.abilityActive = false;
     }
 
-    if(!this.swordInHand) this.speed *= 1.5;
-    if(!this.swordInHand) this.damage /= 2;
+    if(!this.swordInHand) { 
+      this.speed *= 1.5;
+  this.damage /= 1.2;
+   this.resistance /= 1.2;
+ this.maxHealth /= 1.2;
+   this.health /= 1.2;
+  this.power *= 1.2;
+    }
 
   }
   down(down, coins, io, chests) {

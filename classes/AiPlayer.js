@@ -44,7 +44,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
           if(getRandomInt(1,4) != 1) {
          [coins,chests] = this.down(!this.mouseDown, coins, io, chests);
 
-          } else if(Date.now() - this.lastSwordThrow >= 3000) {
+          } else if(Date.now() - this.lastSwordThrow >= 10000) {
             this.swordInHand = false;
             flyingSwords.push({hit: [], scale: this.scale, x: this.pos.x, y: this.pos.y, time: Date.now(), angle: this.calcSwordAngle(), skin: this.skin, id: this.id});
             this.lastSwordThrow = Date.now();
