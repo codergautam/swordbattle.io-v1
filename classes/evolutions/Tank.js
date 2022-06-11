@@ -13,7 +13,7 @@ class Tank extends Evolution {
             health: 1.6,
             speed: 0.75,
             scale: 1.25,
-            power: 1.5,
+            power: 1.25,
             resistance: 2,
             damage: 1.25,
             damageCooldown: 1.1,
@@ -24,6 +24,7 @@ class Tank extends Evolution {
             healWait: 0,
             healAmount: 4,
             scale: 1.75,
+            power: 1.75,
             damageCooldown: 0.5,
             damage: 2,
             resistance: 0
