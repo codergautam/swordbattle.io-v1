@@ -1,7 +1,7 @@
 import HealthBar from "./components/HealthBar.js";
 import ImgButton from "./components/PhaserImgButton";
 import { subscribe, isSupported } from "on-screen-keyboard-detector";
-import ClassPicker from "./components/ClassPicker.ts";
+import ClassPicker from "./components/ClassPicker.js";
 import {locations} from "./bushes.json";
 import Phaser from "phaser";
 import {CAPTCHASITE,localServer} from "./../config.json";

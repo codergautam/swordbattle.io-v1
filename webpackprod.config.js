@@ -40,8 +40,7 @@ const config = {
   },
   module: {
     rules: [
-      // all files with a `.ts` or `.tsx` extension will be handled by `ts-loader`
-      { test: /\.tsx?$/, loader: "ts-loader" }
+      { test: /\.(js)$/, exclude: /node_modules/, loader: "babel-loader" },
     ]
   },
   output: {
