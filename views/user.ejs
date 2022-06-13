@@ -1,13 +1,6 @@
 <%
 function msToTime(duration) {
     const portions = [];
-
-      const msInDay = 1000 * 60 * 60 * 24;
-    const days = Math.trunc(duration / msInDay);
-    if (days > 0) {
-      portions.push(days + 'd');
-      duration = duration - (days * msInDay);
-    }
   
     const msInHour = 1000 * 60 * 60;
     const hours = Math.trunc(duration / msInHour);
@@ -282,7 +275,7 @@ if(recent) {
           <div class="col-sm-4">
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
-                <h3 class="text-center"><%= games.length %></h3>
+                <h3 class="text-center"><%= numberWithCommas(games.length) %></h3>
               </div>
               <div class="leaderboard-card__body">
                 <div class="text-center">
@@ -308,7 +301,7 @@ if(recent) {
                   <div class="tooltipy">
                     <h5 class="mb-0">XP</h5>
                     <span class="tooltiptexty"
-                      >1 coin = 1 XP<br />1 kill = 100 XP</span
+                      >1 coin = 1 XP<br />1 stab = 100 XP</span
                     >
                   </div>
                   <p class="text-muted mb-0"></p>
@@ -328,6 +321,41 @@ if(recent) {
                 <div class="text-center">
                   <br /><br />
                   <h5 class="mb-0">Total Playtime</h5>
+                  <p class="text-muted mb-0"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <br/>
+          <div class="col-sm-4">
+            <div class="leaderboard-card">
+              <div class="leaderboard-card__top">
+                <h3 class="text-center">
+                    <% var e = 0; games.forEach((x)=>e+=x.kills ) %>
+                    <%= numberWithCommas(e) %>
+                </h3>
+              </div>
+              <div class="leaderboard-card__body">
+                <div class="text-center">
+                  <br /><br />
+                  <h5 class="mb-0">Stabs</h5>
+                  <p class="text-muted mb-0"></p>
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="col-sm-4">
+            <div class="leaderboard-card">
+              <div class="leaderboard-card__top">
+                <h3 class="text-center">
+                  <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
+                    <%= user.skins.collected.length +" / "+ cosmetics.skins.length  %>
+                </h3>
+              </div>
+              <div class="leaderboard-card__body">
+                <div class="text-center">
+                  <br /><br />
+                  <h5 class="mb-0">Skins Owned</h5>
                   <p class="text-muted mb-0"></p>
                 </div>
               </div>

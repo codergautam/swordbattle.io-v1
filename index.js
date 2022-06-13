@@ -674,6 +674,7 @@ app.get("/:user", async (req, res, next) => {
       stats: stats,
       lb: lb,
       lb2: lb2,
+      cosmetics: JSON.parse(fs.readFileSync("./cosmetics.json"))
     });
   }
 });
