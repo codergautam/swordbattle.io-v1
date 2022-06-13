@@ -17,9 +17,9 @@ const config = {
         { from: "src/promo.html", to: "" },
         { from: "src/index.html", to: "",  transform(content) {
           return content
-          .toString()
-          .replace("INSERT_RECAPTCHA_SITE_KEY", CAPTCHASITE)
-          .replace("RANDOM_UUID", uuidv4());
+            .toString()
+            .replace("INSERT_RECAPTCHA_SITE_KEY", CAPTCHASITE)
+            .replace("RANDOM_UUID", uuidv4());
         }},
         { from: "src/title.html", to: "" },
         { from: "src/about.html", to: "" },
@@ -35,8 +35,7 @@ const config = {
     }),
   ],
   resolve: {
-    // Add `.ts` and `.tsx` as a resolvable extension.
-    extensions: [".ts", ".tsx", ".js"]
+    extensions: [".js"]
   },
   module: {
     rules: [
