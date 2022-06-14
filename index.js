@@ -23,7 +23,7 @@ Hook = new webhook.Webhook(process.env.WEBHOOK_URL);
 Hook.custom = async (username, message) => {
   const msg = new webhook.MessageBuilder()
   .setName(username)
-  .setText("<@875067761557127178>\n"+message);
+  .setText("<@875067761557127178>"+(process.env.SERVER == "USA" ? "<@942438729560252477>\n" : "\n")+message);
 return Hook.send(msg);
 };
 Hook.success(process.env.SERVER, "Server started");
