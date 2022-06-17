@@ -16,6 +16,15 @@ class OpenScene extends Phaser.Scene {
         this.callback = callback;
     }
     preload() {
+      try {
+        if(this.mobile) {
+          document.getElementsByClassName("grecaptcha-badge")[0].style.transform = "scale(0)";
+          document.getElementsByClassName("grecaptcha-badge")[0].style.transformOrigin = "0 0";
+        }
+      }
+      catch(e) {
+        console.log("captcha hide fail", e);
+      }
       console.time("load");
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);

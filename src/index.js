@@ -106,6 +106,7 @@ var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), 
 
 titleScene.mobile = mobile;
 gameScene.mobile = mobile;
+openScene.mobile = mobile;
 
 if(!mobile) titleScene.showPromo = true;
 //titleScene.showPromo = false;
