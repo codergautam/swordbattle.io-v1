@@ -71,6 +71,13 @@
             "description": "I like it cold."
         },
         {
+            "name": "bread+butter",
+            "displayName": "bread+butter",
+            "url": "/assets/images/bread+butterPlayer.png",
+            "price": 400000,
+            "description": "I like it cold."
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
