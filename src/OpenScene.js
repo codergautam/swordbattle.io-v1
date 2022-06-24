@@ -15,6 +15,8 @@ class OpenScene extends Phaser.Scene {
         super();
         this.callback = callback;
     }
+    setLoad(load) {
+    }
     preload() {
       try {
         if(this.mobile) {
@@ -29,10 +31,22 @@ class OpenScene extends Phaser.Scene {
         this.e = true;
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
+   this.progressText = this.add.text(0,0,"please wait.").setOrigin(0.5,0.5);
       
       this.loadText.setFontSize(this.canvas.width/20);
+      this.progressText.setFontSize(this.canvas.width/40);
       this.loadText.x = this.canvas.width/2;
       this.loadText.y = this.canvas.height/2;
+      this.progressText.x = this.canvas.width/2;
+      this.progressText.y = this.canvas.height/2 + this.canvas.height/10;
+      this.load.on("fileprogress", function(file, progress){
+        // var key = file.key;
+        var loader = this.load;
+var total = loader.totalToLoad;
+var remainder = loader.list.size + loader.inflight.size;
+var progress = 1 - (remainder / total);
+        this.progressText.setText((progress*100).toFixed(1)+"%");
+    }, this);
         this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
         this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
@@ -64,6 +78,8 @@ class OpenScene extends Phaser.Scene {
         this.load.image("scytheSword", "/assets/images/scytheSword.png");
         this.load.image("angelPlayer", "/assets/images/angelPlayer.png");
         this.load.image("angelSword", "/assets/images/sword.png");
+        this.load.image("breadPlayer", "/assets/images/breadPlayer.png");
+        this.load.image("breadSword", "/assets/images/breadSword.png");
         this.load.image("cookiePlayer", "/assets/images/cookiePlayer.png");
         this.load.image("cookieSword", "/assets/images/cookieSword.png");
         this.load.image("neonPlayer", "/assets/images/neonPlayer.png");

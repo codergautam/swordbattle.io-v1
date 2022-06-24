@@ -43,6 +43,13 @@
             "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣"
         },
         {
+            "name": "bread",
+            "displayName": "Bread",
+            "url": "/assets/images/breadPlayer.png",
+            "price": 7000,
+            "description": "Fresh, and tasty!"
+        },
+        {
             "name": "chef",
             "displayName": "Chef",
             "url": "/assets/images/chefPlayer.png",
