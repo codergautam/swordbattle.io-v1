@@ -64,6 +64,13 @@
             "description": "A skilled warrior"
         },
         {
+            "name": "sea",
+            "displayName": "Sea",
+            "url": "/assets/images/seaPlayer.png",
+            "price": 25000,
+            "description": "Peaceful, and relaxing."
+        },
+        {
             "name": "medic",
             "displayName": "Medic",
             "url": "/assets/images/medicPlayer.png",
@@ -117,7 +124,14 @@
             "displayName": "Coder Gautam YT",
             "url": "/assets/images/codergautamytPlayer.png",
             "price": 10000000,
-            "description": "The most dominant player.."
+            "description": "The creator of swordbattle.."
+        },
+        {
+            "name": "assasin",
+            "displayName": "Assasin",
+            "url": "/assets/images/assasinPlayer.png",
+            "price": 20000000,
+            "description": "You don't stand a chance-"
         }
 
     ]
