@@ -158,8 +158,7 @@
             "url": "/assets/images/blackhoodPlayer.png",
             "price": 0,
             "description": "What a... mystery!",
-            "limited": true,
-            "leaveShopTime": 1658338863
+            "limited": true
         }
 
     ]
