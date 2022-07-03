@@ -71,12 +71,12 @@ app.use(express.json());
 // Add properties to it
 schema
   .is()
-  .min(5, "Password has to be at least 5 chars") // Minimum length 5
+  .min(5, "Password has to be at least 5 characters") // Minimum length 5
   .is()
-  .max(20, "Password cant be longer than 20 chars") // Maximum length 20
+  .max(20, "Password cannot be longer than 20 characters") // Maximum length 20
   .has()
   .not()
-  .spaces(undefined, "Password cant contain spaces"); // Should not have spaces
+  .spaces(undefined, "Password cannot contain spaces"); // Should not have spaces
 
 const Player = require("./classes/Player");
 const Coin = require("./classes/Coin");
@@ -232,11 +232,11 @@ app.post("/api/buy", async (req, res) => {
         await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
       acc.bal = yo[0].sum + acc.coins;
       if (acc.skins.collected.includes(item.name)) {
-        res.status(400).send("Skin already owned");
+        res.status(400).send("You already own this skin, silly!");
         return;
       }
       if (acc.bal < item.price) {
-        res.status(406).send("Not enough coins");
+        res.status(406).send("Whoops! Not enough coins! Save up! You have: " + acc.bal + " coins!");
         return;
       }
 
@@ -319,22 +319,22 @@ app.post("/api/changename", async (req,res) => {
   }
   var oldUsername = account[0].username;
   var oldUsernameLower = oldUsername.toLowerCase();
-  if(oldUsername == newUsername) {
-    res.status(400).send({error: "You already have this username!"});
+  if(oldUsername == newUsername) { 
+    res.status(400).send({error: "You already have this username, silly!"});
     return;
   }
   //check if new username valid
 
   if(newUsername.length >= 20) {
-		res.status(400).send({error: "Username has to be shorter than 20 characters"});
+		res.status(400).send({error: "Username must be shorter than 20 characters."});
 		return;
 	}
 	if(newUsername.charAt(0) == " " || newUsername.charAt(newUsername.length - 1) == " ") {
-		res.status(400).send({error: "Username can't start or end with a space"});
+		res.status(400).send({error: "Username can't start or end with a space."});
 		return;
 	}
 	if(newUsername.includes("  ")) {
-		res.status(400).send({error: "Username can't have two spaces in a row"});
+		res.status(400).send({error: "Username can't have two spaces in a row."});
 		return;
 	}
 	var regex = /^[a-zA-Z0-9!@"$%&:';()*\+,;\-=[\]\^_{|}<>~` ]+$/g;

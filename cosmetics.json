@@ -5,133 +5,161 @@
             "displayName": "Default",
             "url": "/assets/images/player.png",
             "price": 0,
-            "description": "The default skin"
+            "description": "Your first Swordbattle.io skin!",
+            "limited": false
         },
         {
             "name": "neon",
             "displayName": "Neon",
             "url": "/assets/images/neonPlayer.png",
             "price": 100,
-            "description": "Ahhh.. So bright!"
+            "description": "Ahhh.. So bright!",
+            "limited": false
         },
         {
             "name": "vortex",
             "displayName": "Vortex",
             "url": "/assets/images/vortexPlayer.png",
             "price": 200,
-            "description": "The power is too strong.."
+            "description": "The power is too strong..",
+            "limited": false
         },
         {
             "name": "fox",
             "displayName": "Fox",
             "url": "/assets/images/foxPlayer.png",
             "price": 500,
-            "description": "Very sneaky"
+            "description": "Very sneaky...",
+            "limited": false
         },
         {
             "name": "spring",
             "displayName": "Spring",
             "url": "/assets/images/springPlayer.png",
             "price": 1000,
-            "description": "Spring is here!"
+            "description": "Spring is here!",
+            "limited": false
         },
         {
             "name": "hacker",
             "displayName": "Hacker",
             "url": "/assets/images/hackerPlayer.png",
             "price": 5000,
-            "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣"
+            "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣",
+            "limited": false
         },
         {
             "name": "bread",
             "displayName": "Bread",
             "url": "/assets/images/breadPlayer.png",
             "price": 7000,
-            "description": "Fresh, and tasty!"
+            "description": "Fresh, and tasty!",
+            "limited": false
         },
         {
             "name": "chef",
             "displayName": "Chef",
             "url": "/assets/images/chefPlayer.png",
             "price": 10000,
-            "description": "Chop 'em up"
+            "description": "Chop 'em up",
+            "limited": false
         },
         {
             "name": "ninja",
             "displayName": "Ninja",
             "url": "/assets/images/ninjaPlayer.png",
             "price": 20000,
-            "description": "A skilled warrior"
+            "description": "A skilled warrior",
+            "limited": false
         },
         {
             "name": "sea",
             "displayName": "Sea",
             "url": "/assets/images/seaPlayer.png",
             "price": 25000,
-            "description": "Peaceful, and relaxing."
+            "description": "Peaceful, and relaxing.",
+            "limited": false
         },
         {
             "name": "medic",
             "displayName": "Medic",
             "url": "/assets/images/medicPlayer.png",
             "price": 50000,
-            "description": "Heal.. or Stab..."
+            "description": "Heal.. or Stab...",
+            "limited": false
         },
         {
             "name": "winter",
             "displayName": "Winter",
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
-            "description": "I like it cold."
+            "description": "I like it cold.",
+            "limited": false
         },
         {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
             "price": 500000,
-            "description": "Dedicated to ANGEL, worlds #1 player"
+            "description": "Dedicated to ANGEL #1 Swordbattle.io player!",
+            "limited": false
         },
         {
             "name": "devil",
             "displayName": "Devil",
             "url": "/assets/images/devilPlayer.png",
             "price": 1000000,
-            "description": "Now this will scare everyone!"
+            "description": "Now this will scare everyone!",
+            "limited": false
         },
         {
             "name": "cookie",
             "displayName": "Cookie",
             "url": "/assets/images/cookiePlayer.png",
             "price": 1500000,
-            "description": "Scrumptious!"
+            "description": "Scrumptious!",
+            "limited": false
         },
         {
             "name": "mitblade",
             "displayName": "MitBald",
             "url": "/assets/images/mitbladePlayer.png",
             "price": 2000000,
-            "description": "\"Buy channel membership only $3!!!!\""
+            "description": "\"Buy channel membership only $3!!!!\"",
+            "limited": false
         },
         {
             "name": "scythe",
             "displayName": "Scythe",
             "url": "/assets/images/scythePlayer.png",
             "price": 5000000,
-            "description": "I'm coming for you!"
+            "description": "I'm coming for you!",
+            "limited": false
         },
         {
             "name": "codergautamyt",
             "displayName": "Coder Gautam YT",
             "url": "/assets/images/codergautamytPlayer.png",
             "price": 10000000,
-            "description": "The creator of swordbattle.."
+            "description": "The creator of swordbattle..",
+            "limited": false
         },
         {
             "name": "assasin",
             "displayName": "Assasin",
             "url": "/assets/images/assasinPlayer.png",
             "price": 20000000,
-            "description": "You don't stand a chance-"
+            "description": "You don't stand a chance-",
+            "limited": false
+        },
+        {
+            "name": "blackhood",
+            "displayName": "Blackhood Mystery Dude",
+            "url": "/assets/images/blackhoodPlayer.png",
+            "price": 0,
+            "description": "What a... mystery!",
+            "limited": true,
+            "leaveShopTime": 1658338863
         }
 
     ]
