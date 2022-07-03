@@ -249,6 +249,7 @@ function numberWithCommas(x) {
               <div class="card_image"><center><img src="<%= skin.url %>"></center></div>
               <div class="card_content">
                 <h2 class="card_title"><%= skin.displayName %><i class="fa-solid fa-circle-xmark"></i></h2>
+                <h4>Limited: <%= skin.limited %></h4>
               <b>  <p class="card_text"><%= skin.description %></p></b>
                 <p class="card_text">
                   <% abbreviate_number = function(num, fixed) {
