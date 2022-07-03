@@ -137,14 +137,6 @@
             "limited": false
         },
         {
-            "name": "codergautamyt",
-            "displayName": "Coder Gautam YT",
-            "url": "/assets/images/codergautamytPlayer.png",
-            "price": 10000000,
-            "description": "The creator of swordbattle..",
-            "limited": false
-        },
-        {
             "name": "assasin",
             "displayName": "Assasin",
             "url": "/assets/images/assasinPlayer.png",
@@ -159,7 +151,15 @@
             "price": 0,
             "description": "What a... mystery!",
             "limited": true
-        }
+        },
+        {
+            "name": "codergautamyt",
+            "displayName": "Coder Gautam YT",
+            "url": "/assets/images/codergautamytPlayer.png",
+            "price": 100000000,
+            "description": "The creator of swordbattle.. gone limited!",
+            "limited": true
+        },
 
     ]
 }
