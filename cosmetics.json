@@ -149,8 +149,8 @@
             "url": "/assets/images/blackhoodPlayer.png",
             "price": 0,
             "description": "What a... mystery!",
-            "limited": true,
-            "shopRemovalTime": 1500
+            "limited": false,
+            "shopRemovalTime": 1656949895126
         },
         {
             "name": "codergautamyt",

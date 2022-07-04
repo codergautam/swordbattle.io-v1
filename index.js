@@ -566,17 +566,18 @@ app.get("/shop", async (req, res) => {
       acc.bal = yo[0].sum + acc.coins;
     }
   }
-     for(let i=0; i<skins.length; i++) {
-      let d = skins[i];
+     for(let i=0; i<skins.length; i++) { // Loop through all sins
+      let d = skins[i]; // Get skin data
       console.log(d);
     console.log("COS");
-      if (d['limited'] === true) {
-          if (d['shopRemovalTime'] <= Date.now()) {
+      if (d['limited'] === true) { // If is limited
+          if (d['shopRemovalTime'] <= Date.now()) { // If passed expiration date
+              console.log(`Expired obj: ${d.displayName} ${Date.now()} ${d.shopRemovalTime}`)
               var Index = skins.indexOf(d); //Get the expired index
-              if (acc.skins[Index.name]) {
+              if (acc.skins[Index.name]) { // If acc owns skin, dont remove from render
                 return
               } else {
-                  skins.splice(Index, 1);
+                  skins.splice(Index, 1); // Acc doesnt own skin. remove from render.
               }
 
 
