@@ -102,6 +102,9 @@ var progress = 1 - (remainder / total);
         this.load.image("starParticle", "/assets/images/star.png");
         this.load.image("bush", "/assets/images/bush.png");
         
+        this.load.image("leprichaunPlayer", "/assets/images/leprichaunPlayer.png");
+        this.load.image("leprichaunSword", "/assets/images/leprichaunSword.png");
+        
         this.load.image("chatbtn", "/assets/images/chat.png");
         this.load.image("throwbtn", "/assets/images/throw.png");
         this.load.image("loginbtn", "/assets/images/login.png");

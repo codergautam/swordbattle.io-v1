@@ -143,6 +143,7 @@
             "description": "You don't stand a chance-",
             "limited": false
         },
+        
         {
             "name": "blackhood",
             "displayName": "Blackhood Mystery Dude",
@@ -167,6 +168,14 @@
             "price": 158000000,
             "description": "He's alan... He's cool! He's cool alan!",
             "limited": false
-        }
+        },
+        {
+            "name": "leprichaun",
+            "displayName": "Leprichaun",
+            "url": "/assets/images/leprichaunPlayer.png",
+            "price": 20000000,
+            "description": "He's a Leprichaun... And he has no pot of gold?!",
+            "limited": false
+        },
 
     ]
