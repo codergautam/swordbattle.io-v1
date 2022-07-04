@@ -173,7 +173,7 @@
             "name": "leprichaun",
             "displayName": "Leprichaun",
             "url": "/assets/images/leprichaunPlayer.png",
-            "price": 20000000,
+            "price": 0,
             "description": "He's a Leprichaun... And he has no pot of gold?!",
             "limited": false
         }
