@@ -216,7 +216,7 @@ app.post("/api/buy", async (req, res) => {
     res.status(400).send("No item specified");
     return;
   }
-  var item = cosmetics.skins.find((e) => e.name == item);
+  var item = cosmetics.find((e) => e.name == item);
   if (!item) {
     res.status(400).send("Item not found");
     return;
