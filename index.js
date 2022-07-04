@@ -542,28 +542,7 @@ app.get("/shop", async (req, res) => {
     
   
     
-  for(let i=0; i<=skins.length; i++) {
-      let d = skins[i]
-      console.log(d);
-    console.log("COS");
-      if (d['limited'] === true) {
-          if (d['shopRemovalTime'] >= Date.now()) {
-              var Index = skins.indexOf(d); //Get the expired index
-              if (acc.skins[Index.name]) {
-                return
-              } else {
-                  skins.splice(Index, 1);
-              }
-
-
-          }
-      }
-      
-  }
-    
-    let cosmetics = {
-        skins: skins
-    }
+ 
 
   //get user data
   var secret = req.query.secret;
@@ -587,6 +566,28 @@ app.get("/shop", async (req, res) => {
       acc.bal = yo[0].sum + acc.coins;
     }
   }
+     for(let i=0; i<skins.length; i++) {
+      let d = skins[i];
+      console.log(d);
+    console.log("COS");
+      if (d['limited'] === true) {
+          if (d['shopRemovalTime'] <= Date.now()) {
+              var Index = skins.indexOf(d); //Get the expired index
+              if (acc.skins[Index.name]) {
+                return
+              } else {
+                  skins.splice(Index, 1);
+              }
+
+
+          }
+      }
+      
+  }
+    
+    let cosmetics = {
+        skins: skins
+    }
 
   res.render("shop.ejs", {
     cosmetics: cosmetics,

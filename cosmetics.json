@@ -147,7 +147,7 @@
             "name": "blackhood",
             "displayName": "Blackhood Mystery Dude",
             "url": "/assets/images/blackhoodPlayer.png",
-            "price": 137321186,
+            "price": 0,
             "description": "What a... mystery!",
             "limited": true,
             "shopRemovalTime": 1500
