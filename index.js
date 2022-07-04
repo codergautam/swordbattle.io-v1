@@ -535,7 +535,35 @@ app.get("/skins", async (req, res) => {
 
 app.get("/shop", async (req, res) => {
   //read cosmetics.json
-  var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
+  var cosmetics_loaded = JSON.parse(fs.readFileSync("./cosmetics.json"));
+    
+    
+  var skins = cosmetics_loaded;
+    
+  
+    
+  for(let i=0; i<=skins.length; i++) {
+      let d = skins[i]
+      console.log(d);
+    console.log("COS");
+      if (d['limited'] === true) {
+          if (d['shopRemovalTime'] >= Date.now()) {
+              var Index = skins.indexOf(d); //Get the expired index
+              if (acc.skins[Index.name]) {
+                return
+              } else {
+                  skins.splice(Index, 1);
+              }
+
+
+          }
+      }
+      
+  }
+    
+    let cosmetics = {
+        skins: skins
+    }
 
   //get user data
   var secret = req.query.secret;

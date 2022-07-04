@@ -1,5 +1,4 @@
-{
-    "skins": [
+[
         {
             "name": "player",
             "displayName": "Default",
@@ -148,9 +147,10 @@
             "name": "blackhood",
             "displayName": "Blackhood Mystery Dude",
             "url": "/assets/images/blackhoodPlayer.png",
-            "price": 0,
+            "price": 137321186,
             "description": "What a... mystery!",
-            "limited": true
+            "limited": true,
+            "shopRemovalTime": 1500
         },
         {
             "name": "codergautamyt",
@@ -158,8 +158,15 @@
             "url": "/assets/images/codergautamytPlayer.png",
             "price": 100000000,
             "description": "The creator of swordbattle.. gone limited!",
-            "limited": true
+            "limited": false
         },
+        {
+            "name": "alan",
+            "displayName": "Alan McCool",
+            "url": "/assets/images/alanPlayer.png",
+            "price": 158000000,
+            "description": "He's alan... He's cool! He's cool alan!",
+            "limited": false
+        }
 
     ]
-}
