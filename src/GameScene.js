@@ -477,7 +477,7 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "us1" ? "https://us2.swordbattle.io" : this.options.server == "us2" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
+				var server = this.options.server == "us1" ? "https://sword-io-game.herokuapp.com" : "https://swordbattle.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				this.socket = io(localServer?undefined:server,{
 					closeOnBeforeunload: false,

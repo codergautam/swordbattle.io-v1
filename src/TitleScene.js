@@ -30,8 +30,7 @@ class TitleScene extends Phaser.Scene {
 
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us1": "https://us2.swordbattle.io",
-        "us2": "https://sword-io-game.herokuapp.com",
+        "us1": "https://sword-io-game.herokuapp.com",
         "eu1": "https://swordbattle.herokuapp.com"
       };
 
@@ -67,12 +66,10 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us1","us2","eu1"];
-      var f = ["USA","USA 2","Europe"];
+      var e = ["us1","eu1"];
+      var f = ["USA","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
-        ping("us2").then(res2 => {
-          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -80,19 +77,19 @@ class TitleScene extends Phaser.Scene {
             alert("Could not find an available server. Please try again later.");
           } else {
 
-            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 30 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 15 ? Math.abs(15-p.info.playerCount)*100 : 0)).map((p) => !p ? Infinity : p);
+            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 15 ? Math.abs(15-p.info.playerCount)*100 : 0)).map((p) => !p ? Infinity : p);
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
             console.log(sethtml);
             if (sethtml) {
               e.forEach((s, i) => {
+                console.log(s);
                 document.getElementById(s).innerHTML = f[i] + (pings[i].error ? " (OFFLINE)" : ` (${pings[i].ping}ms, ${pings[i].info.playerCount} players)`);
               });
               document.getElementById("auto").innerHTML = "Auto (" + f[scores.indexOf(Math.min(...scores))] + ")";
             }
           }
-        });
     });
   });
 
