@@ -16,8 +16,18 @@
   z-index: 1;
 }
 
+.dropdown-content button {
+    width: 100%;
+    padding: 2%;
+    margin: 3%;
+    background: white;
+    border: none;
+}
 .dropdown:hover .dropdown-content {
-  display: block;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }
 </style>
 <div class="w3-container">
@@ -26,13 +36,13 @@
   <span ><i class="fa fa-user"></i> <span id="username" name="username"></span></button>
   <div class="dropdown-content">
     <center>
-    <button href="#" name='profile' id="profile" class="w3-bar-item w3-button"><i class="fas fa-address-card"></i> Profile</a>
+    <button href="#" name='profile' id="profile" class="w3-bar-item w3-button"><i class="fas fa-address-card"></i> Profile</a></button>
     <br>
-      <button onclick='location.href="/settings"' href="/settings" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Settings</a>
+      <button onclick='location.href="/settings"' href="/settings" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Settings</a></button>
     <br>
-    <button id="changename" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Change Name</a>
+    <button id="changename" class="w3-bar-item w3-button"><i class="fas fa-gear"></i> Change Name</a></button>
   <br>
-        <button href="#" name="logout" id="logout" class="w3-bar-item w3-button"><i class="fas fa-sign-out"></i> Logout</a>
+        <button href="#" name="logout" id="logout" class="w3-bar-item w3-button"><i class="fas fa-sign-out"></i> Logout</a></button>
     </center>
     </div>
 </div>
