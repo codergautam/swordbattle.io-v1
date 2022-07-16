@@ -715,6 +715,7 @@ io.on("connection", async (socket) => {
     async function ready() {
       var name;
       if (!tryverify) {
+        console.log("verifying", r);
         try {
           name = filter.clean(r.substring(0, 16));
         } catch (e) {
@@ -743,6 +744,13 @@ io.on("connection", async (socket) => {
 				if(tryverify) {
 					thePlayer.verified = true;
 					thePlayer.skin = accounts[0].skins.selected;
+
+          var lb =
+          await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+          var rt = lb.findIndex((x) => x.name == name) + 1;
+          if(rt <= 100) {
+            thePlayer.ranking = rt;
+          }
 				}
 
 				

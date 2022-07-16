@@ -11,6 +11,7 @@ const evolutions = require("./evolutions");
 class Player { 
   constructor(id, name) {
     this.ai = false;
+    this.ranking = false;
     this.movementMode = "mouse";
     this.id = id;
     this.name = name;
@@ -504,7 +505,7 @@ return false;
 
 
   getSendObj() {
-    return {swordInHand: this.swordInHand, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos};
+    return {swordInHand: this.swordInHand, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos, ranking: this.ranking};
   }
 }
 

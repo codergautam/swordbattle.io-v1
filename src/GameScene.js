@@ -494,6 +494,8 @@ class GameScene extends Phaser.Scene {
 				this.socket.on("connect_error", handleErr);
 				this.socket.on("connect_failed",handleErr);
 
+				console.log(this.name);
+
 				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
 				else this.socket.emit("go", this.secret, thetoken, true,this.options);
 				//mouse down
@@ -1744,11 +1746,61 @@ try {
 				if(!entry.playerObj.hasOwnProperty("coins")) return console.log(entry.playerObj);
 				if(entry.playerObj.id == this.myObj.id) amIinit = true;
 				var playerObj = entry.playerObj;
-				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}- ${conv(playerObj.coins)}\n`;
+
+					var rankingColors = [
+						{color: "#90EE90", ranking: 100},
+						{color: "#023020", ranking: 50},
+	
+						{color: "#ffff00", ranking: 10},
+	
+						{color: "#ffa500", ranking: 5},
+	
+						{color: "#ff0000", ranking: 1},
+	
+					];
+				var rankingColor;
+				if(playerObj.ranking) {
+					rankingColors.forEach(d => {
+						if(playerObj.ranking <= d.ranking) {
+
+							rankingColor = d.color;
+							
+						}
+					});
+				}
+
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+
 			});
 			if(!amIinit) {
+				var playerObj = this.myObj;
+				var rankingColors = [
+					{color: "#90EE90", ranking: 100},
+					{color: "#023020", ranking: 50},
+
+					{color: "#ffff00", ranking: 10},
+
+					{color: "#ffa500", ranking: 5},
+
+					{color: "#ff0000", ranking: 1},
+
+				];
+				var rankingColor;
+				if(playerObj.ranking) {
+					console.log(playerObj.ranking);
+					rankingColors.forEach(d => {
+						if(playerObj.ranking <= d.ranking) {
+					console.log(d.color);
+
+							rankingColor = d.color;
+							
+						}
+					});
+				}
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
-				text += `...\n#${myIndex+1}: ${this.myObj.verified? this.myObj.name.toLowerCase()=="mitblade"||this.myObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${this.myObj.name}${this.myObj.verified? "[/color]":""}- ${conv(this.myObj.coins)}\n`;
+
+				text += `#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+
 			}
 			if(!this.spectating) {
 			this.leaderboard.setText(text);
