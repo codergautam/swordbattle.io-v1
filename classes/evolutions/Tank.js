@@ -4,7 +4,7 @@ class Tank extends Evolution {
         super();
         this.name = "tank";
         this.abilityDuration = 5000;
-        this.abilityCooldown = 80000;
+        this.abilityCooldown = 60000;
         this.subEvolutions = [];
     }
     default() {
