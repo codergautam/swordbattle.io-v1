@@ -751,6 +751,7 @@ io.on("connection", async (socket) => {
           if(rt <= 100) {
             thePlayer.ranking = rt;
           }
+          console.log(rt, name);
 				}
 
 				
