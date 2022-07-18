@@ -1,0 +1,35 @@
+const Evolution = require("./Evolution");
+class Knight extends Evolution {
+    constructor() {
+        super();
+        this.name = "knight";
+        this.abilityDuration = 8000;
+        this.abilityCooldown = 105000;
+        this.subEvolutions = [];
+    }
+    default() {
+        return {
+            maxHealth: 1.6,
+            health: 1.6,
+            speed: 0.85,
+            scale: 1.25,
+            power: 1.25,
+            resistance: 2,
+            damage: 1.25,
+            damageCooldown: 1.1,
+            healAmount: 1.25,
+        };
+    }
+    ability() {
+        return {
+            healWait: 0,
+            healAmount: 5,
+            scale: 1.75,
+            power: 0,
+            damageCooldown: 0.5,
+            damage: 2,
+            resistance: 2,
+        };
+    }
+}
+module.exports = Tank;
