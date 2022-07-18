@@ -32,4 +32,4 @@ class Knight extends Evolution {
         };
     }
 }
-module.exports = Tank;
+module.exports = Knight;
