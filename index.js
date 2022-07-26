@@ -165,6 +165,18 @@ app.use((req, res, next) => {
   next();
 });*/
 
+app.all("*", (req, res, next) => {
+  // ban IPs
+  // get ip from headers first
+  const ip = req.headers["x-forwarded-for"].split(",")[0];
+  // if ip is in ban list, send 403
+  if (banlist.includes(ip)) {
+    res.status(403).send("You are banned, contact gautam@swordbattle.io for appeal<br>Have a terrible day :)");
+    return;
+  }
+
+});
+
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) {
@@ -751,7 +763,6 @@ io.on("connection", async (socket) => {
           if(rt <= 100) {
             thePlayer.ranking = rt;
           }
-          console.log(rt, name);
 				}
 
 				
