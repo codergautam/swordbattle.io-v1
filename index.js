@@ -170,8 +170,9 @@ app.all("*", (req, res, next) => {
   // get ip from headers first
   try {
   const ip = req.headers["x-forwarded-for"].split(",")[0];
+  console.log("IP", ip);
   // if ip is in ban list, send 403
-  if (banlist.includes(ip)) {
+  if (moderation.bannedIps.includes(ip)) {
     res.status(403).send("You are banned, contact gautam@swordbattle.io for appeal<br>Have a terrible day :)");
     return;
   } else next();
