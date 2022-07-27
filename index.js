@@ -63,7 +63,7 @@ const { v4: uuidv4 } = require("uuid");
 
 // DISABLED DUE TO PEOPLE HAVING ISSUES
 
-recaptcha = false;
+recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
@@ -394,6 +394,7 @@ app.post("/api/changename", async (req,res) => {
 });
 
 app.post("/api/signup",checkifMissingFields, async (req, res) => {
+  
 	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
 		res.send({error: "Missing fields"});
 		return;
