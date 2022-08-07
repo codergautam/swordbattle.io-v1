@@ -1,6 +1,8 @@
 import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
 import Phaser from "phaser";
+import {servers_us1} from "../config.json";
+import {servers_eu1} from "../config.json";
 import {CAPTCHASITE} from "../config.json";
 
 class TitleScene extends Phaser.Scene {
@@ -30,8 +32,8 @@ class TitleScene extends Phaser.Scene {
 
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us1": "https://sword-io-game.herokuapp.com",
-        "eu1": "https://swordbattle.herokuapp.com"
+        "us1": servers_us1,
+        "eu1": servers_eu1
       };
 
       var ping = (server) => {
