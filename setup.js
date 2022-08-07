@@ -17,7 +17,9 @@ SERVER=localhost
 var defaultconfig = `{
   "CAPTCHASITE": "6LeIewsgAAAAAPp9VS21fBk7VWQX3wps40gWrUWH",
   "localServer": true,
-  "recaptcha": false
+  "recaptcha": false,
+  "servers_eu1": "https://swordbattle.herokuapp.com",
+  "servers_us1:": "https://sword-io-game.herokuapp.com" //Added URLs to config.json generated file
 }`;
 
 //check if config.json exists
