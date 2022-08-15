@@ -68,6 +68,7 @@ recaptcha = true;
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
+app.disable('x-powered-by'); //Disable powered by header to prevent vulnerability scans against swordbattle.
 // Add properties to it
 schema
   .is()
@@ -114,6 +115,7 @@ if (production) {
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
 		max: 300, // limit each IP to 52 requests per min 
+		message: "Too many requests from this IP, please try again" //Add message when rate-limit
 	});
 	app.use(limiter);
 }
