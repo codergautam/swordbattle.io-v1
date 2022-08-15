@@ -1148,7 +1148,7 @@ setInterval(async () => {
 }, 1000 / 30);
 
 server.listen(process.env.PORT || 3000, () => {
-  console.log("server started");
+  console.log("server started on port: ", process.env.PORT || 3000);
 });
 
 process.on("SIGTERM", () => {
