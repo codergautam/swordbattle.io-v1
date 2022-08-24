@@ -64,6 +64,13 @@
             "description": "Chop 'em up"
         },
         {
+            "name": "astronaut",
+            "displayName": "Astrounaut",
+            "url": "/assets/images/astronautPlayer.png",
+            "price": 15000,
+            "description": "No gravity..."
+        },
+        {
             "name": "ninja",
             "displayName": "Ninja",
             "url": "/assets/images/ninjaPlayer.png",
