@@ -84,14 +84,39 @@ var progress = 1 - (remainder / total);
         this.load.image("cookieSword", "/assets/images/cookieSword.png");
         this.load.image("neonPlayer", "/assets/images/neonPlayer.png");
         this.load.image("neonSword", "/assets/images/neonSword.png");
+
+
         this.load.image("berserkerPlayer", "/assets/images/berserkerSkin.png");
-        this.load.image("berserkerSword", "/assets/images/devilSword.png");
         this.load.image("tankPlayer", "/assets/images/tankSkin.png");
-        this.load.image("tankSword", "/assets/images/sword.png");
+        // samurai player and sword
+        this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
+        // knight player and sword
+        this.load.image("knightPlayer", "/assets/images/knightSkin.png");
+
+
+
         this.load.image("seaPlayer", "/assets/images/seaPlayer.png");
         this.load.image("seaSword", "/assets/images/seaSword.png");
         this.load.image("assasinPlayer", "/assets/images/assasinPlayer.png");
         this.load.image("assasinSword", "/assets/images/assasinSword.png");
+
+        // astronaut player & sword
+        this.load.image("astronautPlayer", "/assets/images/astronautPlayer.png");
+        this.load.image("astronautSword", "/assets/images/astronautSword.png");
+
+        //bubble player and sword
+        this.load.image("bubblePlayer", "/assets/images/bubblePlayer.png");
+        this.load.image("bubbleSword", "/assets/images/bubbleSword.png");
+
+        // cyborg player and sword
+        this.load.image("cyborgPlayer", "/assets/images/cyborgPlayer.png");
+        this.load.image("cyborgSword", "/assets/images/cyborgSword.png");
+
+        // emerald player and sword
+        this.load.image("emeraldPlayer", "/assets/images/emeraldPlayer.png");
+        this.load.image("emeraldSword", "/assets/images/emeraldSword.png");
+
+
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
         this.load.image("chest", "/assets/images/chest.png");

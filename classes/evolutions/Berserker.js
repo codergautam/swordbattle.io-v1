@@ -18,10 +18,10 @@ class Berserker extends Evolution {
     }
     ability() {
         return {
-            speed: 1.8,
+            speed: 1.5,
             power: 2,
             resistance: 1.2,
-            damage: 2,
+            damage: 1.5,
             damageCooldown: 0.5,
         };
     }

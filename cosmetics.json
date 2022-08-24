@@ -22,6 +22,13 @@
             "description": "The power is too strong.."
         },
         {
+            "name": "bubble",
+            "displayName": "Bubble",
+            "url": "/assets/images/bubblePlayer.png",
+            "price": 300,
+            "description": "Magical, colorful, mysterious"
+        },
+        {
             "name": "fox",
             "displayName": "Fox",
             "url": "/assets/images/foxPlayer.png",
@@ -83,6 +90,20 @@
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "emerald",
+            "displayName": "Emerald",
+            "url": "/assets/images/emeraldPlayer.png",
+            "price": 150000,
+            "description": "Oooh shiny...."
+        },
+        {
+            "name": "cyborg",
+            "displayName": "Cyborg",
+            "url": "/assets/images/cyborgPlayer.png",
+            "price": 200000,
+            "description": "AI-Assisted Stabbing"
         },
         {
             "name": "angel",

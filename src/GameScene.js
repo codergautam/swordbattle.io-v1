@@ -802,13 +802,23 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {						
-								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 								// console.log(this.myObj.evolutionQueue);
 								// console.log(this.classPicker)
-								if(!this.classPicker.shown) {
+								if(!this.classPicker.shown || (this.classPicker.text1 != this.myObj.evolutionQueue[0][0] || this.classPicker.text2 != this.myObj.evolutionQueue[0][1])) {
+								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
+									
 									this.classPicker.draw(this);
-									this.classPicker.on("class-selected", (k) => {
+									const emitEvolve = (k)=> {
 										this.socket.emit("evolve", k);
+
+								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
+										this.classPicker.draw(this);
+										this.classPicker.on("class-selected", (k) => {
+											emitEvolve(k);
+										});
+									};
+									this.classPicker.on("class-selected", (k) => {
+										emitEvolve(k);
 									});
 								}
 								
@@ -1787,10 +1797,8 @@ try {
 				];
 				var rankingColor;
 				if(playerObj.ranking) {
-					console.log(playerObj.ranking);
 					rankingColors.forEach(d => {
 						if(playerObj.ranking <= d.ranking) {
-					console.log(d.color);
 
 							rankingColor = d.color;
 							

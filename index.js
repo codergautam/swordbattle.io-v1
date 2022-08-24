@@ -68,7 +68,7 @@ recaptcha = true;
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
 app.use(express.json());
-app.disable('x-powered-by'); //Disable powered by header to prevent vulnerability scans against swordbattle.
+app.disable("x-powered-by"); //Disable powered by header to prevent vulnerability scans against swordbattle.
 // Add properties to it
 schema
   .is()
@@ -149,7 +149,7 @@ var oldlevels = [
 	{coins: 9000, scale: 1.5},
 	{coins: 10000, scale: 1.53},
   {coins: 15000, scale: 1.55},
-  {coins: 20000, scale: 1.56},
+  {coins: 20000, scale: 1.56, evolutions: [evolutions.samurai, evolutions.knight]},
   {coins: 25000, scale: 1.57},
   {coins: 30000, scale: 1.58},
   {coins: 40000, scale: 1.59},
@@ -188,12 +188,13 @@ app.all("*", (req, res, next) => {
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) {
-		levels.push(Object.assign({start: 0},level)); 
+		levels.push(Object.assign({start: 0, num:index+1},level)); 
 	}
 	else {
-		levels.push(Object.assign({start: levels[index - 1].coins}, level));
+		levels.push(Object.assign({start: levels[index - 1].coins, num:index+1}, level));
 	}
 });
+console.log(levels);
 
 moderation.start(app, io);
 
