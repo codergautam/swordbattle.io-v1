@@ -3,8 +3,8 @@ class Samurai extends Evolution {
     constructor() {
         super();
         this.name = "samurai";
-        this.abilityDuration = 5000;
-        this.abilityCooldown = 30000;
+        this.abilityDuration = 3000;
+        this.abilityCooldown = 60000;
         this.subEvolutions = [];
     }
     default() {
@@ -12,7 +12,7 @@ class Samurai extends Evolution {
             maxHealth: 1.3,
             health: 1.3,
             speed: 0.75,
-            scale: 1,
+            scale: 1.5,
             power: 1.25,
             resistance: 0.9,
             damage: 1.25,
@@ -24,12 +24,12 @@ class Samurai extends Evolution {
         return {
             healWait: 0,
             healAmount: 1,
-            scale: 1.25,
-            power: 1,
-            damageCooldown: 2,
-            damage: 2,
-            resistance: 0.25,
-            speed: 1.5,
+            scale: 2.5,
+            power: 3,
+            damageCooldown: 0.5,
+            damage: 0.5,
+            resistance: 0.5,
+            speed: 4,
         };
     }
 }
