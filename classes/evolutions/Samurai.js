@@ -27,7 +27,7 @@ class Samurai extends Evolution {
             scale: 2.5,
             power: 3,
             damageCooldown: 0.5,
-            damage: 0.5,
+            damage: 2,
             resistance: 0.5,
             speed: 4,
         };

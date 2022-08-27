@@ -19,9 +19,9 @@ class Knight extends Evolution {
     ability() {
         return {
             speed: 2,
-            power: 0.5,
+            power: 0.7,
             resistance: 0.2,
-            damage: 1,
+            damage: 1.5,
             damageCooldown: 0.3,
         };
     }

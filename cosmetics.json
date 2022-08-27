@@ -65,7 +65,7 @@
         },
         {
             "name": "astronaut",
-            "displayName": "Astrounaut",
+            "displayName": "Astronaut",
             "url": "/assets/images/astronautPlayer.png",
             "price": 15000,
             "description": "No gravity..."
