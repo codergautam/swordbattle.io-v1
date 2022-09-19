@@ -165,8 +165,8 @@
             "name": "bush",
             "displayName": "Bush",
             "url": "/assets/images/bushPlayer.png",
-            "price": 0,
-            "description": "The ultimate camouflage"
+            "price": 7500000,
+            "description": "The ultimate camouflage."
         },
         {
             "name": "codergautamyt",
@@ -179,14 +179,14 @@
             "name": "assasin",
             "displayName": "Assassin",
             "url": "/assets/images/assasinPlayer.png",
-            "price": 0,
+            "price": 20000000,
             "description": "You don't stand a chance-"
         },
         {
             "name": "dragon",
             "displayName": "Dragon",
             "url": "/assets/images/dragonPlayer.png",
-            "price": 0,
+            "price": 50000000,
             "description": "The king of the skies... and swords."
         }
 
