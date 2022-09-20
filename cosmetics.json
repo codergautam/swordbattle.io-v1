@@ -113,11 +113,25 @@
             "description": "AI-Assisted Stabbing"
         },
         {
+            "name": "devex",
+            "displayName": "Dev3x",
+            "url": "/assets/images/devexPlayer.png",
+            "price": 400000,
+            "description": "3x the power!"
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
             "price": 500000,
-            "description": "Dedicated to ANGEL, worlds #1 player"
+            "description": "Lets team up!"
+        },
+        {
+            "name": "glitch",
+            "displayName": "Glitch",
+            "url": "/assets/images/glitchPlayer.png",
+            "price": 750000,
+            "description": "Glitch them out of existence"
         },
         {
             "name": "devil",
@@ -148,6 +162,13 @@
             "description": "I'm coming for you!"
         },
         {
+            "name": "bush",
+            "displayName": "Bush",
+            "url": "/assets/images/bushPlayer.png",
+            "price": 7500000,
+            "description": "The ultimate camouflage."
+        },
+        {
             "name": "codergautamyt",
             "displayName": "Coder Gautam YT",
             "url": "/assets/images/codergautamytPlayer.png",
@@ -160,6 +181,13 @@
             "url": "/assets/images/assasinPlayer.png",
             "price": 20000000,
             "description": "You don't stand a chance-"
+        },
+        {
+            "name": "dragon",
+            "displayName": "Dragon",
+            "url": "/assets/images/dragonPlayer.png",
+            "price": 50000000,
+            "description": "The king of the skies... and swords."
         }
 
     ]

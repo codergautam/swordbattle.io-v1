@@ -179,7 +179,7 @@ app.all("*", (req, res, next) => {
     return;
   } else next();
 } catch (e) {
-  console.log(e);
+  // console.log(e);
   next();
 }
 

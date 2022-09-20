@@ -116,6 +116,23 @@ var progress = 1 - (remainder / total);
         this.load.image("emeraldPlayer", "/assets/images/emeraldPlayer.png");
         this.load.image("emeraldSword", "/assets/images/emeraldSword.png");
 
+        //glitch player and sword
+        this.load.image("glitchPlayer", "/assets/images/glitchPlayer.png");
+        this.load.image("glitchSword", "/assets/images/glitchSword.png");
+
+        //dragon player and sword
+        this.load.image("dragonPlayer", "/assets/images/dragonPlayer.png");
+        this.load.image("dragonSword", "/assets/images/dragonSword.png");
+
+        //devex player and sword
+        this.load.image("devexPlayer", "/assets/images/devexPlayer.png");
+        this.load.image("devexSword", "/assets/images/devexSword.png");
+
+        //bush player and sword
+        this.load.image("bushPlayer", "/assets/images/bushPlayer.png");
+        this.load.image("bushSword", "/assets/images/bushSword.png");
+      
+
 
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
