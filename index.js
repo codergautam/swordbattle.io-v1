@@ -605,21 +605,21 @@ app.get("/leaderboard", async (req, res) => {
       var lb =
         await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
-        } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 23`;
+        } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 103`;
     } else {
       var lb = await sql`SELECT * from games ORDER BY ${sql(
         type
-      )} DESC, created_at DESC LIMIT 23`;
+      )} DESC, created_at DESC LIMIT 103`;
     }
   } else {
     if (duration != "all") {
       var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
-        } group by name order by xp desc limit 23`;
+        } group by name order by xp desc limit 103`;
     } else {
       var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc limit 23`;
+        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc limit 103`;
     }
     lb = lb.map((x) => {
       x.verified = true;
@@ -687,14 +687,14 @@ app.get("/:user", async (req, res, next) => {
 		) a
 		left join
 		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*300)) as xp,sum(kills) as kills ,sum(coins) as coins,
 		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
     var lb =
-      await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
     var lb2 =
-      await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
+      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
     res.render("user.ejs", {
       user: dbuser[0],
       games: yo,
@@ -768,7 +768,7 @@ io.on("connection", async (socket) => {
 					thePlayer.skin = accounts[0].skins.selected;
 
           var lb =
-          await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+          await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
           var rt = lb.findIndex((x) => x.name == name) + 1;
           if(rt <= 100) {
             thePlayer.ranking = rt;
