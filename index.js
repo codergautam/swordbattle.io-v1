@@ -10,6 +10,8 @@ var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
 
+var scan = require("./utils/badcheck");
+
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
 
@@ -370,6 +372,17 @@ app.post("/api/changename", async (req,res) => {
 		return;
 	}
 
+  var containsProfanity2 = await filtery.check(newUsername);
+  if(containsProfanity2) {
+    res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
+  var containsProfanity3 = scan(newUsername).contains;
+  if(containsProfanity3) {
+    res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
   //get days since lastchange
   var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${secret}`;
   console.log(daysSince[0].days);
@@ -742,6 +755,15 @@ io.on("connection", async (socket) => {
           name = filter.clean(r.substring(0, 16));
         } catch (e) {
           name = r.substring(0, 16);
+        }
+        try {
+          name = await filtery.clean(name);
+          console.log("filtery", name);
+        } catch (e) {
+          console.log(e);
+        }
+        if(scan(name).contains > 0) {
+          name = "*".repeat(name.length);
         }
       } else {
         var accounts = await sql`select * from accounts where secret=${r}`;
