@@ -9,7 +9,7 @@ class Berserker extends Evolution {
         this.name = "berserker";
         this.abilityDuration = 10000;
         this.abilityCooldown = 60000;
-        this.subEvolutions = [15, new Knight(), new Vampire()];
+        this.subEvolutions = [20000, new Knight(), new Vampire()];
     }
     default() {
         return {
