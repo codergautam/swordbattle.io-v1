@@ -646,12 +646,13 @@ class GameScene extends Phaser.Scene {
 
 								});
 								this.socket.on("ability", (e) => {
-								//	console.log(e);
+									// console.log(e);
+								if(e) {
 									var [cooldown, duration, now] = e;
 									
 									duration -= Date.now() - now;
 									
-									this.tweens.addCounter({
+								this.abilityTween =	this.tweens.addCounter({
 										from: 0,
 										to: (duration+cooldown)/1000,
 										duration: duration+cooldown,
@@ -676,6 +677,30 @@ class GameScene extends Phaser.Scene {
 											this.ability.setText("");
 										}
 									});
+								} else {
+									this.abilityTween.stop();
+									this.tweens.addCounter({
+										from: 0,
+										to: 10,
+										duration: 10000,
+										onUpdate: (tween) => {
+									var left = Math.abs(tween.getValue() - 10);
+								//	console.log(left - ((duration/1000) + (cooldown/1000)));
+									if(left >= 0) {
+										//still going
+										this.ability.visible=true;
+										this.ability.setText((left).toFixed(1));
+										this.abilityButton.visible = false;
+									}else {
+										this.abilityButton.visible = true;
+										
+									}
+										},
+										onComplete: () => {
+											this.ability.setText("");
+										}
+									});
+								}
 								});
 
 				const addPlayer = (player) => {
