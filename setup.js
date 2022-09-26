@@ -39,12 +39,12 @@ if(!process.env.hasOwnProperty("TOKEN")) {
 	console.log("👀 We're getting you set up.\n");
 	fs.writeFileSync(".env", testenv);
 	fs.writeFileSync("config.json", defaultconfig);
-	console.log("⚒️ Building latest code... \n");
+	console.log("⚒️ Installing dependencies... \n");
 	theConfig = require("./config.json");
 	//run npm run build
 
   execSync("npm i --dev");
-        console.log("\n❤️ Almost... done..\n");
+        console.log("\n❤️ Building a development environment..\n");
 	execSync("npm run build");
 	console.log("✅ Done!");
 
