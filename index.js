@@ -1,3 +1,12 @@
+/*
+                           _ _           _   _   _        _       
+ _____      _____  _ __ __| | |__   __ _| |_| |_| | ___  (_) ___  
+/ __\ \ /\ / / _ \| '__/ _` | '_ \ / _` | __| __| |/ _ \ | |/ _ \ 
+\__ \\ V  V / (_) | | | (_| | |_) | (_| | |_| |_| |  __/_| | (_) |
+|___/ \_/\_/ \___/|_|  \__,_|_.__/ \__,_|\__|\__|_|\___(_)_|\___/ 
+Made with <3 by Gautam 
+*/
+
 const express = require("express");
 const https = require("https");
 var http = require("http");
@@ -9,6 +18,8 @@ const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
+
+var scan = require("./utils/badcheck");
 
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
@@ -109,7 +120,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = true;
+var production = process.env.PRODUCTION === "true";
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
@@ -149,7 +160,7 @@ var oldlevels = [
 	{coins: 9000, scale: 1.5},
 	{coins: 10000, scale: 1.53},
   {coins: 15000, scale: 1.55},
-  {coins: 20000, scale: 1.56, evolutions: [evolutions.samurai, evolutions.knight]},
+  {coins: 20000, scale: 1.56},
   {coins: 25000, scale: 1.57},
   {coins: 30000, scale: 1.58},
   {coins: 40000, scale: 1.59},
@@ -370,6 +381,17 @@ app.post("/api/changename", async (req,res) => {
 		return;
 	}
 
+  var containsProfanity2 = await filtery.check(newUsername);
+  if(containsProfanity2) {
+    res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
+  var containsProfanity3 = scan(newUsername).contains;
+  if(containsProfanity3) {
+    res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
   //get days since lastchange
   var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${secret}`;
   console.log(daysSince[0].days);
@@ -605,21 +627,21 @@ app.get("/leaderboard", async (req, res) => {
       var lb =
         await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
-        } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 23`;
+        } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 103`;
     } else {
       var lb = await sql`SELECT * from games ORDER BY ${sql(
         type
-      )} DESC, created_at DESC LIMIT 23`;
+      )} DESC, created_at DESC LIMIT 103`;
     }
   } else {
     if (duration != "all") {
       var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
-        } group by name order by xp desc limit 23`;
+        } group by name order by xp desc limit 103`;
     } else {
       var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc limit 23`;
+        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc limit 103`;
     }
     lb = lb.map((x) => {
       x.verified = true;
@@ -687,14 +709,14 @@ app.get("/:user", async (req, res, next) => {
 		) a
 		left join
 		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*100)) as xp,sum(kills) as kills ,sum(coins) as coins,
+		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*300)) as xp,sum(kills) as kills ,sum(coins) as coins,
 		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
 		) b on a.dt=b.dt1 order by a.dt asc
 		`;
     var lb =
-      await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
     var lb2 =
-      await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
+      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
     res.render("user.ejs", {
       user: dbuser[0],
       games: yo,
@@ -743,6 +765,15 @@ io.on("connection", async (socket) => {
         } catch (e) {
           name = r.substring(0, 16);
         }
+        try {
+          name = await filtery.clean(name);
+          console.log("filtery", name);
+        } catch (e) {
+          console.log(e);
+        }
+        if(scan(name).contains > 0) {
+          name = "*".repeat(name.length);
+        }
       } else {
         var accounts = await sql`select * from accounts where secret=${r}`;
         if (!accounts[0]) {
@@ -768,7 +799,7 @@ io.on("connection", async (socket) => {
 					thePlayer.skin = accounts[0].skins.selected;
 
           var lb =
-          await sql`select name,(sum(coins)+(sum(kills)*100)) as xp from games where verified = true group by name order by xp desc`;
+          await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
           var rt = lb.findIndex((x) => x.name == name) + 1;
           if(rt <= 100) {
             thePlayer.ranking = rt;
@@ -861,7 +892,14 @@ io.on("connection", async (socket) => {
           
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
+      player.checkSubEvolutions();
       player.updateValues();
+ 
+      if(player.abilityActive) {
+        player.abilityActive = false;
+        player.ability = Date.now() + 10000;
+        socket.emit("ability", false);
+      }
       return;
     }
   });

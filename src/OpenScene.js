@@ -90,11 +90,15 @@ var progress = 1 - (remainder / total);
 
         this.load.image("berserkerPlayer", "/assets/images/berserkerSkin.png");
         this.load.image("tankPlayer", "/assets/images/tankSkin.png");
-        // samurai player and sword
-        this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
-        // knight player and sword
+        // warrior evolution
+        this.load.image("warriorPlayer", "/assets/images/warriorSkin.png");
+        // knight evolution
         this.load.image("knightPlayer", "/assets/images/knightSkin.png");
 
+        // vampire evolution
+        this.load.image("vampirePlayer", "/assets/images/vampireSkin.png");
+        // rook evolution
+        this.load.image("rookPlayer", "/assets/images/rookSkin.png");
 
 
         this.load.image("seaPlayer", "/assets/images/seaPlayer.png");
