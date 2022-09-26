@@ -461,6 +461,19 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
+
+  var containsProfanity2 = await filtery.check(username);
+  if(containsProfanity2) {
+    res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
+  var containsProfanity3 = scan(username).contains;
+  if(containsProfanity3) {
+    res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
 	var exists = await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
 
 	if (exists[0].exists) {
