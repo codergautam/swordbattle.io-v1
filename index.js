@@ -70,11 +70,10 @@ const axios = require("axios").default;
 var filter = require("leo-profanity");
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-// var {recaptcha} = require("./config.json");
 
-// DISABLED DUE TO PEOPLE HAVING ISSUES
+ var {recaptcha} = require("./config.json");
+console.log("Recaptcha "+recaptcha?"enabled":"disabled")
 
-recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
