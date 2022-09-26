@@ -52,6 +52,8 @@ var progress = 1 - (remainder / total);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
+        this.load.image("tigerPlayer", "/assets/images/tigerPlayer.png");
+        this.load.image("tigerSword", "/assets/images/tigerSword.png");
         this.load.image("codergautamytPlayer", "/assets/images/codergautamytPlayer.png");
         this.load.image("codergautamytSword", "/assets/images/codergautamytSword.png");
         this.load.image("devilPlayer", "/assets/images/devilPlayer.png");

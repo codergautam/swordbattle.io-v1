@@ -82,7 +82,14 @@
             "displayName": "Sea",
             "url": "/assets/images/seaPlayer.png",
             "price": 25000,
-            "description": "Peaceful, and relaxing."
+            "description": "Peaceful and relaxing."
+        },
+        {
+            "name": "tiger",
+            "displayName": "Tiger",
+            "url": "/assets/images/tigerPlayer.png",
+            "price": 30000,
+            "description": "Don't get in the way of its claws..."
         },
         {
             "name": "medic",
