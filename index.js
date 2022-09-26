@@ -70,11 +70,10 @@ const axios = require("axios").default;
 var filter = require("leo-profanity");
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-// var {recaptcha} = require("./config.json");
 
-// DISABLED DUE TO PEOPLE HAVING ISSUES
+ var {recaptcha} = require("./config.json");
+console.log("Recaptcha "+recaptcha?"enabled":"disabled")
 
-recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
@@ -381,7 +380,7 @@ app.post("/api/changename", async (req,res) => {
 		return;
 	}
 
-  var containsProfanity2 = await filtery.check(newUsername);
+  var containsProfanity2 = await filtery.containsProfanity(newUsername);
   if(containsProfanity2) {
     res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
     return;
@@ -461,6 +460,19 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
+
+  var containsProfanity2 = await filtery.containsProfanity(username);
+  if(containsProfanity2) {
+    res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
+  var containsProfanity3 = scan(username).contains;
+  if(containsProfanity3) {
+    res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
 	var exists = await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
 
 	if (exists[0].exists) {
@@ -616,13 +628,13 @@ app.get("/leaderboard", async (req, res) => {
   //SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
 
   //var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
-  var type = ["coins", "kills", "time", "xp"].includes(req.query.type)
+  var type = ["coins", "kills", "time", "xp","totalkills","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
     : "coins";
   var duration = ["all", "day", "week", "xp"].includes(req.query.duration)
     ? req.query.duration
     : "all";
-  if (type !== "xp") {
+  if (type !== "xp" && !type.startsWith("total")) {
     if (duration != "all") {
       var lb =
         await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
@@ -635,14 +647,26 @@ app.get("/leaderboard", async (req, res) => {
     }
   } else {
     if (duration != "all") {
+      if(type == "xp"){
       var lb =
         await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
         } group by name order by xp desc limit 103`;
+      }else{
+        var lb =
+        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+          duration == "day" ? "86400" : "608400"
+        } group by name order by ${sql(type.slice(5))} desc limit 103`;
+      }
     } else {
+      if (type == "xp") {
       var lb =
         await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc limit 103`;
-    }
+      } else {
+        var lb =
+        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true group by name order by ${sql(type.slice(5))} desc limit 103`;
+      }
+      }
     lb = lb.map((x) => {
       x.verified = true;
       return x;
