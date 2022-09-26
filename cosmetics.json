@@ -29,6 +29,13 @@
             "description": "Magical, colorful, mysterious"
         },
         {
+            "name": "bullseye",
+            "displayName": "Bullseye",
+            "url": "/assets/images/bullseyePlayer.png",
+            "price": 400,
+            "description": "It can't miss"
+        },
+        {
             "name": "fox",
             "displayName": "Fox",
             "url": "/assets/images/foxPlayer.png",
@@ -41,6 +48,13 @@
             "url": "/assets/images/springPlayer.png",
             "price": 1000,
             "description": "Spring is here!"
+        },
+        {
+            "name": "bowling",
+            "displayName": "Bowling",
+            "url": "/assets/images/bowlingPlayer.png",
+            "price": 3500,
+            "description": "It can knock people over like a pin"
         },
         {
             "name": "hacker",
@@ -92,6 +106,13 @@
             "description": "Don't get in the way of its claws..."
         },
         {
+            "name": "cheese",
+            "displayName": "Cheese",
+            "url": "/assets/images/cheesePlayer.png",
+            "price": 45000,
+            "description": "Its cheese"
+        },
+        {
             "name": "medic",
             "displayName": "Medic",
             "url": "/assets/images/medicPlayer.png",
@@ -99,11 +120,25 @@
             "description": "Heal.. or Stab..."
         },
         {
+            "name": "soldier",
+            "displayName": "Soldier",
+            "url": "/assets/images/soldierPlayer.png",
+            "price": 75000,
+            "description": "A hardened veteran"
+        },
+        {
             "name": "winter",
             "displayName": "Winter",
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "panda",
+            "displayName": "Panda",
+            "url": "/assets/images/pandaPlayer.png",
+            "price": 125000,
+            "description": "It looks cuddly but watch out..."
         },
         {
             "name": "emerald",
@@ -118,6 +153,13 @@
             "url": "/assets/images/cyborgPlayer.png",
             "price": 200000,
             "description": "AI-Assisted Stabbing"
+        },
+        {
+            "name": "scorpion",
+            "displayName": "Scorpion",
+            "url": "/assets/images/scorpionPlayer.png",
+            "price": 2500000,
+            "description": "Poisoned wounds are the worst..."
         },
         {
             "name": "devex",
@@ -148,6 +190,20 @@
             "description": "Now this will scare everyone!"
         },
         {
+            "name": "demon",
+            "displayName": "Demon",
+            "url": "/assets/images/demonPlayer.png",
+            "price": 1000000,
+            "description": "Brother of the devil"
+        },
+        {
+            "name": "honeycomb",
+            "displayName": "Honeycomb",
+            "url": "/assets/images/honeycombPlayer.png",
+            "price": 1250000,
+            "description": "Very sweet!"
+        },
+        {
             "name": "cookie",
             "displayName": "Cookie",
             "url": "/assets/images/cookiePlayer.png",
@@ -160,6 +216,13 @@
             "url": "/assets/images/mitbladePlayer.png",
             "price": 2000000,
             "description": "\"Buy channel membership only $3!!!!\""
+        },
+        {
+            "name": "storm",
+            "displayName": "Storm",
+            "url": "/assets/images/stormPlayer.png",
+            "price": 1250000,
+            "description": "A storm is brewing"
         },
         {
             "name": "scythe",
