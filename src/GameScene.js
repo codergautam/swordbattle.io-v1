@@ -1804,7 +1804,7 @@ try {
 					});
 				}
 
-				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||player.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			});
 			if(!amIinit) {
@@ -1832,7 +1832,7 @@ try {
 				}
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 
-				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||player.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			}
 			if(!this.spectating) {
