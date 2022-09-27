@@ -72,7 +72,7 @@ const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
 
  var {recaptcha} = require("./config.json");
-console.log("Recaptcha "+recaptcha?"enabled":"disabled")
+console.log("Recaptcha "+(recaptcha?"enabled":"disabled"))
 
 
 var passwordValidator = require("password-validator");
@@ -168,7 +168,6 @@ var oldlevels = [
   {coins: 100000, scale: 1.7},
   {coins: 200000, scale: 1.8},
 ];
-console.log(Object.keys(oldlevels).length);
 app.set("trust proxy", true);
 /*
 app.use((req, res, next) => {
@@ -194,6 +193,9 @@ app.all("*", (req, res, next) => {
 }
 
 });
+// app.get("/", (req, res) => {
+//   res.redirect("/codergautam3d")
+// })
 
 var levels = [];
 oldlevels.forEach((level, index)  =>{
@@ -204,7 +206,6 @@ oldlevels.forEach((level, index)  =>{
 		levels.push(Object.assign({start: levels[index - 1].coins, num:index+1}, level));
 	}
 });
-console.log(levels);
 
 moderation.start(app, io);
 
@@ -724,7 +725,7 @@ app.get("/:user", async (req, res, next) => {
 */
 
     var stats = await sql`
-		select a.dt,b.name,b.xp,b.kills from
+		select a.dt,b.name,b.xp,b.kills,b.coins,b.time from
 		(
 		select distinct(created_at::date) as Dt from games where created_at >= ${
       dbuser[0].created_at
