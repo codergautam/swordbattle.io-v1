@@ -67,7 +67,7 @@
             "name": "bread",
             "displayName": "Bread",
             "url": "/assets/images/breadPlayer.png",
-            "price": 7000,
+            "price": 7500,
             "description": "Fresh, and tasty!"
         },
         {
@@ -76,6 +76,13 @@
             "url": "/assets/images/chefPlayer.png",
             "price": 10000,
             "description": "Chop 'em up"
+        },
+        {
+            "name": "radiation",
+            "displayName": "Radiation",
+            "url": "/assets/images/radiationPlayer.png",
+            "price": 12500,
+            "description": "Very Toxic..."
         },
         {
             "name": "astronaut",
@@ -104,6 +111,20 @@
             "url": "/assets/images/tigerPlayer.png",
             "price": 30000,
             "description": "Don't get in the way of its claws..."
+        },
+        {
+            "name": "lightning",
+            "displayName": "Lightning",
+            "url": "/assets/images/lightningPlayer.png",
+            "price": 35000,
+            "description": "One zap and you're dead..."
+        },
+        {
+            "name": "mystery",
+            "displayName": "Mystery",
+            "url": "/assets/images/mysteryPlayer.png",
+            "price": 40000,
+            "description": "Its a murder mystery..."
         },
         {
             "name": "cheese",
@@ -148,6 +169,13 @@
             "description": "Oooh shiny...."
         },
         {
+            "name": "lava",
+            "displayName": "Lava",
+            "url": "/assets/images/lavaPlayer.png",
+            "price": 175000,
+            "description": "Hot Hot Hot"
+        },
+        {
             "name": "cyborg",
             "displayName": "Cyborg",
             "url": "/assets/images/cyborgPlayer.png",
@@ -181,6 +209,13 @@
             "url": "/assets/images/glitchPlayer.png",
             "price": 750000,
             "description": "Glitch them out of existence"
+        },
+        {
+            "name": "patchwork",
+            "displayName": "Patchwork",
+            "url": "/assets/images/patchworkPlayer.png",
+            "price": 750000,
+            "description": "Its only being held together by some glitch..."
         },
         {
             "name": "devil",
