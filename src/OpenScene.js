@@ -52,24 +52,54 @@ var progress = 1 - (remainder / total);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
+        this.load.image("tigerPlayer", "/assets/images/tigerPlayer.png");
+        this.load.image("tigerSword", "/assets/images/tigerSword.png");
         this.load.image("codergautamytPlayer", "/assets/images/codergautamytPlayer.png");
         this.load.image("codergautamytSword", "/assets/images/codergautamytSword.png");
         this.load.image("devilPlayer", "/assets/images/devilPlayer.png");
         this.load.image("devilSword", "/assets/images/devilSword.png");
+        this.load.image("mysteryPlayer", "/assets/images/mysteryPlayer.png");
+        this.load.image("mysterySword", "/assets/images/mysterySword.png");
+        this.load.image("lightningPlayer", "/assets/images/lightningPlayer.png");
+        this.load.image("lightningSword", "/assets/images/lightningSword.png");
+        this.load.image("patchworkPlayer", "/assets/images/patchworkPlayer.png");
+        this.load.image("patchworkSword", "/assets/images/patchworkSword.png");
         this.load.image("winterPlayer", "/assets/images/winterPlayer.png");
         this.load.image("winterSword", "/assets/images/winterSword.png");
         this.load.image("chefPlayer", "/assets/images/chefPlayer.png");
         this.load.image("chefSword", "/assets/images/chefSword.png");
         this.load.image("medicPlayer", "/assets/images/medicPlayer.png");
         this.load.image("medicSword", "/assets/images/medicSword.png");
+        this.load.image("lavaPlayer", "/assets/images/lavaPlayer.png");
+        this.load.image("lavaSword", "/assets/images/lavaSword.png");
+        this.load.image("radiationPlayer", "/assets/images/radiationPlayer.png");
+        this.load.image("radiationSword", "/assets/images/radiationSword.png");
         this.load.image("ninjaPlayer", "/assets/images/ninjaPlayer.png");
         this.load.image("ninjaSword", "/assets/images/ninjaSword.png");
         this.load.image("hackerPlayer", "/assets/images/hackerPlayer.png");
         this.load.image("hackerSword", "/assets/images/hackerSword.png");
         this.load.image("mitbladeSword", "/assets/images/mitbladeSword.png");
         this.load.image("mitbladePlayer", "/assets/images/mitbladePlayer.png");
+        this.load.image("bowlingPlayer", "/assets/images/bowlingPlayer.png");
+        this.load.image("bowlingSword", "/assets/images/bowlingSword.png");
+        this.load.image("bullseyePlayer", "/assets/images/bullseyePlayer.png");
+        this.load.image("bullseyeSword", "/assets/images/bullseyeSword.png");
+        this.load.image("cheesePlayer", "/assets/images/cheesePlayer.png");
+        this.load.image("cheeseSword", "/assets/images/cheeseSword.png");
+        this.load.image("demonPlayer", "/assets/images/demonPlayer.png");
+        this.load.image("demonSword", "/assets/images/demonSword.png");
+        this.load.image("honeycombPlayer", "/assets/images/honeycombPlayer.png");
+        this.load.image("honeycombSword", "/assets/images/honeycombSword.png");
+        this.load.image("pandaPlayer", "/assets/images/pandaPlayer.png");
+        this.load.image("pandaSword", "/assets/images/pandaSword.png");
+        this.load.image("scorpionPlayer", "/assets/images/scorpionPlayer.png");
+        this.load.image("scorpionSword", "/assets/images/scorpionSword.png");
+        this.load.image("soldierPlayer", "/assets/images/soldierPlayer.png");
+        this.load.image("soldierSword", "/assets/images/soldierSword.png");
+        this.load.image("stormPlayer", "/assets/images/stormPlayer.png");
+        this.load.image("stormSword", "/assets/images/stormSword.png");
         this.load.image("foxPlayer", "/assets/images/foxPlayer.png");
-        this.load.image("foxSword", "/assets/images/devilSword.png");
+        this.load.image("foxSword", "/assets/images/foxSword.png");
         this.load.image("vortexPlayer", "/assets/images/vortexPlayer.png");
         this.load.image("vortexSword", "/assets/images/vortexSword.png");
         this.load.image("springPlayer", "/assets/images/springPlayer.png");
@@ -88,11 +118,15 @@ var progress = 1 - (remainder / total);
 
         this.load.image("berserkerPlayer", "/assets/images/berserkerSkin.png");
         this.load.image("tankPlayer", "/assets/images/tankSkin.png");
-        // samurai player and sword
-        this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
-        // knight player and sword
+        // warrior evolution
+        this.load.image("warriorPlayer", "/assets/images/warriorSkin.png");
+        // knight evolution
         this.load.image("knightPlayer", "/assets/images/knightSkin.png");
 
+        // vampire evolution
+        this.load.image("vampirePlayer", "/assets/images/vampireSkin.png");
+        // rook evolution
+        this.load.image("rookPlayer", "/assets/images/rookSkin.png");
 
 
         this.load.image("seaPlayer", "/assets/images/seaPlayer.png");

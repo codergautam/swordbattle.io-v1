@@ -29,6 +29,13 @@
             "description": "Magical, colorful, mysterious"
         },
         {
+            "name": "bullseye",
+            "displayName": "Bullseye",
+            "url": "/assets/images/bullseyePlayer.png",
+            "price": 400,
+            "description": "It can't miss"
+        },
+        {
             "name": "fox",
             "displayName": "Fox",
             "url": "/assets/images/foxPlayer.png",
@@ -43,6 +50,13 @@
             "description": "Spring is here!"
         },
         {
+            "name": "bowling",
+            "displayName": "Bowling",
+            "url": "/assets/images/bowlingPlayer.png",
+            "price": 3500,
+            "description": "It can knock people over like a pin"
+        },
+        {
             "name": "hacker",
             "displayName": "Hacker",
             "url": "/assets/images/hackerPlayer.png",
@@ -53,7 +67,7 @@
             "name": "bread",
             "displayName": "Bread",
             "url": "/assets/images/breadPlayer.png",
-            "price": 7000,
+            "price": 7500,
             "description": "Fresh, and tasty!"
         },
         {
@@ -62,6 +76,13 @@
             "url": "/assets/images/chefPlayer.png",
             "price": 10000,
             "description": "Chop 'em up"
+        },
+        {
+            "name": "radiation",
+            "displayName": "Radiation",
+            "url": "/assets/images/radiationPlayer.png",
+            "price": 12500,
+            "description": "Very Toxic..."
         },
         {
             "name": "astronaut",
@@ -82,7 +103,35 @@
             "displayName": "Sea",
             "url": "/assets/images/seaPlayer.png",
             "price": 25000,
-            "description": "Peaceful, and relaxing."
+            "description": "Peaceful and relaxing."
+        },
+        {
+            "name": "tiger",
+            "displayName": "Tiger",
+            "url": "/assets/images/tigerPlayer.png",
+            "price": 30000,
+            "description": "Don't get in the way of its claws..."
+        },
+        {
+            "name": "lightning",
+            "displayName": "Lightning",
+            "url": "/assets/images/lightningPlayer.png",
+            "price": 35000,
+            "description": "One zap and you're dead..."
+        },
+        {
+            "name": "mystery",
+            "displayName": "Mystery",
+            "url": "/assets/images/mysteryPlayer.png",
+            "price": 40000,
+            "description": "Its a murder mystery..."
+        },
+        {
+            "name": "cheese",
+            "displayName": "Cheese",
+            "url": "/assets/images/cheesePlayer.png",
+            "price": 45000,
+            "description": "Its cheese"
         },
         {
             "name": "medic",
@@ -92,11 +141,25 @@
             "description": "Heal.. or Stab..."
         },
         {
+            "name": "soldier",
+            "displayName": "Soldier",
+            "url": "/assets/images/soldierPlayer.png",
+            "price": 75000,
+            "description": "A hardened veteran"
+        },
+        {
             "name": "winter",
             "displayName": "Winter",
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "panda",
+            "displayName": "Panda",
+            "url": "/assets/images/pandaPlayer.png",
+            "price": 125000,
+            "description": "It looks cuddly but watch out..."
         },
         {
             "name": "emerald",
@@ -106,11 +169,25 @@
             "description": "Oooh shiny...."
         },
         {
+            "name": "lava",
+            "displayName": "Lava",
+            "url": "/assets/images/lavaPlayer.png",
+            "price": 175000,
+            "description": "Hot Hot Hot"
+        },
+        {
             "name": "cyborg",
             "displayName": "Cyborg",
             "url": "/assets/images/cyborgPlayer.png",
             "price": 200000,
             "description": "AI-Assisted Stabbing"
+        },
+        {
+            "name": "scorpion",
+            "displayName": "Scorpion",
+            "url": "/assets/images/scorpionPlayer.png",
+            "price": 250000,
+            "description": "Poisoned wounds are the worst..."
         },
         {
             "name": "devex",
@@ -134,11 +211,39 @@
             "description": "Glitch them out of existence"
         },
         {
+            "name": "patchwork",
+            "displayName": "Patchwork",
+            "url": "/assets/images/patchworkPlayer.png",
+            "price": 750000,
+            "description": "Its only being held together by some glitch..."
+        },
+        {
             "name": "devil",
             "displayName": "Devil",
             "url": "/assets/images/devilPlayer.png",
             "price": 1000000,
             "description": "Now this will scare everyone!"
+        },
+        {
+            "name": "demon",
+            "displayName": "Demon",
+            "url": "/assets/images/demonPlayer.png",
+            "price": 1000000,
+            "description": "Brother of the devil"
+        },
+        {
+            "name": "honeycomb",
+            "displayName": "Honeycomb",
+            "url": "/assets/images/honeycombPlayer.png",
+            "price": 1250000,
+            "description": "Very sweet!"
+        },
+        {
+            "name": "storm",
+            "displayName": "Storm",
+            "url": "/assets/images/stormPlayer.png",
+            "price": 1250000,
+            "description": "A storm is brewing"
         },
         {
             "name": "cookie",
