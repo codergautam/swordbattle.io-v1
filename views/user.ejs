@@ -290,7 +290,7 @@ if(recent) {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                  <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
+                  <% var e = 0; games.forEach((x)=>e+=(x.kills*300)+x.coins ) %>
                     <%= numberWithCommas(e) %>
                 </h3>
               </div>
