@@ -83,7 +83,7 @@ var progress = 1 - (remainder / total);
         this.load.image("bowlingPlayer", "/assets/images/bowlingPlayer.png");
         this.load.image("bowlingSword", "/assets/images/bowlingSword.png");
 
-this.load.image("samuraiSkin", "/assets/images/samuraiSkin.png");
+this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
 
         this.load.image("bullseyePlayer", "/assets/images/bullseyePlayer.png");
         this.load.image("bullseyeSword", "/assets/images/bullseyeSword.png");
