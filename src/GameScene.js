@@ -1542,7 +1542,7 @@ try {
 
 			}
 			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
-				this.socket.send("throw");
+				this.socket.send("throw", []);
 			}
     
 			this.socket.send("move", controller);
