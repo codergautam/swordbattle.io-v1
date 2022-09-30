@@ -2,7 +2,6 @@ const express = require("express");
 const https = require("https");
 var http = require("http");
 require("dotenv").config();
-const { Server } = require("socket.io");
 const app = express();
 var emailValidator = require("email-validator");
 const bcrypt = require("bcrypt");
@@ -12,6 +11,7 @@ var process = require("process");
 
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
+
 
 var usewebhook = false;
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
@@ -53,17 +53,20 @@ if (process.env.USEFISHYSSL === "true") {
 }
 server = http.createServer(app);
 
+const ws = require("ws");
+const wss = new ws.Server({ server: usinghttps ? httpsserver : server });
 //server = http.createServer(app);
+
 
 const axios = require("axios").default;
 var filter = require("leo-profanity");
 const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
-// var {recaptcha} = require("./config.json");
+ var {recaptcha, localServer} = require("./config.json");
 
 // DISABLED DUE TO PEOPLE HAVING ISSUES
 
-recaptcha = true;
+// recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
@@ -97,9 +100,8 @@ if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof
 next();
 };
 
-const io = new Server(usinghttps ? httpsserver : server, {
-  cors: { origin: "*" },
-});
+const WsMapper = require("./classes/WsMapper");
+const io = new WsMapper(wss);
 
 const evolutions = require("./classes/evolutions");
 const { lineCircle } = require("intersects");
@@ -109,7 +111,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = true;
+var production = !localServer;
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
@@ -158,7 +160,6 @@ var oldlevels = [
   {coins: 100000, scale: 1.7},
   {coins: 200000, scale: 1.8},
 ];
-console.log(Object.keys(oldlevels).length);
 app.set("trust proxy", true);
 /*
 app.use((req, res, next) => {
@@ -194,7 +195,6 @@ oldlevels.forEach((level, index)  =>{
 		levels.push(Object.assign({start: levels[index - 1].coins, num:index+1}, level));
 	}
 });
-console.log(levels);
 
 moderation.start(app, io);
 
@@ -720,20 +720,26 @@ var maxChests = 20;
 var maxAiPlayers = 15;
 var maxPlayers = 50;
 
+
 io.on("connection", async (socket) => {
   socket.joinTime = Date.now();
-  socket.ip = socket.handshake.headers["x-forwarded-for"];
 
   if (moderation.bannedIps.includes(socket.ip)) {
-    socket.emit(
+    socket.send(
       "ban",
       "You are banned. Appeal to appeals@swordbattle.io<br><br>BANNED IP: " +
         socket.ip
     );
     socket.disconnect();
   }
+  
+  socket.on("pong", () => {
+    socket.lastSuccessfullPing = Date.now();
+    socket.ping = Date.now() - socket.lastPinged;
+    socket.pong = true;
+  });
 
-  socket.on("go", async (r, captchatoken, tryverify, options) => {
+  socket.on("go", async ([r, captchatoken, tryverify, options]) => {
     async function ready() {
       var name;
       if (!tryverify) {
@@ -746,7 +752,7 @@ io.on("connection", async (socket) => {
       } else {
         var accounts = await sql`select * from accounts where secret=${r}`;
         if (!accounts[0]) {
-          socket.emit(
+          socket.send(
             "ban",
             "Invalid secret, please try logging out and relogging in"
           );
@@ -778,33 +784,32 @@ io.on("connection", async (socket) => {
 				
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
-				socket.broadcast.emit("new", thePlayer);
+				socket.broadcast.send("new", thePlayer);
 
 				var allPlayers = Object.values(PlayerList.players);
 				allPlayers = allPlayers.filter((player) => player.id != socket.id);
 
-				if (allPlayers && allPlayers.length > 0) socket.emit("players", allPlayers);
-				//TODO: Make coins emit only within range
-				socket.emit("coins", coins.filter((coin) => coin.inRange(thePlayer)));
-				socket.emit("chests", chests);
+				if (allPlayers && allPlayers.length > 0) socket.send("players", allPlayers);
+				socket.send("coins", coins.filter((coin) => coin.inRange(thePlayer)));
+				socket.send("chests", chests);
 
 				socket.joined = true;
-        socket.emit("levels", levels);
+        socket.send("levels", levels);
 
 		}
 		if (!captchatoken && recaptcha) {
-			socket.emit(
+			socket.send(
 				"ban",
 				"You were kicked for not sending a captchatoken. Send this message to bugs@swordbattle.io if you think this is a bug."
 			);
 			return socket.disconnect();
 		}
 		if (!r) {
-			socket.emit("ban", "You were kicked for not sending a name. ");
+			socket.send("ban", "You were kicked for not sending a name. ");
 			return socket.disconnect();
 		}
 		if (PlayerList.has(socket.id)) {
-			socket.emit(
+			socket.send(
 				"ban",
 				"You were kicked for 2 players on 1 id. Send this message to support@swordbattle.io<br> In the meantime, try restarting your computer if this happens a lot. "
 			);
@@ -812,7 +817,7 @@ io.on("connection", async (socket) => {
 		}
 		//console.log(Object.values(PlayerList.players).length);
 		if (Object.values(PlayerList.players).length >= maxPlayers) {
-			socket.emit("ban", "Server is full. Please try again later.");
+			socket.send("ban", "Server is full. Please try again later.");
 			return socket.disconnect();
 		}
 
@@ -830,7 +835,7 @@ io.on("connection", async (socket) => {
 				.then((f) => {
 					f = f.data;
 					if (!f.success) {
-						socket.emit(
+						socket.send(
 							"ban",
 							"Error while verifying captcha<br>" + f["error-codes"].toString()
 						);
@@ -838,7 +843,7 @@ io.on("connection", async (socket) => {
 						return;
 					}
 					if (f.score < 0.3) {
-						socket.emit(
+						socket.send(
 							"ban",
 							`Captcha score too low: ${f.score}<br><br>If you're using a vpn, disable it. <br>If your on incognito, go onto a normal window<br>If your not signed in to a google account, sign in<br><br>If none of these worked, contact support@swordbattle.io`
 						);
@@ -851,7 +856,7 @@ io.on("connection", async (socket) => {
 	});
 
   socket.on("evolve", (eclass) => {
-    if(!PlayerList.has(socket.id)) return socket.emit("refresh");
+    if(!PlayerList.has(socket.id)) return socket.send("refresh");
     var player = PlayerList.getPlayer(socket.id);
     if(player && player.evolutionQueue && player.evolutionQueue.length > 0 && player.evolutionQueue[0].includes(eclass.toLowerCase())) {
       eclass = eclass.toLowerCase();
@@ -866,14 +871,14 @@ io.on("connection", async (socket) => {
     }
   });
   socket.on("ability", () => {
-    if(!PlayerList.has(socket.id)) return socket.emit("refresh");
+    if(!PlayerList.has(socket.id)) return socket.send("refresh");
     var player = PlayerList.getPlayer(socket.id);
     if(player.evolution != "") {
       // check if ability activated already
       if(player.ability <= Date.now()) {
         player.ability = evolutions[player.evolution].abilityCooldown + evolutions[player.evolution].abilityDuration + Date.now();
         console.log(player.name + " activated ability");
-        socket.emit("ability", [evolutions[player.evolution].abilityCooldown , evolutions[player.evolution].abilityDuration, Date.now()]);
+        socket.send("ability", [evolutions[player.evolution].abilityCooldown , evolutions[player.evolution].abilityDuration, Date.now()]);
       }
     }
   });
@@ -885,7 +890,7 @@ io.on("connection", async (socket) => {
 			PlayerList.updatePlayer(thePlayer);
      
 		}
-		else socket.emit("refresh");
+		else socket.send("refresh");
 
 		//console.log(mousePos.x +" , "+mousePos.y )
 	});
@@ -899,7 +904,7 @@ io.on("connection", async (socket) => {
       flyingSwords.push({hit: [], scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
       player.lastSwordThrow = Date.now();
       PlayerList.updatePlayer(player);
-    } else socket.emit("refresh");
+    } else socket.send("refresh");
   });
 
 	socket.on("mouseDown", (down) => {
@@ -908,7 +913,7 @@ io.on("connection", async (socket) => {
 			if (player.mouseDown == down || !player.swordInHand) return;
 			[coins,chests] = player.down(down, coins, io, chests);
 			PlayerList.updatePlayer(player);
-		} else socket.emit("refresh");
+		} else socket.send("refresh");
 	});
 
 	socket.on("move", (controller) => {
@@ -935,7 +940,7 @@ io.on("connection", async (socket) => {
 			p.lastChat = Date.now();
 			PlayerList.setPlayer(socket.id, p);
 			
-				io.sockets.emit("chat", {
+				io.sockets.send("chat", {
 					msg: filter.clean(msg),
 					id: socket.id,
 				});
@@ -948,7 +953,7 @@ io.on("connection", async (socket) => {
 		if(serverState == "exiting") return;
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
-
+console.log(thePlayer.name + " - " + socket.id + " disconnected");
               //drop their coins
               var drop = [];
               var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
@@ -971,14 +976,14 @@ io.on("connection", async (socket) => {
                 drop.push(coins[coins.length - 1]);
               }
 
-                io.sockets.emit("coin", drop, [thePlayer.pos.x, thePlayer.pos.y]);
+                io.sockets.send("coin", [drop, [thePlayer.pos.x, thePlayer.pos.y]]);
 								
               
 
 		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 
 		PlayerList.deletePlayer(socket.id);
-		socket.broadcast.emit("playerLeave", socket.id);
+		socket.broadcast.send("playerLeave", socket.id);
 	});
 });
 
@@ -1001,6 +1006,7 @@ app.get("/api/serverinfo", (req, res) => {
   });
 });
 
+
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
@@ -1008,11 +1014,11 @@ setInterval(async () => {
 	moderation.io = io;
 	if (coins.length < maxCoins) {
 		coins.push(new Coin());
-		io.sockets.emit("coin", coins[coins.length - 1]);
+		io.sockets.send("coin", [coins[coins.length - 1]]);
 	}
 	if(chests.length < maxChests) {
 		chests.push(new Chest());
-		io.sockets.emit("chest", chests[chests.length - 1]);
+		io.sockets.send("chest", chests[chests.length - 1]);
 	}
 	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
 	var aiPlayers = Object.keys(PlayerList.players).length;
@@ -1057,12 +1063,12 @@ setInterval(async () => {
     chests.forEach((chest, i) => {
       if(lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) {
         chests.splice(chests.indexOf(chest), 1);
-        io.sockets.emit("collected", chest.id, sword.id, false);
+        io.sockets.send("collected", [chest.id, sword.id, false]);
 
         //drop coins at that spot
         var drop = chest.open();
 
-        io.sockets.emit("coin", drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]);
+        io.sockets.send("coin", [drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]]);
           coins.push(...drop);
       }
     });
@@ -1075,25 +1081,25 @@ setInterval(async () => {
       } 
     }
   });
-  io.emit("flyingSwords", flyingSwords);
+  io.sockets.send("flyingSwords", flyingSwords);
 
 	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
 		var id = uuidv4();
 		var theAi = new AiPlayer(id);
 		console.log("AI Player Joined -> "+theAi.name);
 		PlayerList.setPlayer(id, theAi);
-		io.sockets.emit("new", theAi);
+		io.sockets.send("new", theAi);
 	}
-	//emit tps to clients
+	//send tps to clients
 	if (Date.now() - secondStart >= 1000) {
-		io.sockets.emit("tps", tps);
+		io.sockets.send("tps", tps);
 		actps = tps;
 		//console.log("Players: "+Object.keys(players).length+"\nTPS: "+tps+"\n")
 		secondStart = Date.now();
 		tps = 0;
 	}
 	if (Date.now() - lastChestSend >= 10000) {
-		io.sockets.emit("chests", chests);
+		io.sockets.send("chests", chests);
 
 		lastChestSend = Date.now();
 	}
@@ -1104,12 +1110,27 @@ setInterval(async () => {
 
 	sockets.forEach((b) => {
 		if (!b.joined && Date.now() - b.joinTime > 10000) {
-			b.emit(
+			b.send(
 				"ban",
 				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device."
 			);
 			b.disconnect();
 		}
+
+    if(!b.lastPinged) {
+      b.lastPinged = 0;
+      b.ping = 0;
+      b.lastSuccessfullPing = 0;
+      b.pong = true;
+    }
+    if((Date.now() - b.lastPinged > 2000) && b.pong) {
+      b.pong = false;
+      b.send("ping", b.ping);
+      b.lastPinged = Date.now();
+    } else if (Date.now() - b.lastPinged >30000) {
+      b.send("ban", "You have been kicked for not responding to ping packets. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device.");
+      b.disconnect();
+    }
 	});
 
 	playersarray.forEach((player) => {
@@ -1131,14 +1152,14 @@ setInterval(async () => {
 			}
 			PlayerList.updatePlayer(player);
 
-			//emit player data to all clients
+			//send player data to all clients
 			sockets.forEach((socket) => {
 				if(!player.getSendObj()) console.log("gg");
-				if (player.id != socket.id) socket.emit("player", player.getSendObj());
+				if (player.id != socket.id) socket.send("player", player.getSendObj());
 				else {
-					socket.emit("me", player);
+					socket.send("me", player);
 				if(Date.now() - lastCoinSend >= 1000) {
-					socket.emit("coins", coins.filter((coin) => coin.inRange(player)));
+					socket.send("coins", coins.filter((coin) => coin.inRange(player)));
 				}
 				}
 			});
@@ -1272,7 +1293,7 @@ async function cleanExit() {
     if (player && !player.ai) {
       var socket = sockets.find((s) => s.id == player.id);
       if (socket) {
-        socket.emit(
+        socket.send(
           "ban",
           "<h1>Server is shutting down, we'll be right back!<br>Sorry for the inconvenience.<br><br>" +
             (player.verified

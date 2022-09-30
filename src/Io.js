@@ -1,0 +1,55 @@
+
+const io = function(url) {
+  const ws = new WebSocket(url);
+  return new Socket(ws);
+};
+
+import EventEmitter from "eventemitter3";
+
+class Socket extends EventEmitter  {
+  constructor(ws) {
+    super();
+    this.socket = ws;
+    this.connected = false;
+    this.socket.onopen = () => {
+      console.log("ws connection created");
+    };
+    this.socket.onclose = () => {
+      console.log("ws connection closed");
+      this.connected = false;
+    };
+    this.socket.onmessage = (data) => {
+      var message;
+      try {
+        message = JSON.parse(data.data);
+      } catch {
+        return;
+      }
+      this.emit(message.t, message.d);
+
+      if(message.t === "id") {
+        this.id = message.d;
+        this.connected = true;
+      this.emit("connected");
+
+      }
+    };
+
+  }
+  send(...args) {
+    if(!this.connected) return;
+    if(args.length == 2) {
+      this.socket.send(JSON.stringify({
+        t: args[0],
+        d: args[1]
+      }));
+    } else {
+      console.trace("TOO MUCH DATA");
+    }
+  }
+  disconnect() {
+    this.socket.close();
+  }
+}
+
+export default io;

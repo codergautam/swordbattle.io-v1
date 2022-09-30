@@ -262,7 +262,7 @@ var move = true;
           coins.splice(index, 1);
 
           this.updateValues();
-          io.sockets.emit("collected", coin.id, this.id, true);
+          io.sockets.send("collected", [coin.id, this.id, true]);
         });
 
 
@@ -353,7 +353,6 @@ return false;
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     var socketById = io.sockets.sockets.get(enemy.id);
     var socket = io.sockets.sockets.get(this.id);
-
     //if colliding
 
     if(this.ai) {
@@ -373,8 +372,8 @@ return false;
     if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
       enemy.health = enemy.maxHealth * 0.1;
     if (enemy.health <= 0) {
-      if(!this.ai && socket) socket.emit("dealHit", enemy.id);
-      if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
+      if(!this.ai && socket) socket.send("dealHit", [enemy.id]);
+      if(!enemy.ai && socketById) socketById.send("takeHit", [this.id]);
       //enemy has 0 or less than 0 health, time to kill
     if(!enemy.ai) sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
 
@@ -386,20 +385,20 @@ return false;
 
         
         
-      socketById.emit("youDied", {
+      socketById.send("youDied", {
         killedBy: this.name,
         killerVerified: this.verified,
         killedById: this.id,
         timeSurvived: Date.now() - enemy.joinTime,
       });
     
-      socketById.broadcast.emit("playerDied", enemy.id, {
+      socketById.broadcast.send("playerDied", [enemy.id, {
         killedBy: {id: this.id, name: this.name},
-      });
+      }]);
       } else {
-        io.sockets.emit("playerDied", enemy.id, {
+        io.sockets.send("playerDied", [enemy.id, {
           killedBy: {id: this.id, name: this.name},
-        });
+        }]);
       }
       //drop their coins
       var drop = [];
@@ -423,7 +422,7 @@ return false;
         drop.push(coins[coins.length - 1]);
       }
 
-        io.sockets.emit("coin", drop, [enemy.pos.x, enemy.pos.y]);
+        io.sockets.send("coin", [drop, [enemy.pos.x, enemy.pos.y]]);
       
       //log a message
       console.log(this.name+" killed " + enemy.name);
@@ -435,13 +434,13 @@ return false;
     // if(!enemy.ai && socketById) socketById.disconnect();
     } else {
       enemy.doKnockback(this, angle);
-      if(!this.ai && socket) socket.emit("dealHit", enemy.id, enemy.pos);
-      if(!enemy.ai && socketById) socketById.emit("takeHit", this.id, this.pos);
+      if(!this.ai && socket) socket.send("dealHit", [enemy.id, enemy.pos]);
+      if(!enemy.ai && socketById) socketById.send("takeHit", [this.id, this.pos]);
     }
   } else {
     enemy.doKnockback(this, angle);
-    if(!this.ai && socket) socket.emit("dealHit", enemy.id);
-    if(!enemy.ai && socketById) socketById.emit("takeHit", this.id);
+    if(!this.ai && socket) socket.send("dealHit", [enemy.id]);
+    if(!enemy.ai && socketById) socketById.send("takeHit", [this.id]);
   }
   return coins;
   }
@@ -471,12 +470,12 @@ return false;
             if (this.hittingChest(chest)) {
               //remove the chest
               chests.splice(chests.indexOf(chest), 1);
-              io.sockets.emit("collected", chest.id, this.id, false);
+              io.sockets.send("collected", [chest.id, this.id, false]);
     
               //drop coins at that spot
               var drop = chest.open();
     
-              io.sockets.emit("coin", drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]);
+              io.sockets.send("coin", [drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]]);
                 coins.push(...drop);
             }
           });

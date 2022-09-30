@@ -6,7 +6,7 @@ import {locations} from "./bushes.json";
 import Phaser from "phaser";
 import {CAPTCHASITE,localServer} from "./../config.json";
 
-import { io } from "socket.io-client";
+import io from "./Io.js";
 
 class GameScene extends Phaser.Scene {
 	constructor(callback) {
@@ -156,7 +156,7 @@ class GameScene extends Phaser.Scene {
 				this.abilityButton = this.add.image((this.canvas.width /5), (this.canvas.height /5)*4, "abilityBtn").setDepth(101).setScale(0.9).setVisible(false);
 				this.abilityButton.setInteractive();
 				this.abilityButton.on("pointerdown", () => {
-					this.socket.emit("ability");
+					this.socket.send("ability", []);
 				});
 				this.ability = this.add.text(this.abilityButton.x, this.abilityButton.y-100, "").setDepth(101).setVisible(false).setFontSize(50).setFontFamily("Georgia, \"Goudy Bookletter 1911\", Times, serif").setOrigin(0.5);
 
@@ -246,7 +246,7 @@ class GameScene extends Phaser.Scene {
 						if(this.chat.obj) {
 							
 							var msg = this.chat.obj.getChildByID("chat").value.trim();
-							if(msg.length > 0) this.socket.emit("chat", msg);
+							if(msg.length > 0) this.socket.send("chat", msg);
 
 						this.chat.obj.destroy();
 						}
@@ -254,7 +254,7 @@ class GameScene extends Phaser.Scene {
 					}),
 				};
 				this.throwBtn = new ImgButton(this, 0, 0, "throwbtn", () => {
-					this.socket.emit("throw");
+					this.socket.send("throw", []);
 					var curPointer = this.gamePoint;
 					setTimeout(() => {
 						this.gamePoint = curPointer;
@@ -326,7 +326,7 @@ class GameScene extends Phaser.Scene {
 						if(this.chat.obj) {
 							
 							var msg = this.chat.obj.getChildByID("chat").value.trim();
-							if(msg.length > 0) this.socket.emit("chat", msg);
+							if(msg.length > 0) this.socket.send("chat", msg);
 
 						this.chat.obj.destroy();
 						}
@@ -477,12 +477,9 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "https://swordbattle.herokuapp.com" : "https://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://swordbattle.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
-				this.socket = io(localServer?undefined:server,{
-					closeOnBeforeunload: false,
-          transports: ["websocket"]
-				});
+				this.socket = io(localServer?"ws://localhost:3000/":server);
 			
 				var showed = false;
 				function handleErr(err) {
@@ -492,12 +489,12 @@ class GameScene extends Phaser.Scene {
 					showed = true;
 				}
 				this.socket.on("connect_error", handleErr);
-				this.socket.on("connect_failed",handleErr);
+				this.socket.on("ban",handleErr);
 
-				console.log(this.name);
-
-				if(!this.secret) this.socket.emit("go", this.name, thetoken, false, this.options);
-				else this.socket.emit("go", this.secret, thetoken, true,this.options);
+				this.socket.on("connected", ()=>{
+					// alert("Connected to server!");
+				if(!this.secret) this.socket.send("go", [this.name, thetoken, false, this.options]);
+				else this.socket.send("go", [this.secret, thetoken, true,this.options]);
 				//mouse down
 
 				
@@ -510,7 +507,7 @@ class GameScene extends Phaser.Scene {
 						this.gamePoint = {x: pointer.x, y: pointer.y};
 						}
 						this.mouseDown = true;
-						this.socket.emit("mouseDown", true);
+						this.socket.send("mouseDown", true);
 
 					}
 				};
@@ -523,7 +520,7 @@ class GameScene extends Phaser.Scene {
 							this.gamePoint = {x: pointer.x, y: pointer.y};
 							}
 						this.mouseDown = false;
-						this.socket.emit("mouseDown", false);
+						this.socket.send("mouseDown", false);
 					}
 				};
 				
@@ -536,7 +533,7 @@ class GameScene extends Phaser.Scene {
 						mouseUp();
 					}, this);
 				this.input.on("pointerdown", function (pointer) {
-					if(pointer.rightButtonDown() && this.meSword.visible) this.socket.emit("throw");
+					if(pointer.rightButtonDown() && this.meSword.visible) this.socket.send("throw", []);
 					else mouseDown(pointer);
 					
 				}, this);
@@ -557,10 +554,12 @@ class GameScene extends Phaser.Scene {
 				}
 				this.socket.on("tps", (tps) => {
 					this.tps = tps;
-					var start = Date.now();
-					this.socket.emit( "ping",()=> {
-							this.ping = (Date.now() - start);
-					});
+
+
+				});
+				this.socket.on("ping", (ping) => {
+					this.ping = ping;
+					this.socket.send("pong", []);
 
 				});
 				this.socket.on("ban", (data) => {
@@ -809,7 +808,7 @@ class GameScene extends Phaser.Scene {
 									
 									this.classPicker.draw(this);
 									const emitEvolve = (k)=> {
-										this.socket.emit("evolve", k);
+										this.socket.send("evolve", k);
 
 								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 										this.classPicker.draw(this);
@@ -1111,7 +1110,7 @@ class GameScene extends Phaser.Scene {
 
 				});
 				this.socket.on("playerLeave", this.removePlayer);
-				this.socket.on("playerDied", (id, data) => {
+				this.socket.on("playerDied", ([id, data]) => {
 				//check if killed by me
 
 				if(this.myObj && this.myObj.id === data.killedBy.id) {
@@ -1173,7 +1172,7 @@ class GameScene extends Phaser.Scene {
 
 				});
 
-				this.socket.on("dealHit", (playerId, pPos) => {
+				this.socket.on("dealHit", ([playerId, pPos]) => {
 					var player = this.enemies.find(enemyPlayer => enemyPlayer.id == playerId);
 					if(player && this.sys.game.loop.actualFps >= 30) {
 						var particles = this.add.particles("hitParticle");
@@ -1192,7 +1191,7 @@ class GameScene extends Phaser.Scene {
 					}
 					this.hit.play();
 				});
-				this.socket.on("takeHit", (playerId, pPos) => {
+				this.socket.on("takeHit", ([playerId, pPos]) => {
 					if(this.sys.game.loop.actualFps < 30) return;
 					this.damage.play();
 					var particles = this.add.particles("hitParticle");
@@ -1285,7 +1284,7 @@ class GameScene extends Phaser.Scene {
 					this.coins = this.coins.filter(e=>coinsArr.filter(b => (e.id == b.id) && (!e.state.collected)).length == 1);
 				});
 
-				this.socket.on("coin", (coin, start) => {      
+				this.socket.on("coin", ([coin, start]) => {      
 					if(Array.isArray(coin)) {
 						if(start) {
 						coin.forEach((x) => {
@@ -1458,7 +1457,7 @@ class GameScene extends Phaser.Scene {
 				this.socket.on("youWon", (data) => {
 					this.win(data);
 				});
-				this.socket.on("collected", (coinId, playerId, coin) => {
+				this.socket.on("collected", ([coinId, playerId, coin]) => {
 					if(this.myObj && this.myObj.id == playerId) {
 						(coin?this.coin:this.chestOpen).play();
 					}
@@ -1493,6 +1492,7 @@ class GameScene extends Phaser.Scene {
 							yoyo: false
 						});
 				},5000);
+			});
 			}).catch((e) => {
 				console.log(e);
 			});
@@ -1542,10 +1542,10 @@ try {
 
 			}
 			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
-				this.socket.emit("throw");
+				this.socket.send("throw");
 			}
     
-			this.socket.emit("move", controller);
+			this.socket.send("move", controller);
 		} catch(e) {
 			console.log(e);
 		}
@@ -1635,7 +1635,7 @@ try {
 			y: mousePos.y
 		};
 
-		if (this.socket && old && this.meSword.angle != old) this.socket.emit("mousePos", mousePos2);
+		if (this.socket && old && this.meSword.angle != old) this.socket.send("mousePos", mousePos2);
 
 		var fps = this.sys.game.loop.actualFps;
    

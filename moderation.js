@@ -15,7 +15,7 @@ module.exports = {
     start(app, io) {
       app.get("/announcement/:token", (req, res) => {
         if (process.env.TOKEN == req.params.token && typeof req.query.message == "string") {
-          io.emit("announcement", req.query.message);
+          io.sockets.send("announcement", req.query.message);
           res.send("Announcement sent to all players");
         } else {
           res.send("idot heckrs");
@@ -26,7 +26,7 @@ module.exports = {
           var all = await io.fetchSockets();
           var socket = all.find(s => s.id == req.query.id);
           if (socket) {
-            socket.emit("announcement", req.query.message);
+            socket.send("announcement", req.query.message);
           res.send("Announcement sent");
           } else {
             res.send("Invalid id?");

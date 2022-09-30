@@ -81,7 +81,6 @@ class TitleScene extends Phaser.Scene {
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
-            console.log(sethtml);
             if (sethtml) {
               e.forEach((s, i) => {
                 console.log(s);
