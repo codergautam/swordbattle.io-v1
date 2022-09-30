@@ -488,7 +488,11 @@ class GameScene extends Phaser.Scene {
 					document.write("<b>Failed to contact the server, try a different server from settings (bottom left)</b><br><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
 					showed = true;
 				}
-				this.socket.on("connect_error", handleErr);
+				this.socket.on("connect_error", (e) => {
+          if(!this.spectating) {
+            handlErr(e);
+          }
+        });
 				this.socket.on("ban",handleErr);
 
 				this.socket.on("connected", ()=>{
