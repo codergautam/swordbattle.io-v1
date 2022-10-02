@@ -753,7 +753,7 @@ class GameScene extends Phaser.Scene {
 					try {
 						var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
         
-
+						if(!enemy) return;
 
 						//fade out the enemy using tweens
 						var fadeOut = this.tweens.add({
