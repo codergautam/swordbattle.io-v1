@@ -479,7 +479,7 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "eu1" ? "wss://swordbattle.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
-				this.socket = io(localServer?"ws://localhost:3000/":server);
+				this.socket = io(localServer?document.location.host == "localhost" ? "ws://localhost:3000" : "wss://"+document.location.host:server);
 			
 				var showed = false;
 				function handleErr(err) {
@@ -488,7 +488,11 @@ class GameScene extends Phaser.Scene {
 					document.write("<b>Failed to contact the server, try a different server from settings (bottom left)</b><br><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
 					showed = true;
 				}
-				this.socket.on("connect_error", handleErr);
+				this.socket.on("connect_error", (e) => {
+          if(!this.spectating) {
+            handlErr(e);
+          }
+        });
 				this.socket.on("ban",handleErr);
 
 				this.socket.on("connected", ()=>{
@@ -1542,7 +1546,7 @@ try {
 
 			}
 			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
-				this.socket.send("throw");
+				this.socket.send("throw", []);
 			}
     
 			this.socket.send("move", controller);
