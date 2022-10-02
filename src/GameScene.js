@@ -45,6 +45,14 @@ class GameScene extends Phaser.Scene {
 		var map = 10000;
 
         this.levels = [];
+
+				if(this.mobile) {
+					this.gamePoint = {x: 0, y: 0};
+					this.input.on("pointermove", (pointer) => {
+						if(this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
+						this.gamePoint = {x: pointer.x, y: pointer.y};
+					});
+				}
     
 		//recaptcha
 		grecaptcha.ready(() =>{
@@ -549,13 +557,7 @@ class GameScene extends Phaser.Scene {
 
 			
 
-				if(this.mobile) {
-					this.gamePoint = {x: 0, y: 0};
-					this.input.on("pointermove", (pointer) => {
-						if(this.joyStick.pointer && this.joyStick.pointer.id == pointer.id) return;
-						this.gamePoint = {x: pointer.x, y: pointer.y};
-					});
-				}
+
 				this.socket.on("tps", (tps) => {
 					this.tps = tps;
 
@@ -1498,7 +1500,7 @@ class GameScene extends Phaser.Scene {
 				},5000);
 			});
 			}).catch((e) => {
-				console.log(e);
+				console.trace(e);
 			});
 		});
 	}
@@ -1561,6 +1563,8 @@ try {
 
 		if(!this.mobile) var mousePos = this.input;
 		else var mousePos = this.gamePoint;
+
+		
 
 		this.meSword.angle = Math.atan2(mousePos.y - ( this.canvas.height / 2), mousePos.x - (this.canvas.width / 2)) * 180 / Math.PI + 45;
 		this.mePlayer.angle = this.meSword.angle + 45 +180;
