@@ -487,7 +487,18 @@ class GameScene extends Phaser.Scene {
 				//go packet
 				var server = this.options.server == "eu1" ? "wss://swordbattle.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
-				this.socket = io(localServer?document.location.host == "localhost" ? "ws://localhost:3000" : "wss://"+document.location.host:server);
+				function isPrivateIP(ip) {
+					//remove port if present
+					if (ip.indexOf(":") > -1) {
+						ip = ip.split(":")[0];
+					}
+
+					var parts = ip.split(".");
+					return parts[0] === "10" || 
+						 (parts[0] === "172" && (parseInt(parts[1], 10) >= 16 && parseInt(parts[1], 10) <= 31)) || 
+						 (parts[0] === "192" && parts[1] === "168");
+			 }
+				this.socket = io(localServer?document.location.host.includes("localhost")  ? "ws://localhost:3000" : (isPrivateIP(document.location.host) ? "ws://"+document.location.host : "wss://"+document.location.host):server);
 			
 				var showed = false;
 				function handleErr(err) {
