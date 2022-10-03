@@ -378,6 +378,12 @@ app.post("/api/changename", async (req,res) => {
 		return;
 	}
 
+  var containsProfanity2 = await filtery.containsProfanity(newUsername);
+  if(containsProfanity2) {
+    res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+    return;
+  }
+
   //get days since lastchange
   var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${secret}`;
   console.log(daysSince[0].days);
@@ -444,6 +450,12 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 	
 	var containsProfanity = filter.check(username);
 	if(containsProfanity) {
+		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
+		return;
+	}
+
+  var containsProfanity2 = await filtery.containsProfanity(username);
+	if(containsProfanity2) {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
@@ -770,6 +782,11 @@ io.on("connection", async (socket) => {
         } catch (e) {
           name = r.substring(0, 16);
         }
+        try {
+          name = await filtery.clean(name);
+        } catch(e) {
+          name = name;
+        }
       } else {
         var accounts = await sql`select * from accounts where secret=${r}`;
         if (!accounts[0]) {
@@ -952,7 +969,7 @@ io.on("connection", async (socket) => {
 	socket.on( "ping", function ( fn ) {
 		fn(); // Simply execute the callback on the client
 	} );
-	socket.on("chat", (msg) => {
+	socket.on("chat", async (msg) => {
 		msg = msg.trim().replace(/\\/g, "\\\\");
 		if (msg.length > 0) {
 			if (msg.length > 35) msg = msg.substring(0, 35);
@@ -960,7 +977,7 @@ io.on("connection", async (socket) => {
 			var p = PlayerList.getPlayer(socket.id);
 			p.lastChat = Date.now();
 			PlayerList.setPlayer(socket.id, p);
-			
+			msg = await filtery.clean(msg);
 				io.sockets.send("chat", {
 					msg: filter.clean(msg),
 					id: socket.id,
