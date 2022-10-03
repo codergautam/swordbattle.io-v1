@@ -1,3 +1,11 @@
+/*
+                           _ _           _   _   _        _       
+ _____      _____  _ __ __| | |__   __ _| |_| |_| | ___  (_) ___  
+/ __\ \ /\ / / _ \| '__/ _` | '_ \ / _` | __| __| |/ _ \ | |/ _ \ 
+\__ \\ V  V / (_) | | | (_| | |_) | (_| | |_| |_| |  __/_| | (_) |
+|___/ \_/\_/ \___/|_|  \__,_|_.__/ \__,_|\__|\__|_|\___(_)_|\___/ 
+A game by Gautam
+*/
 const express = require("express");
 const https = require("https");
 var http = require("http");
@@ -594,13 +602,13 @@ app.get("/leaderboard", async (req, res) => {
   //SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
 
   //var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
-  var type = ["coins", "kills", "time", "xp"].includes(req.query.type)
+  var type = ["coins", "kills", "time", "xp","totalkills","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
     : "coins";
   var duration = ["all", "day", "week", "xp"].includes(req.query.duration)
     ? req.query.duration
     : "all";
-  if (type !== "xp") {
+  if (type !== "xp" && !type.startsWith("total")) {
     if (duration != "all") {
       var lb =
         await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
@@ -613,14 +621,26 @@ app.get("/leaderboard", async (req, res) => {
     }
   } else {
     if (duration != "all") {
+      if(type == "xp"){
       var lb =
         await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
         } group by name order by xp desc limit 103`;
+      }else{
+        var lb =
+        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+          duration == "day" ? "86400" : "608400"
+        } group by name order by ${sql(type.slice(5))} desc limit 103`;
+      }
     } else {
+      if (type == "xp") {
       var lb =
         await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc limit 103`;
-    }
+      } else {
+        var lb =
+        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true group by name order by ${sql(type.slice(5))} desc limit 103`;
+      }
+      }
     lb = lb.map((x) => {
       x.verified = true;
       return x;
@@ -678,7 +698,7 @@ app.get("/:user", async (req, res, next) => {
 */
 
     var stats = await sql`
-		select a.dt,b.name,b.xp,b.kills from
+		select a.dt,b.name,b.xp,b.kills,b.coins,b.time from
 		(
 		select distinct(created_at::date) as Dt from games where created_at >= ${
       dbuser[0].created_at
@@ -705,6 +725,7 @@ app.get("/:user", async (req, res, next) => {
     });
   }
 });
+
 
 Object.filter = (obj, predicate) =>
   Object.keys(obj)

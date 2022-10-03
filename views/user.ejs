@@ -348,7 +348,7 @@ if(recent) {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                  <% var e = 0; games.forEach((x)=>e+=(x.kills*100)+x.coins ) %>
+                  <% var e = 0; games.forEach((x)=>e+=(x.kills*300)+x.coins ) %>
                     <%= user.skins.collected.length +" / "+ cosmetics.skins.length  %>
                 </h3>
               </div>
@@ -362,7 +362,12 @@ if(recent) {
             </div>
           </div>
         </div>
-
+<style>
+  .dropdown {
+display:inline-block;
+/* additional code */
+}
+</style>
         <div>
           <div class="dropdown">
             <button
@@ -384,11 +389,66 @@ if(recent) {
               >
             </div>
           </div>
+          <div class="dropdown">
+            <button
+              class="btn btn-secondary dropdown-toggle"
+              type="button"
+              data-toggle="dropdown"
+              aria-haspopup="true"
+              aria-expanded="false"
+              id="selected"
+            >
+              XP
+            </button>
+            <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              <button
+                class="dropdown-item"
+                id="op1"
+                >Coins</button>
+                            <button
+                class="dropdown-item"
+                              id="op2"
+                >Kills</button
+              >
+               <button
+                class="dropdown-item"
+                              id="op3"
+                >Time</button
+              >
+                
+            </div>
+            
+          </div>
           <canvas id="myChart"></canvas>
         </div>
         <script>
 
+       function msToTime(duration) {
+    const portions = [];
+  
+    const msInHour = 1000 * 60 * 60;
+    const hours = Math.trunc(duration / msInHour);
+    if (hours > 0) {
+      portions.push(hours + 'h');
+      duration = duration - (hours * msInHour);
+    }
+  
+    const msInMinute = 1000 * 60;
+    const minutes = Math.trunc(duration / msInMinute);
+    if (minutes > 0) {
+      portions.push(minutes + 'm');
+      duration = duration - (minutes * msInMinute);
+    }
+  
+    const seconds = Math.trunc(duration / 1000);
+    if (seconds > 0) {
+      portions.push(seconds + 's');
+    }
+
          
+  
+    return portions.join(' ') ? portions.join(' ') : "0s";
+  }
 
          const labels = <%- "["+stats.map((e) => `"${e.dt.toString().split(" ").slice(0,3).join(" ")}"`).join(",")+"]" %>
 
@@ -399,9 +459,35 @@ if(recent) {
           var xpData =  <%- "["+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
           var coinsData =  <%- "["+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
           var killsData =  <%- "["+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
-
+            var timeData =  <%- "["+stats.map((e) => `"${e.time?e.time:0}"`).join(",")+"]" %>
+function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
           var selected = "xp"
+  function changeSelector(obj) {
+           var list = ["XP", "Coins", "Kills", "Time"];
+           selected = obj.innerHTML.toLowerCase();
+    list = list.filter((o)=>o.toLowerCase()!=selected)
+    document.getElementById("selected").innerHTML = obj.innerHTML;
+    document.getElementById("op1").innerHTML = list[0];
+    document.getElementById("op2").innerHTML = list[1];
+    document.getElementById("op3").innerHTML = list[2];
+    changeTotal(true);
+    
+         }
 
+
+          document.getElementById("op1").addEventListener("click", () => {
+            changeSelector(document.getElementById("op1"))
+          })
+          document.getElementById("op2").addEventListener("click", () => {
+            changeSelector(document.getElementById("op2"))
+          })
+          document.getElementById("op3").addEventListener("click", () => {
+            changeSelector(document.getElementById("op3"))
+          })
+          
+          
           function getSelector() {
             if (selected == "xp") {
                 return xpData
@@ -409,6 +495,8 @@ if(recent) {
                 return coinsData
             } else if (selected == "kills") {
                 return killsData
+            } else if(selected == "time") {
+              return timeData
             }
         }
 
@@ -426,16 +514,51 @@ if(recent) {
                           var config = {
                             type: 'line',
                             data: data,
-                            options: {}
-                          };
+                            options: {
+
+          plugins: {
+            tooltip: {
+                callbacks: {
+                    label: function(context) {
+                        
+                        return context.dataset.label+": "+(selected=="time"?msToTime(context.parsed.y):numberWithCommas(context.parsed.y));
+                    }
+                }
+            }
+        },
+                              
+        scales: {
+            y: {
+                ticks: {
+                    // Include a dollar sign in the ticks
+                    callback: function(value, index, ticks) {
+                        return selected=="time"?msToTime(value):numberWithCommas(value)
+                    }
+                }
+            }
+        }
+       
+    }
+    }
+                          
                           var myChart = new Chart(
               document.getElementById('myChart'),
               config
             );
             document.getElementById("total").innerHTML = "Total"
-            function changeTotal(e) {
+            function changeTotal(e=false) {
                 
-                              if(document.getElementById("total").innerHTML == "Total") {
+                    if(e) {
+                     if(document.getElementById("total").innerHTML == "Total") {
+                         data.datasets[0].data = runningTotal(getSelector(selected).map(Number))
+                                  data.datasets[0].label = "Total "+selected
+                     } else {
+                                                   data.datasets[0].label = selected+" Gained"
+                                  data.datasets[0].data = (getSelector().map(Number))
+                     }
+                      uh();           
+                              return false; 
+                    }  else {         if(document.getElementById("total").innerHTML == "Total") {
                                   document.getElementById("total").innerHTML = "Gained"
                                   document.getElementById("totalClick").innerHTML = "Total"
                                   data.datasets[0].label = selected+" Gained"
@@ -448,6 +571,7 @@ if(recent) {
                               }
                               uh()
                               return false; 
+                            }
               }
 
               function uh() {
