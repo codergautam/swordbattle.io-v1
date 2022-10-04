@@ -1854,9 +1854,9 @@ try {
 						{color: "#90EE90", ranking: 100},
 						{color: "#023020", ranking: 50},
 	
-						{color: "#ffff00", ranking: 10},
+						{color: "#ffa500", ranking: 10},
 	
-						{color: "#ffa500", ranking: 5},
+						{color: "#ffff00", ranking: 5},
 	
 						{color: "#ff0000", ranking: 1},
 	

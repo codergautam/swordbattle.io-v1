@@ -466,6 +466,7 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		return;
 	}
 
+ async function doit() {
 	bcrypt.hash(req.body.password, 10, (err, hash) => {
 		if (err) {
 			res.status(500).send({error:"Internal server error"});
@@ -475,6 +476,33 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		sql`insert into accounts(username, password, email, secret, skins, lastlogin) values(${username}, ${hash}, ${req.body.email}, ${secret}, ${JSON.stringify({collected: ["player"], selected: "player"})}, ${Date.now()})`;
 		res.send({secret: secret});
 	});
+ }
+
+ var send = {
+  secret: process.env.CAPTCHASECRET,
+  response: req.body.captcha,
+  remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress 
+};
+
+if(recaptcha) {
+  axios
+    .post(
+      "https://www.google.com/recaptcha/api/siteverify?" +
+  new URLSearchParams(send)
+    )
+    .then(async (f) => {
+      f = f.data;
+      if (!f.success) {
+        res.status(403).send({error: "Captcha failed " +  f["error-codes"].toString()});
+        return;
+      }
+      if (f.score < 0.3) {
+        res.status(403).send({error: "Captcha score too low"});
+        return;
+      }
+      doit();
+    });
+}else doit();
 
 
 
@@ -504,7 +532,7 @@ app.post("/api/login",checkifMissingFields, async (req, res) => {
 	var send = {
 		secret: process.env.CAPTCHASECRET,
 		response: req.body.captcha,
-		remoteip: req.headers["x-forwarded-for"] || req.socket.remoteAddress 
+		remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress 
 	};
 	if(recaptcha) {
 		axios
@@ -991,11 +1019,11 @@ io.on("connection", async (socket) => {
 	function clamp(num, min, max) {
 		return num <= min ? min : num >= max ? max : num;
 	}
-	socket.on("disconnect", (reason) => {
+	socket.on("disconnect", () => {
 		if(serverState == "exiting") return;
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
-console.log(thePlayer.name + " - " + socket.id + " disconnected because " + reason);
+console.log(thePlayer.name + " - " + socket.id + " disconnected");
               //drop their coins
               var drop = [];
               var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
