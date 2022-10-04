@@ -822,7 +822,7 @@ io.on("connection", async (socket) => {
 				
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
-				socket.broadcast.send("new", thePlayer);
+				socket.broadcast.send("new", thePlayer.getSendObj());
 
 				var allPlayers = Object.values(PlayerList.players);
 				allPlayers = allPlayers.filter((player) => player.id != socket.id);
@@ -991,11 +991,11 @@ io.on("connection", async (socket) => {
 	function clamp(num, min, max) {
 		return num <= min ? min : num >= max ? max : num;
 	}
-	socket.on("disconnect", () => {
+	socket.on("disconnect", (reason) => {
 		if(serverState == "exiting") return;
 		if (!PlayerList.has(socket.id)) return;
 		var thePlayer = PlayerList.getPlayer(socket.id);
-console.log(thePlayer.name + " - " + socket.id + " disconnected");
+console.log(thePlayer.name + " - " + socket.id + " disconnected because " + reason);
               //drop their coins
               var drop = [];
               var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
@@ -1048,7 +1048,8 @@ app.get("/api/serverinfo", (req, res) => {
   });
 });
 
-
+var lastSendAll = 0;
+var allSendInt = 500;
 setInterval(async () => {
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
@@ -1130,7 +1131,7 @@ setInterval(async () => {
 		var theAi = new AiPlayer(id);
 		console.log("AI Player Joined -> "+theAi.name);
 		PlayerList.setPlayer(id, theAi);
-		io.sockets.send("new", theAi);
+		io.sockets.send("new", theAi.getSendObj());
 	}
 	//send tps to clients
 	if (Date.now() - secondStart >= 1000) {
@@ -1175,10 +1176,25 @@ setInterval(async () => {
     }
 	});
 
+  const shouldSendAll = Date.now() - lastSendAll >= allSendInt;
+  if(shouldSendAll) {
+    var allArr = [];
+  }
 	playersarray.forEach((player) => {
     
 		if(player) {
       player.updateValues();
+      if(shouldSendAll) {
+        allArr.push({
+          id: player.id,
+          name: player.name,
+          pos: player.pos,
+          scale: player.scale, 
+          coins: player.coins,
+          ranking: player.ranking,
+          verified: player.verified,
+        });
+      }
 			//   player.moveWithMouse(players)
 			if(player.ai) {
 				[coins,chests] = player.tick(coins, io, levels, chests);
@@ -1196,20 +1212,28 @@ setInterval(async () => {
 
 			//send player data to all clients
 			sockets.forEach((socket) => {
-				if(!player.getSendObj()) console.log("gg");
-				if (player.id != socket.id) socket.send("player", player.getSendObj());
-				else {
+        var outOfRange = [];
+				if(!player.getSendObj()) console.log("couldnt get send obj");
+				if ((player.id != socket.id) && (PlayerList.getPlayer(socket.id) ? player.inRange(PlayerList.getPlayer(socket.id)) : true)) socket.send("player", player.getSendObj());
+				else if(player.id == socket.id) {
 					socket.send("me", player);
 				if(Date.now() - lastCoinSend >= 1000) {
 					socket.send("coins", coins.filter((coin) => coin.inRange(player)));
 				}
-				}
+				 	} else {
+          outOfRange.push(player.id);
+        }
+        if(outOfRange.length > 0) socket.send("outOfRange", outOfRange);
 			});
 		}
 	});
 	if(Date.now() - lastCoinSend >= 1000) {
 		lastCoinSend = Date.now();
 	}
+  if(shouldSendAll) {
+    io.sockets.send("all", allArr);
+    lastSendAll = Date.now();
+  }
 	tps += 1;
 }, 1000 / 30);
 

@@ -314,6 +314,11 @@ return false;
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
   }
+  inRange(player) {
+    var show = 1500+((300*player.scale)*3);
+    var dist = Math.sqrt(Math.pow(this.pos.x - player.pos.x, 2) + Math.pow(this.pos.y - player.pos.y, 2));
+      return dist <= show;
+  }
   updateValues() {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
     const convert = (num, val, newNum) => (newNum * val) / num;
