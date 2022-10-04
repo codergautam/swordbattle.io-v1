@@ -119,7 +119,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 
-var production = !localServer;
+var production = process.env.PRODUCTION == "true";
 if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
@@ -132,7 +132,7 @@ if (production) {
 
 var oldlevels = [
 	{coins: 5, scale: 0.28},
-	{coins: 15, scale: 0.32},
+	{coins: 15, scale: 0.32, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 25, scale: 0.35},
 	{coins: 35, scale: 0.4},
 	{coins: 50, scale: 0.45},
@@ -154,12 +154,12 @@ var oldlevels = [
 	{coins: 2750, scale: 1.1},
 	{coins: 3000, scale: 1.15},
   {coins: 4000, scale: 1.17},
-	{coins: 5000, scale: 1.2, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 5000, scale: 1.2},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
 	{coins: 10000, scale: 1.53},
   {coins: 15000, scale: 1.55},
-  {coins: 20000, scale: 1.56, evolutions: [evolutions.samurai, evolutions.knight]},
+  {coins: 20000, scale: 1.56},
   {coins: 25000, scale: 1.57},
   {coins: 30000, scale: 1.58},
   {coins: 40000, scale: 1.59},
@@ -901,10 +901,14 @@ io.on("connection", async (socket) => {
       player.evolutionQueue.shift();
       var evo = evolutions[eclass];
       console.log(player.name + " evolved to " + eclass);
+
+    
           
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
+      player.checkSubEvolutions();
       player.updateValues();
+
       return;
     }
   });

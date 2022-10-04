@@ -37,6 +37,7 @@ class Player {
     //note these are hardcoded below in updatevalues() overriding doesn't work
      this.healWait = 5000;
     this.healAmount = 1;
+    this.leech = 1;
     // end of hardcoded values
 
     this.ability = 0;
@@ -253,7 +254,7 @@ var move = true;
                 var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions)?.map((e)=>e.evolutions).map((e)=>e.map((f)=>f.name));
                 this.evolutionQueue = [...this.evolutionQueue, ...evoLevels].filter((e)=>e);
               
-              
+                if(levelsPassed.length > 0) this.checkSubEvolutions();
             
           }
 
@@ -267,6 +268,16 @@ var move = true;
 
 
       return coins;
+  }
+  checkSubEvolutions() {
+    if(
+      evolutions[this.evolution] 
+      && evolutions[this.evolution].subEvolutions 
+      && evolutions[this.evolution].subEvolutions.length > 2 
+      && evolutions[this.evolution].subEvolutions[0] <= this.coins 
+      && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1] && q[1] == evolutions[this.evolution].subEvolutions[2]) == -1
+      ) this.evolutionQueue.push(evolutions[this.evolution].subEvolutions.slice(1).map((e)=>e.name));
+
   }
   hittingPlayer(player) {
 
@@ -284,7 +295,7 @@ var move = true;
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180));
     sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180));
 
-  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+  var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*0.8);
   var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
 
                           //get the values needed for line-circle-collison
@@ -319,6 +330,7 @@ return false;
     this.damageCooldown = (50 + (this.level * 12))*2;
     this.healAmount = 1;
     this.healWait = 5000;
+    this.leech =1;
 
     if(Object.keys(this.evolutionData).length > 0) {
       Object.keys(this.evolutionData.default).forEach((prop) => {
@@ -371,6 +383,10 @@ return false;
     enemy.health -= this.damage;
     if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
       enemy.health = enemy.maxHealth * 0.1;
+
+      this.health += (this.leech-1) * (oldHealth - Math.max(0, enemy.health));
+      if(this.health > this.maxHealth) this.health = this.maxHealth;
+
     if (enemy.health <= 0) {
       if(!this.ai && socket) socket.send("dealHit", [enemy.id]);
       if(!enemy.ai && socketById) socketById.send("takeHit", [this.id]);

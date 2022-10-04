@@ -82,8 +82,18 @@ var progress = 1 - (remainder / total);
         this.load.image("mitbladePlayer", "/assets/images/mitbladePlayer.png");
         this.load.image("bowlingPlayer", "/assets/images/bowlingPlayer.png");
         this.load.image("bowlingSword", "/assets/images/bowlingSword.png");
+  
+        // samurai evolution
+        this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
+        // warrior evolution
+        this.load.image("warriorPlayer", "/assets/images/warriorSkin.png");
+        // knight evolution
+        this.load.image("knightPlayer", "/assets/images/knightSkin.png");
 
-this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
+        // vampire evolution
+        this.load.image("vampirePlayer", "/assets/images/vampireSkin.png");
+        // rook evolution
+        this.load.image("rookPlayer", "/assets/images/rookSkin.png");
 
         this.load.image("bullseyePlayer", "/assets/images/bullseyePlayer.png");
         this.load.image("bullseyeSword", "/assets/images/bullseyeSword.png");
