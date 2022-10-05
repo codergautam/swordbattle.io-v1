@@ -485,10 +485,18 @@ return false;
       });
 
 
-    }
+    
           //chest collisions
           chests.forEach((chest) => {
             if (this.hittingChest(chest)) {
+              const convert = (num, val, newNum) => (newNum * val) / num;
+
+              // default damage cooldown gets 1 damage per hit
+              console.log(chest.health);
+
+              chest.health -= Math.round(convert(140, 1, this.damageCooldown));
+              io.sockets.send("chestHealth", [chest.id, chest.health]);
+              if(chest.health <= 0) {
               //remove the chest
               chests.splice(chests.indexOf(chest), 1);
               io.sockets.send("collected", [chest.id, this.id, false]);
@@ -498,8 +506,10 @@ return false;
     
               io.sockets.send("coin", [drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]]);
                 coins.push(...drop);
+              }
             }
           });
+        }
     return [coins, chests];
   }
 

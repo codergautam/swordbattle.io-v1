@@ -777,7 +777,12 @@ var chests = [];
 var flyingSwords = [];
 
 var maxCoins = 2000;
+
 var maxChests = 20;
+var maxRareChests = 10;
+var maxEpicChests = 5;
+var maxLegendaryChests = 1;
+
 var maxAiPlayers = 15;
 var maxPlayers = 50;
 
@@ -1087,8 +1092,20 @@ setInterval(async () => {
 		coins.push(new Coin());
 		io.sockets.send("coin", [coins[coins.length - 1]]);
 	}
-	if(chests.length < maxChests) {
+	if(chests.filter(c=>c.rarity == "normal").length < maxChests) {
 		chests.push(new Chest());
+		io.sockets.send("chest", chests[chests.length - 1]);
+	}
+  if(chests.filter(c=>c.rarity == "rare").length < maxRareChests) {
+		chests.push(new Chest(undefined, "rare"));
+		io.sockets.send("chest", chests[chests.length - 1]);
+	}
+  if(chests.filter(c=>c.rarity == "epic").length < maxEpicChests) {
+		chests.push(new Chest(undefined, "epic"));
+		io.sockets.send("chest", chests[chests.length - 1]);
+	}
+  if(chests.filter(c=>c.rarity == "legendary").length < maxLegendaryChests) {
+		chests.push(new Chest(undefined, "legendary"));
 		io.sockets.send("chest", chests[chests.length - 1]);
 	}
 	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
@@ -1133,6 +1150,9 @@ setInterval(async () => {
     // chest collisions
     chests.forEach((chest, i) => {
       if(lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) {
+        chest.health -= 1;
+        io.sockets.send("chestHealth", [chest.id, chest.health]);
+        if(chest.health <= 0) {
         chests.splice(chests.indexOf(chest), 1);
         io.sockets.send("collected", [chest.id, sword.id, false]);
 
@@ -1141,6 +1161,7 @@ setInterval(async () => {
 
         io.sockets.send("coin", [drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]]);
           coins.push(...drop);
+        }
       }
     });
     if (Date.now() - sword.time > 1000) {

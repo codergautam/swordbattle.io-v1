@@ -1341,9 +1341,31 @@ class GameScene extends Phaser.Scene {
 					this.chests.push(
 						{
 							id: chest.id,
-							item: this.add.image(start[0], start[1], "chest").setScale(chest.scale).setDepth(21).setAlpha(anim?0:1).setOrigin(0),
+							maxHealth: chest.maxHealth,
+							health: chest.health,
+							item: this.add.image(start[0], start[1], chest.rarity=="normal"?"chest":chest.rarity+"Chest").setScale(chest.scale).setDepth(21).setAlpha(anim?0:1).setOrigin(0),
+							healthBar: chest.rarity != "normal"?new HealthBar(this, start[0], start[1], 100, 25):undefined,
 						}
 					);
+
+					if(chest.rarity != "normal") {
+						var a = this.chests[this.chests.length-1];
+						var healthBar = a.healthBar;
+						var chest = a.item;
+						var maxHealth = a.maxHealth;
+						var health = a.health;
+						console.log(a);
+
+						this.UICam.ignore(healthBar.bar);
+						healthBar.x += chest.displayWidth/2;
+						healthBar.width = chest.displayWidth/1.2;
+						healthBar.x -= healthBar.width/2;
+						healthBar.maxValue = maxHealth;
+						healthBar.y -= 25+(healthBar.height/2);
+						healthBar.setHealth(health);
+
+					}
+					
 						if(anim) {
 							this.tweens.add({
 								targets: this.chests[this.chests.length-1].item,
@@ -1403,6 +1425,8 @@ class GameScene extends Phaser.Scene {
 					remove.forEach((chest) => {
                
 						chest.item.destroy();
+						if(chest.healthBar) chest.healthBar.bar.destroy();
+						console.log("destroyed chest");
 					});
 					this.chests = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 1);
 				});
@@ -1420,6 +1444,16 @@ class GameScene extends Phaser.Scene {
 					}
 					} else {      
 						addChest(chest);
+					} 
+				});
+
+				this.socket.on("chestHealth", ([id, health]) => {
+					var chest = this.chests.find(e => e.id == id);
+					if(chest) {
+						chest.health = health;
+						if(chest.healthBar) {
+							chest.healthBar.setHealth(chest.health);
+						}
 					}
 				});
 				//this.time.delayedCall(3000, () => {
@@ -1554,9 +1588,18 @@ class GameScene extends Phaser.Scene {
 					// eslint-disable-next-line semi
 					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
 					else if(this.chests.find(chest => chest.id == coinId)) { 
-						if(this.sys.game.loop.actualFps < 30) this.chests.find(chest => chest.id == coinId).item.destroy();
+						var chest = this.chests.find(chest => chest.id == coinId);
+
+						if(this.sys.game.loop.actualFps < 30) {
+							chest.item.destroy();
+							if(chest.healthBar) {
+								chest.healthBar.bar.destroy();
+							}
+							
+
+						}
 						else this.tweens.add({
-						targets: this.chests.find(chest => chest.id == coinId).item,
+						targets: chest.healthBar?[chest.item, chest.healthBar.bar]:chest.item,
 						alpha: 0,
 						duration: 500,
 						ease: "Sine2",
@@ -1804,6 +1847,7 @@ try {
                 
 		});
  
+
 	
 		var myObj = this.myObj;
   
