@@ -2,8 +2,14 @@
 <html>
   <head>
     <style>
+      .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       a {
         color: rgb(255, 255, 255);
+        margin: 1vw;
         font-family: "Franklin Gothic Medium", Arial, sans-serif;
       }
 
@@ -13,6 +19,14 @@
 
       a:active {
         color: rgb(128, 128, 128);
+      }
+
+      img {
+        width: auto;
+        max-height: 2.5vh;
+        background: white;
+        padding: 5px;
+        border-radius: 10px;
       }
 
       /*add media query at 1000 width*/
@@ -63,27 +77,24 @@
     </style>
   </head>
   <body>
-    <p class="footer">
-      <b>
-        <a href="/about.html" target="_blank">About</a>
-        &nbsp;&nbsp;
-        <a href="/leaderboard" target="_blank">Leaderboard</a>
-        <!--
+    <footer class="footer">
+      <a href="/about.html" target="_blank">About</a>
+      &nbsp;&nbsp;
+      <a href="/leaderboard" target="_blank">Leaderboard</a>
+      <!--
             &nbsp;&nbsp;
             <a href="https://github.com/codergautam/swordbattle.io">Github</a>
             -->
-        &nbsp;&nbsp;
-        <a href="https://forum.codergautam.dev/c/swordbattle" target="_blank"
-          >Forum</a
-        >
-        &nbsp;&nbsp;
-        <a
-          style="color: #7289da"
-          href="https://discord.gg/9A9dNTGWb9"
-          target="_blank"
-          >Discord</a
-        >
-      </b>
-    </p>
+      &nbsp;&nbsp;
+      <a href="https://forum.codergautam.dev/c/swordbattle" target="_blank"
+        >Forum</a
+      >
+      &nbsp;&nbsp;
+      <a href="https://discord.gg/9A9dNTGWb9" target="_blank">
+        <img
+          src="https://assets-global.website-files.com/6257adef93867e50d84d30e2/625eb604bb8605784489d361_Discord-Logo%2BWordmark-Color%20(1).png"
+          alt="Join our discord server"
+      /></a>
+    </footer>
   </body>
 </html>
