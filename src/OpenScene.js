@@ -183,10 +183,14 @@ var progress = 1 - (remainder / total);
 
         this.load.image("background", "/assets/images/background.jpeg");
         this.load.image("coin", "/assets/images/coin.png");
-        this.load.image("chest", "/assets/images/chest.png");
-        this.load.image("rareChest", "/assets/images/rareChest.png");
-        this.load.image("epicChest", "/assets/images/epicChest.png");
-        this.load.image("legendaryChest", "/assets/images/legendaryChest.png");
+
+        this.load.image("chest", "/assets/images/chests/chest.png");
+        this.load.image("epicChest", "/assets/images/chests/epicChest.png");
+        this.load.image("legendaryChest", "/assets/images/chests/legendaryChest.png");
+        this.load.image("mythicalChest", "/assets/images/chests/mythicalChest.png");
+        this.load.image("rareChest", "/assets/images/chests/rareChest.png");
+        this.load.image("uncommonChest", "/assets/images/chests/uncommonChest.png");
+
         this.load.image("kill", "/assets/images/kill.png");
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
         this.load.image("starParticle", "/assets/images/star.png");
@@ -207,6 +211,8 @@ var progress = 1 - (remainder / total);
         this.load.audio("winSound", "/assets/sound/win.m4a");
         this.load.audio("loseSound", "/assets/sound/lost.mp3");
         this.load.audio("chestOpen", "/assets/sound/chest.wav");
+        this.load.audio("chestHit", "/assets/sound/chesthit.wav");
+
 
         this.load.image("opening", "/assets/images/opening.png");
         this.load.html("title", "/title.html");

@@ -84,6 +84,7 @@ class GameScene extends Phaser.Scene {
 
 				this.coin = this.sound.add("coin", config);
 				this.chestOpen = this.sound.add("chestOpen", config);
+				this.chestHit = this.sound.add("chestHit", config);
 				this.damage = this.sound.add("damage", config);
 				this.hit = this.sound.add("hit", config);
 				this.winSound = this.sound.add("winSound", config);
@@ -859,7 +860,7 @@ class GameScene extends Phaser.Scene {
 
 							var bruh = map / 10000;
 
-							if(miniMapPlayer && miniMapPlayer.circle) {
+							if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 							miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 							}
 						} else {
@@ -1036,7 +1037,7 @@ class GameScene extends Phaser.Scene {
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 					var bruh = map / 10000;
-					if(miniMapPlayer && miniMapPlayer.circle) {
+					if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 					miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 					}	
 				}
@@ -1116,7 +1117,7 @@ class GameScene extends Phaser.Scene {
 							miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 							miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 							var bruh = map / 10000;
-							if(miniMapPlayer && miniMapPlayer.circle) {
+							if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 
 							miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 							}
@@ -1354,7 +1355,6 @@ class GameScene extends Phaser.Scene {
 						var chest = a.item;
 						var maxHealth = a.maxHealth;
 						var health = a.health;
-						console.log(a);
 
 						this.UICam.ignore(healthBar.bar);
 						healthBar.x += chest.displayWidth/2;
@@ -1426,7 +1426,6 @@ class GameScene extends Phaser.Scene {
                
 						chest.item.destroy();
 						if(chest.healthBar) chest.healthBar.bar.destroy();
-						console.log("destroyed chest");
 					});
 					this.chests = this.chests.filter(e=>chestsArr.filter(b => (e.id == b.id)).length == 1);
 				});
@@ -1447,12 +1446,15 @@ class GameScene extends Phaser.Scene {
 					} 
 				});
 
-				this.socket.on("chestHealth", ([id, health]) => {
+				this.socket.on("chestHealth", ([id, health, playerId]) => {
 					var chest = this.chests.find(e => e.id == id);
 					if(chest) {
 						chest.health = health;
 						if(chest.healthBar) {
 							chest.healthBar.setHealth(chest.health);
+							if(playerId == this.socket.id && chest.health > 0) {
+								this.chestHit.play();
+							}
 						}
 					}
 				});

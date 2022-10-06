@@ -778,10 +778,12 @@ var flyingSwords = [];
 
 var maxCoins = 2000;
 
-var maxChests = 20;
-var maxRareChests = 10;
-var maxEpicChests = 5;
+var maxChests = 10;
+var maxUncommonChests = 7;
+var maxRareChests = 5;
+var maxEpicChests = 2;
 var maxLegendaryChests = 1;
+var maxMythicalChests = 1;
 
 var maxAiPlayers = 15;
 var maxPlayers = 50;
@@ -1096,6 +1098,10 @@ setInterval(async () => {
 		chests.push(new Chest());
 		io.sockets.send("chest", chests[chests.length - 1]);
 	}
+  if(chests.filter(c=>c.rarity == "uncommon").length < maxUncommonChests) {
+		chests.push(new Chest(undefined, "uncommon"));
+		io.sockets.send("chest", chests[chests.length - 1]);
+	}
   if(chests.filter(c=>c.rarity == "rare").length < maxRareChests) {
 		chests.push(new Chest(undefined, "rare"));
 		io.sockets.send("chest", chests[chests.length - 1]);
@@ -1104,8 +1110,12 @@ setInterval(async () => {
 		chests.push(new Chest(undefined, "epic"));
 		io.sockets.send("chest", chests[chests.length - 1]);
 	}
-  if(chests.filter(c=>c.rarity == "legendary").length < maxLegendaryChests) {
+  if(chests.filter(c=>c.rarity == "legendary").length < maxLegendaryChests && Math.random() < 0.1) {
 		chests.push(new Chest(undefined, "legendary"));
+		io.sockets.send("chest", chests[chests.length - 1]);
+	}
+  if(chests.filter(c=>c.rarity == "mythical").length < maxMythicalChests && Math.random() < 0.01) {
+		chests.push(new Chest(undefined, "mythical"));
 		io.sockets.send("chest", chests[chests.length - 1]);
 	}
 	var normalPlayers = Object.values(PlayerList.players).filter(p => p && !p.ai).length;
@@ -1151,7 +1161,7 @@ setInterval(async () => {
     chests.forEach((chest, i) => {
       if(lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) {
         chest.health -= 1;
-        io.sockets.send("chestHealth", [chest.id, chest.health]);
+        io.sockets.send("chestHealth", [chest.id, chest.health, sword.id]);
         if(chest.health <= 0) {
         chests.splice(chests.indexOf(chest), 1);
         io.sockets.send("collected", [chest.id, sword.id, false]);

@@ -492,10 +492,11 @@ return false;
               const convert = (num, val, newNum) => (newNum * val) / num;
 
               // default damage cooldown gets 1 damage per hit
-              console.log(chest.health);
-
-              chest.health -= Math.round(convert(140, 1, this.damageCooldown));
-              io.sockets.send("chestHealth", [chest.id, chest.health]);
+              var chestDmg = Math.round(convert(140, 1, this.damageCooldown));
+              if(this.level >= 10) chestDmg *= 2;
+              if(this.level >= 25) chestDmg *= 2;
+              chest.health -= chestDmg;
+              io.sockets.send("chestHealth", [chest.id, chest.health, this.id]);
               if(chest.health <= 0) {
               //remove the chest
               chests.splice(chests.indexOf(chest), 1);
