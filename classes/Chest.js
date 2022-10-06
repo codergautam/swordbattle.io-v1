@@ -14,33 +14,33 @@ function getRandomInt(min, max) {
       this.raritys = {
         normal: {
           scale: 0.5,
-          drop: [100,250],
+          drop: [50,100],
           health: 1
         },
         uncommon: {
           scale: 0.65,
-          drop: [250,500],
+          drop: [100,250],
           health: 25
         },
         rare: {
           scale: 0.75,
-          drop: [500,1000],
+          drop: [250,500],
           health: 50,
         },
         epic: {
           scale: 1,
-          drop: [1000,2000],
-          health: 100
+          drop: [500,1000],
+          health:  150
         },
         legendary: {
           scale: 1.5,
-          drop: [2000,5000],
-          health: 250
+          drop: [1000,2500],
+          health: 350
         },
         mythical: {
           scale: 2.25,
           drop: [5000,10000],
-          health: 500
+          health: 750
         }
       };
       this.width = 352;
@@ -67,6 +67,9 @@ function getRandomInt(min, max) {
       var coinSizes = [5,4,3, 2, 1];
       if(toDrop > 500) coinSizes.unshift(15)
       if(toDrop > 1000) coinSizes.unshift(25)
+      if(toDrop > 5000) coinSizes.unshift(50d)
+      
+
       
       
       // for (var i = 0; i < getRandomInt(this.drop[0],this.drop[1]); i++) {
@@ -77,16 +80,10 @@ function getRandomInt(min, max) {
       // }
       while (toDrop > 0) {
         // Find biggest coinsize that fits in toDrop
-        var usedCoinSize = 0;
-        for(var coinSize of coinSizes) {
-          if(toDrop >= coinSize) {
-            usedCoinSize = coinSize;
-            break;
-          }
-        }
+        var usedCoinSize = coinSizes.find((c)=>toDrop>=c);
         var x = getRandomInt(this.pos.x, this.pos.x + this.width);
         var y = getRandomInt(this.pos.y, this.pos.y + this.height);
-        drop.push(new Coin({ x,y, value: usedCoinSize}));
+        drop.push(new Coin({ x,y},usedCoinSize));
         toDrop -= usedCoinSize;
       }
       return drop;
