@@ -8,9 +8,10 @@ function getRandomInt(min, max) {
     return "_" + Math.random().toString(36).substr(2, 9);
   };
   class Chest { 
-    constructor(pos = {x: getRandomInt(-(map/2)+352,(map/2)-223), y: getRandomInt(-(map/2)+352,(map/2)-223)}, rarity="normal") {
+    constructor(pos = {x: getRandomInt(-(map/2),(map/2)), y: getRandomInt(-(map/2),(map/2))}, rarity="normal") {
       this.id = ID();
       this.rarity = rarity;
+      const clamp = (x, min, max) => Math.max(Math.min(x, max), min);
       this.raritys = {
         normal: {
           scale: 0.5,
@@ -45,10 +46,12 @@ function getRandomInt(min, max) {
       };
       this.width = 352;
       this.height = 223;
+      
       this.scale = this.raritys[this.rarity].scale;
       this.width *= this.scale;
       this.height *= this.scale;
-      this.pos = pos;
+      this.pos = {x: clamp(pos.x, (-map/2)+this.width, (map/2)-this.width), y: clamp(pos.y, (-map/2)+this.height, (map/2)-this.height)};
+      
 
       this.maxHealth = this.raritys[this.rarity].health;
       this.health = this.maxHealth;
@@ -67,7 +70,7 @@ function getRandomInt(min, max) {
       var coinSizes = [5,4,3, 2, 1];
       if(toDrop > 500) coinSizes.unshift(15)
       if(toDrop > 1000) coinSizes.unshift(25)
-      if(toDrop > 5000) coinSizes.unshift(50d)
+      if(toDrop > 5000) coinSizes.unshift(50)
       
 
       
@@ -83,6 +86,7 @@ function getRandomInt(min, max) {
         var usedCoinSize = coinSizes.find((c)=>toDrop>=c);
         var x = getRandomInt(this.pos.x, this.pos.x + this.width);
         var y = getRandomInt(this.pos.y, this.pos.y + this.height);
+        
         drop.push(new Coin({ x,y},usedCoinSize));
         toDrop -= usedCoinSize;
       }
