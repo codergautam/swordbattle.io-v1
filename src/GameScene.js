@@ -877,6 +877,14 @@ class GameScene extends Phaser.Scene {
 					}
 				}
 					});
+                    if(players.length < this.miniMap.people.length) {
+          var remaining = this.miniMap.people.filter((p) => !players.find(x => x.id === p.id));
+          for (var remain of remaining) {
+            remain.circle.destroy();
+            this.miniMap.people.splice(this.minimap.people.findIndex(x => x.id === remain.id), 1);
+          }
+          }
+          
 				});
 				this.socket.on("me", (player) => {
 					if(this.loadrect.visible) this.loadrect.destroy();
