@@ -38,7 +38,7 @@ Hook.success(process.env.SERVER, "Server started");
 }
 var serverState = "running";
 
-var map = 10000;
+var map = 15000;
 //var cors = require("cors");
 
 var server;
@@ -778,11 +778,11 @@ var flyingSwords = [];
 
 var maxCoins = 2000;
 
-var maxChests = 10;
-var maxUncommonChests = 7;
-var maxRareChests = 5;
-var maxEpicChests = 2;
-var maxLegendaryChests = 1;
+var maxChests = 30;
+var maxUncommonChests = 15;
+var maxRareChests = 10;
+var maxEpicChests = 5;
+var maxLegendaryChests = 2;
 var maxMythicalChests = 1;
 
 var maxAiPlayers = 15;

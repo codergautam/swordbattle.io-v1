@@ -1,6 +1,6 @@
 const intersects = require("intersects");
 const Coin = require("./Coin");
-var map = 10000;
+var map = 15000;
 function getRandomInt(min, max) {
     return min + Math.floor(Math.random() * (max - min + 1));
 }
@@ -68,9 +68,9 @@ function getRandomInt(min, max) {
       var drop = [];
       var toDrop = getRandomInt(this.drop[0],this.drop[1]);
       var coinSizes = [5,4,3, 2, 1];
-      if(toDrop > 500) coinSizes.unshift(15)
-      if(toDrop > 1000) coinSizes.unshift(25)
-      if(toDrop > 5000) coinSizes.unshift(50)
+      if(toDrop > 500) coinSizes.unshift(15);
+      if(toDrop > 1000) coinSizes.unshift(25);
+      if(toDrop > 5000) coinSizes.unshift(50);
       
 
       

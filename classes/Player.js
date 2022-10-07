@@ -5,7 +5,7 @@ const {sql} = require("../database");
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
-var map = 10000;
+var map = 15000;
 const evolutions = require("./evolutions");
 
 class Player { 

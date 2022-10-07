@@ -42,7 +42,7 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
-		var map = 10000;
+		var map = 15000;
 
         this.levels = [];
 
