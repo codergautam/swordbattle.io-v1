@@ -394,6 +394,12 @@ class GameScene extends Phaser.Scene {
 							this.joyStick.radius = convert(2360, 250, this.canvas.width);
 						}
 						
+						//clear minimap players
+						this.miniMap.people.forEach((p) => {
+							p.circle.destroy();
+						});
+						this.miniMap.people = [];
+
 						this.UICam.x = this.cameras.main.x;
 						this.UICam.y = this.cameras.main.y;
 						this.chat.btn.btn.setScale((Math.min(this.canvas.height / 1000, this.canvas.width / 1500)));
