@@ -231,6 +231,8 @@ app.use(function (req, res, next) {
 });
 
 app.use("/", express.static("dist"));
+app.use("/", express.static("public"));
+
 app.use("/assets", express.static("assets"));
 
 app.post("/api/buy", async (req, res) => {
