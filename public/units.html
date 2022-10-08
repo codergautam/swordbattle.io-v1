@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="utf-8">
+	<meta name="viewport" content="minimal-ui, user-scalable=no, initial-scale=1, maximum-scale=1, width=device-width" />
+	<title>AdinPlay Ads</title>
+	<script>
+	window.aiptag = window.aiptag || {cmd: []};
+	aiptag.cmd.display = aiptag.cmd.display || [];
+	aiptag.cmd.player = aiptag.cmd.player || [];
+
+	//CMP tool settings
+	aiptag.cmp = {
+		show: true,
+		position: "centered",  //centered, bottom
+		button: true,
+		buttonText: "Privacy settings",
+		buttonPosition: "bottom-left" //bottom-left, bottom-right, top-left, top-right
+	}
+
+	aiptag.cmd.player.push(function() {
+		aiptag.adplayer = new aipPlayer({
+			AD_WIDTH: 960,
+			AD_HEIGHT: 540,
+			AD_DISPLAY: 'default', //default, fullscreen, center, fill
+			LOADING_TEXT: 'loading advertisement',
+			PREROLL_ELEM: function(){return document.getElementById('preroll')},
+			AIP_COMPLETE: function (evt)  {
+				/*******************
+				 ***** WARNING *****
+				 *******************
+				 Please do not remove the PREROLL_ELEM
+				 from the page, it will be hidden automaticly.
+				 If you do want to remove it use the AIP_REMOVE callback.
+				*/
+				alert("Preroll Ad Completed: " + evt);
+			},
+			AIP_REMOVE: function ()  {
+				// Here it's safe to remove the PREROLL_ELEM from the page if you want. But it's not recommend.
+			}
+		});
+	});
+
+		function show_preroll() {
+		//check if the adslib is loaded correctly or blocked by adblockers etc.
+		if (typeof aiptag.adplayer !== 'undefined') {
+			aiptag.cmd.player.push(function() { aiptag.adplayer.startPreRoll(); });
+		} else {
+			//Adlib didnt load this could be due to an adblocker, timeout etc.
+			//Please add your script here that starts the content, this usually is the same script as added in AIP_COMPLETE or AIP_REMOVE.
+			alert("Ad Could not be loaded, load your content here");
+		}
+	}
+		</script>
+	<script async src="//api.adinplay.com/libs/aiptag/pub/SWT/swordbattle.io/tag.min.js"></script>
+</head>
+<body style="margin:0;padding:0;">
+	<p>Documentation: <a href="https://adinplay.com/api/" target="_blank">https://adinplay.com/api/</a></p>
+	AIP ID: SWT/swordbattle.io<br>
+	AIP PLACEMENT ID: swordbattle-io_970x250<br>
+	AIP PLACEMENT ID: swordbattle-io_300x600<br>
+	<br>
+
+	<div id='swordbattle-io_970x250'>
+		<script type='text/javascript'>
+			aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
+		</script>
+	</div>
+	<button onclick="aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });">Refresh Ad</button>
+	<div id='swordbattle-io_300x600'>
+		<script type='text/javascript'>
+			aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_300x600'); });
+		</script>
+	</div>
+	<button onclick="aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_300x600'); });">Refresh Ad</button>
+	<br><br>
+	<button onclick="show_preroll();">Show Video Ad</button>	<div id="preroll"></div>
+</body>
+</html>
