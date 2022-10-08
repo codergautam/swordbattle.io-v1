@@ -233,6 +233,10 @@ app.use(function (req, res, next) {
 app.use("/", express.static("dist"));
 app.use("/", express.static("public"));
 
+app.get("/", (req, res) => {
+  res.send("Please build the client first<br/>Run npm run build");
+});
+
 app.use("/assets", express.static("assets"));
 
 app.post("/api/buy", async (req, res) => {
