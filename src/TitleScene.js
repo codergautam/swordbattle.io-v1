@@ -30,7 +30,7 @@ class TitleScene extends Phaser.Scene {
 
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us1": "https://swordbattle.io",
+        "us1": "https://sword-io-game.herokuapp.com",
         "eu1": "https://swordbattle.herokuapp.com"
       };
 
