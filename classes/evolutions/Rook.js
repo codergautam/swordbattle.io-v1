@@ -11,10 +11,10 @@ class Warrior extends Evolution {
     }
     default() {
         return {
-            maxHealth: 1.7,
-            health: 1.7,
+            maxHealth: 1.4,
+            health: 1.4,
             speed: 0.7,
-            scale: 1.5,
+            scale: 1.3,
             power: 1,
             resistance: 5.5,
             damage: 1.6,
