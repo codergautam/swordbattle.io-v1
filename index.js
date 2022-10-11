@@ -124,7 +124,7 @@ if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
-		max: 300, // limit each IP to 52 requests per min 
+		max: 700, // limit each IP to 700 requests per min 
 		message: "Too many requests from this IP address, please try again later." //Add message when rate-limit
 	});
 	app.use(limiter);
@@ -650,7 +650,7 @@ app.get("/leaderboard", async (req, res) => {
   //var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
   var type = ["coins", "kills", "time", "xp","totalkills","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
-    : "coins";
+    : "xp";
   var duration = ["all", "day", "week", "xp"].includes(req.query.duration)
     ? req.query.duration
     : "all";
