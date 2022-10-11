@@ -650,7 +650,7 @@ app.get("/leaderboard", async (req, res) => {
   //var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
   var type = ["coins", "kills", "time", "xp","totalkills","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
-    : "coins";
+    : "xp";
   var duration = ["all", "day", "week", "xp"].includes(req.query.duration)
     ? req.query.duration
     : "all";
