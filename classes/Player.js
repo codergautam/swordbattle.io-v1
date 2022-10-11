@@ -309,7 +309,7 @@ var move = true;
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.6, player.pos.x, player.pos.y, (player.radius*player.scale)*0.5);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.8, player.pos.x, player.pos.y, (player.radius*player.scale)*0.7);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
