@@ -1,7 +1,7 @@
 
 
 const Evolution = require("./Evolution");
-class Warrior extends Evolution {
+class Rook extends Evolution {
     constructor() {
         super();
         this.name = "rook";
@@ -35,4 +35,4 @@ class Warrior extends Evolution {
         };
     }
 }
-module.exports = Warrior;
+module.exports = Rook;
