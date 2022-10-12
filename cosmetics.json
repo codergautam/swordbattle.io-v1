@@ -15,6 +15,13 @@
             "description": "Ahhh.. So bright!"
         },
         {
+            "name": "sponge",
+            "displayName": "Sponge",
+            "url": "/assets/images/spongePlayer.png",
+            "price": 250,
+            "description": "Soaks up coins"
+        },
+        {
             "name": "vortex",
             "displayName": "Vortex",
             "url": "/assets/images/vortexPlayer.png",
@@ -48,6 +55,13 @@
             "url": "/assets/images/springPlayer.png",
             "price": 1000,
             "description": "Spring is here!"
+        },
+        {
+            "name": "smile",
+            "displayName": "Smile",
+            "url": "/assets/images/smilePlayer.png",
+            "price": 1500,
+            "description": "Smile while you stab"
         },
         {
             "name": "bowling",
@@ -90,6 +104,13 @@
             "url": "/assets/images/astronautPlayer.png",
             "price": 15000,
             "description": "No gravity..."
+        },
+        {
+            "name": "matrix",
+            "displayName": "Matrix",
+            "url": "/assets/images/matrixPlayer.png",
+            "price": 17500,
+            "description": "Matrix: Its a mystery"
         },
         {
             "name": "ninja",
@@ -141,6 +162,13 @@
             "description": "Heal.. or Stab..."
         },
         {
+            "name": "killerbot",
+            "displayName": "Killer Bot",
+            "url": "/assets/images/killerbotPlayer.png",
+            "price": 60000,
+            "description": "Makes your opponents wish they were fighting an actual bot"
+        },
+        {
             "name": "soldier",
             "displayName": "Soldier",
             "url": "/assets/images/soldierPlayer.png",
@@ -148,11 +176,25 @@
             "description": "A hardened veteran"
         },
         {
+            "name": "cactus",
+            "displayName": "Cactus",
+            "url": "/assets/images/cactusPlayer.png",
+            "price": 90000,
+            "description": "Adds an extra poke to your stab"
+        },
+        {
             "name": "winter",
             "displayName": "Winter",
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "zombie",
+            "displayName": "Zombie",
+            "url": "/assets/images/zombiePlayer.png",
+            "price": 120000,
+            "description": "Eats the brains of enemies"
         },
         {
             "name": "panda",
@@ -169,11 +211,25 @@
             "description": "Oooh shiny...."
         },
         {
+            "name": "beach",
+            "displayName": "Beach",
+            "url": "/assets/images/beachPlayer.png",
+            "price": 150000,
+            "description": "Seems relaxing... but not for enemies"
+        },
+        {
             "name": "lava",
             "displayName": "Lava",
             "url": "/assets/images/lavaPlayer.png",
             "price": 175000,
             "description": "Hot Hot Hot"
+        },
+        {
+            "name": "music",
+            "displayName": "Music",
+            "url": "/assets/images/musicPlayer.png",
+            "price": 180000,
+            "description": "Lure your opponents to death..."
         },
         {
             "name": "cyborg",
@@ -189,6 +245,13 @@
             "price": 250000,
             "description": "Poisoned wounds are the worst..."
         },
+        {
+            "name": "bird",
+            "displayName": "Eagle",
+            "url": "/assets/images/birdPlayer.png",
+            "price": 300000,
+            "description": "Watch out for the talons..."
+        },        
         {
             "name": "devex",
             "displayName": "Dev3x",
