@@ -11,7 +11,6 @@ class Socket extends EventEmitter {
     this.mapper = mapper;
     this.id = uuid.v4();
     this.ip = req.headers["x-forwarded-for"]?.split(",")[0]?.trim() || req.connection.remoteAddress;
-    console.log(this.ip)
     this.ws.send(JSON.stringify({
       t: "id",
       d: this.id

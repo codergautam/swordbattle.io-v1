@@ -791,8 +791,8 @@ var maxEpicChests = 5;
 var maxLegendaryChests = 2;
 var maxMythicalChests = 1;
 
-var maxAiPlayers = 15;
-var maxPlayers = 50;
+var maxAiPlayers = 20;
+var maxPlayers = 100;
 
 
 io.on("connection", async (socket) => {
@@ -1237,7 +1237,11 @@ setInterval(async () => {
       b.lastPinged = Date.now();
     } else if (Date.now() - b.lastPinged >30000) {
       b.send("ban", "You have been kicked for not responding to ping packets. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device.");
+      // emit disconnect to players
+      b.broadcast.send("playerDied", [b.id]);
       b.disconnect();
+      
+
     }
 	});
 

@@ -866,9 +866,13 @@ class GameScene extends Phaser.Scene {
 
 							var bruh = map / 10000;
 
+							try {
 							if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 							miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 							}
+						} catch (e) {
+							// I honestly don't know why this is here, but it works so I'm not touching it
+						}
 						} else {
 						this.miniMap.people.push({
 							id: player.id,
@@ -881,7 +885,7 @@ class GameScene extends Phaser.Scene {
           var remaining = this.miniMap.people.filter((p) => !players.find(x => x.id === p.id));
           for (var remain of remaining) {
             remain.circle.destroy();
-            this.miniMap.people.splice(this.minimap.people.findIndex(x => x.id === remain.id), 1);
+            this.miniMap.people.splice(this.miniMap.people.findIndex(x => x.id === remain.id), 1);
           }
           }
           
@@ -1218,7 +1222,7 @@ class GameScene extends Phaser.Scene {
 				//check if killed by me
 				this.miniMap.people.find(person => person.id == id)?.circle?.destroy();
 
-				if(this.myObj && this.myObj.id === data.killedBy.id) {
+				if(this.myObj && data && this.myObj.id === data.killedBy.id) {
 					var enemy = this.enemies.find(enemyPlayer => enemyPlayer.id == id);
 					if(enemy && enemy.playerObj) {
 					//i killed them!!
