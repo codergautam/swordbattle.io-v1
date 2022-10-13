@@ -64,6 +64,13 @@
             "description": "Smile while you stab"
         },
         {
+            "name": "sad",
+            "displayName": "Sad",
+            "url": "/assets/images/sadPlayer.png",
+            "price": 2000,
+            "description": "Make your enemies sad before death..."
+        },
+        {
             "name": "bowling",
             "displayName": "Bowling",
             "url": "/assets/images/bowlingPlayer.png",
@@ -83,6 +90,13 @@
             "url": "/assets/images/breadPlayer.png",
             "price": 7500,
             "description": "Fresh, and tasty!"
+        },
+        {
+            "name": "starry night",
+            "displayName": "Starry Night",
+            "url": "/assets/images/starrynightdPlayer.png",
+            "price": 9000,
+            "description": "A nice sight before a kill"
         },
         {
             "name": "chef",
@@ -169,11 +183,32 @@
             "description": "Makes your opponents wish they were fighting an actual bot"
         },
         {
+            "name": "chicken",
+            "displayName": "Chicken",
+            "url": "/assets/images/chickenPlayer.png",
+            "price": 65000,
+            "description": "A snack before slaughter"
+        },
+        {
+            "name": "dinner",
+            "displayName": "Dinner",
+            "url": "/assets/images/dinnerPlayer.png",
+            "price": 70000,
+            "description": "Get the chicken..."
+        },
+        {
             "name": "soldier",
             "displayName": "Soldier",
             "url": "/assets/images/soldierPlayer.png",
             "price": 75000,
             "description": "A hardened veteran"
+        },
+        {
+            "name": "superhero",
+            "displayName": "Superhero",
+            "url": "/assets/images/superheroPlayer.png",
+            "price": 82500,
+            "description": "Use superpowers to make your job easier..."
         },
         {
             "name": "cactus",
@@ -190,6 +225,13 @@
             "description": "I like it cold."
         },
         {
+            "name": "fall",
+            "displayName": "Fall",
+            "url": "/assets/images/fallPlayer.png",
+            "price": 100000,
+            "description": "I like it cool"
+        },
+        {
             "name": "zombie",
             "displayName": "Zombie",
             "url": "/assets/images/zombiePlayer.png",
@@ -202,6 +244,13 @@
             "url": "/assets/images/pandaPlayer.png",
             "price": 125000,
             "description": "It looks cuddly but watch out..."
+        },
+        {
+            "name": "blueberry",
+            "displayName": "Blueberry",
+            "url": "/assets/images/blueberryPlayer.png",
+            "price": 130000,
+            "description": "As juicy as coins"
         },
         {
             "name": "emerald",
@@ -239,6 +288,13 @@
             "description": "AI-Assisted Stabbing"
         },
         {
+            "name": "hotairballoon",
+            "displayName": "Hot Air Balloon",
+            "url": "/assets/images/hotairPlayer.png",
+            "price": 225000,
+            "description": "A good view for a good player"
+        },
+        {
             "name": "scorpion",
             "displayName": "Scorpion",
             "url": "/assets/images/scorpionPlayer.png",
@@ -251,6 +307,13 @@
             "url": "/assets/images/birdPlayer.png",
             "price": 300000,
             "description": "Watch out for the talons..."
+        },
+        {
+            "name": "pirate",
+            "displayName": "Pirate",
+            "url": "/assets/images/piratePlayer.png",
+            "price": 325000,
+            "description": "Fearsome"
         },        
         {
             "name": "devex",
@@ -321,6 +384,13 @@
             "url": "/assets/images/mitbladePlayer.png",
             "price": 2000000,
             "description": "\"Buy channel membership only $3!!!!\""
+        },
+        {
+            "name": "reaper",
+            "displayName": "Reaper",
+            "url": "/assets/images/reaperPlayer.png",
+            "price": 4000000,
+            "description": "Scary... watch out"
         },
         {
             "name": "scythe",
