@@ -195,13 +195,15 @@ var move = true;
     }
    // console.log(players.filter(player=> player.id != this.id && player.touchingPlayer(this)))
 
-      var times = 0;
-      while (players.filter(player=> player && player.id != this.id && player.touchingPlayer(this)).length > 0 && times <10) {
-      times++;
-        var p = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*180/Math.PI , go==0?this.speed/10:go);
-      this.pos.x = p[0];
-      this.pos.y = p[1];
-      }
+      var collidingPlayers = players.filter(player=> player && player.id != this.id && player.touchingPlayer(this));
+      collidingPlayers.forEach((player) => {
+        let angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
+        let playerSize = player.size * player.scale;
+        let radius = this.radius * this.scale;
+        this.pos.x = player.pos.x + Math.cos(angle) * (radius + playerSize / 2);
+        this.pos.y = player.pos.y + Math.sin(angle) * (radius + playerSize / 2);
+      });
+      
     
 
     this.lastMove = Date.now();
@@ -309,7 +311,7 @@ var move = true;
 return false;
   }
   touchingPlayer(player) {
-        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.9, player.pos.x, player.pos.y, (player.radius*player.scale)*0.8);
+        return intersects.circleCircle(this.pos.x, this.pos.y, (this.radius*this.scale)*0.8, player.pos.x, player.pos.y, (player.radius*player.scale)*0.9);
   }
   calcSwordAngle() {
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;

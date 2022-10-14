@@ -190,25 +190,11 @@
             "description": "A snack before slaughter"
         },
         {
-            "name": "dinner",
-            "displayName": "Dinner",
-            "url": "/assets/images/dinnerPlayer.png",
-            "price": 70000,
-            "description": "Get the chicken..."
-        },
-        {
             "name": "soldier",
             "displayName": "Soldier",
             "url": "/assets/images/soldierPlayer.png",
             "price": 75000,
             "description": "A hardened veteran"
-        },
-        {
-            "name": "superhero",
-            "displayName": "Superhero",
-            "url": "/assets/images/superheroPlayer.png",
-            "price": 82500,
-            "description": "Use superpowers to make your job easier..."
         },
         {
             "name": "cactus",
@@ -223,13 +209,6 @@
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
-        },
-        {
-            "name": "fall",
-            "displayName": "Fall",
-            "url": "/assets/images/fallPlayer.png",
-            "price": 100000,
-            "description": "I like it cool"
         },
         {
             "name": "zombie",
@@ -286,13 +265,6 @@
             "url": "/assets/images/cyborgPlayer.png",
             "price": 200000,
             "description": "AI-Assisted Stabbing"
-        },
-        {
-            "name": "hotairballoon",
-            "displayName": "Hot Air Balloon",
-            "url": "/assets/images/hotairPlayer.png",
-            "price": 225000,
-            "description": "A good view for a good player"
         },
         {
             "name": "scorpion",
