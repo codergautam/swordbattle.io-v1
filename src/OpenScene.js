@@ -100,6 +100,26 @@ var progress = 1 - (remainder / total);
         this.load.image("mitbladePlayer", "/assets/images/mitbladePlayer.png");
         this.load.image("bowlingPlayer", "/assets/images/bowlingPlayer.png");
         this.load.image("bowlingSword", "/assets/images/bowlingSword.png");
+        this.load.image("blueberryPlayer", "/assets/images/bluerberryPlayer.png");
+        this.load.image("blueberrySword", "/assets/images/blueberrySword.png");
+        this.load.image("chickenPlayer", "/assets/images/chickenPlayer.png");
+        this.load.image("chickenSword", "/assets/images/chickenSword.png");
+        this.load.image("dinnerPlayer", "/assets/images/dinnerPlayer.png");
+        this.load.image("dinnerSword", "/assets/images/dinnerSword.png");
+        this.load.image("fallPlayer", "/assets/images/fallPlayer.png");
+        this.load.image("fallSword", "/assets/images/fallSword.png");
+        this.load.image("hotairPlayer", "/assets/images/hotairPlayer.png");
+        this.load.image("hotairSword", "/assets/images/hotairSword.png");
+        this.load.image("piratePlayer", "/assets/images/piratePlayer.png");
+        this.load.image("pirateSword", "/assets/images/pirateSword.png");
+        this.load.image("reaperPlayer", "/assets/images/reaperPlayer.png");
+        this.load.image("reaperSword", "/assets/images/reaperSword.png");
+        this.load.image("sadPlayer", "/assets/images/sadPlayer.png");
+        this.load.image("sadSword", "/assets/images/sadSword.png");
+        this.load.image("starrynightPlayer", "/assets/images/starrynightPlayer.png");
+        this.load.image("starrynightSword", "/assets/images/starrynightSword.png");
+        this.load.image("superheroPlayer", "/assets/images/superheroPlayer.png");
+        this.load.image("superheroSword", "/assets/images/superheroSword.png");
   
         // samurai evolution
         this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
