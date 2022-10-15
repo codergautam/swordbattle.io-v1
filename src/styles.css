@@ -23,15 +23,35 @@ canvas {
   top: -400px;
 }
 
-.badge {
-  display: none;
-}
-
-h1 {
+h1,
+h2 {
   margin: 0 0 20px;
   font-family: 'courier new', courier;
   color: #fff;
   font-size: 200%;
+}
+
+h2 {
+  font-size: 150%;
+}
+
+ul,
+li {
+  color: #fff;
+  margin: 0;
+  line-height: normal;
+  text-align: left;
+}
+li {
+  margin-bottom: 5px;;
+}
+
+.whats-new-layer {
+  text-align: center;
+}
+
+.badge {
+  display: none;
 }
 
 .title {
@@ -59,7 +79,17 @@ h1 {
 }
 
 .name-field {
-  font-size: 27.5px;
+  font-size: 220%;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media screen and (max-width: 768px) {
+    font-size: 120%;
+  }
 }
 
 .dropdown {
@@ -70,83 +100,6 @@ h1 {
   -moz-transform: translateX(0%) translateY(5%);
   -webkit-transform: translateX(0%) translateY(5%);
   transform: translateX(0%) translateY(5%);
-}
-
-.button {
-  font-size: 25px;
-  position: absolute;
-  margin: 0px;
-  top: 60%;
-  left: 50%;
-  -moz-transform: translateX(-50%) translateY(-60%);
-  -webkit-transform: translateX(-50%) translateY(-60%);
-  transform: translateX(-50%) translateY(10%);
-  transition-duration: 0.4s;
-  background-color: #4caf50; /* Green */
-  color: white;
-  padding: 7.5px 16px;
-  text-align: center;
-  text-decoration: none;
-  display: inline-block;
-  border: 2px solid black;
-}
-
-.button:hover {
-  background-color: #ffffff;
-  color: #4caf50;
-}
-
-@media screen and (max-height: 375px) {
-  .button {
-    top: 50%;
-  }
-}
-
-@media screen and (max-height: 333px) {
-  .button {
-    top: 40%;
-  }
-  .title {
-    top: 0%;
-  }
-}
-
-@media screen and (max-width: 1100px) {
-  .title {
-    font-size: 45px;
-  }
-  .name-field {
-    font-size: 17.5px;
-  }
-}
-@media screen and (max-width: 761px) {
-  .title {
-    font-size: 35px;
-  }
-  .name-field {
-    font-size: 15px;
-  }
-}
-@media screen and (max-width: 584px) {
-  .title {
-    font-size: 25px;
-  }
-}
-@media screen and (max-width: 420px) {
-  .title {
-    font-size: 20px;
-  }
-  .name-field {
-    font-size: 10px;
-  }
-}
-@media screen and (max-width: 320px) {
-  .title {
-    font-size: 12.5px;
-  }
-  .name-field {
-    font-size: 10px;
-  }
 }
 
 .title {
@@ -164,28 +117,16 @@ h1 {
   cursor: not-allowed;
   background-color: lightgray;
 }
+
 .loggedin::selection {
   color: black;
 }
 
-#box,
 #play-btn {
-  padding: 3%;
-  margin: 1%;
   border-radius: 10px;
   border: none;
-  font-size: 1.5rem;
+  font-size: 160%;
 }
-
-#box {
-  margin-bottom: 10%;
-}
-
-#play-btn {
-  padding: 3% 8% 3% 8%;
-}
-
-
 
 /* Form fields */
 
@@ -222,7 +163,8 @@ button[type='submit'] {
 }
 
 button[type='submit']:hover {
-  background-color: var(--primary-color-hover);
+  background-color: #ffffff;
+  color: var(--primary-color);
 }
 
 input,
@@ -244,6 +186,7 @@ select:focus {
   padding: 15px 30px;
   background-color: #000000;
   position: relative;
+  border-radius: 5px;;
 }
 
 .modal-close-button {
