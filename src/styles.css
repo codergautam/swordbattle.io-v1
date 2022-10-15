@@ -1,0 +1,127 @@
+:root {
+  --primary-color: #4caf50;
+  --primary-color-hover: #328f36;
+}
+
+body {
+  overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+  cursor: url('https://i.imgur.com/HAB0A1i.png') 20 20, crosshair;
+  font-size: 16px;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+}
+
+iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+canvas {
+  top: -400px;
+}
+
+.badge {
+  display: none;
+}
+
+h1 {
+  margin: 0 0 20px;
+  font-family: 'courier new', courier;
+  color: #fff;
+  font-size: 200%;
+}
+
+
+/* Form fields */
+
+input,
+button {
+  font-size: 18px;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  border: 0;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+button[type='submit'] {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 120%;
+  display: block;
+  margin: 20px auto 10px;
+  border-radius: 10px;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+button[type='submit']:hover {
+  background-color: var(--primary-color-hover);
+}
+
+input {
+  display: block;
+  margin: 0 0 10px;
+}
+
+input:focus {
+  border: 0;
+  outline: 0;
+}
+
+
+/* Modals */
+
+.modal-container {
+  cursor: default;
+  padding: 15px 30px;
+  background-color: #000000;
+  position: relative;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  appearance: none;
+  background-color: #000;
+  border: 2px solid #fff;
+  height: 20px;
+  line-height: normal;
+  border-radius: 20px;
+  width: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -5px;
+  right: -5px;
+  cursor: pointer;
+  transform: rotate(0deg);
+  transition: all 0.2s linear;
+}
+
+.modal-close-button:hover {
+  transform: rotate(180deg);
+}
+
+.modal-close-button::before,
+.modal-close-button::after {
+  content: ' ';
+  display: block;
+  width: 10px;
+  height: 2px;
+  background-color: #fff;
+  transform: rotate(45deg);
+  margin: 0 auto;
+  position: absolute;
+}
+
+.modal-close-button::after {
+  transform: rotate(-45deg);
+}
+
+.modal-close-button span {
+  display: none;
+}
