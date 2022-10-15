@@ -92,9 +92,9 @@
             "description": "Fresh, and tasty!"
         },
         {
-            "name": "starry night",
+            "name": "starrynight",
             "displayName": "Starry Night",
-            "url": "/assets/images/starrynightdPlayer.png",
+            "url": "/assets/images/starrynightPlayer.png",
             "price": 9000,
             "description": "A nice sight before a kill"
         },
