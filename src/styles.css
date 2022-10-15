@@ -39,33 +39,56 @@ ul,
 li {
   color: #fff;
   margin: 0;
+  padding: 0;
   line-height: normal;
-  text-align: left;
 }
+
 li {
-  margin-bottom: 5px;;
+  margin-bottom: 10px;
 }
+
+/* Whats new modal. */
 
 .whats-new-layer {
   text-align: center;
+}
+
+.whats-new-layer h1 {
+  margin-top: 20px;
+}
+
+.whats-new-layer li {
+  font-weight: bold;
+  list-style: none;
+  font-size: 120%;
+}
+
+.primary-link {
+  color: lime;
+  font-size: 120%;
+  font-weight: bold;
+  display: inline-block;
+  margin: 20px auto;
 }
 
 .badge {
   display: none;
 }
 
+/* Game title and start button */
+
+@keyframes slide {
+  0% {
+    top: -325px;
+  }
+}
+
 .title {
   font-family: courier, cursive;
   font-size: 130px;
-}
-.container {
-  position: absolute;
-  margin: 0px;
-  top: 0%;
-  left: 50%;
-  -moz-transform: translateX(-50%) translateY(-30%);
-  -webkit-transform: translateX(-50%) translateY(-30%);
-  transform: translateX(-50%) translateY(-20%);
+  color: rgb(0, 0, 0);
+  animation-name: slide;
+  animation-duration: 1s;
 }
 
 .form {
@@ -92,6 +115,24 @@ li {
   }
 }
 
+#play-btn {
+  border-radius: 10px;
+  border: none;
+  font-size: 160%;
+}
+
+
+/* Logged in user */
+
+.loggedin {
+  cursor: not-allowed;
+  background-color: lightgray;
+}
+
+.loggedin::selection {
+  color: black;
+}
+
 .dropdown {
   position: absolute;
   margin: 0px;
@@ -102,31 +143,6 @@ li {
   transform: translateX(0%) translateY(5%);
 }
 
-.title {
-  color: rgb(0, 0, 0);
-  animation-name: slide;
-  animation-duration: 1s;
-}
-
-@keyframes slide {
-  0% {
-    top: -325px;
-  }
-}
-.loggedin {
-  cursor: not-allowed;
-  background-color: lightgray;
-}
-
-.loggedin::selection {
-  color: black;
-}
-
-#play-btn {
-  border-radius: 10px;
-  border: none;
-  font-size: 160%;
-}
 
 /* Form fields */
 
@@ -186,7 +202,7 @@ select:focus {
   padding: 15px 30px;
   background-color: #000000;
   position: relative;
-  border-radius: 5px;;
+  border-radius: 10px;
 }
 
 .modal-close-button {
@@ -196,15 +212,15 @@ select:focus {
   appearance: none;
   background-color: #000;
   border: 2px solid #fff;
-  height: 20px;
+  height: 30px;
   line-height: normal;
   border-radius: 20px;
-  width: 20px;
+  width: 30px;
   display: flex;
   align-items: center;
   justify-content: center;
-  top: -5px;
-  right: -5px;
+  top: -15px;
+  right: -15px;
   cursor: pointer;
   transform: rotate(0deg);
   transition: all 0.2s linear;
