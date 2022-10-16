@@ -1,58 +1,22 @@
-<style>
-  #settings-pop-up {
-    cursor: default;
-    padding: 15px;
-    background-color: #000000;
-    width: 100%;
-    border-radius: 16px;
-  }
-  #settings-pop-up h1 {
-    font-family: "Franklin Gothic Medium", Arial, sans-serif;
-    color: white;
-  }
-
-  #settings-pop-up label {
-    font-family: "Roboto", Arial, sans-serif;
-    color: white;
-  }
-
-  #settings-pop-up select {
-    width: 100%;
-    padding: 3%;
-  }
-
-  #settings-pop-up button {
-    font-size: 30px;
-  }
-</style>
-<div id="settings-pop-up">
+<div class="modal-container" id="settings-pop-up">
   <h1>Settings</h1>
-  <br />
   <label for="movement">Movement mode:</label>
-  <!-- <br /><br /> -->
   <select name="movement" id="movement">
     <option value="mouse">Mouse Only</option>
     <option value="keys">Mouse + Keys</option>
   </select>
-  <br /><br />
   <label for="sound">Sound:</label>
-  <!-- <br /><br /> -->
   <select name="sound" id="sound">
     <option value="high">High Volume</option>
     <option value="normal">Normal</option>
     <option value="low">Low Volume</option>
     <option value="off">Off</option>
   </select>
-  <br /><br />
   <label for="sound">Server:</label>
-  <!-- <br /><br /> -->
   <select name="server" id="server">
     <option value="auto" id="auto">Auto</option>
     <option value="us1" id="us1">USA</option>
     <option value="eu1" id="eu1">Europe</option>
   </select>
-  <br /><br />
-
-  <br />
-  <center><button name="close">Close</button></center>
+  <button class="modal-close-button" name="close"><span>Close</span></button>
 </div>
