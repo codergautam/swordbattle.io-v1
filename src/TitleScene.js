@@ -460,6 +460,7 @@ class TitleScene extends Phaser.Scene {
 this.shopLoading = false;
     this.shopBtn = new ImgButton(this, 10, 10, "shopBtn", () => {
       if(this.shopLoading) return;
+      if(this.nameBox.getChildByName("btn").innerHTML == "Connecting..") return;
       document.getElementById("shopFrame").contentWindow.location.replace("/shop?secret=" + this.secret);
       var frame = document.getElementById("shopFrame");
       this.shopLoading = true;
