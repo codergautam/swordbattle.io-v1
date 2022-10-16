@@ -176,6 +176,13 @@
             "description": "Heal.. or Stab..."
         },
         {
+            "name": "superhero",
+            "displayName": "Superhero",
+            "url": "/assets/images/superheroPlayer.png",
+            "price": 55000,
+            "description": "Super skills for a super player"
+        },
+        {
             "name": "killerbot",
             "displayName": "Killer Bot",
             "url": "/assets/images/killerbotPlayer.png",
@@ -190,25 +197,11 @@
             "description": "A snack before slaughter"
         },
         {
-            "name": "dinner",
-            "displayName": "Dinner",
-            "url": "/assets/images/dinnerPlayer.png",
-            "price": 70000,
-            "description": "Get the chicken..."
-        },
-        {
             "name": "soldier",
             "displayName": "Soldier",
             "url": "/assets/images/soldierPlayer.png",
             "price": 75000,
             "description": "A hardened veteran"
-        },
-        {
-            "name": "superhero",
-            "displayName": "Superhero",
-            "url": "/assets/images/superheroPlayer.png",
-            "price": 82500,
-            "description": "Use superpowers to make your job easier..."
         },
         {
             "name": "cactus",
@@ -286,13 +279,6 @@
             "url": "/assets/images/cyborgPlayer.png",
             "price": 200000,
             "description": "AI-Assisted Stabbing"
-        },
-        {
-            "name": "hotairballoon",
-            "displayName": "Hot Air Balloon",
-            "url": "/assets/images/hotairPlayer.png",
-            "price": 225000,
-            "description": "A good view for a good player"
         },
         {
             "name": "scorpion",
