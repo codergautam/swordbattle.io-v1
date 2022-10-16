@@ -43,6 +43,7 @@ class GameScene extends Phaser.Scene {
 
 	create() {
 		var map = 15000;
+		this.failedLoads = [];
 
         this.levels = [];
 
@@ -710,8 +711,8 @@ class GameScene extends Phaser.Scene {
 						down: false,
 						playerObj: undefined,
 						lastTick: Date.now(),
-						sword: this.add.image(player.pos.x, player.pos.y, player.skin+"Sword").setScale(0.25).setDepth(49),
-						player: this.add.image(player.pos.x, player.pos.y, player.skin+"Player").setScale(0.25).setDepth(49),
+						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.25).setDepth(49),
+						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.25).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
 						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
 							fontFamily: "serif",
@@ -725,6 +726,35 @@ class GameScene extends Phaser.Scene {
 						}).setDepth(71).setOrigin(0.5),
 						chatTween: undefined,
 					};
+
+					if(!this.textures.exists(player.skin+"Player") ) {
+						if(!this.failedLoads.includes(player.skin)){ 
+						this.load.image(`${player.skin}Player`, `/assets/images/${player.skin}Player.png`);
+						this.load.image(`${player.skin}Sword`, `/assets/images/${player.skin}Sword.png`);
+
+						this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+							// texture loaded so use instead of the placeholder
+							enemy.player.setTexture(player.skin+"Player");
+						enemy.sword.setTexture(player.skin+"Sword");
+						});
+						this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+							// texture didnt load so use the placeholder
+							enemy.player.setTexture("playerPlayer");
+						enemy.sword.setTexture("playerSword");
+						this.failedLoads.push(player.skin);
+						});
+						this.load.start();
+					} 
+						else if(enemy.player.texture != "playerPlayer") {
+							enemy.player.setTexture("playerPlayer");
+							enemy.sword.setTexture("playerSword");
+						
+					}
+
+					} else {
+						enemy.player.setTexture(player.skin+"Player");
+						enemy.sword.setTexture(player.skin+"Sword");
+					}
          
 					
 					var factor = (100/(player.scale*100))*1.5;
@@ -891,8 +921,27 @@ class GameScene extends Phaser.Scene {
           
 				});
 				this.socket.on("me", (player) => {
-					if(this.loadrect.visible) this.loadrect.destroy();
-					if(this.loadtext.visible) this.loadtext.destroy();
+
+					if(this.loadrect.visible) { 
+						this.load.image(`${player.skin}Player`, `/assets/images/${player.skin}Player.png`);
+						this.load.image(`${player.skin}Sword`, `/assets/images/${player.skin}Sword.png`);
+
+	
+					 
+					 this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+						// texture loaded so use instead of the placeholder
+						this.loadrect.destroy(); 
+						this.loadtext.destroy();
+					
+					});
+					this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+						// texture didnt load so use the placeholder
+						this.loadrect.destroy(); 
+						this.loadtext.destroy();
+					this.failedLoads.push(player.skin);
+					});
+					this.load.start();
+					}
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {						
@@ -994,9 +1043,40 @@ class GameScene extends Phaser.Scene {
 						particles.setDepth(105);
 					}
 					if((this.mePlayer.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player"))) {
-						if(player.evolution == "") this.mePlayer.setTexture(player.skin+"Player");
-						else this.mePlayer.setTexture(player.evolution+"Player");
+						
 						this.meSword.setTexture(player.skin+"Sword");
+						if(player.evolution == "") {
+						if(!this.textures.exists(player.skin+"Player")) {
+							if(!this.failedLoads.includes(player.skin)) {
+							this.load.image(`${player.skin}Player`, `/assets/images/${player.skin}Player.png`);
+							this.load.image(`${player.skin}Sword`, `/assets/images/${player.skin}Sword.png`);
+	
+							this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+								// texture loaded so use instead of the placeholder
+								this.mePlayer.setTexture(player.skin+"Player");
+							this.meSword.setTexture(player.skin+"Sword");
+							});
+							this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+								// texture didnt load so use the placeholder
+								this.mePlayer.setTexture("playerPlayer");
+							this.meSword.setTexture("playerSword");
+							this.failedLoads.push(player.skin);
+							});
+							this.load.start();
+						} else {
+							if(this.mePlayer.texture != "playerPlayer") {
+							this.mePlayer.setTexture("playerPlayer");
+							this.meSword.setTexture("playerSword");
+							}
+						}
+	
+						}  else {
+							this.mePlayer.setTexture(player.skin+"Player");
+							this.meSword.setTexture(player.skin+"Sword");
+						}
+					} else this.mePlayer.setTexture(player.evolution+"Player");
+
+					
 					}
 
 					if(player?.evolution != "" && !this.abilityButton.visible) this.abilityButton.visible = true;
@@ -1099,10 +1179,40 @@ class GameScene extends Phaser.Scene {
 						else enemy.sword.setVisible(true);
 
 						//skin + evo update
-						if(enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player")) {
-						if(player.evolution == "")	enemy.player.setTexture(player.skin+"Player");
-						else enemy.player.setTexture(player.evolution+"Player");
+						if((enemy.player.texture.key != (player.evolution == "" ? player.skin+"Player" : player.evolution+"Player"))) {
+						
 							enemy.sword.setTexture(player.skin+"Sword");
+							if(player.evolution == "") {
+							if(!this.textures.exists(player.skin+"Player")) {
+								if( !this.failedLoads.includes(player.skin)) {
+								this.load.image(`${player.skin}Player`, `/assets/images/${player.skin}Player.png`);
+								this.load.image(`${player.skin}Sword`, `/assets/images/${player.skin}Sword.png`);
+		
+								this.load.once(Phaser.Loader.Events.COMPLETE, () => {
+									// texture loaded so use instead of the placeholder
+									enemy.player.setTexture(player.skin+"Player");
+								enemy.sword.setTexture(player.skin+"Sword");
+								});
+								//load error
+								this.load.once(Phaser.Loader.Events.FILE_LOAD_ERROR, () => {
+									// texture didnt load so use the placeholder
+									enemy.player.setTexture("playerPlayer");
+								enemy.sword.setTexture("playerSword");
+								this.failedLoads.push(player.skin);
+								});
+								this.load.start();
+							} else if(enemy.player.texture != "playerPlayer") {
+								enemy.player.setTexture("playerPlayer");
+								enemy.sword.setTexture("playerSword");
+							}
+		
+							}  else {
+								enemy.player.setTexture(player.skin+"Player");
+								enemy.sword.setTexture(player.skin+"Sword");
+							}
+						} else enemy.player.setTexture(player.evolution+"Player");
+	
+						
 						}
 						//minimap
 						if(this.spectating) return;
