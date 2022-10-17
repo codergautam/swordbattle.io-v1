@@ -310,6 +310,10 @@ class TitleScene extends Phaser.Scene {
     var go2 = () => {
       if (this.promo && this.promo.visible) {
         this.promo.destroy();
+
+      } else if (this.login && this.login.visible) {
+       } else if (this.signup && this.signup.visible) {
+
       } else if (this.nameBox.getChildByName("btn").disabled) {
       } else if (this.settings && this.settings.visible) {
         this.settings.destroy();
