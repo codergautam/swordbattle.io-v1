@@ -839,6 +839,11 @@ io.on("connection", async (socket) => {
           return;
         }
         var name = accounts[0].username;
+        if(Object.values(PlayerList.players).find((p)=>p.verified&&p.name.toLowerCase()==name.toLowerCase())) {
+          socket.send("ban","<br/><h1>You are already playing on another device</h1>");
+          socket.disconnect();
+          return;
+        }
       }
 
       var thePlayer = new Player(socket.id, name);
