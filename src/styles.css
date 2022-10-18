@@ -1,0 +1,255 @@
+:root {
+  --primary-color: #4caf50;
+  --primary-color-hover: #328f36;
+}
+
+body {
+  overflow: hidden;
+  padding: 0px;
+  margin: 0px;
+  cursor: url('https://i.imgur.com/HAB0A1i.png') 20 20, crosshair;
+  font-size: 16px;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+}
+
+iframe {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  z-index: 1000;
+}
+
+canvas {
+  top: -400px;
+}
+
+h1,
+h2 {
+  margin: 0 0 20px;
+  font-family: 'courier new', courier;
+  color: #fff;
+  font-size: 200%;
+}
+
+h2 {
+  font-size: 150%;
+}
+
+ul,
+li {
+  color: #fff;
+  margin: 0;
+  padding: 0;
+  line-height: normal;
+}
+
+li {
+  margin-bottom: 10px;
+}
+
+/* Whats new modal. */
+
+.whats-new-layer {
+  text-align: center;
+}
+
+.whats-new-layer h1 {
+  margin-top: 20px;
+}
+
+.whats-new-layer li {
+  font-weight: bold;
+  list-style: none;
+  font-size: 120%;
+}
+
+.primary-link {
+  color: lime;
+  font-size: 120%;
+  font-weight: bold;
+  display: inline-block;
+  margin: 20px auto;
+}
+
+.badge {
+  display: none;
+}
+
+/* Game title and start button */
+
+@keyframes slide {
+  0% {
+    top: -325px;
+  }
+}
+
+.title {
+  font-family: courier, cursive;
+  font-size: 130px;
+  color: rgb(0, 0, 0);
+  animation-name: slide;
+  animation-duration: 1s;
+}
+
+.form {
+  position: absolute;
+  margin: 0px;
+  top: 45%;
+  left: 50%;
+  -moz-transform: translateX(-50%) translateY(-60%);
+  -webkit-transform: translateX(-50%) translateY(-60%);
+  transform: translateX(-50%) translateY(10%);
+}
+
+.name-field {
+  font-size: 220%;
+  text-align: center;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  max-width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+
+  @media screen and (max-width: 768px) {
+    font-size: 120%;
+  }
+}
+
+#play-btn {
+  border-radius: 10px;
+  border: none;
+  font-size: 160%;
+}
+
+
+/* Logged in user */
+
+.loggedin {
+  cursor: not-allowed;
+  background-color: lightgray;
+}
+
+.loggedin::selection {
+  color: black;
+}
+
+.dropdown {
+  position: absolute;
+  margin: 0px;
+  top: -0.5%;
+  left: 0%;
+  -moz-transform: translateX(0%) translateY(5%);
+  -webkit-transform: translateX(0%) translateY(5%);
+  transform: translateX(0%) translateY(5%);
+}
+
+
+/* Form fields */
+
+input,
+button,
+select {
+  font-size: 18px;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  border: 0;
+  padding: 3px 6px;
+  border-radius: 3px;
+}
+
+select {
+  width: 100%;
+  padding: 3%;
+}
+
+label {
+  color: #fff;
+  display: block;
+  margin-bottom: 3px;
+}
+
+button[type='submit'] {
+  background-color: var(--primary-color);
+  color: #fff;
+  font-size: 120%;
+  display: block;
+  margin: 20px auto 10px;
+  border-radius: 10px;
+  padding: 5px 20px;
+  cursor: pointer;
+}
+
+button[type='submit']:hover {
+  background-color: #ffffff;
+  color: var(--primary-color);
+}
+
+input,
+select {
+  display: block;
+  margin: 0 0 10px;
+}
+
+input:focus,
+select:focus {
+  border: 0;
+  outline: 0;
+}
+
+/* Modals */
+
+.modal-container {
+  cursor: default;
+  padding: 15px 30px;
+  background-color: #000000;
+  position: relative;
+  border-radius: 10px;
+}
+
+.modal-close-button {
+  position: absolute;
+  top: 0;
+  right: 0;
+  appearance: none;
+  background-color: #000;
+  border: 2px solid #fff;
+  height: 30px;
+  line-height: normal;
+  border-radius: 20px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -15px;
+  right: -15px;
+  cursor: pointer;
+  transform: rotate(0deg);
+  transition: all 0.2s linear;
+}
+
+.modal-close-button:hover {
+  transform: rotate(180deg);
+}
+
+.modal-close-button::before,
+.modal-close-button::after {
+  content: ' ';
+  display: block;
+  width: 10px;
+  height: 2px;
+  background-color: #fff;
+  transform: rotate(45deg);
+  margin: 0 auto;
+  position: absolute;
+}
+
+.modal-close-button::after {
+  transform: rotate(-45deg);
+}
+
+.modal-close-button span {
+  display: none;
+}
+
+#settings-pop-up {
+  padding-bottom: 15px;
+}

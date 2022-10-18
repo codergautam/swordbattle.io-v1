@@ -839,6 +839,11 @@ io.on("connection", async (socket) => {
           return;
         }
         var name = accounts[0].username;
+        if(Object.values(PlayerList.players).find((p)=>p.verified&&p.name.toLowerCase()==name.toLowerCase())) {
+          socket.send("ban","<br/><h1>You are already playing on another device</h1>");
+          socket.disconnect();
+          return;
+        }
       }
 
       var thePlayer = new Player(socket.id, name);
@@ -1039,7 +1044,7 @@ io.on("connection", async (socket) => {
 console.log(thePlayer.name + " - " + socket.id + " disconnected");
               //drop their coins
               var drop = [];
-              var dropAmount = clamp(Math.round(thePlayer.coins*0.8), 10, 20000);
+              var dropAmount = thePlayer.coins < 13 ? 10 : Math.round(thePlayer.coins < 25000 ? thePlayer.coins * 0.8 : Math.log10(thePlayer.coins) * 30000 - 111938.2002602);
               var dropped = 0;
               while (dropped < dropAmount) {
                 var r = thePlayer.radius * thePlayer.scale * Math.sqrt(Math.random());

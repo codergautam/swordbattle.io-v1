@@ -20,6 +20,11 @@ class Socket extends EventEmitter  {
       this.emit("connect_error", "The connection was disconnected.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot.");
     
     };
+    this.socket.onerror = (e) => {
+      console.log("ws connection error", e);
+      this.connected = false;
+      this.emit("connect_error", "The connection was disconnected due to an error.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot.");
+    };
     this.socket.onmessage = (data) => {
       var message;
       try {

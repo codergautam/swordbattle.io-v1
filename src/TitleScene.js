@@ -30,7 +30,8 @@ class TitleScene extends Phaser.Scene {
 
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us1": "https://swordproxy.codergautam.dev",
+        "us1": "https://sword-io-game.herokuapp.com",
+        "us2": "https://swordbattle2.herokuapp.com",
         "eu1": "https://swordbattle.herokuapp.com"
       };
 
@@ -66,10 +67,12 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us1","eu1"];
-      var f = ["USA","Europe"];
+      var e = ["us1","us2","eu1"];
+      var f = ["USA","USA 2","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
+        ping("us2").then(res2 => {
+          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -91,6 +94,7 @@ class TitleScene extends Phaser.Scene {
           }
     });
   });
+});
 
     };
 
@@ -306,10 +310,10 @@ class TitleScene extends Phaser.Scene {
     var go2 = () => {
       if (this.promo && this.promo.visible) {
         this.promo.destroy();
+
       } else if (this.login && this.login.visible) {
-        this.login.getChildByName("login").click();
-      } else if (this.signup && this.signup.visible) {
-        this.signup.getChildByName("signup").click();
+       } else if (this.signup && this.signup.visible) {
+
       } else if (this.nameBox.getChildByName("btn").disabled) {
       } else if (this.settings && this.settings.visible) {
         this.settings.destroy();
@@ -460,6 +464,7 @@ class TitleScene extends Phaser.Scene {
 this.shopLoading = false;
     this.shopBtn = new ImgButton(this, 10, 10, "shopBtn", () => {
       if(this.shopLoading) return;
+      if(this.nameBox.getChildByName("btn").innerHTML == "Connecting..") return;
       document.getElementById("shopFrame").contentWindow.location.replace("/shop?secret=" + this.secret);
       var frame = document.getElementById("shopFrame");
       this.shopLoading = true;
