@@ -397,15 +397,17 @@ class TitleScene extends Phaser.Scene {
 
     var showLoggedIn = () => {
 
-      this.dropdown = this.add.dom(0, 0).createFromCache("dropdown").setOrigin(0);
+      this.dropdown = this.add.dom(0, 0, "section", "border: 10px solid red", "DO IT").createFromCache("dropdown").setOrigin(0);
+      
+      // Allows us to target the user nav cpntainer with css.
+      document.querySelector(".user-nav").parentElement.id = "username-area"; 
+
       document.getElementById("username").innerHTML = this.accountData.username;
       document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
       this.nameBox.getChildByName("name").classList.add("loggedin");
 
       this.nameBox.getChildByName("name").disabled = true;
-      document.getElementById("username").style.fontSize = "30px";
-      this.dropdown.x = (this.canvas.width / 1.2) - (document.getElementById("username").getBoundingClientRect().width);
-      this.dropdown.y = -20;
+      this.dropdown.x = (this.canvas.width / 1.2); 
       document.getElementById("changename").onclick = () => {
         let person = prompt("Please enter your new username:", "");
         if (person == null) {
