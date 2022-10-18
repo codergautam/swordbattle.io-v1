@@ -1,70 +1,21 @@
-<style>
-  .dropdown {
-    position: relative;
-    display: inline-block;
-  }
-
-  .dropdown-content {
-    display: none;
-    position: absolute;
-    background-color: #f9f9f9;
-    min-width: 160px;
-    box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
-    padding: 12px 16px;
-    z-index: 1;
-    border-radius: 16px;
-  }
-
-  .dropdown-content button {
-    width: 100%;
-    padding: 2%;
-    margin: 3%;
-    background: white;
-    border: none;
-  }
-  .dropdown:hover .dropdown-content {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-  }
-</style>
-<div class="w3-container">
-  <h1></h1>
+<div class="w3-container user-nav">
   <div class="dropdown">
-    <i class="fa fa-user"></i> <span id="username" name="username"></span>
+    <div class="username-text">
+      <em class="fa fa-user"></em> <span id="username" name="username"></span>
+    </div>
     <div class="dropdown-content">
-      <center>
-        <button
-          href="#"
-          name="profile"
-          id="profile"
-          class="w3-bar-item w3-button"
-        >
-          <i class="fas fa-address-card"></i> Profile
-        </button>
-        <br />
-        <button
-          onclick='location.href="/settings"'
-          href="/settings"
-          class="w3-bar-item w3-button"
-        >
-          <i class="fas fa-gear"></i> Settings
-        </button>
-        <br />
-        <button id="changename" class="w3-bar-item w3-button">
-          <i class="fas fa-gear"></i> Change Name
-        </button>
-        <br />
-        <button
-          href="#"
-          name="logout"
-          id="logout"
-          class="w3-bar-item w3-button"
-        >
-          <i class="fas fa-sign-out"></i> Logout
-        </button>
-      </center>
+      <button href="#" name="profile" id="profile" class="w3-bar-item w3-button">
+        <em class="fas fa-address-card"></em> Profile
+      </button>
+      <button onclick='location.href="/settings"' href="/settings" class="w3-bar-item w3-button">
+        <em class="fas fa-gear"></em> Settings
+      </button>
+      <button id="changename" class="w3-bar-item w3-button">
+        <em class="fas fa-gear"></em> Change Name
+      </button>
+      <button href="#" name="logout" id="logout" class="w3-bar-item w3-button">
+        <em class="fas fa-sign-out"></em> Logout
+      </button>
     </div>
   </div>
 </div>
