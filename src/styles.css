@@ -121,7 +121,6 @@ li {
   font-size: 160%;
 }
 
-
 /* Logged in user */
 
 .loggedin {
@@ -142,7 +141,6 @@ li {
   -webkit-transform: translateX(0%) translateY(5%);
   transform: translateX(0%) translateY(5%);
 }
-
 
 /* Form fields */
 
@@ -252,4 +250,103 @@ select:focus {
 
 #settings-pop-up {
   padding-bottom: 15px;
+}
+
+/* Profile Dropdown Menu */
+
+#username-area {
+  right: 0 !important;
+  left: auto !important;
+  transform: none !important;
+}
+
+.dropdown {
+  position: relative;
+  display: inline-block;
+  margin: 10px 20px 0 0;
+}
+
+@media screen and (max-width: 768px) {
+  .dropdown {
+    margin: 10px 10px 0 0;
+  }
+}
+
+.username-text {
+  font-size: 16px;
+}
+
+@media screen and (min-width: 320px) {
+  .username-text {
+    font-size: 20px;
+  }
+}
+
+@media screen and (min-width: 768px) {
+  .username-text {
+    font-size: 32px;
+  }
+}
+
+#username {
+  display: inline-block;
+  max-width: 320px;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+@media screen and (max-width: 320px) {
+  #username {
+    max-width: 100px;
+  }
+}
+
+/* Don't show userrname text.  */
+@media screen and (max-width: 220px) {
+  #username {
+    display: none;
+  }
+}
+
+.dropdown-content {
+  display: none;
+  position: absolute;
+  background-color: #f9f9f9;
+  box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+  padding: 12px 16px;
+  z-index: 1;
+  border-radius: 16px;
+}
+
+@media screen and (max-width: 989px) {
+  .dropdown-content {
+    right: 0;
+  }
+}
+
+.dropdown-content button {
+  width: 100%;
+  background: white;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: left;
+  font-size: 18px;
+  margin-bottom: 15px;
+}
+
+.dropdown-content button:last-child {
+  margin-bottom: 0;
+}
+
+.dropdown-content button em {
+  margin: 0 5px 0 0;
+}
+
+.dropdown:hover .dropdown-content {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
 }

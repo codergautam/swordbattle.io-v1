@@ -30,7 +30,8 @@ class TitleScene extends Phaser.Scene {
 
     const pingServers = (sethtml = true) => {
       var servers = {
-        "us1": "https://swordproxy.codergautam.dev",
+        "us1": "https://sword-io-game.herokuapp.com",
+        "us2": "https://swordbattle2.herokuapp.com",
         "eu1": "https://swordbattle.herokuapp.com"
       };
 
@@ -66,10 +67,12 @@ class TitleScene extends Phaser.Scene {
         });
       };
       var pings = [];
-      var e = ["us1","eu1"];
-      var f = ["USA","Europe"];
+      var e = ["us1","us2","eu1"];
+      var f = ["USA","USA 2","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
+        ping("us2").then(res2 => {
+          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -91,6 +94,7 @@ class TitleScene extends Phaser.Scene {
           }
     });
   });
+});
 
     };
 
@@ -306,10 +310,10 @@ class TitleScene extends Phaser.Scene {
     var go2 = () => {
       if (this.promo && this.promo.visible) {
         this.promo.destroy();
+
       } else if (this.login && this.login.visible) {
-        this.login.getChildByName("login").click();
-      } else if (this.signup && this.signup.visible) {
-        this.signup.getChildByName("signup").click();
+       } else if (this.signup && this.signup.visible) {
+
       } else if (this.nameBox.getChildByName("btn").disabled) {
       } else if (this.settings && this.settings.visible) {
         this.settings.destroy();
@@ -393,15 +397,17 @@ class TitleScene extends Phaser.Scene {
 
     var showLoggedIn = () => {
 
-      this.dropdown = this.add.dom(0, 0).createFromCache("dropdown").setOrigin(0);
+      this.dropdown = this.add.dom(0, 0, "section", "border: 10px solid red", "DO IT").createFromCache("dropdown").setOrigin(0);
+      
+      // Allows us to target the user nav cpntainer with css.
+      document.querySelector(".user-nav").parentElement.id = "username-area"; 
+
       document.getElementById("username").innerHTML = this.accountData.username;
       document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
       this.nameBox.getChildByName("name").classList.add("loggedin");
 
       this.nameBox.getChildByName("name").disabled = true;
-      document.getElementById("username").style.fontSize = "30px";
-      this.dropdown.x = (this.canvas.width / 1.2) - (document.getElementById("username").getBoundingClientRect().width);
-      this.dropdown.y = -20;
+      this.dropdown.x = (this.canvas.width / 1.2); 
       document.getElementById("changename").onclick = () => {
         let person = prompt("Please enter your new username:", "");
         if (person == null) {
@@ -460,6 +466,7 @@ class TitleScene extends Phaser.Scene {
 this.shopLoading = false;
     this.shopBtn = new ImgButton(this, 10, 10, "shopBtn", () => {
       if(this.shopLoading) return;
+      if(this.nameBox.getChildByName("btn").innerHTML == "Connecting..") return;
       document.getElementById("shopFrame").contentWindow.location.replace("/shop?secret=" + this.secret);
       var frame = document.getElementById("shopFrame");
       this.shopLoading = true;
