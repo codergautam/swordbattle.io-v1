@@ -517,7 +517,7 @@ class GameScene extends Phaser.Scene {
 				}
 				this.socket.on("connect_error", (e) => {
           if(!this.spectating) {
-            handlErr(e);
+            handleErr(e);
           }
         });
 				this.socket.on("ban",handleErr);
