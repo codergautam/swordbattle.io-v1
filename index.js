@@ -1199,7 +1199,6 @@ setInterval(async () => {
 	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
 		var id = uuidv4();
 		var theAi = new AiPlayer(id);
-		console.log("AI Player Joined -> "+theAi.name);
 		PlayerList.setPlayer(id, theAi);
 		io.sockets.send("new", theAi.getSendObj());
 	}
