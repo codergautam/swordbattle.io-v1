@@ -1,3 +1,20 @@
-.env
+# System and IDE files
+Thumbs.db
+.DS_Store
+.idea
+*.suo
+*.sublime-project
+*.sublime-workspace
+
+# Vendors
 node_modules/
+
+# Build
+dist/
+serverdist/
+/npm-debug.log
+package-lock.json
+yarn.lock
+
 config.json
+.env
