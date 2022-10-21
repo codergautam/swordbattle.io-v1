@@ -9,12 +9,16 @@ export default class Game extends React.Component {
     const config = {
       type: Phaser.AUTO,
       parent: 'phaser-example',
-      width: window.innerWidth,
-      height: window.innerHeight,
       scene: [Preload, Title],
-      scale: {
-        mode: Phaser.Scale.RESIZE,
-      },
+      dom: {
+        createContainer: true,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
+    },
+    scale: {
+        mode:Phaser.Scale.RESIZE,
+    },
+    width: document.documentElement.clientWidth,
+    height: document.documentElement.clientHeight,
       physics: {
         default: 'arcade',
         arcade: {
