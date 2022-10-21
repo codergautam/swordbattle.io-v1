@@ -1,6 +1,6 @@
 {
   "presets": [
-    ["@babel/env", {
+    ["@babel/preset-typescript", {
       "targets": {
         "browsers": [
           ">0.25%",

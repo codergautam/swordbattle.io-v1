@@ -12,7 +12,7 @@ class Preload extends Phaser.Scene {
 
   create() {
     console.log("Preload")
-   this.scene.start(Title);
+   this.scene.start((Title as any));
   }
 }
 
