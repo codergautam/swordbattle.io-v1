@@ -30,8 +30,8 @@ module.exports = {
         use: 'file-loader',
       },
       {
-        test: /\.(sass|less|css)$/,
-        loaders: ['style-loader', 'css-loader', 'sass-loader'],
+        test: /\.(css)$/,
+        loaders: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(woff|woff2|ttf|eot)$/,

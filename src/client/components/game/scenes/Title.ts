@@ -1,32 +1,24 @@
 import Phaser from 'phaser';
+import MyScene from '../helpers/MyScene';
 
-class Title extends Phaser.Scene {
+// Main homescreen scene
+// UI is rendered in React
+
+class Title extends Phaser.Scene implements MyScene {
   background: Phaser.GameObjects.Image;
   constructor() {
     super('title');
   }
 
-  preload() {
-   
-  }
-
   create() {
     this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(2);
 
-    // resize handler
-    this.scale.on('resize', (gameSize) => {
-      if(this.game.scene.isActive('title')) {
-        this.resize(gameSize);
-      }
-    }, this);
-
     this.resize(this.scale.gameSize);
   }
-  resize(gameSize: {width: number; height: number;}) {
+  resize(gameSize: Phaser.Structs.Size) {
+    console.log('resize', gameSize);
     var width = gameSize.width;
     var height = gameSize.height;
-
-    console.log(width, height);
 
     this.background.setScale(Math.max(width / this.background.width, height / this.background.height));
 
