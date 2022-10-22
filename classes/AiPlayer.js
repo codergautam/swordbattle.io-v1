@@ -4,6 +4,7 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 const { faker } = require("@faker-js/faker");
+const lerp = (x, y, a) => x * (1 - a) + y * a; 
 class AiPlayer extends Player {
     constructor(id) {
       var aiName = faker.name.findName().split(" ");
@@ -25,7 +26,6 @@ class AiPlayer extends Player {
       if(PlayerList.deadPlayers.includes(this.id)) {
         PlayerList.deletePlayer(this.id);
       } else {
-const lerp = (x, y, a) => x * (1 - a) + y * a; 
 if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this.target = this.getClosestEntity(this.getEntities(coins));
       if(this.target) {
         if(this.target.type == "player") this.chaseTime += 1;
