@@ -44,10 +44,44 @@
 }
 
 .titletext {
-  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  font-family: 'Hind Madurai', Arial, sans-serif;
   font-size: 300%;
   text-align: center;
 }
+
+@media screen and (max-width: 800px) {
+  .titletext {
+    font-size: 200%;
+  }
+  .namebox {
+    font-size: 160%;
+  }
+  .playbtn {
+    font-size: 120%;
+  }
+}
+
+@media screen and (max-width: 500px),
+       screen and (max-height: 420px)
+{
+  .titletext {
+    font-size: 150%;
+    padding: 10px;
+    padding-bottom: 0px;
+    margin: 0;
+  }
+  .namebox {
+    font-size: 120%;
+    margin-top: 10px;
+    margin-bottom: 10px;
+  }
+  .playbtn {
+    font-size: 100%;
+    margin-top: 10px;
+    margin-bottom: 0px;
+  }
+}
+
 
 /* 
   cursor: not-allowed;
