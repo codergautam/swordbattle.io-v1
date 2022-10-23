@@ -5,7 +5,6 @@ Swordbattle.io is a multiplayer game where you PvP with 2D swords, and try to ga
 ### [Play now!](http://swordbattle.io)
 ### [Forum (most active)](https://forum.codergautam.dev)
 
-<br>
 [Leaderboard](https://www.swordbattle.io/leaderboard)
 <br>
 [Discord](https://discord.com/invite/BDG8AfkysZ)
