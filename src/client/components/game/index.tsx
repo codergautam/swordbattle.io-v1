@@ -29,10 +29,10 @@ export default class Game extends React.Component {
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scale: {
-        mode:Phaser.Scale.RESIZE,
+        mode:Phaser.Scale.FIT,
     },
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: 1920,
+    height: 1080,
       physics: {
         default: 'arcade',
         arcade: {
