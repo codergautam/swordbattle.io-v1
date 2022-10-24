@@ -1,20 +1,20 @@
 import Phaser from 'phaser';
 import React from 'react';
 import Preload from './scenes/Preload';
-import MainMap from './scenes/mainMap';
+import MainGame from './scenes/MainGame';
 import Title from './scenes/Title';
 import TitleUI from './ui/TitleUI';
 import '../../css/index.css'
-import MyScene from './helpers/MyScene';
 
 export default class Game extends React.Component {
   game: Phaser.Game;
-  state: {activeScene: string};
+  state: {activeScene: string, gameState: null | string};
 
   constructor(props) {
     super(props);
     this.state = {
       activeScene: '',
+      gameState: null
     };
   }
 
@@ -23,7 +23,7 @@ export default class Game extends React.Component {
     const config = {
       type: Phaser.AUTO,
       parent: 'swordbattle',
-      scene: [Preload, Title, MainMap],
+      scene: [Preload, Title, MainGame],
       dom: {
         createContainer: true,
         autoCenter: Phaser.Scale.CENTER_BOTH,
@@ -45,7 +45,7 @@ export default class Game extends React.Component {
     };
     // eslint-disable-next-line no-new
     this.game = new Phaser.Game(config);
-
+    (window as any).game = this.game;
     // Scene change handler
     // This is to handle the change of scenes and set state accordingly
     // We loop through the scenes once the game is ready
@@ -55,6 +55,11 @@ export default class Game extends React.Component {
         scene.events.on(Phaser.Scenes.Events.START, () => {
           this.setState({activeScene: scene.sys.settings.key});
         });
+        if(scene.sys.settings.key == 'maingame') {
+          scene.events.on('gameStateChange', (gameState) => {
+            this.setState({gameState});
+          });
+        }
       });
     });
     
@@ -63,7 +68,7 @@ export default class Game extends React.Component {
 
   render() {
     return <div style={{position:"fixed",display:"flex",justifyContent:"center",alignItems:"center",zIndex:1,width:"100%",height:"100%"}}>
-      {this.state.activeScene === 'title' ? <TitleUI /> : null}
+      {this.state.activeScene === 'title' ? <TitleUI/> : null}
     </div>;
   }
 }

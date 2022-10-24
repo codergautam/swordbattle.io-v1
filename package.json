@@ -2,7 +2,7 @@
   "name": "swordbattle.io",
   "version": "2.0.0",
   "description": "A multiplayer sword fighting game",
-  "main": "server/index.js",
+  "main": "src/server/server.js",
   "scripts": {
     "heroku-prebuild": "npm install --dev",
     "build": "webpack --config webpack/prod.js ",
