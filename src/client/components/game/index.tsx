@@ -46,23 +46,6 @@ export default class Game extends React.Component {
     // eslint-disable-next-line no-new
     this.game = new Phaser.Game(config);
 
-    // resize handler, this is called when the window is resized. 
-    // sends a resize event to the active scene
-    // the timeout is to prevent the resize event from being sent too often
-    var timeout: string | number | NodeJS.Timeout | undefined;
-
-    this.game.scale.on('resize', (gameSize: Phaser.Structs.Size) => {
-      clearTimeout(timeout);
-      timeout = setTimeout(()=>{resize(gameSize)}, 100);
-    });
-
-    const resize = (gameSize: Phaser.Structs.Size) => {
-      this.game.scene.getScenes(true).forEach((scene: Phaser.Scene) => {
-        (scene as MyScene).resize(gameSize);
-      });
-    };
-
-
     // Scene change handler
     // This is to handle the change of scenes and set state accordingly
     // We loop through the scenes once the game is ready
