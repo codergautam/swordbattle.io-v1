@@ -1,5 +1,4 @@
 import Phaser from 'phaser';
-import MyScene from '../helpers/MyScene';
 
 // Main homescreen scene
 // UI is rendered in React
