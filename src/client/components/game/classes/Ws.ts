@@ -71,6 +71,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
       this.ws = ws;
       this.connected = true;
       console.log('connected!');
+      alert('connected!');
     }).catch((err: string) => {
       this.emit('connect_error', err);
     });
