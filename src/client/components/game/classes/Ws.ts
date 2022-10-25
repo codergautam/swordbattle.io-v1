@@ -16,7 +16,7 @@
       setTimeout(function () {
           if(!hasReturned) {
               console.info('opening websocket timed out: ' + url);
-              rejectInternal();
+              rejectInternal("The connection to the server timed out.");
           }
       }, timeoutMs);
       if (!existingWebsocket || existingWebsocket.readyState != existingWebsocket.OPEN) {
@@ -34,19 +34,19 @@
           };
           websocket.onclose = function () {
               console.info('websocket closed! url: ' + url);
-              rejectInternal();
+              rejectInternal("The connection to the server was closed unexpectedly");
           };
           websocket.onerror = function () {
               console.info('websocket error! url: ' + url);
-              rejectInternal();
+              rejectInternal("An unexpected error occurred while connecting to the server");
           };
       } else {
           resolve(existingWebsocket);
       }
 
-      function rejectInternal() {
+      function rejectInternal(reason: string) {
           if(numberOfRetries <= 0) {
-              reject();
+              reject(reason);
           } else if(!hasReturned) {
               hasReturned = true;
               console.info('retrying connection to websocket! url: ' + url + ', remaining retries: ' + (numberOfRetries-1));
@@ -58,18 +58,21 @@
   return promise;
 };
 
-export default class Ws {
+export default class Ws extends Phaser.Events.EventEmitter {
   serverUrl: string;
   ws: WebSocket;
   connected: boolean;
   constructor(serverUrl: string) {
+    super();
     this.serverUrl = serverUrl;
     this.connected = false;
 
-    initWebsocket(this.serverUrl, null, 5000, 3).then((ws: any) => {
+    initWebsocket(this.serverUrl, null, 500, 1).then((ws: any) => {
       this.ws = ws;
       this.connected = true;
       console.log('connected!');
+    }).catch((err: string) => {
+      this.emit('connect_error', err);
     });
   }
 }

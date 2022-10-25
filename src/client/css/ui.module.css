@@ -1,10 +1,16 @@
-.background {
+.errorbackground,
+.homebackground {
   background-color: rgb(128, 217, 128);
   border-radius: 10px;
   padding: 0px 20px 20px 20px;
   text-align: center;
 }
 
+.errorbackground {
+  background-color: rgb(255, 128, 128);
+}
+
+.errorbtn,
 .playbtn {
   --primary-color: #4caf50;
   --primary-color-hover: #328f36;
@@ -21,6 +27,12 @@
   font-size: 160%;
 }
 
+.errorbtn {
+  --primary-color: #f44336;
+  --primary-color-hover: #c62828;
+}
+
+.errorbtn:hover,
 .playbtn:hover {
   background-color: var(--primary-color-hover);
 }

@@ -5,15 +5,19 @@ import MainGame from './scenes/MainGame';
 import Title from './scenes/Title';
 import TitleUI from './ui/TitleUI';
 import '../../css/index.css'
+import ErrorModal from './ui/ErrorModal';
 
 export default class Game extends React.Component {
   game: Phaser.Game;
-  state: {activeScene: string, gameState: null | string};
+  state: {
+    crashMessage: null | string;activeScene: string, gameState: null | string
+};
 
-  constructor(props) {
+  constructor(props: {} | Readonly<{}>) {
     super(props);
     this.state = {
       activeScene: '',
+      crashMessage: null,
       gameState: null
     };
   }
@@ -56,10 +60,13 @@ export default class Game extends React.Component {
           this.setState({activeScene: scene.sys.settings.key});
         });
         if(scene.sys.settings.key == 'maingame') {
-          scene.events.on('gameStateChange', (gameState) => {
+          scene.events.on('gameStateChange', (gameState: any) => {
             this.setState({gameState});
           });
         }
+        scene.events.on('crash', (message: string) => {
+          this.setState(Object.assign(this.state, {crashMessage: message}));
+        });
       });
     });
     
@@ -69,6 +76,7 @@ export default class Game extends React.Component {
   render() {
     return <div style={{position:"fixed",display:"flex",justifyContent:"center",alignItems:"center",zIndex:1,width:"100%",height:"100%"}}>
       {this.state.activeScene === 'title' ? <TitleUI/> : null}
+      {this.state.crashMessage ? <ErrorModal message={this.state.crashMessage}/> : null}
     </div>;
   }
 }

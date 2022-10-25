@@ -4,8 +4,12 @@ module.exports = class Packet {
     this.data = data;
   }
 
-  toJson() {
-    return JSON.stringify({ type: this.type, data: this.data });
+  toBinary() {
+    // Data is a number
+    if (typeof this.data === 'number') {
+      return Buffer.from([this.type, this.data]);
+    }
+    throw new Error('Invalid data type');
   }
 
   static get Type() {
