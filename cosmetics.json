@@ -134,13 +134,6 @@
             "description": "Very Toxic..."
         },
         {
-            "name": "halloween",
-            "displayName": "Halloween",
-            "url": "/assets/images/halloweenPlayer.png",
-            "price": 13000,
-            "description": "BOO!"
-        },
-        {
             "name": "Pizza",
             "displayName": "Pizza",
             "url": "/assets/images/pizzaPlayer.png",
