@@ -30,15 +30,15 @@ export default class Game extends React.Component {
       scene: [Preload, Title, MainGame],
       dom: {
         createContainer: true,
-        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scale: {
         mode:Phaser.Scale.FIT,
+        autoCenter: Phaser.Scale.CENTER_BOTH,
     },
-    width: 1920,
-    height: 1080,
+    width: 1280,
+    height: 720,
       physics: {
-        default: 'arcade',
+        default: 'arcade', 
         arcade: {
           debug: false,
         },
@@ -50,6 +50,7 @@ export default class Game extends React.Component {
     // eslint-disable-next-line no-new
     this.game = new Phaser.Game(config);
     (window as any).game = this.game;
+
     // Scene change handler
     // This is to handle the change of scenes and set state accordingly
     // We loop through the scenes once the game is ready

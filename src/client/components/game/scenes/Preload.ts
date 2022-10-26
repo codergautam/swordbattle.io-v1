@@ -14,6 +14,8 @@ class Preload extends Phaser.Scene {
   }
 
   create() {
+    window.dispatchEvent(new Event('resize'));
+    
     // Switch to the title, or "home" screen
    this.scene.start("title");
   }

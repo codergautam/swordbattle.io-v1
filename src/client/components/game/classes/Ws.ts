@@ -1,3 +1,5 @@
+import Packet from "../../../../shared/Packet";
+
 /**
  * inits a websocket by a given url, returned promise resolves with initialized websocket, rejects after failure/timeout.
  *
@@ -8,7 +10,7 @@
  *        and a failure/timeout causes rejection of the returned promise
  * @return {Promise}
  */
- function initWebsocket(url, existingWebsocket, timeoutMs, numberOfRetries) {
+ function initWebsocket(url: string | URL, existingWebsocket: any, timeoutMs: number | undefined, numberOfRetries: number) {
   timeoutMs = timeoutMs ? timeoutMs : 1500;
   numberOfRetries = numberOfRetries ? numberOfRetries : 0;
   var hasReturned = false;
@@ -67,11 +69,26 @@ export default class Ws extends Phaser.Events.EventEmitter {
     this.serverUrl = serverUrl;
     this.connected = false;
 
-    initWebsocket(this.serverUrl, null, 500, 1).then((ws: any) => {
+    initWebsocket(this.serverUrl, null, 5000, 2).then((ws: any) => {
       this.ws = ws;
       this.connected = true;
-      console.log('connected!');
-      alert('connected!');
+      this.emit('connected');
+
+      this.ws.onmessage = (event: any) => {
+        try {
+            console.log(Packet.fromBinary(event.data))
+        } catch (e) {
+          console.error('error while parsing packet', e);
+        }
+      }
+
+      this.ws.onerror = () => {
+        this.emit('connectionLost', "There was an error in your connection to the server.");
+      }
+        this.ws.onclose = () => {
+        this.emit('connectionLost', "The connection to the server was closed unexpectedly.");
+      }
+
     }).catch((err: string) => {
       this.emit('connect_error', err);
     });

@@ -13,7 +13,7 @@ export default class MainGame extends Phaser.Scene {
   }
 
    preload() {
-    this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(1);
+    this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
     
     this.connectingText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily:'Hind Madurai, Arial' }).setOrigin(0.5, 0.5).setScrollFactor(0, 0).setScale(1);
   
@@ -32,8 +32,12 @@ export default class MainGame extends Phaser.Scene {
 
     this.ws = new Ws(getServerUrl());
 
-    this.ws.on('connect_error', (reason: string) => {
+    this.ws.once('connect_error', (reason: string) => {
       this.events.emit('crash', reason);
+    });
+
+    this.ws.once('connected', () => {
+      this.connectingText.destroy();
     });
 
 

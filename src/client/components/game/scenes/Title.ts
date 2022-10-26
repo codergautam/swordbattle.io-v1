@@ -11,7 +11,7 @@ class Title extends Phaser.Scene {
 
   create() {
     console.log('title scene created');
-    this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(1);
+    this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
   
     this.events.once('playButtonClicked', (name: string) => {
       if(!name || name.trim().length < 1) return;
