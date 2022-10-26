@@ -92,13 +92,6 @@
             "description": "It can knock people over like a pin"
         },
         {
-            "name": "cloud",
-            "displayName": "Cloud",
-            "url": "/assets/images/cloudPlayer.png",
-            "price": 4000,
-            "description": "Make people float in the clouds"
-        },
-        {
             "name": "hacker",
             "displayName": "Hacker",
             "url": "/assets/images/hackerPlayer.png",
@@ -176,20 +169,6 @@
             "description": "A skilled warrior"
         },
         {
-            "name": "dualmoji",
-            "displayName": "Dualmoji",
-            "url": "/assets/images/dualmojiPlayer.png",
-            "price":  22500,
-            "description": "Dont feel bad or good. Feel both for the perfect balance."
-        },
-        {
-            "name": "yinyang",
-            "displayName": "YinYang",
-            "url": "/assets/images/yinyangPlayer.png",
-            "price": 22500,
-            "description": "I cant decide..."
-        },
-        {
             "name": "sea",
             "displayName": "Sea",
             "url": "/assets/images/seaPlayer.png",
@@ -209,20 +188,6 @@
             "url": "/assets/images/tigerPlayer.png",
             "price": 30000,
             "description": "Don't get in the way of its claws..."
-        },
-        {
-            "name": "lion",
-            "displayName": "Lion",
-            "url": "/assets/images/lionPlayer.png",
-            "price": 30000,
-            "description": "A masterful slaughter"
-        },
-        {
-            "name": "balloon",
-            "displayName": "Balloon",
-            "url": "/assets/images/balloonPlayer.png",
-            "price": 32500,
-            "description": "Pop goes the player"
         },
         {
             "name": "lightning",
@@ -265,13 +230,6 @@
             "url": "/assets/images/chickennuggetPlayer.png",
             "price": 47500,
             "description": "A food for legends"
-        },
-        {
-            "name": "egg",
-            "displayName": "Egg",
-            "url": "/assets/images/eggPlayer.png",
-            "price": 47500,
-            "description": "Protein for strength"
         },
         {
             "name": "medic",
@@ -323,25 +281,11 @@
             "description": "A snack before slaughter"
         },
         {
-            "name": "penguin",
-            "displayName": "Penguin",
-            "url": "/assets/images/penguinPlayer.png",
-            "price": 65000,
-            "description": "Not just cuddly, watch out."
-        },
-        {
             "name": "cat",
             "displayName": "Cat",
             "url": "/assets/images/catPlayer.png",
             "price": 65000,
             "description": "Sharp claws... and easy kills"
-        },
-        {
-            "name": "portal",
-            "displayName": "Portal",
-            "url": "/assets/images/portalPlayer.png",
-            "price": 67500,
-            "description": "Move like you teleport"
         },
         {
             "name": "angry",
@@ -538,13 +482,6 @@
             "url": "/assets/images/magicianPlayer.png",
             "price": 195000,
             "description": "Vanish enemies"
-        },
-        {
-            "name": "witch",
-            "displayName": "Witch",
-            "url": "/assets/images/witchPlayer.png",
-            "price": 200000,
-            "description": "Place some spells"
         },
         {
             "name": "cyborg",
