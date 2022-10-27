@@ -4,11 +4,21 @@ module.exports = class Packet {
     this.data = data;
   }
 
+  toJSON() {
+    return {
+      type: this.type,
+      data: this.data,
+    };
+  }
+
   toBinary() {
     const length = typeof this.data === 'number' ? 1 : this.data.length;
+    if (!length || typeof this.data === 'string') {
+      return JSON.stringify({ t: this.type, d: this.data });
+    }
     // Data is an array
     const buffer = Buffer.alloc(4 + length);
-    // First byte is type
+    // First byte is typ
     buffer[0] = this.type;
     // Second byte is count of data
     buffer[1] = length;
@@ -30,10 +40,17 @@ module.exports = class Packet {
       LEAVE: 5,
       LEADERBOARD: 6,
       OTHER: 7,
+      ERROR: 8,
     };
   }
 
   static fromBinary(buffer) {
+    try {
+      const { t, d } = JSON.parse(buffer);
+      return { type: t, data: d };
+    } catch (e) {
+      // Data is not JSON
+    }
     // eslint-disable-next-line no-param-reassign
     buffer = Buffer.from(buffer);
     // First byte is type

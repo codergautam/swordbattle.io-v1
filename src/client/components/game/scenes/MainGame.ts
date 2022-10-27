@@ -1,5 +1,6 @@
 /* eslint-disable max-len */
 import Phaser from 'phaser';
+import Packet from '../../../../shared/Packet';
 import Ws from '../classes/Ws';
 import getServerUrl from '../helpers/getServerUrl';
 // eslint-disable-next-line no-unused-vars
@@ -38,6 +39,7 @@ export default class MainGame extends Phaser.Scene {
 
     this.ws.once('connected', () => {
       this.connectingText.destroy();
+      this.ws.send(new Packet(Packet.Type.JOIN, 5));
     });
 
 
