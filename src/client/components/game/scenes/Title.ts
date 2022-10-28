@@ -17,9 +17,12 @@ class Title extends Phaser.Scene {
       if(!name || name.trim().length < 1) return;
       name = name.trim().substring(0, 12);
 
+      try {
       window.localStorage.setItem('name', name);
+      } catch(e) {
+      }
 
-      this.scene.start('maingame');
+      this.scene.start('maingame', { name, keys: true, volume: 1 });
     })
   }
 }

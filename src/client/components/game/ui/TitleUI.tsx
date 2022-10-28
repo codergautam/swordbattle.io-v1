@@ -12,7 +12,15 @@ function playButtonClick(name: string) {
 }
 
 export default function TitleUI() {
-  const [name, setName] = React.useState(window.localStorage.getItem("name") || "");  
+  // check if localStorage is available
+  let available = true;
+  try {
+    localStorage.setItem("test", "test");
+    localStorage.removeItem("test");
+  } catch (e) {
+    available = false;
+  }
+  const [name, setName] = React.useState(available ? (window.localStorage.getItem("name") || "") : "");  
 return (
   <div className={styles.homebackground}>
     <h1 className={styles.titletext}>Swordbattle.io</h1>

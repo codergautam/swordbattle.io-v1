@@ -1,16 +1,21 @@
 const idgen = require('../helpers/idgen');
 const Packet = require('../../shared/Packet');
-const WsRoom = require('../classes/WsRoom');
+const Room = require('../classes/Room');
 const PacketErrorTypes = require('../../shared/PacketErrorTypes');
+const roomList = require('../helpers/roomlist');
+const unjoinedRoom = require('../helpers/unjoinedRoom');
 
-const unjoinedRoom = new WsRoom('unjoined');
-const mainRoom = new WsRoom('main');
+const mainRoom = new Room('main');
+roomList.addRoom(mainRoom);
+
+const packetHandler = require('./packetHandler');
 
 setInterval(() => {
   [...unjoinedRoom.clients.values()].forEach((client) => {
-    if (client.joinTime + 5000 < Date.now()) {
-      client.emit(Packet.Type.ERROR, PacketErrorTypes.JOIN_TIMEOUT);
-      client.close();
+    if (client.joinedAt + 10000 < Date.now()) {
+      // eslint-disable-next-line max-len
+      client.send(new Packet(Packet.Type.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
+      client.end();
     }
   });
 }, 1000);
@@ -27,7 +32,6 @@ module.exports = {
     ws.joinedAt = Date.now();
     console.log(`Client ${ws.id} connected`);
     unjoinedRoom.addClient(ws);
-    ws.send(new Packet(Packet.Type.PLAYER_ID, "kkkk").toBinary());
   },
   close: (ws) => {
     console.log(`Client ${ws.id} disconnected`);
@@ -38,6 +42,7 @@ module.exports = {
     }
   },
   message: (ws, m) => {
-
+    const packet = Packet.fromBinary(m);
+    packetHandler(ws, packet);
   },
 };

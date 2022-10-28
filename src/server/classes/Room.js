@@ -15,6 +15,11 @@ module.exports = class Room {
     this.maxPlayers = 4;
   }
 
+  removePlayer(playerId) {
+    this.players.delete(playerId);
+    this.ws.removeClient(playerId);
+  }
+
   addPlayer(player, ws) {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
@@ -22,7 +27,7 @@ module.exports = class Room {
 
     this.players.add(ourPlayer);
     this.ws.addClient(ws);
-    this.ws.send(new Packet(Packet.Type.JOIN, this.id).toJson(), ourPlayer.id);
+    // this.ws.send(new Packet(Packet.Type.JOIN, this.id).toBinary(), ourPlayer.id);
 
     if (this.players.size === this.maxPlayers) {
       this.state = RoomState.PLAYING;

@@ -76,7 +76,8 @@ export default class Ws extends Phaser.Events.EventEmitter {
 
       this.ws.onmessage = (event: any) => {
         try {
-            console.log(Packet.fromBinary(event.data))
+            const parsed = Packet.fromBinary(event.data);
+            this.emit(parsed.type, parsed.data);
         } catch (e) {
           console.error('error while parsing packet', e);
         }

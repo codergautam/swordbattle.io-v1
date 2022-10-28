@@ -8,6 +8,7 @@
 
 .errorbackground {
   background-color: rgb(255, 128, 128);
+  max-width: 60%;
 }
 
 .errorbtn,

@@ -49,7 +49,13 @@ module.exports = class Packet {
       const { t, d } = JSON.parse(buffer);
       return { type: t, data: d };
     } catch (e) {
-      // Data is not JSON
+      // One more try
+      try {
+        const { t, d } = JSON.parse(new TextDecoder('utf-8').decode(buffer));
+        return { type: t, data: d };
+      } catch (e2) {
+        // not json
+      }
     }
     // eslint-disable-next-line no-param-reassign
     buffer = Buffer.from(buffer);
