@@ -9,7 +9,8 @@ class AiPlayer extends Player {
     constructor(id) {
       var aiName = faker.name.findName().split(" ");
       // this is because some names have Mr. or Ms. in them
-      if (aiName.length > 2) aiName = aiName[1];
+      //Not an issue anymore
+      if (aiName.length > 1) aiName = aiName[1];
       else aiName = aiName[0];
        
         super(id,  aiName);
