@@ -3,7 +3,7 @@ const io = function(url) {
   const ws = new WebSocket(url);
   return new Socket(ws);
 };
-
+//Eventemitter
 import EventEmitter from "eventemitter3";
 
 class Socket extends EventEmitter  {
@@ -17,13 +17,13 @@ class Socket extends EventEmitter  {
     this.socket.onclose = () => {
       console.log("ws connection closed");
       this.connected = false;
-      this.emit("connect_error", "The connection was disconnected.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot.");
+      this.emit("connect_error", "The connection was disconnected.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot, if you think it is a server-side issue, please contact us");
     
     };
     this.socket.onerror = (e) => {
       console.log("ws connection error", e);
       this.connected = false;
-      this.emit("connect_error", "The connection was disconnected due to an error.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot.");
+      this.emit("connect_error", "The connection was disconnected due to an error.<br/>This may be a result of slow wifi<br/>Try restarting your device if this happens a lot,  if you think it is a server-side issue, please contact us");
     };
     this.socket.onmessage = (data) => {
       var message;
@@ -51,7 +51,7 @@ class Socket extends EventEmitter  {
         d: args[1]
       }));
     } else {
-      console.trace("TOO MUCH DATA");
+      console.trace("TOO MUCH DATA, DISCONNECTED");
     }
   }
   disconnect() {
