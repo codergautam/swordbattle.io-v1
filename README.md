@@ -2,11 +2,14 @@
 
 Swordbattle.io is a multiplayer game where you PvP with 2D swords, and try to gain coins. The more coins you have, the more bigger and powerful you get! Try to become the biggest of them all..
 
-[Play now!](http://swordbattle.io)
-<br>
+### [Play now!](http://swordbattle.io)
+### [Forum (most active)](https://forum.codergautam.dev)
+
 [Leaderboard](https://www.swordbattle.io/leaderboard)
 <br>
 [Discord](https://discord.com/invite/BDG8AfkysZ)
+<br>
+
 
 ## Contributing
 
