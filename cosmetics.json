@@ -176,6 +176,13 @@
             "description": "Heal.. or Stab..."
         },
         {
+            "name": "pumpkin",
+            "displayName": "Pumpkin",
+            "url": "/assets/images/pumpkinPlayer.png",
+            "price": 50000,
+            "description": "Very spooky..."
+        },
+        {
             "name": "superhero",
             "displayName": "Superhero",
             "url": "/assets/images/superheroPlayer.png",

@@ -1,14 +1,12 @@
+
 <!DOCTYPE html>
 <style>
-
 /* Design */
 *,
 *::before,
 *::after {
   box-sizing: border-box;
 }
-
-
 .body {
   color: #272727;
   font-family: 'Quicksand', serif;
@@ -17,29 +15,24 @@
   letter-spacing: 0;
   align-items: center;
 }
-
 .main{
   max-width: 1200px;
   margin: 0 auto;
   min-height: 90%;
 }
-
 h1 {
     font-size: 24px;
     font-weight: 400;
     text-align: center;
 }
-
 img {
   height: auto;
   max-width: 100%;
   vertical-align: middle;
 }
-
 .card_image {
   background-color: lime;
 }
-
 .btn {
   color: #ffffff;
   padding: 0.8rem;
@@ -53,11 +46,9 @@ img {
   border: 1px solid rgba(255, 255, 255, 0.2);
   background: transparent;
 }
-
 .btn:hover {
   background-color: rgba(255, 255, 255, 0.12);
 }
-
 .cards {
   display: flex;
   flex-wrap: wrap;
@@ -66,31 +57,25 @@ img {
   margin: 0;
   padding: 0;
 }
-
 .cards_item {
   display: flex;
   padding: 1rem;
 }
-
 @media (min-width: 60rem) {
   .cards_item {
     width: 20%;
   }
 }
-
-
 @media (min-width: 40rem) {
   .cards_item {
     width: 40%;
   }
 }
-
 @media (min-width: 56rem) {
   .cards_item {
     width: 23.3333%;
   }
 }
-
 .card {
   background: linear-gradient(to bottom left, #0a3e0a 5%, green 100%);
   box-shadow: 0 20px 40px -14px rgba(0, 0, 0, 0.25);
@@ -98,13 +83,11 @@ img {
   flex-direction: column;
   overflow: hidden;
 }
-
 .card_content {
   padding: 1rem;
   text-align: center;
  
 }
-
 .card_title {
   color: #ffffff;
   font-size: 1.1rem;
@@ -113,24 +96,20 @@ img {
   text-transform: capitalize;
   margin: 0px;
 }
-
 .card_text {
   color: #ffffff;
   font-size: 0.875rem;
   line-height: 1.5; 
   font-weight: 400;
 }
-
 a {
   font-size: 10em !important;
 }
 <%
-
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
 %>
-
 </style>
 <div class="body" >
   <% if(account) { %>
@@ -138,11 +117,9 @@ function numberWithCommas(x) {
       function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
-
       var secret = "<%= secret %>";
       var bal = "<%= account.bal %>";
       function buy(skin,price,obj) {
-
         if(Number(bal) < price) {
           alert("Not enough coins");
           return;
@@ -188,14 +165,10 @@ function numberWithCommas(x) {
               buy(skin,price,obj);
             }
             alert(text);
-
            });
-
           }
         });
-
       }
-
       function equip(skin,obj) {
         obj.innerHTML = "Equipping...";
         var endpoint = "/api/equip";
@@ -215,7 +188,6 @@ function numberWithCommas(x) {
             obj.onclick = function() {}
             document.querySelectorAll(".card_btn").forEach(function(obj) {
               var skinb = obj.getAttribute("skin");
-
               if(skinb != skin ) {
                 if(obj.innerHTML.trim() == "EQUIPPED") {
                   obj.innerHTML = "EQUIP";
@@ -234,12 +206,9 @@ function numberWithCommas(x) {
           }
         });
       
-
       }
-
     </script>
     <div class="main" style="background-color: black;">
-
         <br/>
         <h1 style="color: white; font-size: xx-large;"><b>Shop</b></h1><h1 id="balt" style="color: white; font-size: xx-large;">Balance: <%=numberWithCommas(account.bal)%> <img width="30" src="/assets/images/coin.png"></h1>
         <center><button id="closeShop" style="font-size: xx-large;">Close</button></center>
@@ -255,7 +224,7 @@ function numberWithCommas(x) {
               <div class="card_image"><center><img src="<%= skin.url %>"></center></div>
               <div class="card_content">
                 <h2 class="card_title"><%= skin.displayName %><i class="fa-solid fa-circle-xmark"></i></h2>
-              <b>  <p class="card_text"><%= skin.description %></p></b>
+              <b>  <p class="card_text"><%- skin.description %></p></b>
                 <p class="card_text">
                   <% abbreviate_number = function(num, fixed) {
                     if (num === null) { return null; } // terminate early
@@ -281,7 +250,7 @@ function numberWithCommas(x) {
                 <%} else if(account.skins.collected.includes(skin.name.toLowerCase())) {%>
                   <button class="btn card_btn" skin="<%=skin.name%>" onclick="equip('<%=skin.name%>',this)"> EQUIP </button>
                   <% } else {%>
-                <button class="btn card_btn" skin="<%=skin.name%>" onclick="buy('<%=skin.name%>', '<%=skin.price%>',this)"> <%= numberWithCommas(skin.price) %> <img width="20" src="/assets/images/coin.png"></button>
+                <button class="btn card_btn" skin="<%=skin.name%>" onclick="buy('<%=skin.name%>', '<%=skin.price%>',this)"> <%- (skin.original ? '<s>'+numberWithCommas(skin.original)+'</s>' : "") %>  <b><%= numberWithCommas(skin.price) %></b> <img width="20" src="/assets/images/coin.png"></button>
               <% } %>
              
             
