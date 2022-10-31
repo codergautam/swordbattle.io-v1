@@ -44,7 +44,6 @@ export default class MainGame extends Phaser.Scene {
     });
 
     this.ws.once('connected', () => {
-      this.connectingText.destroy();
       this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, keys: this.passedData.keys, verify: false }));
     });
 
@@ -53,10 +52,12 @@ export default class MainGame extends Phaser.Scene {
        const values = Object.values(PacketErrorTypes);
       const error = values.find((value) => value.code === code);
       this.events.emit('crash', error ? error.message : 'An unknown error occured.');
-
     });
 
-
+    this.ws.once(Packet.Type.JOIN.toString(), () => {
+      this.connectingText.destroy();
+      this.background.destroy();
+    });
    }
 
   update() {

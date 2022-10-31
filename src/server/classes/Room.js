@@ -27,7 +27,9 @@ module.exports = class Room {
 
     this.players.add(ourPlayer);
     this.ws.addClient(ws);
-    // this.ws.send(new Packet(Packet.Type.JOIN, this.id).toBinary(), ourPlayer.id);
+
+    // Send a packet to the client to tell them they joined the room
+    ws.send(new Packet(Packet.Type.JOIN, ws.id).toBinary());
 
     if (this.players.size === this.maxPlayers) {
       this.state = RoomState.PLAYING;
