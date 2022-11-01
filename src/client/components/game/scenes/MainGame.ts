@@ -2,6 +2,7 @@
 import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
+import Player from '../classes/Player';
 import Ws from '../classes/Ws';
 import getServerUrl from '../helpers/getServerUrl';
 import { PassedData } from '../helpers/helperTypes';
@@ -12,6 +13,7 @@ export default class MainGame extends Phaser.Scene {
   ws: Ws;
   connectingText: Phaser.GameObjects.Text;
   passedData: { name: string, keys: boolean, volume: number };
+  players: Map<any, any>;
   constructor() {
     super('maingame');
   }
@@ -54,10 +56,13 @@ export default class MainGame extends Phaser.Scene {
       this.events.emit('crash', error ? error.message : 'An unknown error occured.');
     });
 
-    this.ws.once(Packet.Type.JOIN.toString(), () => {
+    this.ws.once(Packet.Type.JOIN.toString(), ([id]) => {
+      this.ws.id = id;
       this.connectingText.destroy();
       this.background.destroy();
     });
+
+    this.players = new Map();
    }
 
   update() {

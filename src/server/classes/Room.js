@@ -1,7 +1,5 @@
 const Packet = require('../../shared/Packet');
 const idGen = require('../helpers/idgen');
-const RoomState = require('./RoomState');
-
 const WsRoom = require('./WsRoom');
 
 module.exports = class Room {
@@ -10,9 +8,10 @@ module.exports = class Room {
     if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
     this.id = id;
     this.ws = new WsRoom(this.id);
-    this.players = new Set();
-    this.state = RoomState.WAITING;
+    this.players = new Map();
     this.maxPlayers = 4;
+
+    this.lastTick = Date.now();
   }
 
   removePlayer(playerId) {
@@ -24,15 +23,19 @@ module.exports = class Room {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
     ourPlayer.id = ws.id;
+    ourPlayer.wsRoom = this.ws;
 
-    this.players.add(ourPlayer);
+    this.players.set(ourPlayer.id, ourPlayer);
     this.ws.addClient(ws);
 
     // Send a packet to the client to tell them they joined the room
     ws.send(new Packet(Packet.Type.JOIN, ws.id).toBinary());
+  }
 
-    if (this.players.size === this.maxPlayers) {
-      this.state = RoomState.PLAYING;
-    }
+  tick() {
+    const now = Date.now();
+    const delta = now - this.lastTick;
+    this.lastTick = now;
+    console.log(`Room ${this.id} ticked with ${this.players.size} players`);
   }
 };

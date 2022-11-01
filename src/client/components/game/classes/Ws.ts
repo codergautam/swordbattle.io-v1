@@ -64,6 +64,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
   serverUrl: string;
   ws: WebSocket;
   connected: boolean;
+  id: any;
   constructor(serverUrl: string) {
     super();
     this.serverUrl = serverUrl;
@@ -78,6 +79,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
         try {
             const parsed = Packet.fromBinary(event.data);
             this.emit(parsed.type, parsed.data);
+            console.log(parsed);
         } catch (e) {
           console.error('error while parsing packet', e);
         }

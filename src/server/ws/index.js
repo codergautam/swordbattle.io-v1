@@ -37,8 +37,8 @@ module.exports = {
     console.log(`Client ${ws.id} disconnected`);
     if (unjoinedRoom.clients.has(ws.id)) {
       unjoinedRoom.removeClient(ws.id);
-    } else {
-      // remove from room
+    } else if (mainRoom.ws.clients.has(ws.id)) {
+      mainRoom.removePlayer(ws.id);
     }
   },
   message: (ws, m) => {
@@ -46,3 +46,7 @@ module.exports = {
     packetHandler(ws, packet);
   },
 };
+
+setInterval(() => {
+  mainRoom.tick();
+}, 1000 / 20);
