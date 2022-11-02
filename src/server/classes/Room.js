@@ -1,4 +1,6 @@
+const QuadTree = require('@timohausmann/quadtree-js');
 const Packet = require('../../shared/Packet');
+const constants = require('../helpers/constants');
 const idGen = require('../helpers/idgen');
 const WsRoom = require('./WsRoom');
 
@@ -11,12 +13,28 @@ module.exports = class Room {
     this.players = new Map();
     this.maxPlayers = 4;
 
+    // Initialize quadtree for optimization and collision detection
+    const start = -1 * (constants.map / 2);
+    this.quadTree = new QuadTree({
+      x: start,
+      y: start,
+      width: constants.map,
+      height: constants.map,
+    });
+
     this.lastTick = Date.now();
   }
 
   removePlayer(playerId) {
     this.players.delete(playerId);
     this.ws.removeClient(playerId);
+  }
+
+  refreshQuadTree() {
+    this.quadTree.clear();
+    this.players.forEach((player) => {
+      this.quadTree.insert(player.getQuadTreeFormat());
+    });
   }
 
   addPlayer(player, ws) {
@@ -27,7 +45,6 @@ module.exports = class Room {
 
     this.players.set(ourPlayer.id, ourPlayer);
     this.ws.addClient(ws);
-
     // Send a packet to the client to tell them they joined the room
     ws.send(new Packet(Packet.Type.JOIN, ws.id).toBinary());
   }
@@ -36,6 +53,6 @@ module.exports = class Room {
     const now = Date.now();
     const delta = now - this.lastTick;
     this.lastTick = now;
-    console.log(`Room ${this.id} ticked with ${this.players.size} players`);
+    this.refreshQuadTree();
   }
 };
