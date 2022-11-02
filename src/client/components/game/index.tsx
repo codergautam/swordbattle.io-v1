@@ -1,5 +1,5 @@
 import Phaser from 'phaser';
-import React from 'react';
+import { Component } from 'react';
 import Preload from './scenes/Preload';
 import MainGame from './scenes/MainGame';
 import Title from './scenes/Title';
@@ -7,7 +7,8 @@ import TitleUI from './ui/TitleUI';
 import '../../css/index.css'
 import ErrorModal from './ui/ErrorModal';
 
-export default class Game extends React.Component {
+// TODO: using a react component is a bit unnecessary so switch to a function
+export default class Game extends Component {
   game: Phaser.Game;
   state: {
     crashMessage: null | string;activeScene: string, gameState: null | string
@@ -75,9 +76,11 @@ export default class Game extends React.Component {
   }
 
   render() {
-    return <div style={{position:"fixed",display:"flex",justifyContent:"center",alignItems:"center",zIndex:1,width:"100%",height:"100%"}}>
+    return ( 
+    <div style={{position:"fixed",display:"flex",justifyContent:"center",alignItems:"center",zIndex:1,width:"100%",height:"100%"}}>
       {this.state.activeScene === 'title' ? <TitleUI/> : null}
       {this.state.crashMessage ? <ErrorModal message={this.state.crashMessage}/> : null}
-    </div>;
+    </div>
+    );
   }
 }
