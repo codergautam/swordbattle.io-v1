@@ -29,6 +29,6 @@ module.exports = {
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
     'no-console': 0,
-    'linebreak-style': 0,
+    'linebreak-style': 1,
   },
 };

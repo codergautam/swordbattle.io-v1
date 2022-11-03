@@ -1,3 +1,5 @@
+import dynamicSkinLoader from "../helpers/dynamicSkinLoader";
+
 export default class Player extends Phaser.GameObjects.Container {
   id: string;
   mySelf: boolean;
@@ -8,8 +10,6 @@ export default class Player extends Phaser.GameObjects.Container {
     this.id = id;
     this.mySelf = mySelf;
     this.skin = skin;
-
-
 
     this.scene.add.existing(this);
   }

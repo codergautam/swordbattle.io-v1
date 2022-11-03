@@ -9,11 +9,12 @@ import { PassedData } from '../helpers/helperTypes';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
-  background: Phaser.GameObjects.Image;
+  loadBg: Phaser.GameObjects.Image;
   ws: Ws;
   connectingText: Phaser.GameObjects.Text;
   passedData: { name: string, keys: boolean, volume: number };
   players: Map<any, any>;
+  grass: Phaser.GameObjects.TileSprite;
   constructor() {
     super('maingame');
   }
@@ -22,10 +23,10 @@ export default class MainGame extends Phaser.Scene {
   }
 
    preload() {
-    this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
-    
+    this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
+
     this.connectingText = this.add.text(this.cameras.main.width/2, this.cameras.main.height/2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily:'Hind Madurai, Arial' }).setOrigin(0.5, 0.5).setScrollFactor(0, 0).setScale(1);
-  
+
     this.tweens.add({
       targets: this.connectingText,
       alpha: 0,
@@ -34,7 +35,7 @@ export default class MainGame extends Phaser.Scene {
       yoyo: true,
       repeat: -1
     });
-    
+
   }
 
    create() {
@@ -59,12 +60,22 @@ export default class MainGame extends Phaser.Scene {
     this.ws.once(Packet.Type.JOIN.toString(), ([id]) => {
       this.ws.id = id;
       this.connectingText.destroy();
-      this.background.destroy();
+      this.loadBg.destroy();
+      this.start();
     });
 
     this.players = new Map();
    }
+   
+  start() {
+    // Initialize grass
+    this.grass = this.add.tileSprite(0, 0, 1280, 720, 'grass').setOrigin(0, 0).setScrollFactor(0, 0);
+  }
 
   update() {
+    // Return if still connecting
+    if(this.connectingText.visible) return;
+
+
   }
 }
