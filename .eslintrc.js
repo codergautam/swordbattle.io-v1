@@ -30,5 +30,24 @@ module.exports = {
     'react/require-default-props': 0,
     'no-console': 0,
     'linebreak-style': 1,
+    'no-octal-escape': 0,
   },
+  overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      plugins: [
+        '@typescript-eslint',
+      ],
+      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: ['./tsconfig.json'],
+      },
+      rules: {
+        'lines-between-class-members': 0,
+        'import/no-unresolved': 0,
+        'import/extensions': 0,
+      },
+    },
+  ],
 };

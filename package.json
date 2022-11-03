@@ -35,6 +35,8 @@
     "@babel/core": "^7.7.2",
     "@babel/preset-env": "^7.7.1",
     "@stylelint/postcss-css-in-js": "^0.37.2",
+    "@typescript-eslint/eslint-plugin": "^5.42.0",
+    "@typescript-eslint/parser": "^5.42.0",
     "babel-loader": "^8.0.6",
     "css-loader": "^5.2.7",
     "eslint": "^8.11.0",

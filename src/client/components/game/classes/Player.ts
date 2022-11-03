@@ -1,4 +1,4 @@
-import dynamicSkinLoader from "../helpers/dynamicSkinLoader";
+import dynamicSkinLoader from '../helpers/dynamicSkinLoader';
 
 export default class Player extends Phaser.GameObjects.Container {
   id: string;

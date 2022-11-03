@@ -5,6 +5,7 @@ import Phaser from 'phaser';
 
 class Title extends Phaser.Scene {
   background: Phaser.GameObjects.Image;
+
   constructor() {
     super('title');
   }
@@ -12,18 +13,19 @@ class Title extends Phaser.Scene {
   create() {
     console.log('title scene created');
     this.background = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
-  
+
     this.events.once('playButtonClicked', (name: string) => {
-      if(!name || name.trim().length < 1) return;
+      if (!name || name.trim().length < 1) return;
       name = name.trim().substring(0, 12);
 
       try {
-      window.localStorage.setItem('name', name);
-      } catch(e) {
+        window.localStorage.setItem('name', name);
+      } catch (e) {
+        console.log(e);
       }
 
       this.scene.start('maingame', { name, keys: true, volume: 1 });
-    })
+    });
   }
 }
 

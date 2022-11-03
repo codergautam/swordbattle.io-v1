@@ -4,7 +4,7 @@ import Preload from './scenes/Preload';
 import MainGame from './scenes/MainGame';
 import Title from './scenes/Title';
 import TitleUI from './ui/TitleUI';
-import '../../css/index.css'
+import '../../css/index.css';
 import ErrorModal from './ui/ErrorModal';
 
 export default class Game extends React.Component {
@@ -18,7 +18,7 @@ export default class Game extends React.Component {
     this.state = {
       activeScene: '',
       crashMessage: null,
-      gameState: null
+      gameState: null,
     };
   }
 
@@ -30,15 +30,15 @@ export default class Game extends React.Component {
       scene: [Preload, Title, MainGame],
       dom: {
         createContainer: true,
-    },
-    scale: {
-        mode:Phaser.Scale.FIT,
+      },
+      scale: {
+        mode: Phaser.Scale.FIT,
         autoCenter: Phaser.Scale.CENTER_BOTH,
-    },
-    width: 1280,
-    height: 720,
+      },
+      width: 1280,
+      height: 720,
       physics: {
-        default: 'arcade', 
+        default: 'arcade',
         arcade: {
           debug: false,
         },
@@ -58,26 +58,29 @@ export default class Game extends React.Component {
     this.game.events.once(Phaser.Core.Events.READY, () => {
       this.game.scene.scenes.forEach((scene: Phaser.Scene) => {
         scene.events.on(Phaser.Scenes.Events.START, () => {
-          this.setState({activeScene: scene.sys.settings.key});
+          this.setState({ activeScene: scene.sys.settings.key });
         });
-        if(scene.sys.settings.key == 'maingame') {
+        if (scene.sys.settings.key == 'maingame') {
           scene.events.on('gameStateChange', (gameState: any) => {
-            this.setState({gameState});
+            this.setState({ gameState });
           });
         }
         scene.events.on('crash', (message: string) => {
-          this.setState(Object.assign(this.state, {crashMessage: message}));
+          this.setState(Object.assign(this.state, { crashMessage: message }));
         });
       });
     });
-    
-
   }
 
   render() {
-    return <div style={{position:"fixed",display:"flex",justifyContent:"center",alignItems:"center",zIndex:1,width:"100%",height:"100%"}}>
-      {this.state.activeScene === 'title' ? <TitleUI/> : null}
-      {this.state.crashMessage ? <ErrorModal message={this.state.crashMessage}/> : null}
-    </div>;
+    return (
+      <div style={{
+        position: 'fixed', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1, width: '100%', height: '100%',
+      }}
+      >
+        {this.state.activeScene === 'title' ? <TitleUI /> : null}
+        {this.state.crashMessage ? <ErrorModal message={this.state.crashMessage} /> : null}
+      </div>
+    );
   }
 }
