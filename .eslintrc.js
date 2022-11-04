@@ -20,7 +20,7 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 1,
-    'max-len': [2, { ignoreComments: true }],
+    'max-len': [2, { ignoreComments: true, code: 120 }],
     'react/react-in-jsx-scope': 0,
     'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
     'function-paren-newline': [2, 'consistent'],

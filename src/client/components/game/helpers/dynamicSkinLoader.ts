@@ -1,7 +1,7 @@
 const failedLoads = {};
 
 const loadImage = (scene: Phaser.Scene, url: string, key: string) => new Promise((resolve, reject) => {
-  if (failedLoads[key]) return resolve(false);
+  if (failedLoads[key]) resolve(false);
   scene.load.image(key, url);
 
   scene.load.once(Phaser.Loader.Events.COMPLETE, () => {
@@ -27,7 +27,7 @@ const doIt = async (scene: Phaser.Scene, key: string) => {
 };
 
 export default async (scene: Phaser.Scene, skin: string) => {
-  if (skin == 'player') return { skin: 'player', sword: 'sword' };
+  if (skin === 'player') return { skin: 'player', sword: 'sword' };
 
   const player = await doIt(scene, `${skin}Player`);
   const sword = await doIt(scene, `${skin}Sword`);

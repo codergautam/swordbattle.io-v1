@@ -69,9 +69,10 @@ export default class MainGame extends Phaser.Scene {
     this.grass = this.add.tileSprite(0, 0, 1280, 720, 'grass').setOrigin(0, 0).setScrollFactor(0, 0);
   }
 
-  update() {
+  update(time: number, delta: number) {
     // Return if still connecting
     if (this.connectingText.visible) return;
     // Do game logic below
+    console.log(delta);
   }
 }
