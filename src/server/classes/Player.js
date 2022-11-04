@@ -1,3 +1,4 @@
+const Evolutions = require('../../shared/Evolutions');
 const constants = require('../helpers/constants');
 const getRandomInt = require('../helpers/getRandomInt');
 
@@ -9,8 +10,10 @@ module.exports = class Player {
       y: getRandomInt(constants.spawn.min, constants.spawn.max),
     };
     this.angle = 0;
-
     this.scale = 1;
+    this.evolution = Evolutions.DEFAULT;
+    this.swinging = false;
+    this.swordThrown = false;
   }
 
   getQuadTreeFormat() {

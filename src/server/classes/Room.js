@@ -45,8 +45,8 @@ module.exports = class Room {
 
     this.players.set(ourPlayer.id, ourPlayer);
     this.ws.addClient(ws);
-    // Send a packet to the client to tell them they joined the room
-    ws.send(new Packet(Packet.Type.JOIN, ws.id).toBinary());
+    // Send a packet to the client to tell them they joined the room, along with position
+    ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
   }
 
   tick() {

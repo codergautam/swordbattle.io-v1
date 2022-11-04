@@ -73,6 +73,5 @@ export default class MainGame extends Phaser.Scene {
     // Return if still connecting
     if (this.connectingText.visible) return;
     // Do game logic below
-    console.log(delta);
   }
 }

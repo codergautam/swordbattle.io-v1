@@ -11,10 +11,10 @@ module.exports = class Packet {
     };
   }
 
-  toBinary() {
+  toBinary(json = false) {
     const length = typeof this.data === 'number' ? 1 : this.data.length;
-    if (!length || typeof this.data === 'string') {
-      return JSON.stringify({ t: this.type, d: this.data });
+    if (json || (!length || typeof this.data === 'string')) {
+      return Buffer.from(JSON.stringify({ t: this.type, d: this.data }), 'utf-8');
     }
     // Data is an array
     const buffer = Buffer.alloc(4 + length);
