@@ -54,11 +54,17 @@ export default class MainGame extends Phaser.Scene {
       this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
     });
 
-    this.ws.once(Packet.Type.JOIN.toString(), ([id]) => {
+    this.ws.once(Packet.Type.JOIN.toString(), ([id, x, y]) => {
       this.ws.id = id;
       this.connectingText.destroy();
       this.loadBg.destroy();
       this.start();
+
+      const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2);
+      this.players.set(id, player);
+
+      // Camera centered on player
+      this.cameras.main.startFollow(player);
     });
 
     this.players = new Map();
@@ -66,7 +72,10 @@ export default class MainGame extends Phaser.Scene {
 
   start() {
     // Initialize grass
-    this.grass = this.add.tileSprite(0, 0, 1280, 720, 'grass').setOrigin(0, 0).setScrollFactor(0, 0);
+    this.grass = this.add.tileSprite(0, 0, 1280, 720, 'grass')
+      .setOrigin(0, 0)
+      .setScrollFactor(0, 0)
+      .setDepth(1);
   }
 
   update(time: number, delta: number) {
