@@ -61,13 +61,13 @@ export default class Game extends Component {
         scene.events.on(Phaser.Scenes.Events.START, () => {
           this.setState({ activeScene: scene.sys.settings.key });
         });
-        if (scene.sys.settings.key == 'maingame') {
+        if (scene.sys.settings.key === 'maingame') {
           scene.events.on('gameStateChange', (gameState: any) => {
-            this.setState({ gameState });
+            this.setState((prevState) => Object.assign(prevState, { gameState }));
           });
         }
         scene.events.on('crash', (message: string) => {
-          this.setState(Object.assign(this.state, { crashMessage: message }));
+          this.setState((prevState) => Object.assign(prevState, { crashMessage: message }));
         });
       });
     });

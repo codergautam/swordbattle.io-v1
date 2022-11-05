@@ -33,8 +33,10 @@ export default class Player extends Phaser.GameObjects.Container {
 
   // eslint-disable-next-line class-methods-use-this
   preUpdate() {
-    if(this.mySelf) {
-      this.sword.rotation = Phaser.Math.Angle.Between(this.x, this.y, this.scene.input.activePointer.worldX, this.scene.input.activePointer.worldY);
+    if (this.mySelf) {
+      const mousePos = this.scene.input;
+      this.sword.angle = Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180 / Math.PI + 45;
+      this.player.angle = this.sword.angle + 45 + 180;
     }
   }
 }
