@@ -1,5 +1,8 @@
-module.exports = class Packet {
-  constructor(type, data) {
+export default class Packet {
+  type: any;
+  data: any;
+
+  constructor(type: any, data: any) {
     this.type = type;
     this.data = data;
   }
@@ -44,7 +47,7 @@ module.exports = class Packet {
     };
   }
 
-  static fromBinary(buffer) {
+  static fromBinary(buffer: any) {
     try {
       const { t, d } = JSON.parse(buffer);
       return { type: t, data: d };
@@ -72,4 +75,4 @@ module.exports = class Packet {
 
     return { type, data };
   }
-};
+}

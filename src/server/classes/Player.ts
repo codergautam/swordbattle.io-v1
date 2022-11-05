@@ -1,9 +1,19 @@
-const Evolutions = require('../../shared/Evolutions');
-const constants = require('../helpers/constants');
-const getRandomInt = require('../helpers/getRandomInt');
+import Evolutions from '../../shared/Evolutions';
+import constants from '../helpers/constants';
+import getRandomInt from '../helpers/getRandomInt';
 
-module.exports = class Player {
-  constructor(name) {
+export default class Player {
+  name: any;
+  pos: any;
+  angle: any;
+  scale: any;
+  evolution: any;
+  swinging: any;
+  swordThrown: any;
+  wsRoom: any;
+  id: any;
+
+  constructor(name: any) {
     this.name = name;
     this.pos = {
       x: getRandomInt(constants.spawn.min, constants.spawn.max),
@@ -32,4 +42,4 @@ module.exports = class Player {
   get radius() {
     return constants.player_radius * this.scale;
   }
-};
+}

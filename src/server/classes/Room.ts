@@ -1,10 +1,17 @@
-const QuadTree = require('@timohausmann/quadtree-js');
-const Packet = require('../../shared/Packet');
-const constants = require('../helpers/constants');
-const idGen = require('../helpers/idgen');
-const WsRoom = require('./WsRoom');
+import QuadTree from '@timohausmann/quadtree-js';
+import Packet from '../../shared/Packet';
+import constants from '../helpers/constants';
+import idGen from '../helpers/idgen';
+import WsRoom from './WsRoom';
 
-module.exports = class Room {
+export default class Room {
+  id: any;
+  ws: any;
+  players: any;
+  maxPlayers: any;
+  quadTree: any;
+  lastTick: any;
+
   constructor(id = idGen()) {
     // eslint-disable-next-line no-param-reassign
     if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
@@ -25,19 +32,19 @@ module.exports = class Room {
     this.lastTick = Date.now();
   }
 
-  removePlayer(playerId) {
+  removePlayer(playerId: any) {
     this.players.delete(playerId);
     this.ws.removeClient(playerId);
   }
 
   refreshQuadTree() {
     this.quadTree.clear();
-    this.players.forEach((player) => {
+    this.players.forEach((player: any) => {
       this.quadTree.insert(player.getQuadTreeFormat());
     });
   }
 
-  addPlayer(player, ws) {
+  addPlayer(player: any, ws: any) {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
     ourPlayer.id = ws.id;
@@ -55,4 +62,4 @@ module.exports = class Room {
     this.lastTick = now;
     this.refreshQuadTree();
   }
-};
+}
