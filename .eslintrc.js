@@ -20,14 +20,34 @@ module.exports = {
   ],
   rules: {
     'no-unused-vars': 1,
-    'max-len': ['error', { ignoreComments: true }],
+    'max-len': [2, { ignoreComments: true, code: 120 }],
     'react/react-in-jsx-scope': 0,
-    'react/jsx-filename-extension': [1, { extensions: ['.js', '.jsx'] }],
-    'function-paren-newline': ['error', 'consistent'],
-    'no-plusplus': ['error', { allowForLoopAfterthoughts: true }],
-    'max-classes-per-file': ['off'],
+    'react/jsx-filename-extension': [1, { extensions: ['.tsx', '.jsx'] }],
+    'function-paren-newline': [2, 'consistent'],
+    'no-plusplus': [2, { allowForLoopAfterthoughts: true }],
+    'max-classes-per-file': 0,
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
-    'no-console': ['off'],
+    'no-console': 0,
+    'linebreak-style': 0,
+    'no-octal-escape': 0,
   },
+  overrides: [
+    {
+      files: ['**/*.ts', '**/*.tsx'],
+      plugins: [
+        '@typescript-eslint',
+      ],
+      extends: ['eslint:recommended', 'plugin:@typescript-eslint/recommended'],
+      parser: '@typescript-eslint/parser',
+      parserOptions: {
+        project: ['./tsconfig.json', './tsconfig.eslint.json'],
+      },
+      rules: {
+        'lines-between-class-members': 0,
+        'import/no-unresolved': 0,
+        'import/extensions': 0,
+      },
+    },
+  ],
 };

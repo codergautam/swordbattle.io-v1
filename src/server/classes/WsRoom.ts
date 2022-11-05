@@ -1,25 +1,28 @@
-module.exports = class WsRoom {
-  constructor(id) {
+export default class WsRoom {
+  id: any;
+  clients: any;
+
+  constructor(id: any) {
     this.id = id;
     this.clients = new Map();
   }
 
-  addClient(client) {
+  addClient(client: any) {
     this.clients.set(client.id, client);
   }
 
-  removeClient(clientId) {
+  removeClient(clientId: any) {
     this.clients.delete(clientId);
   }
 
-  send(message, clientId) {
+  send(message: any, clientId: any) {
     const client = this.clients.get(clientId);
     if (client) {
       client.send(message);
     }
   }
 
-  sendAll(message) {
+  sendAll(message: any) {
     // Map to array
     const clients = [...this.clients.values()];
     // eslint-disable-next-line no-restricted-syntax
@@ -28,7 +31,7 @@ module.exports = class WsRoom {
     }
   }
 
-  sendExcept(message, clientId) {
+  sendExcept(message: any, clientId: any) {
     const clients = [...this.clients.values()];
     // eslint-disable-next-line no-restricted-syntax
     for (const client of clients) {
@@ -37,4 +40,4 @@ module.exports = class WsRoom {
       }
     }
   }
-};
+}

@@ -1,4 +1,6 @@
-class RoomList {
+export default class RoomList {
+  rooms: any;
+
   constructor() {
     this.rooms = {};
   }
@@ -7,19 +9,19 @@ class RoomList {
     return Object.values(this.rooms);
   }
 
-  getRoom(id) {
+  getRoom(id: any) {
     return this.rooms[id];
   }
 
-  updateRoom(id, room) {
+  updateRoom(id: any, room: any) {
     this.rooms[id] = room;
   }
 
-  addRoom(room) {
+  addRoom(room: any) {
     this.rooms[room.id] = room;
   }
 
-  removeRoom(id) {
+  removeRoom(id: any) {
     delete this.rooms[id];
   }
 }

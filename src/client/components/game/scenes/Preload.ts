@@ -8,16 +8,20 @@ class Preload extends Phaser.Scene {
 
   preload() {
     // This is the first scene that will be loaded when opening the game
-   //  Do preload logic here, loading assets, etc.
+    //  Do preload logic here, loading assets, etc.
 
-   this.load.image("title", "assets/images/opening.png");
+    this.load.image('title', 'assets/images/opening.png');
+    this.load.image('grass', '/assets/images/background.jpeg');
+
+    this.load.image('sword', '/assets/images/sword.png');
+    this.load.image('player', '/assets/images/player.png');
   }
 
   create() {
     window.dispatchEvent(new Event('resize'));
-    
+
     // Switch to the title, or "home" screen
-   this.scene.start("title");
+    this.scene.start('title');
   }
 }
 

@@ -1,1 +1,1 @@
-node .
+npm start

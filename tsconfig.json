@@ -1,0 +1,13 @@
+{
+  "compilerOptions": {
+    "outDir": "./dist-server/",
+    "noImplicitAny": true,
+    "module": "CommonJS",
+    "target": "ES5",
+    "esModuleInterop": true,
+    "jsx": "react",
+    "allowJs": true,
+    "moduleResolution": "node"
+  },
+  "include": ["src/server/**/*", "src/shared/**/*"]
+}

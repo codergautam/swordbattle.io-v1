@@ -55,6 +55,6 @@ module.exports = {
     extensions: ['.tsx', '.ts', '.js'],
   },
   devServer: {
-    allowedHosts: "all"
+    allowedHosts: 'all',
   },
 };

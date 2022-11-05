@@ -4,4 +4,4 @@ interface PassedData {
   volume: number;
 }
 
-export { PassedData };
+export default PassedData;
