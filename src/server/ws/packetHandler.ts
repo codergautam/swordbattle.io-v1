@@ -1,12 +1,12 @@
 /* eslint-disable no-param-reassign */
-const roomList = require('../helpers/roomlist');
-const Packet = require('../../shared/Packet');
-const Player = require('../classes/Player');
-const unjoinedRoom = require('../helpers/unjoinedRoom');
+import roomList from '../helpers/roomlist';
+import Packet from '../../shared/Packet';
+import Player from '../classes/Player';
+import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const mainRoom = roomList.getRoom('main');
+const mainRoom = (roomList as any).getRoom('main');
 
-module.exports = (ws, packet) => {
+export default (ws: any, packet: any) => {
   switch (packet.type) {
     case Packet.Type.JOIN: {
       // Verify that all data sent is valid

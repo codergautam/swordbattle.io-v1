@@ -1,7 +1,7 @@
-const path = require('path');
-const fs = require('fs');
+import path from 'path';
+import fs from 'fs';
 
-module.exports = (res, req) => {
+export default (res: any, req: any) => {
   try {
     const url = req.getUrl();
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;

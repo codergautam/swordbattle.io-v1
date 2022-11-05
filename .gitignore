@@ -11,7 +11,7 @@ node_modules/
 
 # Build
 dist/
-serverdist/
+dist-server/
 /npm-debug.log
 package-lock.json
 yarn.lock

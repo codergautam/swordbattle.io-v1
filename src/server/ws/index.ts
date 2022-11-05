@@ -1,14 +1,13 @@
-const idgen = require('../helpers/idgen');
-const Packet = require('../../shared/Packet');
-const Room = require('../classes/Room');
-const PacketErrorTypes = require('../../shared/PacketErrorTypes');
-const roomList = require('../helpers/roomlist');
-const unjoinedRoom = require('../helpers/unjoinedRoom');
+import packetHandler from './packetHandler';
+import idgen from '../helpers/idgen';
+import Packet from '../../shared/Packet';
+import Room from '../classes/Room';
+import PacketErrorTypes from '../../shared/PacketErrorTypes';
+import roomList from '../helpers/roomlist';
+import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const mainRoom = new Room('main');
-roomList.addRoom(mainRoom);
-
-const packetHandler = require('./packetHandler');
+const mainRoom = new Room('main' as any);
+(roomList as any).addRoom(mainRoom);
 
 setInterval(() => {
   [...unjoinedRoom.clients.values()].forEach((client) => {
@@ -20,12 +19,12 @@ setInterval(() => {
   });
 }, 1000);
 
-module.exports = {
+export default {
   idleTimeout: 32,
   maxBackpressure: 1024,
   maxPayloadLength: 512,
   /* other events (upgrade, open, ping, pong, close) */
-  open: (ws) => {
+  open: (ws: any) => {
     // eslint-disable-next-line no-param-reassign
     ws.id = idgen();
     // eslint-disable-next-line no-param-reassign
@@ -33,7 +32,7 @@ module.exports = {
     console.log(`Client ${ws.id} connected`);
     unjoinedRoom.addClient(ws);
   },
-  close: (ws) => {
+  close: (ws: any) => {
     console.log(`Client ${ws.id} disconnected`);
     if (unjoinedRoom.clients.has(ws.id)) {
       unjoinedRoom.removeClient(ws.id);
@@ -41,7 +40,7 @@ module.exports = {
       mainRoom.removePlayer(ws.id);
     }
   },
-  message: (ws, m) => {
+  message: (ws: any, m: any) => {
     const packet = Packet.fromBinary(m);
     packetHandler(ws, packet);
   },

@@ -7,4 +7,4 @@ function gen() {
   };
 }
 const curGen = gen();
-module.exports = curGen;
+export default curGen;
