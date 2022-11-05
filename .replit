@@ -1,1 +1,1 @@
-run = "node ."
+run = "npm start"
