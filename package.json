@@ -7,7 +7,7 @@
     "heroku-prebuild": "npm install --dev",
     "build": "webpack --config webpack/prod.js ",
     "watch": "webpack --config webpack/base.js --watch --progress",
-    "start": "webpack-dev-server --config webpack/base.js --open",
+    "start-depricated": "webpack-dev-server --config webpack/base.js --open",
     "fix": "prettier --write './src/client/**/*.js' && eslint --fix './src/client/**/*.js'",
     "style": "stylelint --fix './src/client/**/*.js'"
   },
