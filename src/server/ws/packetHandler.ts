@@ -4,9 +4,9 @@ import Packet from '../../shared/Packet';
 import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const mainRoom = (roomList as any).getRoom('main');
 
 export default (ws: any, packet: any) => {
+  const mainRoom = (roomList as any).getRoom('main');
   switch (packet.type) {
     case Packet.Type.JOIN: {
       // Verify that all data sent is valid

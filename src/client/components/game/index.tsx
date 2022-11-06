@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
-import { Component } from 'react';
+import React from 'react';
+
 import Preload from './scenes/Preload';
 import MainGame from './scenes/MainGame';
 import Title from './scenes/Title';
@@ -8,13 +9,10 @@ import '../../css/index.css';
 import ErrorModal from './ui/ErrorModal';
 
 // TODO: using a react component is a bit unnecessary so switch to a function
-export default class Game extends Component {
+export default class Game extends React.Component {
   game: Phaser.Game;
-  state: {
-    crashMessage: null | string;activeScene: string, gameState: null | string
-};
-
-  constructor(props: {} | Readonly<{}>) {
+  state: {activeScene: string, crashMessage: string | null, gameState: any};
+  constructor(props: any) {
     super(props);
     this.state = {
       activeScene: '',
@@ -74,14 +72,22 @@ export default class Game extends Component {
   }
 
   render() {
+    const { activeScene, crashMessage, gameState } = this.state;
     return (
       <div style={{
-        position: 'fixed', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 1, width: '100%', height: '100%',
+        position: 'fixed',
+        display: 'flex',
+        justifyContent: 'center',
+        alignItems: 'center',
+        zIndex: 1,
+        width: activeScene === 'maingame' ? '0%' : '100%',
+        height: activeScene === 'maingame' ? '0%' : '100%',
       }}
       >
-        {this.state.activeScene === 'title' ? <TitleUI /> : null}
-        {this.state.crashMessage ? <ErrorModal message={this.state.crashMessage} /> : null}
+        {activeScene === 'title' ? <TitleUI /> : null}
+        {crashMessage ? <ErrorModal message={crashMessage} /> : null}
       </div>
+
     );
   }
 }

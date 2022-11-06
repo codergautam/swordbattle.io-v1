@@ -6,7 +6,7 @@ import PacketErrorTypes from '../../shared/PacketErrorTypes';
 import roomList from '../helpers/roomlist';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const mainRoom = new Room('main' as any);
+const mainRoom = new Room('main');
 (roomList as any).addRoom(mainRoom);
 
 setInterval(() => {

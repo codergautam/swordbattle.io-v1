@@ -6,7 +6,6 @@ import Title from '../scenes/Title';
 function ok() {
   // go to title screen
   const game = (window as any).game as Game;
-  console.log('Dgfdg');
   const currentScene = game.scene.getScenes(true)[0];
 
   currentScene.scene.start('title');

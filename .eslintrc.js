@@ -28,6 +28,7 @@ module.exports = {
     'max-classes-per-file': 0,
     'react/forbid-prop-types': 0,
     'react/require-default-props': 0,
+    'react/state-in-constructor': 0,
     'no-console': 0,
     'linebreak-style': 0,
     'no-octal-escape': 0,

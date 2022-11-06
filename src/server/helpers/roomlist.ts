@@ -1,4 +1,4 @@
-export default class RoomList {
+class RoomList {
   rooms: any;
 
   constructor() {
@@ -28,4 +28,4 @@ export default class RoomList {
 
 const list = new RoomList();
 
-module.exports = list;
+export default list;

@@ -28,15 +28,22 @@ export default class Player extends Phaser.GameObjects.Container {
 
     this.addToUpdateList();
 
+    if (this.mySelf) {
+      this.scene.input.on(Phaser.Input.Events.POINTER_MOVE, () => {
+        const mousePos = this.scene.input.mousePointer;
+        this.sword.angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI + 45;
+        this.player.angle = this.sword.angle + 45 + 180;
+        const moveFactor = (100 / (this.player.scale * 100)) * 1.5;
+        this.sword.x = (this.player.displayWidth / moveFactor) * Math.cos(this.sword.rotation);
+        this.sword.y = (this.player.displayWidth / moveFactor) * Math.sin(this.sword.rotation);
+      }, this);
+    }
+
     this.scene.add.existing(this);
   }
 
   // eslint-disable-next-line class-methods-use-this
   preUpdate() {
-    if (this.mySelf) {
-      const mousePos = this.scene.input;
-      this.sword.angle = Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180 / Math.PI + 45;
-      this.player.angle = this.sword.angle + 45 + 180;
-    }
+    // Todo; movement?
   }
 }

@@ -5,14 +5,14 @@ import idGen from '../helpers/idgen';
 import WsRoom from './WsRoom';
 
 export default class Room {
-  id: any;
+  id: string | number;
   ws: any;
   players: any;
   maxPlayers: any;
   quadTree: any;
   lastTick: any;
 
-  constructor(id = idGen()) {
+  constructor(id = idGen() as string | number) {
     // eslint-disable-next-line no-param-reassign
     if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
     this.id = id;
