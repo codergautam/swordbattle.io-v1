@@ -4,6 +4,7 @@ import Packet from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
 import Player from '../classes/Player';
 import Ws from '../classes/Ws';
+import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
 // eslint-disable-next-line no-unused-vars
 
@@ -76,6 +77,10 @@ export default class MainGame extends Phaser.Scene {
       .setOrigin(0, 0)
       .setScrollFactor(0, 0)
       .setDepth(1);
+  }
+
+  get myPlayer() {
+    return this.players.get(this.ws.id);
   }
 
   update(time: number, delta: number) {

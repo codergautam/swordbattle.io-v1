@@ -13,15 +13,16 @@ function ok() {
 }
 
 export default function ErrorModal(props: {message: string}) {
+  const { message } = props;
   return (
     <div className={styles.errorbackground}>
       <h1 className={styles.titletext}>Error</h1>
       <p className={styles.namebox}>
         {' '}
-        {props.message}
+        {message}
         {' '}
       </p>
-      <button className={styles.errorbtn} onClick={() => ok()}>Ok</button>
+      <button type="button" className={styles.errorbtn} onClick={() => ok()}>Ok</button>
     </div>
   );
 }

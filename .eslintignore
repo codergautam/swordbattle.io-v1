@@ -1,2 +1,3 @@
 dist-server/**/*
 node_modules/**/*
+globals.d.ts
