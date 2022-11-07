@@ -21,8 +21,8 @@ export default class Player extends Phaser.GameObjects.Container {
     this.mySelf = (this.scene as MainGame).ws.id === this.id;
 
     dynamicSkinLoader(this.scene, this.skin).then((data) => {
-      this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin);
-      this.sword = new Phaser.GameObjects.Image(this.scene, 0, 0, data.sword);
+      this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);
+      this.sword = new Phaser.GameObjects.Image(this.scene, 0, 0, data.sword).setScale(0.5);
 
       this.add([this.player, this.sword]);
 
@@ -38,9 +38,8 @@ export default class Player extends Phaser.GameObjects.Container {
   setDirection(angle: number) {
     this.sword.angle = angle + 45;
     this.player.angle = angle;
-    const moveFactor = (100 / (this.player.scale * 100)) * 1.5;
-    this.sword.x = (this.player.displayWidth / moveFactor) * Math.cos(this.sword.rotation);
-    this.sword.y = (this.player.displayWidth / moveFactor) * Math.sin(this.sword.rotation);
+    this.sword.x = (this.player.displayWidth * 0.69) * Math.cos(this.sword.rotation);
+    this.sword.y = (this.player.displayWidth * 0.69) * Math.sin(this.sword.rotation);
   }
 
   // eslint-disable-next-line class-methods-use-this

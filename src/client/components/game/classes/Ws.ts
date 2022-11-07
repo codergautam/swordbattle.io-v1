@@ -38,9 +38,9 @@ export default class Ws extends Phaser.Events.EventEmitter {
       this.emit('connect_error', err);
     });
   }
-  send(packet: Packet) {
+  send(packet: Packet, json = false) {
     if (this.connected) {
-      this.ws.send(packet.toBinary());
+      this.ws.send(packet.toBinary(json));
     }
   }
 }

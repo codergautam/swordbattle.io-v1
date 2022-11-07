@@ -13,7 +13,7 @@ export default class MainGame extends Phaser.Scene {
   ws: Ws;
   connectingText: Phaser.GameObjects.Text;
   passedData: { name: string, keys: boolean, volume: number };
-  players: Map<any, any>;
+  players: Map<any, Player>;
   grass: Phaser.GameObjects.TileSprite;
   constructor() {
     super('maingame');
@@ -69,12 +69,14 @@ export default class MainGame extends Phaser.Scene {
     });
 
     this.players = new Map();
+
+    this.cameras.main.zoomTo(0.5, 5000);
   }
 
   start() {
     // Initialize grass
-    this.grass = this.add.tileSprite(0, 0, 1280, 720, 'grass')
-      .setOrigin(0, 0)
+    this.grass = this.add.tileSprite((1280 / 2), (720 / 2), 1280, 720, 'grass')
+      .setOrigin(0.5, 0.5)
       .setScrollFactor(0, 0)
       .setDepth(1);
   }
@@ -87,5 +89,18 @@ export default class MainGame extends Phaser.Scene {
     // Return if still connecting
     if (this.connectingText.visible) return;
     // Do game logic below
+    if (this.myPlayer) {
+      // this.myPlayer.x += 1;
+      console.log(this.myPlayer.x);
+      this.grass.width = 1280 / this.cameras.main.zoom;
+      this.grass.height = 720 / this.cameras.main.zoom;
+    }
+
+    this.grass.setTilePosition(
+      (this.cameras.main.scrollX),
+      (this.cameras.main.scrollY),
+    );
+
+    this.grass.setTileScale(this.cameras.main.zoom);
   }
 }
