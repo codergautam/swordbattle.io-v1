@@ -6,6 +6,7 @@ import Player from '../classes/Player';
 import Ws from '../classes/Ws';
 import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
+import levels from '../../../../shared/Levels';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -61,7 +62,7 @@ export default class MainGame extends Phaser.Scene {
       this.loadBg.destroy();
       this.start();
 
-      const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2);
+      const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
       this.players.set(id, player);
 
       // Camera centered on player
@@ -69,8 +70,6 @@ export default class MainGame extends Phaser.Scene {
     });
 
     this.players = new Map();
-
-    this.cameras.main.zoomTo(0.5, 5000);
   }
 
   start() {
@@ -101,6 +100,14 @@ export default class MainGame extends Phaser.Scene {
       (this.cameras.main.scrollY),
     );
 
-    this.grass.setTileScale(this.cameras.main.zoom);
+  					var show = 500;
+					show += (this.myPlayer.scale*this.myPlayer.player.width)*1.5;
+					//var oldZoom = this.cameras.main.zoom;
+					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
+ 					this.cameras.main.setZoom(
+						newZoom
+					); 
+
+    this.grass.setTileScale(this.cameras.main.zoom/4);
   }
 }
