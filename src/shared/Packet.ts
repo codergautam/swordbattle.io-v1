@@ -36,8 +36,7 @@ export default class Packet {
 
   static get Type() {
     return {
-      DIR_CHANGE: 1,
-      MOVE_CHANGE: 2,
+      PLAYER_UPDATE: 0,
       ATTACK: 3,
       PLAYER_ID: 10,
       JOIN: 4,

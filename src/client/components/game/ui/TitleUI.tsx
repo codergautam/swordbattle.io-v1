@@ -1,3 +1,4 @@
+/* eslint-disable max-len */
 import { Game } from 'phaser';
 import React from 'react';
 import styles from '../../../css/ui.module.css';
@@ -23,7 +24,7 @@ export default function TitleUI() {
     <div className={styles.homebackground}>
       <h1 className={styles.titletext}>Swordbattle.io</h1>
       <input type="text" maxLength={12} value={name} className={styles.namebox} onChange={(e) => setName(e.target.value)} placeholder="Name" />
-      <button className={styles.playbtn} onClick={() => playButtonClick(name)}>Play</button>
+      <button className={styles.playbtn} type="button" onClick={() => playButtonClick(name)}>Play</button>
     </div>
   );
 }

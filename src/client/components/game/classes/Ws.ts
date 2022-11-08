@@ -20,7 +20,6 @@ export default class Ws extends Phaser.Events.EventEmitter {
         try {
           const parsed = Packet.fromBinary(event.data);
           this.emit(parsed.type, parsed.data);
-          console.log(parsed);
         } catch (e) {
           console.error('error while parsing packet', e);
         }

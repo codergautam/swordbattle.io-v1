@@ -1,6 +1,6 @@
 const failedLoads = {};
 
-const loadImage = (scene: Phaser.Scene, url: string, key: string) => new Promise((resolve, reject) => {
+const loadImage = (scene: Phaser.Scene, url: string, key: string) => new Promise((resolve) => {
   if (failedLoads[key]) resolve(false);
   scene.load.image(key, url);
 

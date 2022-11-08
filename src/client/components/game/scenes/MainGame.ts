@@ -46,7 +46,7 @@ export default class MainGame extends Phaser.Scene {
     });
 
     this.ws.once('connected', () => {
-      this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, keys: this.passedData.keys, verify: false }));
+      this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
     });
 
     this.ws.once(Packet.Type.ERROR.toString(), ([code]) => {
@@ -86,28 +86,26 @@ export default class MainGame extends Phaser.Scene {
 
   update(time: number, delta: number) {
     // Return if still connecting
-    if (this.connectingText.visible) return;
+    const { myPlayer } = this;
+    if (this.connectingText.visible || !myPlayer) return;
     // Do game logic below
-    if (this.myPlayer) {
-      // this.myPlayer.x += 1;
-      console.log(this.myPlayer.x);
-      this.grass.width = 1280 / this.cameras.main.zoom;
-      this.grass.height = 720 / this.cameras.main.zoom;
-    }
+    // this.myPlayer.x += 1;
+    this.grass.width = 1280 / this.cameras.main.zoom;
+    this.grass.height = 720 / this.cameras.main.zoom;
 
     this.grass.setTilePosition(
       (this.cameras.main.scrollX),
       (this.cameras.main.scrollY),
     );
 
-  					var show = 500;
-					show += (this.myPlayer.scale*this.myPlayer.player.width)*1.5;
-					//var oldZoom = this.cameras.main.zoom;
-					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
- 					this.cameras.main.setZoom(
-						newZoom
-					); 
+    let show = 500;
+    show += ((myPlayer.scale * myPlayer.player.width) * 1.5);
+    // var oldZoom = this.cameras.main.zoom;
+    const newZoom = Math.max(this.scale.width / show, this.scale.height / show);
+    this.cameras.main.setZoom(
+      newZoom,
+    );
 
-    this.grass.setTileScale(this.cameras.main.zoom/4);
+    this.grass.setTileScale(this.cameras.main.zoom / 4);
   }
 }
