@@ -15,6 +15,10 @@ export default class WsRoom {
     this.clients.delete(clientId);
   }
 
+  getClient(clientId: any) {
+    return this.clients.get(clientId);
+  }
+
   send(message: any, clientId: any) {
     const client = this.clients.get(clientId);
     if (client) {

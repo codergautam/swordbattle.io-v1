@@ -2,12 +2,13 @@ import QuadTree from '@timohausmann/quadtree-js';
 import Packet from '../../shared/Packet';
 import constants from '../helpers/constants';
 import idGen from '../helpers/idgen';
+import Player from './Player';
 import WsRoom from './WsRoom';
 
 export default class Room {
   id: string | number;
   ws: any;
-  players: any;
+  players: Map<any, Player>;
   maxPlayers: any;
   quadTree: any;
   lastTick: any;
@@ -56,10 +57,19 @@ export default class Room {
     ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
   }
 
+  getPlayer(playerId: any) {
+    return this.players.get(playerId);
+  }
+
   tick() {
     const now = Date.now();
     const delta = now - this.lastTick;
     this.lastTick = now;
     this.refreshQuadTree();
+
+    // Iterate over all players in map
+    this.players.forEach((player: any) => {
+      player.tick(delta);
+    });
   }
 }

@@ -69,6 +69,14 @@ export default class MainGame extends Phaser.Scene {
       this.cameras.main.startFollow(player);
     });
 
+    // TODO: Test this on refresh scene
+    this.ws.on(Packet.Type.PLAYER_MOVE.toString(), (d) => {
+      const { id, dir, force, pos } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.move(dir, force, pos);
+    });
+
     this.players = new Map();
   }
 

@@ -5,6 +5,7 @@ import Room from '../classes/Room';
 import PacketErrorTypes from '../../shared/PacketErrorTypes';
 import roomList from '../helpers/roomlist';
 import unjoinedRoom from '../helpers/unjoinedRoom';
+import constants from '../helpers/constants';
 
 const mainRoom = new Room('main');
 (roomList as any).addRoom(mainRoom);
@@ -48,4 +49,4 @@ export default {
 
 setInterval(() => {
   mainRoom.tick();
-}, 1000 / 20);
+}, 1000 / constants.expected_tps);

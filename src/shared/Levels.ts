@@ -1,1 +1,1 @@
-export default [{coins: 0, scale: 0.25}];
+export default [{ coins: 0, scale: 0.25 }];

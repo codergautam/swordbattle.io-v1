@@ -36,7 +36,8 @@ export default class Packet {
 
   static get Type() {
     return {
-      PLAYER_UPDATE: 0,
+      PLAYER_MOVE: 0,
+      PLAYER_ROTATE: 1,
       ATTACK: 3,
       PLAYER_ID: 10,
       JOIN: 4,
@@ -49,30 +50,35 @@ export default class Packet {
 
   static fromBinary(buffer: any) {
     try {
-      const { t, d } = JSON.parse(buffer);
-      return { type: t, data: d };
-    } catch (e) {
-      // One more try
       try {
-        const { t, d } = JSON.parse(new TextDecoder('utf-8').decode(buffer));
+        const { t, d } = JSON.parse(buffer);
         return { type: t, data: d };
-      } catch (e2) {
+      } catch (e) {
+      // One more try
+        try {
+          const { t, d } = JSON.parse(new TextDecoder('utf-8').decode(buffer));
+          return { type: t, data: d };
+        } catch (e2) {
         // not json
+        }
       }
-    }
-    // eslint-disable-next-line no-param-reassign
-    buffer = Buffer.from(buffer);
-    // First byte is type
-    const type = buffer[0];
-    // Second byte is count of data
-    const count = buffer[1];
-    // Remaining bytes are data
-    const data = [];
-    for (let i = 0; i < count; i += 1) {
-      const location = 2 + (i * 2);
-      data.push(buffer.readUInt16BE(location));
-    }
+      // eslint-disable-next-line no-param-reassign
+      buffer = Buffer.from(buffer);
+      // First byte is type
+      const type = buffer[0];
+      // Second byte is count of data
+      const count = buffer[1];
+      // Remaining bytes are data
+      const data = [];
+      for (let i = 0; i < count; i += 1) {
+        const location = 2 + (i * 2);
+        data.push(buffer.readUInt16BE(location));
+      }
 
-    return { type, data };
+      return { type, data };
+    } catch (e) {
+      console.log(e);
+      return { type: Packet.Type.ERROR };
+    }
   }
 }

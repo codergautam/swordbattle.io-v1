@@ -8,7 +8,6 @@ import TitleUI from './ui/TitleUI';
 import '../../css/index.css';
 import ErrorModal from './ui/ErrorModal';
 
-// TODO: using a react component is a bit unnecessary so switch to a function
 export default class Game extends React.Component {
   game: Phaser.Game;
   state: {activeScene: string, crashMessage: string | null, gameState: any};

@@ -128,7 +128,7 @@ export default (scene: MainGame) => {
       if ((sendData.force !== undefined && toSend.f !== 0) || (sendData.force === undefined)) {
         if (sendData.move !== undefined) toSend.m = sendData.move;
       }
-      const packet = new Packet(Packet.Type.PLAYER_UPDATE, toSend);
+      const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
       ws.send(packet, true);
       sendData = { changed: false };
     }
