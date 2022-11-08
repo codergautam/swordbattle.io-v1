@@ -38,6 +38,7 @@ export default class Packet {
     return {
       PLAYER_MOVE: 0,
       PLAYER_ROTATE: 1,
+      PLAYER_ADD: 2,
       ATTACK: 3,
       PLAYER_ID: 10,
       JOIN: 4,

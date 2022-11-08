@@ -10,7 +10,7 @@ export default class Room {
   ws: any;
   players: Map<any, Player>;
   maxPlayers: any;
-  quadTree: any;
+  quadTree: QuadTree;
   lastTick: any;
 
   constructor(id = idGen() as string | number) {
@@ -45,7 +45,7 @@ export default class Room {
     });
   }
 
-  addPlayer(player: any, ws: any) {
+  addPlayer(player: Player, ws: any) {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
     ourPlayer.id = ws.id;
@@ -55,6 +55,18 @@ export default class Room {
     this.ws.addClient(ws);
     // Send a packet to the client to tell them they joined the room, along with position
     ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
+
+    // Find all other players nearby and send them to the client
+    const candidates = this.quadTree.retrieve(ourPlayer.getRangeBounds());
+    candidates.forEach((candidate: any) => {
+      if (candidate.id !== ourPlayer.id) {
+        const candidatePlayer = this.players.get(candidate.id);
+        if (candidatePlayer && ourPlayer.isInRangeWith(candidatePlayer)) {
+          ws.send(new Packet(Packet.Type.PLAYER_ADD, candidatePlayer.getFirstSendData()).toBinary(true));
+          ourPlayer.lastSeenPlayers.add(candidate.id);
+        }
+      }
+    });
   }
 
   getPlayer(playerId: any) {
@@ -62,14 +74,27 @@ export default class Room {
   }
 
   tick() {
+    console.clear();
+    console.log('Swordbattle.io v2.0\nServer is running!');
+
     const now = Date.now();
     const delta = now - this.lastTick;
     this.lastTick = now;
     this.refreshQuadTree();
 
     // Iterate over all players in map
-    this.players.forEach((player: any) => {
-      player.tick(delta);
+    this.players.forEach((player: Player) => {
+      player.moveUpdate(delta);
+    });
+
+    this.players.forEach((player: Player) => {
+      player.packets(this);
+    });
+
+    // eslint-disable-next-line no-param-reassign
+    this.players.forEach((player: Player) => {
+      const p = this.players.get(player.id);
+      if (p) p.updated.pos = false;
     });
   }
 }

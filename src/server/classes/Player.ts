@@ -1,7 +1,11 @@
+import Quadtree from '@timohausmann/quadtree-js';
+import clamp from '../../shared/clamp';
 import Evolutions from '../../shared/Evolutions';
+import Levels from '../../shared/Levels';
 import Packet from '../../shared/Packet';
 import constants from '../helpers/constants';
 import getRandomInt from '../helpers/getRandomInt';
+import Room from './Room';
 import WsRoom from './WsRoom';
 
 export default class Player {
@@ -16,11 +20,14 @@ export default class Player {
   id: any;
   force: number;
   moveDir: number;
-  updated: { angle: boolean; scale: boolean; moveDir: boolean; speed: boolean; force: boolean; };
+  updated: { pos: boolean; };
   speed: number;
+  lastSeenPlayers: Set<any>;
+  roomId: string | number | undefined;
 
   constructor(name: any) {
     this.name = name;
+    this.roomId = undefined;
     this.pos = {
       x: getRandomInt(constants.spawn.min, constants.spawn.max),
       y: getRandomInt(constants.spawn.min, constants.spawn.max),
@@ -28,41 +35,58 @@ export default class Player {
     this.moveDir = 0;
     this.angle = 0;
     this.force = 0;
-    this.scale = 1;
+    this.scale = Levels[0].scale;
     this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
-    this.speed = 20;
+    this.speed = 30;
+
+    this.lastSeenPlayers = new Set();
 
     this.updated = {
-      angle: false,
-      scale: false,
-      moveDir: false,
-      speed: false,
-      force: false,
+      pos: false,
+    };
+  }
+
+  getRangeRadius() {
+    const radius = (500 + (this.scale * constants.player_radius * 2 * 1.5)) / 2;
+    return radius;
+  }
+
+  getRangeBounds() {
+    const radius = this.getRangeRadius();
+
+    return {
+      x: this.pos.x - radius,
+      y: this.pos.y - radius,
+      width: radius * 2,
+      height: radius * 2,
     };
   }
 
   setAngle(angle: number) {
-    this.angle = angle;
-    this.updated.angle = true;
+    // Make sure angle is number
+    const angle1 = Number(angle);
+    if (Number.isNaN(angle)) return;
+    this.angle = angle1;
   }
 
   setForce(force: number) {
-    this.force = force;
-    this.updated.force = true;
+    const force1 = Number(force);
+
+    if (Number.isNaN(force1) || force1 > 1 || force1 < 0) return;
+    this.force = force1;
   }
 
   setMoveDir(moveDir: number) {
     // Convert to radians
+    const moveDir1 = Number(moveDir);
+    if (Number.isNaN(moveDir1)) return;
     this.moveDir = (moveDir * Math.PI) / 180;
-    this.updated.moveDir = true;
   }
 
   getMovementInfo() {
     return {
-      dir: this.moveDir,
-      force: Number((this.force * this.speed).toFixed(2)),
       pos: this.pos,
       id: this.id,
     };
@@ -74,6 +98,7 @@ export default class Player {
       y: this.pos.y,
       width: this.radius * 2,
       height: this.radius * 2,
+      id: this.id,
     };
   }
 
@@ -85,23 +110,76 @@ export default class Player {
     return constants.player_radius * this.scale;
   }
 
-  tick(delta: number) {
+  getFirstSendData() {
+    return {
+      name: this.name,
+      pos: this.pos,
+      angle: this.angle,
+      scale: this.scale,
+      evolution: this.evolution,
+      swinging: this.swinging,
+      swordThrown: this.swordThrown,
+      id: this.id,
+    };
+  }
+
+  moveUpdate(delta: number) {
     // Update position based on movement direction and speed
     const expDel = (1000 / constants.expected_tps);
     const moveSpeed = this.speed * this.force * (expDel / delta);
-    this.pos.x = Number((this.pos.x + (Math.cos(this.moveDir) * moveSpeed)).toFixed(2));
-    this.pos.y = Number((this.pos.y + (Math.sin(this.moveDir) * moveSpeed)).toFixed(2));
 
-    if (this.updated.moveDir || this.updated.speed || this.updated.force) {
-      this.updated.moveDir = false;
-      this.updated.speed = false;
-      this.updated.force = false;
-      this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
+    const newPos = {
+      x: Number((this.pos.x + (Math.cos(this.moveDir) * moveSpeed)).toFixed(2)),
+      y: Number((this.pos.y + (Math.sin(this.moveDir) * moveSpeed)).toFixed(2)),
+    };
+
+    newPos.x = clamp(newPos.x, -1 * (constants.map / 2), constants.map / 2);
+    newPos.y = clamp(newPos.y, -1 * (constants.map / 2), constants.map / 2);
+
+    // Check if position has changed
+
+    if (this.pos.x !== newPos.x || this.pos.y !== newPos.y) {
+      this.pos = newPos;
+      this.updated.pos = true;
     }
-    // if (this.updated.angle) {
-    //   this.updated.angle = false;
-    //   // Convert to degrees
-    //   this.ws.send(new Packet(Packet.Type.PLAYER_ROTATE, Number(this.angle.toFixed(2))).toBinary(true));
-    // }
+  }
+
+  isInRangeWith(otherPlayer: Player) {
+    const radius = this.getRangeRadius();
+    const otherRadius = otherPlayer.getRangeRadius();
+
+    const distance = Math.sqrt(
+      (this.pos.x - otherPlayer.pos.x) ** 2 + (this.pos.y - otherPlayer.pos.y) ** 2,
+    );
+
+    return distance < radius + otherRadius;
+  }
+
+  packets(room: Room) {
+    const { quadTree } = room;
+    if (!quadTree) return;
+    const newSeenPlayers = new Set();
+    const candidates = quadTree.retrieve(this.getRangeBounds());
+
+    candidates.forEach((elem: any) => {
+      if (elem.id === this.id) {
+        if (this.updated.pos) this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
+        return;
+      }
+
+      const player = room.getPlayer(elem.id);
+
+      if (!player || !this.isInRangeWith(player)) return;
+
+      if (!this.lastSeenPlayers.has(player.id)) {
+        this.lastSeenPlayers.add(player.id);
+        this.ws.send(new Packet(Packet.Type.PLAYER_ADD, player.getFirstSendData()).toBinary(true));
+      } else if (player.updated.pos) {
+        this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
+      }
+      newSeenPlayers.add(player.id);
+    });
+
+    this.lastSeenPlayers = newSeenPlayers;
   }
 }

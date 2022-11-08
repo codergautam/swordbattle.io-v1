@@ -71,10 +71,16 @@ export default class MainGame extends Phaser.Scene {
 
     // TODO: Test this on refresh scene
     this.ws.on(Packet.Type.PLAYER_MOVE.toString(), (d) => {
-      const { id, dir, force, pos } = d;
+      const { id, pos } = d;
       const player = this.players.get(id);
       if (!player) return;
-      player.move(dir, force, pos);
+      player.move(pos);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
+      const { id, name, x, y, scale, angle } = d;
+      const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+      this.players.set(id, player);
     });
 
     this.players = new Map();
@@ -84,6 +90,7 @@ export default class MainGame extends Phaser.Scene {
     // Initialize grass
     this.grass = this.add.tileSprite((1280 / 2), (720 / 2), 1280, 720, 'grass')
       .setOrigin(0.5, 0.5)
+      .setScale(0.25, 0.25)
       .setScrollFactor(0, 0)
       .setDepth(1);
   }
@@ -98,13 +105,8 @@ export default class MainGame extends Phaser.Scene {
     if (this.connectingText.visible || !myPlayer) return;
     // Do game logic below
     // this.myPlayer.x += 1;
-    this.grass.width = 1280 / this.cameras.main.zoom;
-    this.grass.height = 720 / this.cameras.main.zoom;
-
-    this.grass.setTilePosition(
-      (this.cameras.main.scrollX),
-      (this.cameras.main.scrollY),
-    );
+    this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
+    this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
 
     let show = 500;
     show += ((myPlayer.scale * myPlayer.player.width) * 1.5);
@@ -114,6 +116,10 @@ export default class MainGame extends Phaser.Scene {
       newZoom,
     );
 
-    this.grass.setTileScale(this.cameras.main.zoom / 4);
+    this.grass.setTileScale(this.cameras.main.zoom);
+    this.grass.setTilePosition(
+      ((this.cameras.main.scrollX / this.cameras.main.zoom) / this.grass.scale),
+      ((this.cameras.main.scrollY / this.cameras.main.zoom) / this.grass.scale),
+    );
   }
 }

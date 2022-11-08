@@ -17,7 +17,8 @@ export default class Player extends Phaser.GameObjects.Container {
     y: number,
     name: string,
     id: string,
-    skin: string) {
+    skin: string,
+    angle?: number) {
     super(scene, x, y);
     this.name = name;
     this.id = id;
@@ -34,6 +35,10 @@ export default class Player extends Phaser.GameObjects.Container {
       if (this.mySelf) {
         controller(this.scene as MainGame);
       }
+
+      if (this.angle !== undefined) {
+        this.setDirection(this.angle);
+      }
     });
 
     this.addToUpdateList();
@@ -47,42 +52,18 @@ export default class Player extends Phaser.GameObjects.Container {
     this.sword.y = (this.player.displayWidth * 0.69) * Math.sin(this.sword.rotation);
   }
 
-  move(dir: number, force: number, currentPos: {x: number, y: number}) {
-    // const angle = Phaser.Math.DegToRad(this.player.angle);
-    // const x = Math.cos(angle) * dir * force;
-    // const y = Math.sin(angle) * dir * force;
-    console.log(currentPos);
-    // Distance between position and current position
-    const distance = Phaser.Math.Distance.Between(currentPos.x, currentPos.y, this.x, this.y);
-    if (distance < 1) {
-      this.x = currentPos.x;
-      this.y = currentPos.y;
-      this.dir = dir;
-      this.force = force;
-    } else {
-      this.scene.tweens.add({
-        targets: this,
-        x: currentPos.x,
-        y: currentPos.y,
-        duration: 100,
-        ease: 'Linear',
-        onComplete: () => {
-          this.dir = dir;
-          this.force = force;
-        },
-      });
-    }
+  move(pos: {x: number, y: number}) {
+    this.scene.tweens.add({
+      targets: this,
+      x: pos.x,
+      y: pos.y,
+      duration: (1000 / constants.expected_tps) + 30,
+      ease: 'Linear',
+    });
   }
   // eslint-disable-next-line class-methods-use-this
   preUpdate() {
     const delta = Date.now() - this.lastUpdate;
     this.lastUpdate = Date.now();
-    if (this.force > 0) {
-      const expDel = (1000 / constants.expected_tps);
-      const x = Math.cos(this.dir) * this.force * (delta / expDel);
-      const y = Math.sin(this.dir) * this.force * (delta / expDel);
-      this.x += x;
-      this.y += y;
-    }
   }
 }
