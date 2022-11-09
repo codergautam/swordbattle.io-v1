@@ -39,7 +39,7 @@ export default class Player {
     this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
-    this.speed = 30;
+    this.speed = 20;
 
     this.lastSeenPlayers = new Set();
 

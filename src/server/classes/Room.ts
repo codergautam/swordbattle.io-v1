@@ -74,9 +74,6 @@ export default class Room {
   }
 
   tick() {
-    console.clear();
-    console.log('Swordbattle.io v2.0\nServer is running!');
-
     const now = Date.now();
     const delta = now - this.lastTick;
     this.lastTick = now;
