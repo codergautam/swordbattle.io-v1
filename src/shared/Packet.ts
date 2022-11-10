@@ -46,6 +46,7 @@ export default class Packet {
       LEADERBOARD: 6,
       OTHER: 7,
       ERROR: 8,
+      PLAYER_REMOVE: 9,
     };
   }
 

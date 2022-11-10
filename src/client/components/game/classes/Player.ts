@@ -2,6 +2,7 @@ import controller from '../helpers/controller';
 import dynamicSkinLoader from '../helpers/dynamicSkinLoader';
 import MainGame from '../scenes/MainGame';
 import constants from '../../../../server/helpers/constants';
+import lerpTheta from '../helpers/angleInterp';
 
 export default class Player extends Phaser.GameObjects.Container {
   id: string;
@@ -34,10 +35,9 @@ export default class Player extends Phaser.GameObjects.Container {
 
       if (this.mySelf) {
         controller(this.scene as MainGame);
-      }
-
-      if (this.angle !== undefined) {
-        this.setDirection(this.angle);
+      } else if (this.angle !== undefined) {
+        const rads = Phaser.Math.RadToDeg(this.angle);
+        this.setDirection(rads);
       }
     });
 
@@ -45,11 +45,30 @@ export default class Player extends Phaser.GameObjects.Container {
     this.scene.add.existing(this);
   }
 
-  setDirection(angle: number) {
+  forceSetDirection(angle: number) {
     this.sword.angle = angle + 45;
     this.player.angle = angle;
     this.sword.x = (this.player.displayWidth * 0.69) * Math.cos(this.sword.rotation);
     this.sword.y = (this.player.displayWidth * 0.69) * Math.sin(this.sword.rotation);
+  }
+
+  setDirection(angle1: number) {
+    let angle = angle1;
+    if (!this.mySelf) angle = Phaser.Math.RadToDeg(angle1);
+    if (this.mySelf) {
+      this.forceSetDirection(angle);
+    } else {
+      const startAngle = this.player.angle;
+      this.scene.tweens.addCounter({
+        from: 0,
+        to: 1,
+        duration: (1000 / constants.expected_tps),
+        onUpdate: (tween) => {
+          const angleInterp = lerpTheta(startAngle, angle, tween.getValue());
+          this.forceSetDirection(angleInterp);
+        },
+      });
+    }
   }
 
   move(pos: {x: number, y: number}) {

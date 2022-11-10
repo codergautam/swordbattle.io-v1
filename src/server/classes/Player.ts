@@ -20,7 +20,7 @@ export default class Player {
   id: any;
   force: number;
   moveDir: number;
-  updated: { pos: boolean; };
+  updated: { pos: boolean; rot: boolean };
   speed: number;
   lastSeenPlayers: Set<any>;
   roomId: string | number | undefined;
@@ -45,6 +45,7 @@ export default class Player {
 
     this.updated = {
       pos: false,
+      rot: false,
     };
   }
 
@@ -68,7 +69,11 @@ export default class Player {
     // Make sure angle is number
     const angle1 = Number(angle);
     if (Number.isNaN(angle)) return;
-    this.angle = angle1;
+    if (angle1 < -Math.PI && angle1 > Math.PI) return;
+    if (this.angle !== angle1) {
+      this.angle = angle1;
+      this.updated.rot = true;
+    }
   }
 
   setForce(force: number) {
@@ -82,6 +87,7 @@ export default class Player {
     // Convert to radians
     const moveDir1 = Number(moveDir);
     if (Number.isNaN(moveDir1)) return;
+    if (moveDir < -360 && moveDir > 360) return;
     this.moveDir = (moveDir * Math.PI) / 180;
   }
 
@@ -113,7 +119,8 @@ export default class Player {
   getFirstSendData() {
     return {
       name: this.name,
-      pos: this.pos,
+      x: this.pos.x,
+      y: this.pos.y,
       angle: this.angle,
       scale: this.scale,
       evolution: this.evolution,
@@ -177,7 +184,17 @@ export default class Player {
       } else if (player.updated.pos) {
         this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
       }
+      if (player.updated.rot) {
+        this.ws.send(new Packet(Packet.Type.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
+      }
       newSeenPlayers.add(player.id);
+    });
+
+    this.lastSeenPlayers.forEach((id: any) => {
+      if (!newSeenPlayers.has(id)) {
+        this.lastSeenPlayers.delete(id);
+        this.ws.send(new Packet(Packet.Type.PLAYER_REMOVE, { id }).toBinary(true));
+      }
     });
 
     this.lastSeenPlayers = newSeenPlayers;

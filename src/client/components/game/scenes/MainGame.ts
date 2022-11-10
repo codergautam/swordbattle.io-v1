@@ -77,10 +77,25 @@ export default class MainGame extends Phaser.Scene {
       player.move(pos);
     });
 
+    this.ws.on(Packet.Type.PLAYER_ROTATE.toString(), (d) => {
+      const { id, r } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setDirection(r);
+    });
+
     this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
       const { id, name, x, y, scale, angle } = d;
       const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
       this.players.set(id, player);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_REMOVE.toString(), (d) => {
+      const { id } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.destroy();
+      this.players.delete(id);
     });
 
     this.players = new Map();
