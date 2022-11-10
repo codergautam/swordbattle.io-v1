@@ -32,6 +32,7 @@ module.exports = {
     'no-console': 0,
     'linebreak-style': 0,
     'no-octal-escape': 0,
+    'import/no-extraneous-dependencies': 0,
   },
   overrides: [
     {

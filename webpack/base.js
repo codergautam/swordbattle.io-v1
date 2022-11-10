@@ -2,11 +2,11 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   mode: 'development',
   entry: './src/client/app.tsx',
-  devtool: 'eval-source-map',
   module: {
     rules: [
       {
@@ -50,6 +50,7 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
     }),
+    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],
