@@ -131,7 +131,7 @@
             "displayName": "Pizza",
             "url": "/assets/images/pizzaPlayer.png",
             "price": 14000,
-            "description": "A treat for the kill"
+            "description": "A treat for a kill"
         },
         {
             "name": "astronaut",
@@ -176,11 +176,11 @@
             "description": "Peaceful and relaxing."
         },
         {
-            "name": "emoji",
-            "displayName": "Emoji",
+            "name": "determined",
+            "displayName": "Determined",
             "url": "/assets/images/emojiPlayer.png",
             "price": 27500,
-            "description": "You can't feel guilt if you're feeling everything else"
+            "description": "I. Need. Coins."
         },
         {
             "name": "tiger",
@@ -197,13 +197,6 @@
             "description": "One zap and you're dead..."
         },
         {
-            "name": "paint",
-            "displayName": "Paint",
-            "url": "/assets/images/paintPlayer.png",
-            "price": 37500,
-            "description": "Blind you enemies by splashing paint..."
-        },
-        {
             "name": "mystery",
             "displayName": "Mystery",
             "url": "/assets/images/mysteryPlayer.png",
@@ -211,25 +204,11 @@
             "description": "Its a murder mystery..."
         },
         {
-            "name": "frager201",
-            "displayName": "Frager201",
-            "url": "/assets/images/frager201Player.png",
-            "price": 42500,
-            "description": "Dedication to an amazing player"
-        },
-        {
             "name": "cheese",
             "displayName": "Cheese",
             "url": "/assets/images/cheesePlayer.png",
             "price": 45000,
             "description": "Its cheese"
-        },
-        {
-            "name": "chickennugget",
-            "displayName": "Chicken Nugget",
-            "url": "/assets/images/chickennuggetPlayer.png",
-            "price": 47500,
-            "description": "A food for legends"
         },
         {
             "name": "medic",
@@ -316,13 +295,6 @@
             "description": "Adds an extra poke to your stab"
         },
         {
-            "name": "golf",
-            "displayName": "Golf",
-            "url": "/assets/images/golfPlayer.png",
-            "price": 95000,
-            "description": "Smack 'em away"
-        },
-        {
             "name": "baseball",
             "displayName": "Baseball",
             "url": "/assets/images/baseballPlayer.png",
@@ -349,13 +321,6 @@
             "url": "/assets/images/fallPlayer.png",
             "price": 100000,
             "description": "I like it cool"
-        },
-        {
-            "name": "bodyguard",
-            "displayName": "Bodyguard",
-            "url": "/assets/images/bodyguardPlayer.png",
-            "price": 110000,
-            "description": "Protect AND kill"
         },
         {
             "name": "formal",
@@ -408,7 +373,7 @@
         },
         {
             "name": "thief",
-            "displayName": "Thied",
+            "displayName": "Thief",
             "url": "/assets/images/thiefPlayer.png",
             "price": 145000,
             "description": "Steal coins from enemy"
@@ -524,7 +489,7 @@
             "url": "/assets/images/piratePlayer.png",
             "price": 325000,
             "description": "Fearsome"
-        },        
+        },
         {
             "name": "devex",
             "displayName": "Dev3x",
