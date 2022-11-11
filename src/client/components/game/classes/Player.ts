@@ -90,8 +90,8 @@ export default class Player extends Phaser.GameObjects.Container {
       targets: this,
       x: pos.x,
       y: pos.y,
-      duration: (1000 / constants.expected_tps) + 30,
-      ease: 'Linear',
+      duration: (1000 / constants.expected_tps) + 200,
+      ease: 'Power2',
     });
   }
   // eslint-disable-next-line class-methods-use-this
