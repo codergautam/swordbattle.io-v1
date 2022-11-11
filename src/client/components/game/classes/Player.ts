@@ -13,6 +13,9 @@ export default class Player extends Phaser.GameObjects.Container {
   dir: number;
   force: number;
   lastUpdate: number;
+  mouseDownState: boolean;
+  mouseDownValue: number;
+  swingQueued: boolean;
   constructor(scene: Phaser.Scene,
     x: number,
     y: number,
@@ -26,6 +29,8 @@ export default class Player extends Phaser.GameObjects.Container {
     this.skin = skin;
     this.mySelf = (this.scene as MainGame).ws.id === this.id;
     this.lastUpdate = Date.now();
+    this.mouseDownState = false;
+    this.mouseDownValue = 0;
 
     dynamicSkinLoader(this.scene, this.skin).then((data) => {
       this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);
@@ -45,7 +50,8 @@ export default class Player extends Phaser.GameObjects.Container {
     this.scene.add.existing(this);
   }
 
-  forceSetDirection(angle: number) {
+  forceSetDirection(angle1: number) {
+    const angle = angle1 - this.mouseDownValue;
     this.sword.angle = angle + 45;
     this.player.angle = angle;
     this.sword.x = (this.player.displayWidth * 0.69) * Math.cos(this.sword.rotation);
@@ -71,6 +77,14 @@ export default class Player extends Phaser.GameObjects.Container {
     }
   }
 
+  setMouseDown(value: boolean) {
+    if (this.mouseDownState !== value && (this.mouseDownValue === 0 || this.mouseDownValue === 50)) {
+      this.mouseDownState = value;
+    } else if (this.mouseDownValue !== 0 && this.mouseDownValue !== 50) {
+      this.swingQueued = true;
+    }
+  }
+
   move(pos: {x: number, y: number}) {
     this.scene.tweens.add({
       targets: this,
@@ -84,5 +98,19 @@ export default class Player extends Phaser.GameObjects.Container {
   preUpdate() {
     const delta = Date.now() - this.lastUpdate;
     this.lastUpdate = Date.now();
+    if ((this.mouseDownState && this.mouseDownValue !== 50)
+      || (!this.mouseDownState && this.mouseDownValue !== 0)) {
+      this.mouseDownValue += (this.mouseDownState ? 1 : -1) * delta * 0.7;
+      this.mouseDownValue = Math.min(Math.max(this.mouseDownValue, 0), 50);
+      if (this.mouseDownValue === 0 || this.mouseDownValue === 50) {
+        if (this.swingQueued) {
+          this.swingQueued = false;
+          this.setMouseDown(!this.mouseDownState);
+        }
+      }
+      const mousePos = this.scene.input.mousePointer;
+      const angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI;
+      this.forceSetDirection(angle);
+    }
   }
 }
