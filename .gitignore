@@ -46,6 +46,7 @@ dist/
 ehthumbs.db
 Thumbs.db
 node_modules/
+repl.env
 .env
 .DS_Store
 package-lock.json

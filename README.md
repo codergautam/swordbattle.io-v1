@@ -20,6 +20,6 @@ Right now, just clone, run `npm i`, run `node setup` (only first run), and run `
 
 ## Code Usage
 
-You can use this code as a base for your IO games, but please change it to a considerable amount, so it's a whole different game, and please give me credit.
+You can use this code as a base for your IO games, but please change it to a considerable amount, so it's a whole different game, and please give me credit. Under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry. Thanks.
 
 Thanks.

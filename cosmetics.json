@@ -221,8 +221,14 @@
             "name": "king",
             "displayName": "King",
             "url": "/assets/images/kingPlayer.png",
-            "price": 52500,
+            "price": 50000,
             "description": "All hail the king"
+        },
+            "name": "pumpkin",
+            "displayName": "Pumpkin",
+            "url": "/assets/images/pumpkinPlayer.png",
+            "price": 52500,
+            "description": "Very spooky..."
         },
         {
             "name": "superhero",
