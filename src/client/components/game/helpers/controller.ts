@@ -146,5 +146,5 @@ export default (scene: MainGame) => {
       ws.send(packet, true);
       sendData = { changed: false };
     }
-  }, 1000 / 15);
+  }, 1000 / 60);
 };
