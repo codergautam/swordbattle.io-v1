@@ -224,6 +224,7 @@
             "price": 50000,
             "description": "All hail the king"
         },
+        {
             "name": "pumpkin",
             "displayName": "Pumpkin",
             "url": "/assets/images/pumpkinPlayer.png",
