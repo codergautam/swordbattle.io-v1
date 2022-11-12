@@ -91,7 +91,10 @@ export default class Room {
     // eslint-disable-next-line no-param-reassign
     this.players.forEach((player: Player) => {
       const p = this.players.get(player.id);
-      if (p) p.updated.pos = false;
+      if (p) {
+        p.updated.pos = false;
+        p.updated.rot = false;
+      }
     });
   }
 }

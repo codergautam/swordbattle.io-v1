@@ -68,7 +68,7 @@ export default class Player extends Phaser.GameObjects.Container {
       this.scene.tweens.addCounter({
         from: 0,
         to: 1,
-        duration: (1000 / constants.expected_tps),
+        duration: (1000 / constants.expected_tps) + 10,
         onUpdate: (tween) => {
           const angleInterp = lerpTheta(startAngle, angle, tween.getValue());
           this.forceSetDirection(angleInterp);

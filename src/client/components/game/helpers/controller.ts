@@ -19,7 +19,7 @@ const setMouseRot = (scene: MainGame, myPlayer: Player | undefined) => {
   myPlayer.setDirection(angle);
   return angle;
 };
-let lastMouseState = false;
+let lastPacketSend = 0;
 export default (scene: MainGame) => {
   // Get required stuff from scene
   const { myPlayer, ws, passedData } = scene;
@@ -142,8 +142,11 @@ export default (scene: MainGame) => {
         if (sendData.move !== undefined) toSend.m = sendData.move;
       }
       if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
+
+      if ((toSend.f === undefined) && (toSend.m === undefined) && (Date.now() - lastPacketSend < 1000 / 10)) return;
       const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
       ws.send(packet, true);
+      lastPacketSend = Date.now();
       sendData = { changed: false };
     }
   }, 1000 / 60);
