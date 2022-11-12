@@ -127,7 +127,7 @@
             "description": "Very Toxic..."
         },
         {
-            "name": "Pizza",
+            "name": "pizza",
             "displayName": "Pizza",
             "url": "/assets/images/pizzaPlayer.png",
             "price": 14000,
