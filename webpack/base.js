@@ -50,7 +50,6 @@ module.exports = {
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
     }),
-    new BundleAnalyzerPlugin(),
   ],
   resolve: {
     extensions: ['.tsx', '.ts', '.js'],

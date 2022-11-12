@@ -19,7 +19,7 @@ const setMouseRot = (scene: MainGame, myPlayer: Player | undefined) => {
   myPlayer.setDirection(angle);
   return angle;
 };
-
+let lastPacketSend = 0;
 export default (scene: MainGame) => {
   // Get required stuff from scene
   const { myPlayer, ws, passedData } = scene;
@@ -113,10 +113,23 @@ export default (scene: MainGame) => {
     key.right.on('up', keyChange);
   }
 
+  // Mouse down and up
+  scene.input.on(Phaser.Input.Events.POINTER_UP, () => {
+    if (sendData.mouseDown) sendData.changed = true;
+    sendData.mouseDown = false;
+    if (myPlayer) myPlayer.setMouseDown(false);
+  });
+  scene.input.on(Phaser.Input.Events.POINTER_DOWN, () => {
+    if (!sendData.mouseDown) sendData.changed = true;
+    sendData.mouseDown = true;
+    if (myPlayer) myPlayer.setMouseDown(true);
+  });
+
   // Send data to server if it has changed
   const interval = setInterval(() => {
     if (sendData.changed) {
       let toSend: {
+        md?: boolean;
         d?: number;
         m?: number;
         f?: number;
@@ -128,9 +141,13 @@ export default (scene: MainGame) => {
       if ((sendData.force !== undefined && toSend.f !== 0) || (sendData.force === undefined)) {
         if (sendData.move !== undefined) toSend.m = sendData.move;
       }
+      if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
+
+      if ((toSend.f === undefined) && (toSend.m === undefined) && (Date.now() - lastPacketSend < 1000 / 10)) return;
       const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
       ws.send(packet, true);
+      lastPacketSend = Date.now();
       sendData = { changed: false };
     }
-  }, 1000 / 15);
+  }, 1000 / 60);
 };
