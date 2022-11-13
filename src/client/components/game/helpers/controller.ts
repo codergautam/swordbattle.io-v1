@@ -126,7 +126,8 @@ export default (scene: MainGame) => {
   });
 
   // Send data to server if it has changed
-  const interval = setInterval(() => {
+  // eslint-disable-next-line no-param-reassign
+  scene.controllerUpdate = () => {
     if (sendData.changed) {
       let toSend: {
         md?: boolean;
@@ -149,5 +150,5 @@ export default (scene: MainGame) => {
       lastPacketSend = Date.now();
       sendData = { changed: false };
     }
-  }, 1000 / 60);
+  };
 };
