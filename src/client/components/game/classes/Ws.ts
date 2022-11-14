@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import initWebsocket from '../helpers/initWebsocket';
 

@@ -73,7 +73,6 @@ export default (scene: MainGame) => {
         if (key.right.isDown || dKey.isDown) controller.right = true;
 
         // Use controller to calculate angle
-
         const angle = angleFromKeys(controller);
 
         if (!sendData.move || sendData.move !== angle) {
@@ -86,6 +85,8 @@ export default (scene: MainGame) => {
             sendData.force = 1;
             stoppedMoving = false;
           }
+
+          if (!('force' in sendData)) sendData.force = 1;
           sendData.changed = true;
         }
       } catch (e) {
