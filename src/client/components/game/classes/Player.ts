@@ -3,6 +3,7 @@ import dynamicSkinLoader from '../helpers/dynamicSkinLoader';
 import MainGame from '../scenes/MainGame';
 import constants from '../../../../server/helpers/constants';
 import lerpTheta from '../helpers/angleInterp';
+import HealthBar from './HealthBar';
 
 export default class Player extends Phaser.GameObjects.Container {
   id: string;
@@ -16,6 +17,8 @@ export default class Player extends Phaser.GameObjects.Container {
   mouseDownState: boolean;
   mouseDownValue: number;
   swingQueued: boolean;
+  nameTag: Phaser.GameObjects.Text;
+  healthBar: HealthBar;
   constructor(scene: Phaser.Scene,
     x: number,
     y: number,
@@ -25,6 +28,12 @@ export default class Player extends Phaser.GameObjects.Container {
     angle?: number) {
     super(scene, x, y);
     this.name = name;
+    this.nameTag = new Phaser.GameObjects.Text(scene, 0, 0, name, {
+      fontFamily: 'Arial',
+      fontSize: '100px',
+      color: '#000000',
+    }).setOrigin(0.5, 0);
+    this.healthBar = new HealthBar(scene, 0, 0, 100, 10);
     this.id = id;
     this.skin = skin;
     this.mySelf = (this.scene as MainGame).ws.id === this.id;
@@ -36,8 +45,13 @@ export default class Player extends Phaser.GameObjects.Container {
       this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);
       this.sword = new Phaser.GameObjects.Image(this.scene, 0, 0, data.sword).setScale(0.5);
 
-      this.add([this.player, this.sword]);
+      this.add([this.player, this.sword, this.healthBar]);
 
+      this.nameTag.y = this.player.displayHeight + this.nameTag.displayHeight + 10;
+      this.healthBar.x = -this.healthBar.displayWidth / 2;
+      this.healthBar.y = this.player.displayHeight + this.nameTag.displayHeight + 10;
+      this.healthBar.draw();
+      this.add(this.nameTag);
       if (this.mySelf) {
         controller(this.scene as MainGame);
       } else if (this.angle !== undefined) {
@@ -111,6 +125,16 @@ export default class Player extends Phaser.GameObjects.Container {
       const mousePos = this.scene.input.mousePointer;
       const angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI;
       this.forceSetDirection(angle);
+    }
+
+    if (this.player.visible) {
+      this.nameTag.setFontSize(125 * this.player.scale);
+      this.healthBar.width = this.player.displayWidth;
+      this.healthBar.height = this.player.displayHeight / 10;
+      this.healthBar.x = -this.healthBar.displayWidth / 2;
+      this.healthBar.y = this.player.y - (this.player.displayHeight / 2) - this.healthBar.height;
+      this.nameTag.y = this.healthBar.y - this.nameTag.displayHeight;
+      this.healthBar.draw();
     }
   }
 }
