@@ -16,6 +16,7 @@ export default class MainGame extends Phaser.Scene {
   passedData: { name: string, keys: boolean, volume: number };
   players: Map<any, Player>;
   grass: Phaser.GameObjects.TileSprite;
+  controllerUpdate: () => void;
   constructor() {
     super('maingame');
   }
@@ -44,6 +45,10 @@ export default class MainGame extends Phaser.Scene {
     this.ws.once('connect_error', (reason: string) => {
       this.events.emit('crash', reason);
     });
+    this.ws.once('connectionLost', (reason: string) => {
+      this.events.emit('crash', reason);
+    });
+
 
     this.ws.once('connected', () => {
       this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
@@ -136,5 +141,7 @@ export default class MainGame extends Phaser.Scene {
       ((this.cameras.main.scrollX / this.cameras.main.zoom) / this.grass.scale),
       ((this.cameras.main.scrollY / this.cameras.main.zoom) / this.grass.scale),
     );
+
+    this.controllerUpdate();
   }
 }

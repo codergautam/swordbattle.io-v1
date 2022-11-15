@@ -73,7 +73,6 @@ export default (scene: MainGame) => {
         if (key.right.isDown || dKey.isDown) controller.right = true;
 
         // Use controller to calculate angle
-
         const angle = angleFromKeys(controller);
 
         if (!sendData.move || sendData.move !== angle) {
@@ -86,6 +85,8 @@ export default (scene: MainGame) => {
             sendData.force = 1;
             stoppedMoving = false;
           }
+
+          if (!('force' in sendData)) sendData.force = 1;
           sendData.changed = true;
         }
       } catch (e) {
@@ -126,7 +127,8 @@ export default (scene: MainGame) => {
   });
 
   // Send data to server if it has changed
-  const interval = setInterval(() => {
+  // eslint-disable-next-line no-param-reassign
+  scene.controllerUpdate = () => {
     if (sendData.changed) {
       let toSend: {
         md?: boolean;
@@ -149,5 +151,5 @@ export default (scene: MainGame) => {
       lastPacketSend = Date.now();
       sendData = { changed: false };
     }
-  }, 1000 / 60);
+  };
 };

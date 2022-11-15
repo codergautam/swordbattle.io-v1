@@ -1,3 +1,4 @@
+/* eslint-disable no-nested-ternary */
 import Phaser from 'phaser';
 import React from 'react';
 
@@ -79,8 +80,8 @@ export default class Game extends React.Component {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
-        width: activeScene === 'maingame' ? '0%' : '100%',
-        height: activeScene === 'maingame' ? '0%' : '100%',
+        width: crashMessage ? '100%' : (activeScene === 'maingame' ? '0%' : '100%'),
+        height: crashMessage ? '100%' : (activeScene === 'maingame' ? '0%' : '100%'),
       }}
       >
         {activeScene === 'title' ? <TitleUI /> : null}
