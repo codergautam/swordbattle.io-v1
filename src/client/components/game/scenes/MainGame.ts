@@ -49,13 +49,11 @@ export default class MainGame extends Phaser.Scene {
       this.events.emit('crash', reason);
     });
 
-
     this.ws.once('connected', () => {
       this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
     });
 
     this.ws.once(Packet.Type.ERROR.toString(), ([code]) => {
-      // console.log(PacketErrorTypes);
       const values = Object.values(PacketErrorTypes);
       const error = values.find((value: any) => value.code === code);
       this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
@@ -68,6 +66,7 @@ export default class MainGame extends Phaser.Scene {
       this.start();
 
       const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
+      player.setHealth(100);
       this.players.set(id, player);
 
       // Camera centered on player
@@ -89,9 +88,24 @@ export default class MainGame extends Phaser.Scene {
       player.setDirection(r);
     });
 
+    this.ws.on(Packet.Type.PLAYER_HEALTH.toString(), (d) => {
+      const { id, health } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setHealth(health);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_SWING.toString(), (d) => {
+      const { id, s } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setMouseDown(s);
+    });
+
     this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
-      const { id, name, x, y, scale, angle } = d;
+      const { id, name, x, y, scale, angle, health } = d;
       const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+      player.setHealth(health);
       this.players.set(id, player);
     });
 

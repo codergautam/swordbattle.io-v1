@@ -19,6 +19,7 @@ export default class Player extends Phaser.GameObjects.Container {
   swingQueued: boolean;
   nameTag: Phaser.GameObjects.Text;
   healthBar: HealthBar;
+  trueAngle: number;
   constructor(scene: Phaser.Scene,
     x: number,
     y: number,
@@ -65,6 +66,7 @@ export default class Player extends Phaser.GameObjects.Container {
   }
 
   forceSetDirection(angle1: number) {
+    this.trueAngle = angle1;
     const angle = angle1 - this.mouseDownValue;
     this.sword.angle = angle + 45;
     this.player.angle = angle;
@@ -78,7 +80,7 @@ export default class Player extends Phaser.GameObjects.Container {
     if (this.mySelf) {
       this.forceSetDirection(angle);
     } else {
-      const startAngle = this.player.angle;
+      const startAngle = this.player.angle + this.mouseDownValue;
       this.scene.tweens.addCounter({
         from: 0,
         to: 1,
@@ -104,17 +106,23 @@ export default class Player extends Phaser.GameObjects.Container {
       targets: this,
       x: pos.x,
       y: pos.y,
-      duration: (1000 / constants.expected_tps) + 200,
-      ease: 'Power2',
+      duration: (1000 / constants.expected_tps) + 50,
+      ease: 'Linear',
     });
+  }
+
+  setHealth(h: number) {
+    this.healthBar.setHealth(h);
   }
   // eslint-disable-next-line class-methods-use-this
   preUpdate() {
     const delta = Date.now() - this.lastUpdate;
+    const ms = 200 / 2;
     this.lastUpdate = Date.now();
     if ((this.mouseDownState && this.mouseDownValue !== 50)
       || (!this.mouseDownState && this.mouseDownValue !== 0)) {
-      this.mouseDownValue += (this.mouseDownState ? 1 : -1) * delta * 0.7;
+      // ms is the time it takes to swing the sword
+      this.mouseDownValue += (this.mouseDownState ? 1 : -1) * (delta * (50 / ms));
       this.mouseDownValue = Math.min(Math.max(this.mouseDownValue, 0), 50);
       if (this.mouseDownValue === 0 || this.mouseDownValue === 50) {
         if (this.swingQueued) {
@@ -122,9 +130,13 @@ export default class Player extends Phaser.GameObjects.Container {
           this.setMouseDown(!this.mouseDownState);
         }
       }
-      const mousePos = this.scene.input.mousePointer;
-      const angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI;
-      this.forceSetDirection(angle);
+      if (this.mySelf) {
+        const mousePos = this.scene.input.mousePointer;
+        const angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI;
+        this.setDirection(angle);
+      } else {
+        this.forceSetDirection(this.trueAngle);
+      }
     }
 
     if (this.player.visible) {

@@ -26,6 +26,7 @@ export default (ws: any, packet: any) => {
         if (data.d !== undefined) player.setAngle(data.d);
         if (data.m !== undefined) player.setMoveDir(data.m);
         if (data.f !== undefined) player.setForce(data.f);
+        if (data.md !== undefined) player.setMouseDown(data.md);
       }
       break;
     }

@@ -116,7 +116,7 @@ export default (scene: MainGame) => {
 
   // Mouse down and up
   scene.input.on(Phaser.Input.Events.POINTER_UP, () => {
-    if (sendData.mouseDown) sendData.changed = true;
+    sendData.changed = true;
     sendData.mouseDown = false;
     if (myPlayer) myPlayer.setMouseDown(false);
   });

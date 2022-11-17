@@ -20,10 +20,12 @@ export default class Player {
   id: any;
   force: number;
   moveDir: number;
-  updated: { pos: boolean; rot: boolean };
+  updated: { pos: boolean; rot: boolean; health: boolean; swinging: boolean };
   speed: number;
   lastSeenPlayers: Set<any>;
   roomId: string | number | undefined;
+  health: number;
+  maxHealth: number;
 
   constructor(name: any) {
     this.name = name;
@@ -40,13 +42,21 @@ export default class Player {
     this.swinging = false;
     this.swordThrown = false;
     this.speed = 20;
+    this.health = 100;
+    this.maxHealth = 100;
 
     this.lastSeenPlayers = new Set();
 
     this.updated = {
       pos: false,
       rot: false,
+      health: false,
+      swinging: false,
     };
+  }
+
+  get healthPercent() {
+    return clamp(this.health / this.maxHealth, 0, 1) * 100;
   }
 
   getRangeRadius() {
@@ -91,6 +101,11 @@ export default class Player {
     this.moveDir = (moveDir * Math.PI) / 180;
   }
 
+  setMouseDown(s: boolean) {
+    this.swinging = s;
+    this.updated.swinging = true;
+  }
+
   getMovementInfo() {
     return {
       pos: this.pos,
@@ -127,6 +142,7 @@ export default class Player {
       swinging: this.swinging,
       swordThrown: this.swordThrown,
       id: this.id,
+      health: this.healthPercent,
     };
   }
 
@@ -186,6 +202,13 @@ export default class Player {
       }
       if (player.updated.rot) {
         this.ws.send(new Packet(Packet.Type.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
+      }
+      if (player.updated.health) {
+        // eslint-disable-next-line max-len
+        this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: player.id, health: player.healthPercent }).toBinary(true));
+      }
+      if (player.updated.swinging) {
+        this.ws.send(new Packet(Packet.Type.PLAYER_SWING, { id: player.id, s: player.swinging }).toBinary(true));
       }
       newSeenPlayers.add(player.id);
     });
