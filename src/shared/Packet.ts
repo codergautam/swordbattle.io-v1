@@ -49,6 +49,7 @@ export default class Packet {
       ERROR: 8,
       PLAYER_REMOVE: 9,
       PLAYER_SWING: 11,
+      DIE: 69,
     };
   }
 

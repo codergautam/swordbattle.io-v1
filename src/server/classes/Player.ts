@@ -7,6 +7,7 @@ import constants from '../helpers/constants';
 import getRandomInt from '../helpers/getRandomInt';
 import Room from './Room';
 import WsRoom from './WsRoom';
+import roomlist from '../helpers/roomlist';
 
 export default class Player {
   name: string;
@@ -59,13 +60,18 @@ export default class Player {
     return clamp(this.health / this.maxHealth, 0, 1) * 100;
   }
 
-  getRangeRadius() {
-    const radius = (500 + (this.scale * constants.player_radius * 2 * 1.5)) / 2;
+  get room() {
+    return roomlist.getRoom(this.roomId);
+  }
+
+  getRangeRadius(hit = false) {
+    const base = (this.scale * constants.player_radius * 2);
+    const radius = hit ? base : ((500 + (base * 1.5)) / 2);
     return radius;
   }
 
-  getRangeBounds() {
-    const radius = this.getRangeRadius();
+  getRangeBounds(hit = false) {
+    const radius = this.getRangeRadius(hit);
 
     return {
       x: this.pos.x - radius,
@@ -102,8 +108,55 @@ export default class Player {
   }
 
   setMouseDown(s: boolean) {
-    this.swinging = s;
-    this.updated.swinging = true;
+    //  TODO: Add cooldown
+    if (this.swinging !== s) {
+      this.swinging = s;
+      this.updated.swinging = true;
+      if (this.swinging) this.hitCheck();
+    }
+  }
+
+  hitCheck() {
+    const room = this.room as Room;
+    const rangeBounds = this.getRangeBounds(true);
+    room.quadTree.retrieve(rangeBounds).forEach((playerObj: any) => {
+      const player = room.getPlayer(playerObj.id) as Player;
+      if (player.id === this.id) return;
+      if (this.hittingPlayer(player)) {
+        player.takeHit(this);
+      }
+    });
+  }
+
+  takeHit(player: Player) {
+    this.health -= player.damage;
+    this.updated.health = true;
+    if (this.health <= 0) {
+      this.die();
+    }
+  }
+  die() {
+    this.ws.send(new Packet(Packet.Type.DIE, []).toBinary(false));
+    this.room.removePlayer(this.id);
+  }
+
+  hittingPlayer(player: Player) {
+    // Check if distance is less than radius
+    const distance = Math.sqrt(
+      (this.pos.x - player.pos.x) ** 2 + (this.pos.y - player.pos.y) ** 2,
+    );
+    if (distance < (this.radius + player.radius) * 0.66) {
+      // Check if facing player
+      const angle = Math.atan2(
+        player.pos.y - this.pos.y,
+        player.pos.x - this.pos.x,
+      );
+      const angleDiff = Math.abs(angle - this.angle);
+      if (angleDiff < Math.PI / 3) {
+        return true;
+      }
+    }
+    return false;
   }
 
   getMovementInfo() {
@@ -129,6 +182,10 @@ export default class Player {
 
   get radius() {
     return constants.player_radius * this.scale;
+  }
+
+  get damage() {
+    return (80 * this.scale > 30 ? 30 + (((80 * this.scale) - 30) / 5) : 80 * this.scale);
   }
 
   getFirstSendData() {
@@ -187,6 +244,8 @@ export default class Player {
     candidates.forEach((elem: any) => {
       if (elem.id === this.id) {
         if (this.updated.pos) this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
+        // eslint-disable-next-line max-len
+        if (this.updated.health) this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: this.id, health: this.healthPercent }).toBinary(true));
         return;
       }
 

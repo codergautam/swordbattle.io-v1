@@ -117,6 +117,10 @@ export default class MainGame extends Phaser.Scene {
       this.players.delete(id);
     });
 
+    this.ws.on(Packet.Type.DIE.toString(), () => {
+      this.events.emit('crash', 'You died.');
+    });
+
     this.players = new Map();
   }
 
