@@ -221,6 +221,18 @@ export default class Player {
     if (this.pos.x !== newPos.x || this.pos.y !== newPos.y) {
       this.pos = newPos;
       this.updated.pos = true;
+
+      const room = this.room as Room;
+      room.quadTree.retrieve(this.getRangeBounds(true)).forEach((playerObj: any) => {
+        const player = room.getPlayer(playerObj.id) as Player;
+        if (player.id === this.id) return;
+        // eslint-disable-next-line max-len
+        const cc = (p1x: number, p1y: number, r1: any, p2x: number, p2y: number, r2: any) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2);
+        if (!cc(this.pos.x, this.pos.y, this.radius / 2, player.pos.x, player.pos.y, player.radius / 2)) return;
+        const angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
+        this.pos.x = player.pos.x + Math.cos(angle) * (this.radius / 2 + player.radius / 2) * 0.9;
+        this.pos.y = player.pos.y + Math.sin(angle) * (this.radius / 2 + player.radius / 2) * 0.9;
+      });
     }
   }
 
