@@ -39,6 +39,7 @@ export default class Packet {
       PLAYER_MOVE: 0,
       PLAYER_ROTATE: 1,
       PLAYER_ADD: 2,
+      PLAYER_HEALTH: 10,
       ATTACK: 3,
       PLAYER_ID: 10,
       JOIN: 4,
@@ -47,6 +48,8 @@ export default class Packet {
       OTHER: 7,
       ERROR: 8,
       PLAYER_REMOVE: 9,
+      PLAYER_SWING: 11,
+      DIE: 69,
     };
   }
 

@@ -92,8 +92,9 @@ export default class Room {
     this.players.forEach((player: Player) => {
       const p = this.players.get(player.id);
       if (p) {
-        p.updated.pos = false;
-        p.updated.rot = false;
+        Object.keys(p.updated).forEach((key) => {
+          (p.updated as any)[key] = false;
+        });
       }
     });
   }
