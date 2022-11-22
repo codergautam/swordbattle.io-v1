@@ -149,10 +149,10 @@ export default class Player {
   hittingPlayer(player: Player) {
     const deep = 0;
     const angles = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30];
+    // const pts = [];
 
     for (const increment of angles) {
       let angle = this.calcSwordAngle();
-      console.log(angle);
 
       angle -= increment;
 
@@ -164,15 +164,15 @@ export default class Player {
       const tip = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius) * 0.2);
       const base = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius / 2) * 1.7);
 
-      // this.ws.send(new Packet(Packet.Type.DEBUG, [tip, base]).toBinary(true));
-
       // get the values needed for line-circle-collison
+      // pts.push(tip, base);
 
-      const radius = player.radius * player.scale;
+      const radius = player.radius * player.scale * 2;
 
       // check if enemy and player colliding
       if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
     }
+    // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
     return false;
   }
 
