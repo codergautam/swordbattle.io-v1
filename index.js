@@ -1,9 +1,9 @@
 /*
-                           _ _           _   _   _        _       
- _____      _____  _ __ __| | |__   __ _| |_| |_| | ___  (_) ___  
-/ __\ \ /\ / / _ \| '__/ _` | '_ \ / _` | __| __| |/ _ \ | |/ _ \ 
+                           _ _           _   _   _        _
+ _____      _____  _ __ __| | |__   __ _| |_| |_| | ___  (_) ___
+/ __\ \ /\ / / _ \| '__/ _` | '_ \ / _` | __| __| |/ _ \ | |/ _ \
 \__ \\ V  V / (_) | | | (_| | |_) | (_| | |_| |_| |  __/_| | (_) |
-|___/ \_/\_/ \___/|_|  \__,_|_.__/ \__,_|\__|\__|_|\___(_)_|\___/ 
+|___/ \_/\_/ \___/|_|  \__,_|_.__/ \__,_|\__|\__|_|\___(_)_|\___/
 A game by Gautam
 */
 const express = require("express");
@@ -101,7 +101,7 @@ const { config } = require("dotenv");
 
 
 const checkifMissingFields = (req,res,next) => {
-if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {	
+if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string" || typeof req.body.captcha !== "string") {
 		res.send({error: "Missing fields"});
 		return;
 }
@@ -124,7 +124,7 @@ if (production) {
 	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
-		max: 700, // limit each IP to 700 requests per min 
+		max: 700, // limit each IP to 700 requests per min
 		message: "Too many requests from this IP address, please try again later." //Add message when rate-limit
 	});
 	app.use(limiter);
@@ -197,7 +197,7 @@ app.all("*", (req, res, next) => {
 var levels = [];
 oldlevels.forEach((level, index)  =>{
 	if(index == 0) {
-		levels.push(Object.assign({start: 0, num:index+1},level)); 
+		levels.push(Object.assign({start: 0, num:index+1},level));
 	}
 	else {
 		levels.push(Object.assign({start: levels[index - 1].coins, num:index+1}, level));
@@ -339,11 +339,11 @@ app.post("/api/equip", async (req, res) => {
 });
 
 app.post("/api/changename", async (req,res) => {
-	if(typeof req.body!=="object" || typeof req.body.secret !== "string" || typeof req.body.username !== "string") {	
+	if(typeof req.body!=="object" || typeof req.body.secret !== "string" || typeof req.body.username !== "string") {
 		res.status(400).send({error: "Missing fields"});
 		return;
 	}
-  
+
   //check if secret valid
   var secret = req.body.secret;
   var newUsername = req.body.username;
@@ -377,17 +377,21 @@ app.post("/api/changename", async (req,res) => {
 		res.status(400).send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
 		return;
 	}
-	
+
 	var containsProfanity = filter.check(newUsername);
 	if(containsProfanity) {
 		res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
 
+  try {
   var containsProfanity2 = await filtery.containsProfanity(newUsername);
   if(containsProfanity2) {
     res.status(400).send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
     return;
+  }
+  } catch(e) {
+    console.log(e);
   }
 
   //get days since lastchange
@@ -398,7 +402,7 @@ app.post("/api/changename", async (req,res) => {
     res.status(400).send({error: `You can change your username again in ${7-daysSince[0].days} days`});
     return;
   }
-  
+
 
 
   //check if new username exists
@@ -414,12 +418,12 @@ app.post("/api/changename", async (req,res) => {
   await sql`UPDATE games SET name=${newUsername} WHERE lower(name)=${oldUsernameLower} AND verified=true`;
 
   res.status(200).send("Success");
-  
+
 });
 
 app.post("/api/signup",checkifMissingFields, async (req, res) => {
-  
-	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {	
+
+	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {
 		res.send({error: "Missing fields"});
 		return;
 	}
@@ -453,18 +457,23 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
 		res.send({error: "Username can only contain letters, numbers, spaces, and the following symbols: !@\"$%&:';()*\+,-=[\]\^_{|}<>~`"});
 		return;
 	}
-	
+
 	var containsProfanity = filter.check(username);
 	if(containsProfanity) {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
 
+
+  try {
   var containsProfanity2 = await filtery.containsProfanity(username);
 	if(containsProfanity2) {
 		res.send({error: "Username contains a bad word!\nIf this is a mistake, please contact an admin."});
 		return;
 	}
+} catch(e) {
+  console.log(e);
+}
 	var exists = await sql`select exists(select 1 from accounts where lower(username)=lower(${username}))`;
 
 	if (exists[0].exists) {
@@ -487,7 +496,7 @@ app.post("/api/signup",checkifMissingFields, async (req, res) => {
  var send = {
   secret: process.env.CAPTCHASECRET,
   response: req.body.captcha,
-  remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress 
+  remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress
 };
 
 if(recaptcha) {
@@ -514,7 +523,7 @@ if(recaptcha) {
 
 });
 
-app.post("/api/login",checkifMissingFields, async (req, res) => { 
+app.post("/api/login",checkifMissingFields, async (req, res) => {
 
 
 	async function doit() {
@@ -532,13 +541,13 @@ app.post("/api/login",checkifMissingFields, async (req, res) => {
 		res.send({error: "Invalid password"});
 		return;
 	}
-	
+
 	res.send(account[0]);
 	}
 	var send = {
 		secret: process.env.CAPTCHASECRET,
 		response: req.body.captcha,
-		remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress 
+		remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress
 	};
 	if(recaptcha) {
 		axios
@@ -631,7 +640,7 @@ app.get("/shop", async (req, res) => {
           else counts[y] = 1;
         });
       });
-    
+
       acc.bal = yo[0].sum + acc.coins;
     }
   }
@@ -725,8 +734,8 @@ app.get("/:user", async (req, res, next) => {
 			WHERE DATE_ACTUAL>='2022-01-01'
 		order by date_actual asc
 		) A
-		
-		LEFT outer JOIN 
+
+		LEFT outer JOIN
 		(
 		SELECT
 		NAME,
@@ -740,7 +749,7 @@ app.get("/:user", async (req, res, next) => {
 		ON A.dt=B.PLAYED_DATE
 		WHERE NAME='Dooku'
 		ORDER BY A.dt ASC
-	
+
 */
 
     var stats = await sql`
@@ -748,8 +757,8 @@ app.get("/:user", async (req, res, next) => {
 		(
 		select distinct(created_at::date) as Dt from games where created_at >= ${
       dbuser[0].created_at
-    }::date-1 
-		order by created_at::date 
+    }::date-1
+		order by created_at::date
 		) a
 		left join
 		(
@@ -806,7 +815,7 @@ io.on("connection", async (socket) => {
     );
     socket.disconnect();
   }
-  
+
   socket.on("pong", () => {
     socket.lastSuccessfullPing = Date.now();
     socket.ping = Date.now() - socket.lastPinged;
@@ -865,7 +874,7 @@ io.on("connection", async (socket) => {
           }
 				}
 
-				
+
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
 				socket.broadcast.send("new", thePlayer.getSendObj());
@@ -948,8 +957,8 @@ io.on("connection", async (socket) => {
       var evo = evolutions[eclass];
       console.log(player.name + " evolved to " + eclass);
 
-    
-          
+
+
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
       player.checkSubEvolutions();
@@ -976,7 +985,7 @@ io.on("connection", async (socket) => {
 			var thePlayer = PlayerList.getPlayer(socket.id);
 			thePlayer.mousePos = mousePos;
 			PlayerList.updatePlayer(thePlayer);
-     
+
 		}
 		else socket.send("refresh");
 
@@ -1027,12 +1036,19 @@ io.on("connection", async (socket) => {
 			var p = PlayerList.getPlayer(socket.id);
 			p.lastChat = Date.now();
 			PlayerList.setPlayer(socket.id, p);
+      try {
 			msg = await filtery.clean(msg);
 				io.sockets.send("chat", {
 					msg: filter.clean(msg),
 					id: socket.id,
 				});
-			}
+			} catch(e) {
+        io.sockets.send("chat", {
+					msg: filter.clean(msg),
+					id: socket.id,
+				});
+      }
+    }
 		});
 	function clamp(num, min, max) {
 		return num <= min ? min : num >= max ? max : num;
@@ -1065,8 +1081,8 @@ console.log(thePlayer.name + " - " + socket.id + " disconnected");
               }
 
                 io.sockets.send("coin", [drop, [thePlayer.pos.x, thePlayer.pos.y]]);
-								
-              
+
+
 
 		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
 
@@ -1147,7 +1163,7 @@ setInterval(async () => {
     var a = degrees_to_radians(sword.angle-45);
     sword.x += Math.cos(a) * 100;
     sword.y += Math.sin(a) * 100;
-    
+
     //collision check
       //HARDCODED
     var tip = movePointAtAngle([sword.x, sword.y], a, (130*sword.scale));
@@ -1158,7 +1174,7 @@ setInterval(async () => {
       if(sword.hit.includes(player.id)) return;
       var swordOwner = PlayerList.getPlayer(sword.id);
       if(!swordOwner) return hit=true;
-    
+
 
       // check line collision
       if(lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, player.radius*player.scale)) {
@@ -1191,7 +1207,7 @@ setInterval(async () => {
       if(player) {
         player.swordInHand = true;
         PlayerList.updatePlayer(player);
-      } 
+      }
     }
   });
   io.sockets.send("flyingSwords", flyingSwords);
@@ -1244,7 +1260,7 @@ setInterval(async () => {
       // emit disconnect to players
       b.broadcast.send("playerDied", [b.id]);
       b.disconnect();
-      
+
 
     }
 	});
@@ -1254,7 +1270,7 @@ setInterval(async () => {
     var allArr = [];
   }
 	playersarray.forEach((player) => {
-    
+
 		if(player) {
       player.updateValues();
       if(shouldSendAll) {
@@ -1262,7 +1278,7 @@ setInterval(async () => {
           id: player.id,
           name: player.name,
           pos: player.pos,
-          scale: player.scale, 
+          scale: player.scale,
           coins: player.coins,
           ranking: player.ranking,
           verified: player.verified,
@@ -1338,7 +1354,7 @@ process.on("SIGTERM", () => {
           process.exit(1);
         });
       } else process.exit(1);
-     
+
     });
 });
 process.on("SIGINT", () => {
