@@ -117,6 +117,14 @@ export default class MainGame extends Phaser.Scene {
       this.players.delete(id);
     });
 
+    // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
+    //   d.forEach((point) => {
+    //     console.log(point);
+    //     if (point.x) this.add.circle(point.x, point.y, 5, 0xff0000, 1).setDepth(3);
+    //     else this.add.circle(point[0], point[1], 5, 0xff0000, 1).setDepth(3);
+    //   });
+    // });
+
     this.ws.on(Packet.Type.DIE.toString(), () => {
       this.events.emit('crash', 'You died.');
     });

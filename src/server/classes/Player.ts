@@ -1,4 +1,5 @@
 import Quadtree from '@timohausmann/quadtree-js';
+import intersects from 'intersects';
 import clamp from '../../shared/clamp';
 import Evolutions from '../../shared/Evolutions';
 import Levels from '../../shared/Levels';
@@ -8,6 +9,7 @@ import getRandomInt from '../helpers/getRandomInt';
 import Room from './Room';
 import WsRoom from './WsRoom';
 import roomlist from '../helpers/roomlist';
+import movePointAtAngle from '../helpers/movePointAtAngle';
 
 export default class Player {
   name: string;
@@ -140,21 +142,36 @@ export default class Player {
     this.room.removePlayer(this.id);
   }
 
+  calcSwordAngle() {
+    return (this.angle * 180) / Math.PI + 45;
+  }
+
   hittingPlayer(player: Player) {
-    // Check if distance is less than radius
-    const distance = Math.sqrt(
-      (this.pos.x - player.pos.x) ** 2 + (this.pos.y - player.pos.y) ** 2,
-    );
-    if (distance < (this.radius + player.radius) * 0.66) {
-      // Check if facing player
-      const angle = Math.atan2(
-        player.pos.y - this.pos.y,
-        player.pos.x - this.pos.x,
-      );
-      const angleDiff = Math.abs(angle - this.angle);
-      if (angleDiff < Math.PI / 3) {
-        return true;
-      }
+    const deep = 0;
+    const angles = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30];
+
+    for (const increment of angles) {
+      let angle = this.calcSwordAngle();
+      console.log(angle);
+
+      angle -= increment;
+
+      const sword = { x: 0, y: 0 };
+      const factor = (100 / (this.scale * 100)) * 1.5;
+      sword.x = this.pos.x + ((this.radius / factor) * Math.cos((angle * Math.PI) / 180));
+      sword.y = this.pos.y + ((this.radius / factor) * Math.sin((angle * Math.PI) / 180));
+
+      const tip = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius) * 0.2);
+      const base = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius / 2) * 1.7);
+
+      // this.ws.send(new Packet(Packet.Type.DEBUG, [tip, base]).toBinary(true));
+
+      // get the values needed for line-circle-collison
+
+      const radius = player.radius * player.scale;
+
+      // check if enemy and player colliding
+      if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
     }
     return false;
   }
