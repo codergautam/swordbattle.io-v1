@@ -44,7 +44,7 @@ export default class Player {
     this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
-    this.speed = 20;
+    this.speed = 15;
     this.health = 100;
     this.maxHealth = 100;
 
@@ -133,6 +133,7 @@ export default class Player {
   takeHit(player: Player) {
     this.health -= player.damage;
     this.updated.health = true;
+    player.dealKnockback(this);
     if (this.health <= 0) {
       this.die();
     }
@@ -174,6 +175,20 @@ export default class Player {
     }
     // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
     return false;
+  }
+
+  dealKnockback(player: Player) {
+    const minKb = 10;
+    const maxKb = 500;
+    // calculate kb by my scale and their scale
+    let kb = ((this.scale) / (player.scale)) * 100;
+    kb = clamp(kb, minKb, maxKb);
+    const x = Math.cos(this.angle) * kb;
+    const y = Math.sin(this.angle) * kb;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.x += x;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.y += y;
   }
 
   getMovementInfo() {
