@@ -106,7 +106,7 @@ export default class Player extends Phaser.GameObjects.Container {
       targets: this,
       x: pos.x,
       y: pos.y,
-      duration: (1000 / constants.expected_tps) + 200,
+      duration: (1000 / constants.expected_tps) + 50,
       ease: 'Power2',
     });
   }
