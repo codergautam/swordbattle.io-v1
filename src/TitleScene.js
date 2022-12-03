@@ -32,7 +32,7 @@ class TitleScene extends Phaser.Scene {
       var servers = {
         "us1": "https://sword-io-game.herokuapp.com",
         "us2": "https://swordbattle2.herokuapp.com",
-        "eu1": "https://swordbattle.herokuapp.com"
+        "eu1": "https://europesword.herokuapp.com"
       };
 
       var ping = (server) => {
@@ -398,16 +398,16 @@ class TitleScene extends Phaser.Scene {
     var showLoggedIn = () => {
 
       this.dropdown = this.add.dom(0, 0, "section", "border: 10px solid red", "DO IT").createFromCache("dropdown").setOrigin(0);
-      
+
       // Allows us to target the user nav cpntainer with css.
-      document.querySelector(".user-nav").parentElement.id = "username-area"; 
+      document.querySelector(".user-nav").parentElement.id = "username-area";
 
       document.getElementById("username").innerHTML = this.accountData.username;
       document.getElementById("profile").setAttribute("onclick", `location.href='/${this.accountData.username}'`);
       this.nameBox.getChildByName("name").classList.add("loggedin");
 
       this.nameBox.getChildByName("name").disabled = true;
-      this.dropdown.x = (this.canvas.width / 1.2); 
+      this.dropdown.x = (this.canvas.width / 1.2);
       document.getElementById("changename").onclick = () => {
         let person = prompt("Please enter your new username:", "");
         if (person == null) {
