@@ -52,6 +52,8 @@ module.exports = {
         'import/extensions': 0,
         'consistent-return': 0,
         'object-curly-newline': 0,
+        'no-shadow': 'off', // See https://stackoverflow.com/questions/63961803/eslint-says-all-enums-in-typescript-app-are-already-declared-in-the-upper-scope
+        '@typescript-eslint/no-shadow': ['error'],
       },
     },
   ],
