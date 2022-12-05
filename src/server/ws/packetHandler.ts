@@ -1,14 +1,14 @@
 /* eslint-disable no-param-reassign */
+import { WebSocket } from 'uWebSockets.js';
 import roomList from '../helpers/roomlist';
-import Packet from '../../shared/Packet';
+import Packet, { PacketType } from '../../shared/Packet';
 import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
-import Room from '../classes/Room';
 
-export default (ws: any, packet: any) => {
-  const mainRoom = ((roomList as any).getRoom('main') as Room);
+const packetHandler = (ws: WebSocket, packet: any) => {
+  const mainRoom = (roomList.getRoom('main'));
   switch (packet.type) {
-    case Packet.Type.JOIN: {
+    case PacketType.JOIN: {
       // TODO: Verify that all data sent is valid
       const { data } = packet;
       // Join the player into main room
@@ -18,7 +18,7 @@ export default (ws: any, packet: any) => {
       mainRoom.addPlayer(player, ws);
       break;
     }
-    case Packet.Type.PLAYER_MOVE: {
+    case PacketType.PLAYER_MOVE: {
       const { data } = packet;
       const player = mainRoom.getPlayer(ws.id);
 
@@ -34,3 +34,5 @@ export default (ws: any, packet: any) => {
       break;
   }
 };
+
+export default packetHandler;

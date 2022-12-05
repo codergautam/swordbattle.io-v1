@@ -32,7 +32,7 @@ export default function initWebsocket(url: string | URL,
         existingWebsocket.close();
       }
       const websocket = new WebSocket(url);
-      websocket.onopen = function () {
+      websocket.onopen = () => {
         if (hasReturned) {
           websocket.close();
         } else {
@@ -40,11 +40,11 @@ export default function initWebsocket(url: string | URL,
           resolve(websocket);
         }
       };
-      websocket.onclose = function () {
+      websocket.onclose = () => {
         console.info(`websocket closed! url: ${url}`);
         rejectInternal('The connection to the server was closed unexpectedly');
       };
-      websocket.onerror = function () {
+      websocket.onerror = () => {
         console.info(`websocket error! url: ${url}`);
         rejectInternal('An unexpected error occurred while connecting to the server');
       };

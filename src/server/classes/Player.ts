@@ -3,7 +3,7 @@ import intersects from 'intersects';
 import clamp from '../../shared/clamp';
 import Evolutions from '../../shared/Evolutions';
 import Levels from '../../shared/Levels';
-import Packet from '../../shared/Packet';
+import Packet, { PacketType } from '../../shared/Packet';
 import constants from '../helpers/constants';
 import getRandomInt from '../helpers/getRandomInt';
 import Room from './Room';
@@ -68,6 +68,7 @@ export default class Player {
   }
 
   get room() {
+    if (this.roomId === undefined) throw new TypeError("Trying to get Player's room when player's roomId is undefined");
     return roomlist.getRoom(this.roomId);
   }
 
@@ -146,8 +147,7 @@ export default class Player {
     }
   }
   die() {
-    
-    this.ws.send(new Packet(Packet.Type.DIE, [this.kills,this.killer]).toBinary(true));
+    this.ws.send(new Packet(PacketType.DIE, [this.kills,this.killer]).toBinary(true));
     this.room.removePlayer(this.id);
   }
 
@@ -181,7 +181,7 @@ export default class Player {
       // check if enemy and player colliding
       if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
     }
-    // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
+    // this.ws.send(new Packet(PacketType.DEBUG, pts).toBinary(true));
     return false;
   }
 
@@ -295,9 +295,9 @@ export default class Player {
 
     candidates.forEach((elem: any) => {
       if (elem.id === this.id) {
-        if (this.updated.pos) this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
+        if (this.updated.pos) this.ws.send(new Packet(PacketType.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
         // eslint-disable-next-line max-len
-        if (this.updated.health) this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: this.id, health: this.healthPercent }).toBinary(true));
+        if (this.updated.health) this.ws.send(new Packet(PacketType.PLAYER_HEALTH, { id: this.id, health: this.healthPercent }).toBinary(true));
         return;
       }
 
@@ -307,19 +307,19 @@ export default class Player {
 
       if (!this.lastSeenPlayers.has(player.id)) {
         this.lastSeenPlayers.add(player.id);
-        this.ws.send(new Packet(Packet.Type.PLAYER_ADD, player.getFirstSendData()).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_ADD, player.getFirstSendData()).toBinary(true));
       } else if (player.updated.pos) {
-        this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
       }
       if (player.updated.rot) {
-        this.ws.send(new Packet(Packet.Type.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
       }
       if (player.updated.health) {
         // eslint-disable-next-line max-len
-        this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: player.id, health: player.healthPercent }).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_HEALTH, { id: player.id, health: player.healthPercent }).toBinary(true));
       }
       if (player.updated.swinging) {
-        this.ws.send(new Packet(Packet.Type.PLAYER_SWING, { id: player.id, s: player.swinging }).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_SWING, { id: player.id, s: player.swinging }).toBinary(true));
       }
       newSeenPlayers.add(player.id);
     });
@@ -327,7 +327,7 @@ export default class Player {
     this.lastSeenPlayers.forEach((id: any) => {
       if (!newSeenPlayers.has(id)) {
         this.lastSeenPlayers.delete(id);
-        this.ws.send(new Packet(Packet.Type.PLAYER_REMOVE, { id }).toBinary(true));
+        this.ws.send(new Packet(PacketType.PLAYER_REMOVE, { id }).toBinary(true));
       }
     });
 

@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
-import Packet from '../../../../shared/Packet';
+import Packet, { PacketType } from '../../../../shared/Packet';
 import Player from '../classes/Player';
 import MainGame from '../scenes/MainGame';
 import angleFromKeys from './angleFromKeys';
@@ -146,7 +146,7 @@ export default (scene: MainGame) => {
       if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
 
       if ((toSend.f === undefined) && (toSend.m === undefined) && (Date.now() - lastPacketSend < 1000 / 10)) return;
-      const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
+      const packet = new Packet(PacketType.PLAYER_MOVE, toSend);
       ws.send(packet, true);
       lastPacketSend = Date.now();
       sendData = { changed: false };

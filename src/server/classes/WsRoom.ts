@@ -1,5 +1,7 @@
+import { RoomID } from './Room';
+
 export default class WsRoom {
-  id: any;
+  id: RoomID; // Might want to put RoomID into a shared definitions file
   clients: any;
 
   constructor(id: any) {

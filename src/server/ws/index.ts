@@ -1,6 +1,7 @@
+import { WebSocketBehavior } from 'uWebSockets.js';
 import packetHandler from './packetHandler';
 import idgen from '../helpers/idgen';
-import Packet from '../../shared/Packet';
+import Packet, { PacketType } from '../../shared/Packet';
 import Room from '../classes/Room';
 import PacketErrorTypes from '../../shared/PacketErrorTypes';
 import roomList from '../helpers/roomlist';
@@ -14,18 +15,18 @@ setInterval(() => {
   [...unjoinedRoom.clients.values()].forEach((client) => {
     if (client.joinedAt + 10000 < Date.now()) {
       // eslint-disable-next-line max-len
-      client.send(new Packet(Packet.Type.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
+      client.send(new Packet(PacketType.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
       client.end();
     }
   });
 }, 1000);
 
-export default {
+const behavior: WebSocketBehavior = {
   idleTimeout: 32,
   maxBackpressure: 1024,
   maxPayloadLength: 512,
   /* other events (upgrade, open, ping, pong, close) */
-  open: (ws: any) => {
+  open: (ws) => {
     // eslint-disable-next-line no-param-reassign
     ws.id = idgen();
     // eslint-disable-next-line no-param-reassign
@@ -41,11 +42,13 @@ export default {
       mainRoom.removePlayer(ws.id);
     }
   },
-  message: (ws: any, m: any) => {
-    const packet = Packet.fromBinary(m);
+  message: (ws, message) => {
+    const packet = Packet.fromBinary(message);
     packetHandler(ws, packet);
   },
 };
+
+export default behavior;
 
 setInterval(() => {
   mainRoom.tick();

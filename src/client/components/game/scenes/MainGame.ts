@@ -1,6 +1,6 @@
 /* eslint-disable max-len */
 import Phaser from 'phaser';
-import Packet from '../../../../shared/Packet';
+import Packet, { PacketType } from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
 import Player from '../classes/Player';
 import Ws from '../classes/Ws';
@@ -53,16 +53,16 @@ export default class MainGame extends Phaser.Scene {
     });
 
     this.ws.once('connected', () => {
-      this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
+      this.ws.send(new Packet(PacketType.JOIN, { name: this.passedData.name, verify: false }));
     });
 
-    this.ws.once(Packet.Type.ERROR.toString(), ([code]) => {
+    this.ws.once(PacketType.ERROR.toString(), ([code]) => {
       const values = Object.values(PacketErrorTypes);
       const error = values.find((value: any) => value.code === code);
       this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
     });
 
-    this.ws.once(Packet.Type.JOIN.toString(), ([id, x, y]) => {
+    this.ws.once(PacketType.JOIN.toString(), ([id, x, y]) => {
       this.ws.id = id;
       this.connectingText.destroy();
       this.loadBg.destroy();
@@ -77,42 +77,42 @@ export default class MainGame extends Phaser.Scene {
     });
 
     // TODO: Test this on refresh scene
-    this.ws.on(Packet.Type.PLAYER_MOVE.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_MOVE.toString(), (d) => {
       const { id, pos } = d;
       const player = this.players.get(id);
       if (!player) return;
       player.move(pos);
     });
 
-    this.ws.on(Packet.Type.PLAYER_ROTATE.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_ROTATE.toString(), (d) => {
       const { id, r } = d;
       const player = this.players.get(id);
       if (!player) return;
       player.setDirection(r);
     });
 
-    this.ws.on(Packet.Type.PLAYER_HEALTH.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_HEALTH.toString(), (d) => {
       const { id, health } = d;
       const player = this.players.get(id);
       if (!player) return;
       player.setHealth(health);
     });
 
-    this.ws.on(Packet.Type.PLAYER_SWING.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_SWING.toString(), (d) => {
       const { id, s } = d;
       const player = this.players.get(id);
       if (!player) return;
       player.setMouseDown(s);
     });
 
-    this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_ADD.toString(), (d) => {
       const { id, name, x, y, scale, angle, health } = d;
       const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
       player.setHealth(health);
       this.players.set(id, player);
     });
 
-    this.ws.on(Packet.Type.PLAYER_REMOVE.toString(), (d) => {
+    this.ws.on(PacketType.PLAYER_REMOVE.toString(), (d) => {
       const { id } = d;
       const player = this.players.get(id);
       if (!player) return;
@@ -120,7 +120,7 @@ export default class MainGame extends Phaser.Scene {
       this.players.delete(id);
     });
 
-    // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
+    // this.ws.on(PacketType.DEBUG.toString(), (d) => {
     //   this.debugItems.forEach((item: any) => item.destroy());
     //   this.debugItems = [];
     //   d.forEach((point) => {
@@ -130,7 +130,7 @@ export default class MainGame extends Phaser.Scene {
     //   });
     // });
 
-    this.ws.on(Packet.Type.DIE.toString(), (kills,killer) => {
+    this.ws.on(PacketType.DIE.toString(), (kills,killer) => {
       //this.events.emit('crash', 'You died.');
       this.events.emit('death', 'You ded',kills,killer,0);
     });

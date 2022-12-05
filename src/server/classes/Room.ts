@@ -1,5 +1,5 @@
 import QuadTree from '@timohausmann/quadtree-js';
-import Packet from '../../shared/Packet';
+import Packet, { PacketType } from '../../shared/Packet';
 import constants from '../helpers/constants';
 import idGen from '../helpers/idgen';
 import Player from './Player';
@@ -9,7 +9,7 @@ export type RoomID = string | number;
 
 export default class Room {
   public id: RoomID;
-  ws: any;
+  ws: WsRoom;
   players: Map<any, Player>;
   maxPlayers: any;
   quadTree: QuadTree;
@@ -56,7 +56,7 @@ export default class Room {
     this.players.set(ourPlayer.id, ourPlayer);
     this.ws.addClient(ws);
     // Send a packet to the client to tell them they joined the room, along with position
-    ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
+    ws.send(new Packet(PacketType.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
 
     // Find all other players nearby and send them to the client
     const candidates = this.quadTree.retrieve(ourPlayer.getRangeBounds());
@@ -64,7 +64,7 @@ export default class Room {
       if (candidate.id !== ourPlayer.id) {
         const candidatePlayer = this.players.get(candidate.id);
         if (candidatePlayer && ourPlayer.isInRangeWith(candidatePlayer)) {
-          ws.send(new Packet(Packet.Type.PLAYER_ADD, candidatePlayer.getFirstSendData()).toBinary(true));
+          ws.send(new Packet(PacketType.PLAYER_ADD, candidatePlayer.getFirstSendData()).toBinary(true));
           ourPlayer.lastSeenPlayers.add(candidate.id);
         }
       }
