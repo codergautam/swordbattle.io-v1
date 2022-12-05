@@ -1,5 +1,11 @@
+import Room, { RoomID } from '../classes/Room';
+
+interface IRoomList {
+  [id: string]: Room
+}
+
 class RoomList {
-  rooms: any;
+  private rooms: IRoomList;
 
   constructor() {
     this.rooms = {};
@@ -9,19 +15,19 @@ class RoomList {
     return Object.values(this.rooms);
   }
 
-  getRoom(id: any) {
+  getRoom(id: RoomID) {
     return this.rooms[id];
   }
 
-  updateRoom(id: any, room: any) {
+  updateRoom(id: RoomID, room: Room) {
     this.rooms[id] = room;
   }
 
-  addRoom(room: any) {
+  addRoom(room: Room) {
     this.rooms[room.id] = room;
   }
 
-  removeRoom(id: any) {
+  removeRoom(id: RoomID) {
     delete this.rooms[id];
   }
 }

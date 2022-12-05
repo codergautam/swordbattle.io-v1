@@ -8,7 +8,7 @@ import unjoinedRoom from '../helpers/unjoinedRoom';
 import constants from '../helpers/constants';
 
 const mainRoom = new Room('main');
-(roomList as any).addRoom(mainRoom);
+roomList.addRoom(mainRoom);
 
 setInterval(() => {
   [...unjoinedRoom.clients.values()].forEach((client) => {

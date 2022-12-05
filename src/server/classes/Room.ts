@@ -5,15 +5,17 @@ import idGen from '../helpers/idgen';
 import Player from './Player';
 import WsRoom from './WsRoom';
 
+export type RoomID = string | number;
+
 export default class Room {
-  id: string | number;
+  public id: RoomID;
   ws: any;
   players: Map<any, Player>;
   maxPlayers: any;
   quadTree: QuadTree;
   lastTick: any;
 
-  constructor(id = idGen() as string | number) {
+  constructor(id: RoomID = idGen()) {
     // eslint-disable-next-line no-param-reassign
     if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
     this.id = id;
