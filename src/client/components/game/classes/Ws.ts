@@ -17,7 +17,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
       this.connected = true;
       this.emit('connected');
 
-      this.ws.onmessage = (event: any) => {
+      this.ws.onmessage = (event) => {
         try {
           const parsed = Packet.fromBinary(event.data);
           this.emit(parsed.type, parsed.data);
