@@ -4,8 +4,10 @@
   "description": "A multiplayer sword fighting game",
   "scripts": {
     "heroku-prebuild": "npm install --dev",
-    "build": "webpack --config webpack/prod.js ",
-    "watch": "webpack --config webpack/base.js --watch --progress",
+    "build": "webpack --config webpack/prod.js && tsc",
+    "watch": "echo \"Recommend to use npm/yarn run watch:client\" && webpack --config webpack/base.js --watch --progress",
+    "watch:client": "webpack --config webpack/base.js --watch --progress",
+    "watch:server": "tsc -w & nodemon -q -w dist-server ./dist-server/server/server.js",
     "start-depricated": "webpack-dev-server --config webpack/base.js --open",
     "start": "tsc && node ./dist-server/server/server.js",
     "fix": "prettier --write './src/client/**/*.js' && eslint --fix './src/client/**/*.js'",
@@ -48,6 +50,7 @@
     "eslint-plugin-react": "^7.29.4",
     "eslint-plugin-react-hooks": "^4.3.0",
     "file-loader": "^4.2.0",
+    "nodemon": "^2.0.20",
     "postcss-styled": "^0.34.0",
     "prettier": "^2.6.0",
     "raw-loader": "^3.1.0",
@@ -81,8 +84,8 @@
     "styled-components": "^5.3.3",
     "styled-normalize": "^8.0.7",
     "terser-webpack-plugin": "^2.2.1",
-    "uuid": "^3.4.0",
     "uWebSockets.js": "uNetworking/uWebSockets.js#v20.14.0",
+    "uuid": "^3.4.0",
     "webpack": "^4.41.2",
     "webpack-merge": "^4.2.2"
   }
