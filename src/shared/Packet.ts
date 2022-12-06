@@ -1,7 +1,3 @@
-export interface IPacket {
-  type: any;
-}
-
 export enum PacketType {
   PLAYER_MOVE = 0,
   PLAYER_ROTATE = 1,
@@ -20,9 +16,16 @@ export enum PacketType {
   DEBUG = 100,
 }
 
+export interface IPacketReturn {
+  type: PacketType;
+  data: any;
+}
+
 export interface IPacketError {
   type: typeof PacketType.ERROR;
 }
+
+export type IPacket = IPacketReturn | IPacketError;
 
 export default class Packet {
   private type: PacketType;
@@ -33,7 +36,7 @@ export default class Packet {
     this.data = data;
   }
 
-  toJSON() {
+  toJSON(): IPacket {
     return {
       type: this.type,
       data: this.data,
@@ -60,7 +63,7 @@ export default class Packet {
     return buffer;
   }
 
-  static fromBinary(buffer: ArrayBuffer | string) {
+  static fromBinary(buffer: ArrayBuffer | string): IPacket {
     try {
       if (typeof buffer === 'string') {
         try {
