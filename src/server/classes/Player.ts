@@ -19,19 +19,19 @@ export default class Player {
   swinging: boolean;
   swordThrown: boolean;
   wsRoom!: WsRoom;
-  id?: ISwordsWebSocket['id'];
+  id!: ISwordsWebSocket['id'];
   force: number;
   moveDir: number;
   updated: { pos: boolean; rot: boolean; health: boolean; swinging: boolean };
   speed: number;
-  lastSeenPlayers: Set<any>;
+  lastSeenPlayers: Set<typeof this.id>;
   roomId: string | number | undefined;
   health: number;
   maxHealth: number;
   kills = 0;
   killer = "";
 
-  constructor(name: any) {
+  constructor(name: string) {
     this.name = name;
     this.roomId = undefined;
     this.pos = {
@@ -146,7 +146,7 @@ export default class Player {
   }
 
   die() {
-    this.ws.send(new Packet({ type: PacketType.DIE, data: [this.kills,this.killer] }).toBinary(false));
+    this.ws.send(new Packet({ type: PacketType.DIE, data: {} }).toBinary());
     this.room.removePlayer(this.id);
   }
 
@@ -155,7 +155,6 @@ export default class Player {
   }
 
   hittingPlayer(player: Player) {
-    const deep = 0;
     const angles = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30];
     // const pts = [];
 
@@ -180,7 +179,7 @@ export default class Player {
       // check if enemy and player colliding
       if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
     }
-    // this.ws.send(new Packet(PacketType.DEBUG, pts).toBinary(true));
+    // this.ws.send(new Packet(PacketType.DEBUG, pts).toBinary());
     return false;
   }
 
@@ -237,7 +236,7 @@ export default class Player {
   }
 
   get ws() {
-    return this.wsRoom.getClient(this.id);
+    return this.wsRoom.getClient(this.id) as ISwordsWebSocket;
   }
 
   get radius() {
@@ -309,17 +308,17 @@ export default class Player {
   packets(room: Room) {
     const { quadTree } = room;
     if (!quadTree) return;
-    const newSeenPlayers = new Set();
+    const newSeenPlayers: Set<typeof this.id> = new Set();
     const candidates = quadTree.retrieve(this.getRangeBounds());
 
     candidates.forEach((elem: any) => {
       if (elem.id === this.id) {
         if (this.updated.pos) {
-          this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: this.getMovementInfo() }).toBinary(true));
+          this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: this.getMovementInfo() }).toBinary());
         }
         // eslint-disable-next-line max-len
         if (this.updated.health) {
-          this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: this.getHealthInfo() }).toBinary(true));
+          this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: this.getHealthInfo() }).toBinary());
         }
         return;
       }
@@ -330,30 +329,30 @@ export default class Player {
 
       if (!this.lastSeenPlayers.has(player.id)) {
         this.lastSeenPlayers.add(player.id);
-        this.ws.send(new Packet({ type: PacketType.PLAYER_ADD, data: player.getFirstSendData() }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_ADD, data: player.getFirstSendData() }).toBinary());
       } else if (player.updated.pos) {
-        this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: player.getMovementInfo() }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: player.getMovementInfo() }).toBinary());
       }
       if (player.updated.rot) {
         this.ws.send(new Packet({
           type: PacketType.PLAYER_ROTATE,
           data: player.getRotationInfo(),
-        }).toBinary(true));
+        }).toBinary());
       }
       if (player.updated.health) {
         // eslint-disable-next-line max-len
-        this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: player.getHealthInfo() }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: player.getHealthInfo() }).toBinary());
       }
       if (player.updated.swinging) {
-        this.ws.send(new Packet({ type: PacketType.PLAYER_SWING, data: player.getSwingInfo() }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_SWING, data: player.getSwingInfo() }).toBinary());
       }
       newSeenPlayers.add(player.id);
     });
 
-    this.lastSeenPlayers.forEach((id: any) => {
+    this.lastSeenPlayers.forEach((id) => {
       if (!newSeenPlayers.has(id)) {
         this.lastSeenPlayers.delete(id);
-        this.ws.send(new Packet({ type: PacketType.PLAYER_REMOVE, data: { id } }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_REMOVE, data: { id } }).toBinary());
       }
     });
 

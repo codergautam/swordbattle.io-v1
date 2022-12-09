@@ -1,6 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
-import Packet, { PacketType } from '../../../../shared/Packet';
+import Packet from '../../../../shared/Packet';
+import { PacketType } from '../../../../shared/PacketDefinitions';
 import Player from '../classes/Player';
 import MainGame from '../scenes/MainGame';
 import angleFromKeys from './angleFromKeys';
@@ -10,6 +11,13 @@ interface keyObj {
   down: Phaser.Input.Keyboard.Key;
   left: Phaser.Input.Keyboard.Key;
   right: Phaser.Input.Keyboard.Key;
+}
+
+export interface IControllerUpdateData {
+  md?: boolean;
+  d?: number;
+  m?: number;
+  f?: number;
 }
 
 const setMouseRot = (scene: MainGame, myPlayer: Player | undefined) => {
@@ -130,13 +138,7 @@ export default (scene: MainGame) => {
   // eslint-disable-next-line no-param-reassign
   scene.controllerUpdate = () => {
     if (sendData.changed) {
-      let toSend: {
-        md?: boolean;
-        d?: number;
-        m?: number;
-        f?: number;
-      };
-      toSend = {};
+      const toSend: IControllerUpdateData = {};
 
       if (sendData.angle !== undefined) toSend.d = sendData.angle;
       if (sendData.force !== undefined) toSend.f = sendData.force;
@@ -146,7 +148,7 @@ export default (scene: MainGame) => {
       if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
 
       if ((toSend.f === undefined) && (toSend.m === undefined) && (Date.now() - lastPacketSend < 1000 / 10)) return;
-      const packet = new Packet(PacketType.PLAYER_MOVE, toSend);
+      const packet = new Packet({ type: PacketType.PLAYER_VECTOR, data: toSend });
       ws.send(packet, true);
       lastPacketSend = Date.now();
       sendData = { changed: false };

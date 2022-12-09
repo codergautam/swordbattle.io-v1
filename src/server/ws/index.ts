@@ -1,12 +1,18 @@
-import { WebSocketBehavior } from 'uWebSockets.js';
+import { WebSocket, WebSocketBehavior } from 'uWebSockets.js';
 import packetHandler from './packetHandler';
-import idgen from '../helpers/idgen';
-import Packet, { PacketType } from '../../shared/Packet';
+import idgen, { IDGEN } from '../helpers/idgen';
+import Packet from '../../shared/Packet';
 import Room from '../classes/Room';
 import PacketErrorTypes from '../../shared/PacketErrorTypes';
 import roomList from '../helpers/roomlist';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 import constants from '../helpers/constants';
+import { PacketType } from '../../shared/PacketDefinitions';
+
+export interface ISwordsWebSocket extends WebSocket {
+  id: IDGEN,
+  joinedAt: number
+}
 
 const mainRoom = new Room('main');
 roomList.addRoom(mainRoom);
@@ -15,7 +21,7 @@ setInterval(() => {
   [...unjoinedRoom.clients.values()].forEach((client) => {
     if (client.joinedAt + 10000 < Date.now()) {
       // eslint-disable-next-line max-len
-      client.send(new Packet(PacketType.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
+      client.send(new Packet({ type: PacketType.ERROR, data: PacketErrorTypes.JOIN_TIMEOUT.code }).toBinary());
       client.end();
     }
   });
@@ -32,9 +38,9 @@ const behavior: WebSocketBehavior = {
     // eslint-disable-next-line no-param-reassign
     ws.joinedAt = Date.now();
     console.log(`Client ${ws.id} connected`);
-    unjoinedRoom.addClient(ws);
+    unjoinedRoom.addClient(ws as ISwordsWebSocket);
   },
-  close: (ws: any) => {
+  close: (ws) => {
     console.log(`Client ${ws.id} disconnected`);
     if (unjoinedRoom.clients.has(ws.id)) {
       unjoinedRoom.removeClient(ws.id);
@@ -44,7 +50,7 @@ const behavior: WebSocketBehavior = {
   },
   message: (ws, message) => {
     const packet = Packet.fromBinary(message);
-    packetHandler(ws, packet);
+    packetHandler(ws as ISwordsWebSocket, packet);
   },
 };
 

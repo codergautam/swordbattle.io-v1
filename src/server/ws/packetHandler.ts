@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
-import { WebSocket } from 'uWebSockets.js';
 import roomList from '../helpers/roomlist';
-import Packet, { IPacket, PacketType } from '../../shared/Packet';
 import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
+import { ISwordsWebSocket } from '.';
+import { IPacket, PacketType } from '../../shared/PacketDefinitions';
 
-const packetHandler = (ws: WebSocket, packet: IPacket) => {
+const packetHandler = (ws: ISwordsWebSocket, packet: IPacket) => {
   const mainRoom = (roomList.getRoom('main'));
   switch (packet.type) {
     case PacketType.JOIN: {
@@ -18,7 +18,7 @@ const packetHandler = (ws: WebSocket, packet: IPacket) => {
       mainRoom.addPlayer(player, ws);
       break;
     }
-    case PacketType.PLAYER_MOVE: {
+    case PacketType.PLAYER_VECTOR: {
       const { data } = packet;
       const player = mainRoom.getPlayer(ws.id);
 

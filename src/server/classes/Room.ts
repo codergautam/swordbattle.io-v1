@@ -1,8 +1,9 @@
 import QuadTree from '@timohausmann/quadtree-js';
-import { WebSocket } from 'uWebSockets.js';
-import Packet, { PacketType } from '../../shared/Packet';
+import Packet from '../../shared/Packet';
+import { PacketType } from '../../shared/PacketDefinitions';
 import constants from '../helpers/constants';
 import idGen from '../helpers/idgen';
+import { ISwordsWebSocket } from '../ws';
 import Player from './Player';
 import WsRoom from './WsRoom';
 
@@ -11,10 +12,10 @@ export type RoomID = string | number;
 export default class Room {
   public id: RoomID;
   ws: WsRoom;
-  players: Map<any, Player>;
-  maxPlayers: any;
+  players: Map<Player['id'], Player>;
+  maxPlayers: number;
   quadTree: QuadTree;
-  lastTick: any;
+  lastTick: number;
 
   constructor(id: RoomID = idGen()) {
     // eslint-disable-next-line no-param-reassign
@@ -36,19 +37,19 @@ export default class Room {
     this.lastTick = Date.now();
   }
 
-  removePlayer(playerId: any) {
+  removePlayer(playerId: Player['id']) {
     this.players.delete(playerId);
     this.ws.removeClient(playerId);
   }
 
   refreshQuadTree() {
     this.quadTree.clear();
-    this.players.forEach((player: any) => {
+    this.players.forEach((player) => {
       this.quadTree.insert(player.getQuadTreeFormat());
     });
   }
 
-  addPlayer(player: Player, ws: WebSocket) {
+  addPlayer(player: Player, ws: ISwordsWebSocket) {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
     ourPlayer.id = ws.id;
@@ -56,8 +57,15 @@ export default class Room {
 
     this.players.set(ourPlayer.id, ourPlayer);
     this.ws.addClient(ws);
+
     // Send a packet to the client to tell them they joined the room, along with position
-    ws.send(new Packet(PacketType.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
+    ws.send(new Packet({ type: PacketType.JOIN,
+      data: {
+        id: ourPlayer.id,
+        positionX: ourPlayer.pos.x,
+        positionY: ourPlayer.pos.y,
+      },
+    }).toBinary());
 
     // Find all other players nearby and send them to the client
     const candidates = this.quadTree.retrieve(ourPlayer.getRangeBounds());
@@ -65,14 +73,14 @@ export default class Room {
       if (candidate.id !== ourPlayer.id) {
         const candidatePlayer = this.players.get(candidate.id);
         if (candidatePlayer && ourPlayer.isInRangeWith(candidatePlayer)) {
-          ws.send(new Packet(PacketType.PLAYER_ADD, candidatePlayer.getFirstSendData()).toBinary(true));
+          ws.send(new Packet({ type: PacketType.PLAYER_ADD, data: candidatePlayer.getFirstSendData() }).toBinary());
           ourPlayer.lastSeenPlayers.add(candidate.id);
         }
       }
     });
   }
 
-  getPlayer(playerId: any) {
+  getPlayer(playerId: Player['id']) {
     return this.players.get(playerId);
   }
 
@@ -96,7 +104,7 @@ export default class Room {
       const p = this.players.get(player.id);
       if (p) {
         Object.keys(p.updated).forEach((key) => {
-          (p.updated as any)[key] = false;
+          p.updated[key as keyof typeof p.updated] = false;
         });
       }
     });

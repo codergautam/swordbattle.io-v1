@@ -1,34 +1,36 @@
+import { RecognizedString } from 'uWebSockets.js';
+import { ISwordsWebSocket } from '../ws';
 import { RoomID } from './Room';
 
 export default class WsRoom {
   id: RoomID; // Might want to put RoomID into a shared definitions file
-  clients: any;
+  clients: Map<ISwordsWebSocket['id'], ISwordsWebSocket>;
 
-  constructor(id: any) {
+  constructor(id: RoomID) {
     this.id = id;
     this.clients = new Map();
   }
 
-  addClient(client: any) {
+  addClient(client: ISwordsWebSocket) {
     this.clients.set(client.id, client);
   }
 
-  removeClient(clientId: any) {
+  removeClient(clientId: ISwordsWebSocket['id']) {
     this.clients.delete(clientId);
   }
 
-  getClient(clientId: any) {
+  getClient(clientId: ISwordsWebSocket['id']) {
     return this.clients.get(clientId);
   }
 
-  send(message: any, clientId: any) {
+  send(message: RecognizedString, clientId: ISwordsWebSocket['id']) {
     const client = this.clients.get(clientId);
     if (client) {
       client.send(message);
     }
   }
 
-  sendAll(message: any) {
+  sendAll(message: RecognizedString) {
     // Map to array
     const clients = [...this.clients.values()];
     // eslint-disable-next-line no-restricted-syntax
@@ -37,7 +39,7 @@ export default class WsRoom {
     }
   }
 
-  sendExcept(message: any, clientId: any) {
+  sendExcept(message: RecognizedString, clientId: ISwordsWebSocket['id']) {
     const clients = [...this.clients.values()];
     // eslint-disable-next-line no-restricted-syntax
     for (const client of clients) {

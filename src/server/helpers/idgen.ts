@@ -6,5 +6,9 @@ function gen() {
     return id;
   };
 }
+
 const curGen = gen();
+
+export type IDGEN = ReturnType<typeof curGen>;
+
 export default curGen;
