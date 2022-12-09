@@ -1,11 +1,11 @@
 /* eslint-disable no-param-reassign */
 import { WebSocket } from 'uWebSockets.js';
 import roomList from '../helpers/roomlist';
-import Packet, { PacketType } from '../../shared/Packet';
+import Packet, { IPacket, PacketType } from '../../shared/Packet';
 import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const packetHandler: typeof TemplatedApp.get = (ws: WebSocket, packet: any) => {
+const packetHandler = (ws: WebSocket, packet: IPacket) => {
   const mainRoom = (roomList.getRoom('main'));
   switch (packet.type) {
     case PacketType.JOIN: {

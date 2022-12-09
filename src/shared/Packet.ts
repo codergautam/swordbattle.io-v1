@@ -16,9 +16,13 @@ export enum PacketType {
   DEBUG = 100,
 }
 
+export type PossiblePacketTypes = number | string | object;
+
+export type PacketData = PossiblePacketTypes | PossiblePacketTypes[]
+
 export interface IPacketReturn {
   type: PacketType;
-  data: any;
+  data: PacketData;
 }
 
 export interface IPacketError {
@@ -29,9 +33,9 @@ export type IPacket = IPacketReturn | IPacketError;
 
 export default class Packet {
   private type: PacketType;
-  private data: any;
+  private data: PacketData;
 
-  constructor(type: PacketType, data: unknown) {
+  constructor(type: PacketType, data: PacketData) {
     this.type = type;
     this.data = data;
   }
