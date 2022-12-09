@@ -206,6 +206,13 @@ export default class Player {
     };
   }
 
+  getHealthInfo() {
+    return {
+      id: this.id,
+      health: this.healthPercent,
+    };
+  }
+
   getQuadTreeFormat() {
     return {
       x: this.pos.x,
@@ -297,7 +304,7 @@ export default class Player {
       if (elem.id === this.id) {
         if (this.updated.pos) this.ws.send(new Packet(PacketType.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
         // eslint-disable-next-line max-len
-        if (this.updated.health) this.ws.send(new Packet(PacketType.PLAYER_HEALTH, { id: this.id, health: this.healthPercent }).toBinary(true));
+        if (this.updated.health) this.ws.send(new Packet(PacketType.PLAYER_HEALTH, this.getHealthInfo()).toBinary(true));
         return;
       }
 
