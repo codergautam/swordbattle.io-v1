@@ -1,7 +1,7 @@
 import path from 'path';
 import fs from 'fs';
 
-export default (res: any, req: any) => {
+const httpHandler = (res: any, req: any) => {
   try {
     const url = req.getUrl();
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
@@ -21,3 +21,5 @@ export default (res: any, req: any) => {
     }
   }
 };
+
+export default httpHandler;

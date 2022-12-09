@@ -5,7 +5,7 @@ import Packet, { PacketType } from '../../shared/Packet';
 import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 
-const packetHandler = (ws: WebSocket, packet: any) => {
+const packetHandler: typeof TemplatedApp.get = (ws: WebSocket, packet: any) => {
   const mainRoom = (roomList.getRoom('main'));
   switch (packet.type) {
     case PacketType.JOIN: {
