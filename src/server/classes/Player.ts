@@ -1,26 +1,25 @@
-import Quadtree from '@timohausmann/quadtree-js';
 import intersects from 'intersects';
 import clamp from '../../shared/clamp';
-import Evolutions from '../../shared/Evolutions';
 import Levels from '../../shared/Levels';
-import Packet, { PacketType } from '../../shared/Packet';
+import Packet from '../../shared/Packet';
+import { PacketType } from '../../shared/PacketDefinitions';
 import constants from '../helpers/constants';
 import getRandomInt from '../helpers/getRandomInt';
 import Room from './Room';
 import WsRoom from './WsRoom';
 import roomlist from '../helpers/roomlist';
 import movePointAtAngle from '../helpers/movePointAtAngle';
+import { ISwordsWebSocket } from '../ws';
 
 export default class Player {
   name: string;
   pos: { x: number; y: number };
   angle: number;
   scale: number;
-  evolution: any;
   swinging: boolean;
   swordThrown: boolean;
   wsRoom!: WsRoom;
-  id: any;
+  id?: ISwordsWebSocket['id'];
   force: number;
   moveDir: number;
   updated: { pos: boolean; rot: boolean; health: boolean; swinging: boolean };
@@ -43,7 +42,6 @@ export default class Player {
     this.angle = 0;
     this.force = 0;
     this.scale = Levels[0].scale;
-    this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
     this.speed = 15;
@@ -146,8 +144,9 @@ export default class Player {
       this.die();
     }
   }
+
   die() {
-    this.ws.send(new Packet(PacketType.DIE, [this.kills,this.killer]).toBinary(true));
+    this.ws.send(new Packet({ type: PacketType.DIE, data: [this.kills,this.killer] }).toBinary(false));
     this.room.removePlayer(this.id);
   }
 
@@ -213,6 +212,20 @@ export default class Player {
     };
   }
 
+  getRotationInfo() {
+    return {
+      id: this.id,
+      r: this.angle,
+    };
+  }
+
+  getSwingInfo() {
+    return {
+      id: this.id,
+      s: this.swinging,
+    };
+  }
+
   getQuadTreeFormat() {
     return {
       x: this.pos.x,
@@ -242,7 +255,6 @@ export default class Player {
       y: this.pos.y,
       angle: this.angle,
       scale: this.scale,
-      evolution: this.evolution,
       swinging: this.swinging,
       swordThrown: this.swordThrown,
       id: this.id,
@@ -302,9 +314,13 @@ export default class Player {
 
     candidates.forEach((elem: any) => {
       if (elem.id === this.id) {
-        if (this.updated.pos) this.ws.send(new Packet(PacketType.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
+        if (this.updated.pos) {
+          this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: this.getMovementInfo() }).toBinary(true));
+        }
         // eslint-disable-next-line max-len
-        if (this.updated.health) this.ws.send(new Packet(PacketType.PLAYER_HEALTH, this.getHealthInfo()).toBinary(true));
+        if (this.updated.health) {
+          this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: this.getHealthInfo() }).toBinary(true));
+        }
         return;
       }
 
@@ -314,19 +330,22 @@ export default class Player {
 
       if (!this.lastSeenPlayers.has(player.id)) {
         this.lastSeenPlayers.add(player.id);
-        this.ws.send(new Packet(PacketType.PLAYER_ADD, player.getFirstSendData()).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_ADD, data: player.getFirstSendData() }).toBinary(true));
       } else if (player.updated.pos) {
-        this.ws.send(new Packet(PacketType.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_MOVE, data: player.getMovementInfo() }).toBinary(true));
       }
       if (player.updated.rot) {
-        this.ws.send(new Packet(PacketType.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
+        this.ws.send(new Packet({
+          type: PacketType.PLAYER_ROTATE,
+          data: player.getRotationInfo(),
+        }).toBinary(true));
       }
       if (player.updated.health) {
         // eslint-disable-next-line max-len
-        this.ws.send(new Packet(PacketType.PLAYER_HEALTH, { id: player.id, health: player.healthPercent }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_HEALTH, data: player.getHealthInfo() }).toBinary(true));
       }
       if (player.updated.swinging) {
-        this.ws.send(new Packet(PacketType.PLAYER_SWING, { id: player.id, s: player.swinging }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_SWING, data: player.getSwingInfo() }).toBinary(true));
       }
       newSeenPlayers.add(player.id);
     });
@@ -334,7 +353,7 @@ export default class Player {
     this.lastSeenPlayers.forEach((id: any) => {
       if (!newSeenPlayers.has(id)) {
         this.lastSeenPlayers.delete(id);
-        this.ws.send(new Packet(PacketType.PLAYER_REMOVE, { id }).toBinary(true));
+        this.ws.send(new Packet({ type: PacketType.PLAYER_REMOVE, data: { id } }).toBinary(true));
       }
     });
 
