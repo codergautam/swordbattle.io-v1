@@ -1,4 +1,5 @@
 import QuadTree from '@timohausmann/quadtree-js';
+import { WebSocket } from 'uWebSockets.js';
 import Packet, { PacketType } from '../../shared/Packet';
 import constants from '../helpers/constants';
 import idGen from '../helpers/idgen';
@@ -47,7 +48,7 @@ export default class Room {
     });
   }
 
-  addPlayer(player: Player, ws: any) {
+  addPlayer(player: Player, ws: WebSocket) {
     const ourPlayer = player;
     ourPlayer.roomId = this.id;
     ourPlayer.id = ws.id;
