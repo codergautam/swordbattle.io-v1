@@ -29,6 +29,8 @@ export default class Player {
   roomId: string | number | undefined;
   health: number;
   maxHealth: number;
+  kills = 0;
+  killer = "";
 
   constructor(name: any) {
     this.name = name;
@@ -47,6 +49,9 @@ export default class Player {
     this.speed = 15;
     this.health = 100;
     this.maxHealth = 100;
+    this.kills = 0;
+    this.killer = "";
+    
 
     this.lastSeenPlayers = new Set();
 
@@ -135,11 +140,14 @@ export default class Player {
     this.updated.health = true;
     player.dealKnockback(this);
     if (this.health <= 0) {
+      player.kills+=1;
+      this.killer=player.name;
       this.die();
     }
   }
   die() {
-    this.ws.send(new Packet(Packet.Type.DIE, []).toBinary(false));
+    
+    this.ws.send(new Packet(Packet.Type.DIE, [this.kills,this.killer]).toBinary(true));
     this.room.removePlayer(this.id);
   }
 
