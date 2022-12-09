@@ -3,7 +3,7 @@
     "outDir": "./dist-server/",
     "noImplicitAny": true,
     "module": "CommonJS",
-    "target": "ES5",
+    "target": "ES2021",
     "esModuleInterop": true,
     "jsx": "react",
     "allowJs": true,
