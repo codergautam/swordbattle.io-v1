@@ -1,7 +1,8 @@
 import path from 'path';
 import fs from 'fs';
+import { HttpRequest, HttpResponse } from 'uWebSockets.js';
 
-const httpHandler = (res: any, req: any) => {
+const httpHandler = (res: HttpResponse, req: HttpRequest) => {
   try {
     const url = req.getUrl();
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
