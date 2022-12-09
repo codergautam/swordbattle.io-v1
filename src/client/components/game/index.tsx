@@ -8,6 +8,8 @@ import Title from './scenes/Title';
 import TitleUI from './ui/TitleUI';
 import '../../css/index.css';
 import ErrorModal from './ui/ErrorModal';
+import DeathBox from './ui/DeathBox';
+
 
 export default class Game extends React.Component {
   game: Phaser.Game;
@@ -17,7 +19,11 @@ export default class Game extends React.Component {
     this.state = {
       activeScene: '',
       crashMessage: null,
+      dbox: null,
       gameState: null,
+      deathKills: null,
+      deathCoins: null,
+      deathKiller: null
     };
   }
 
@@ -67,12 +73,20 @@ export default class Game extends React.Component {
         scene.events.on('crash', (message: string) => {
           this.setState((prevState) => Object.assign(prevState, { crashMessage: message }));
         });
+        scene.events.on('death', (message,kls,klr,cns) => {
+            console.log(message,kls,klr,cns)
+          
+          this.setState((prevState) => Object.assign(prevState, { deathKiller: klr, deathCoins: cns, deathKills: kls,dbox: message   }));
+
+          console.log(this.state)
+          })
+          
+        });
       });
-    });
   }
 
   render() {
-    const { activeScene, crashMessage, gameState } = this.state;
+    const { activeScene, crashMessage, dbox, gameState, deathKills, deathCoins, deathKiller } = this.state;
     return (
       <div style={{
         position: 'fixed',
@@ -80,14 +94,15 @@ export default class Game extends React.Component {
         justifyContent: 'center',
         alignItems: 'center',
         zIndex: 1,
-        width: crashMessage ? '100%' : (activeScene === 'maingame' ? '0%' : '100%'),
-        height: crashMessage ? '100%' : (activeScene === 'maingame' ? '0%' : '100%'),
+        width: (crashMessage || dbox) ? '100%' : (activeScene === 'maingame' ? '0%' : '100%'),
+        height: (crashMessage || dbox) ? '100%' : (activeScene === 'maingame' ? '0%' : '100%')
       }}
       >
         {activeScene === 'title' ? <TitleUI /> : null}
         {crashMessage ? <ErrorModal message={crashMessage} /> : null}
+        {dbox ? <DeathBox killer={deathKiller} kills={deathKills} coins={deathCoins}/> : null}
       </div>
-
+      
     );
   }
 }
