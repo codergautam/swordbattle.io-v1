@@ -16,7 +16,6 @@ dist/
 dist-server/
 /npm-debug.log
 package-lock.json
-yarn.lock
 
 config.json
 .env

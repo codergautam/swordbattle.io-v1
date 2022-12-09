@@ -29,6 +29,8 @@ export default class Player {
   roomId: string | number | undefined;
   health: number;
   maxHealth: number;
+  kills = 0;
+  killer = "";
 
   constructor(name: any) {
     this.name = name;
@@ -44,9 +46,12 @@ export default class Player {
     this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
-    this.speed = 20;
+    this.speed = 15;
     this.health = 100;
     this.maxHealth = 100;
+    this.kills = 0;
+    this.killer = "";
+    
 
     this.lastSeenPlayers = new Set();
 
@@ -133,12 +138,16 @@ export default class Player {
   takeHit(player: Player) {
     this.health -= player.damage;
     this.updated.health = true;
+    player.dealKnockback(this);
     if (this.health <= 0) {
+      player.kills+=1;
+      this.killer=player.name;
       this.die();
     }
   }
   die() {
-    this.ws.send(new Packet(Packet.Type.DIE, []).toBinary(false));
+    
+    this.ws.send(new Packet(Packet.Type.DIE, [this.kills,this.killer]).toBinary(true));
     this.room.removePlayer(this.id);
   }
 
@@ -174,6 +183,20 @@ export default class Player {
     }
     // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
     return false;
+  }
+
+  dealKnockback(player: Player) {
+    const minKb = 10;
+    const maxKb = 500;
+    // calculate kb by my scale and their scale
+    let kb = ((this.scale) / (player.scale)) * 100;
+    kb = clamp(kb, minKb, maxKb);
+    const x = Math.cos(this.angle) * kb;
+    const y = Math.sin(this.angle) * kb;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.x += x;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.y += y;
   }
 
   getMovementInfo() {
