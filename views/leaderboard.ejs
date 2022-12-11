@@ -1,26 +1,26 @@
 <%
 function msToTime(duration) {
     const portions = [];
-  
+
     const msInHour = 1000 * 60 * 60;
     const hours = Math.trunc(duration / msInHour);
     if (hours > 0) {
       portions.push(hours + 'h');
       duration = duration - (hours * msInHour);
     }
-  
+
     const msInMinute = 1000 * 60;
     const minutes = Math.trunc(duration / msInMinute);
     if (minutes > 0) {
       portions.push(minutes + 'm');
       duration = duration - (minutes * msInMinute);
     }
-  
+
     const seconds = Math.trunc(duration / 1000);
     if (seconds > 0) {
       portions.push(seconds + 's');
     }
-  
+
     return portions.join(' ');
   }
 
@@ -205,7 +205,7 @@ img.circle-img.circle-img--small {
 				  <a onclick="setOptions(undefined, '<%=tableType(type)[3]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[4] %></a>
 				  <a onclick="setOptions(undefined, '<%=tableType(type)[4]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[5] %></a>
 				  <a onclick="setOptions(undefined, '<%=tableType(type)[5]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[6] %></a>
-				
+
 				</div>
 			  </div>
 			  <div class="dropdown dropdown d-inline-block">
@@ -217,28 +217,28 @@ img.circle-img.circle-img--small {
 				  <a onclick="setOptions('<%=tableDur(duration)[1]%>')" class="dropdown-item" href="#"><%= niceifyDur(duration)[2] %></a>
 				</div>
 			  </div>
-			  
+
 			  <br>
 			  <br>
 			<div class="row">
 				<% if (lb.length > 2) { %>
 				<div class="col-sm-4">
-					
+
 
 					<div class="leaderboard-card leaderboard-card--first">
 						<div class="leaderboard-card__top">
 							<% if (lb[0].verified) { %>
-								<h3 class="text-center"><a style="color:white;" href="/<%= lb[0].name %>"><%= lb[0].name %></a> </h3>
+								<h3 class="text-center">#1 - <a style="color:white;" href="/<%= lb[0].name %>"><%= lb[0].name %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center"><%= lb[0].name %> </h3>
+							<h3 class="text-center">#1 - <%= lb[0].name %> </h3>
 							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
-								
+
 								<% if (type != "xp" && !type.startsWith("total")) { %>
-								
+
 								<h5 class="mb-0"><%= numberWithCommas(lb[0].coins) %> coins</h5>
 								<p class="text-muted mb-0">Kills: <%= lb[0].kills %>, Survived: <%= msToTime(lb[0].time) %>  </p>
 								<% } else { %>
@@ -253,22 +253,22 @@ img.circle-img.circle-img--small {
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
 							<% if (lb[1].verified) { %>
-								<h3 class="text-center"><a style="color:black;" href="/<%= lb[1].name %>"><%= lb[1].name %></a> </h3>
+								<h3 class="text-center">#2 - <a style="color:black;" href="/<%= lb[1].name %>"><%= lb[1].name %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center"><%= lb[1].name %> </h3>
+							<h3 class="text-center">#2 - <%= lb[1].name %> </h3>
 							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
 																<% if (type != "xp" && !type.startsWith("total")) { %>
-								
+
 																	<h5 class="mb-0"><%= numberWithCommas(lb[1].coins) %> coins</h5>
 																	<p class="text-muted mb-0">Kills: <%= lb[1].kills %>, Survived: <%= msToTime(lb[1].time) %>  </p>
 																	<% } else { %>
 																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[1].time):numberWithCommas(lb[1][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
 																	<% } %>
-									
+
 							</div>
 						</div>
 					</div>
@@ -277,27 +277,27 @@ img.circle-img.circle-img--small {
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
 							<% if (lb[2].verified) { %>
-								<h3 class="text-center"><a style="color:black;" href="/<%= lb[2].name %>"><%= lb[2].name %></a> </h3>
+								<h3 class="text-center">#3 - <a style="color:black;" href="/<%= lb[2].name %>"><%= lb[2].name %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center"><%= lb[2].name %> </h3>
+							<h3 class="text-center">#3 - <%= lb[2].name %> </h3>
 							<% } %>
 						</div>
-						
+
 						<div class="leaderboard-card__body">
 							<div class="text-center">
                                 <br><br>
-								
+
 																<% if (type != "xp" && !type.startsWith("total")) { %>
-								
+
 																	<h5 class="mb-0"><%= numberWithCommas(lb[2].coins) %> coins</h5>
 																	<p class="text-muted mb-0">Kills: <%= lb[2].kills %>, Survived: <%= msToTime(lb[2].time) %>  </p>
 																	<% } else { %>
 																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[2].time):numberWithCommas(lb[2][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
 																	<% } %>
-									
+
 							</div>
 						</div>
-						
+
 					</div>
 				</div>
 				<% } else { %>
@@ -310,6 +310,7 @@ img.circle-img.circle-img--small {
 			<table class="table">
 				<thead>
 					<tr>
+						<th>Rank</th>
 						<% if (type != "xp" && !type.startsWith("total")) { %>
 						<th>Name</th>
 						<th>Coins</th>
@@ -325,6 +326,7 @@ img.circle-img.circle-img--small {
                     <% for (var i = 3; i < lb.length; i++) { %>
 					<tr>
 						<a href="/<%= lb[i].name %>">
+							<td><b><%= i+1 %></b></td>
 						<td>
 							<div class="d-flex align-items-center">
 								<div class="user-info__basic">
@@ -347,20 +349,20 @@ img.circle-img.circle-img--small {
 						<td><%= msToTime(lb[i].time) %></td>
 						<% } else { %>
 							<td>
-						
+
 									<h4 class="mr-1"><%=type=="totaltime"?msToTime(lb[i][type == "xp"?"xp":type.slice(5)]):numberWithCommas(lb[i][type == "xp"?"xp":type.slice(5)])%></h4>
-							
+
 							</td>
 							<% } %>
-							
+
 					</tr>
                     <% } %>
-				
+
 				</tbody>
 			</table>
 		</div>
 	</section>
-	
+
 	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
 	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
 	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
