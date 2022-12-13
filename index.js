@@ -259,6 +259,9 @@ app.post("/api/buy", async (req, res) => {
 
   var acc;
   if (secret && secret != "undefined") {
+    if(!uuid.validate(secret)){
+      res.status(400).send("Invalid secret")
+    }
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
@@ -312,6 +315,9 @@ app.post("/api/equip", async (req, res) => {
 
   var acc;
   if (secret && secret != "undefined") {
+    if(!uuid.validate(secret)){
+      res.status(400).send("Invalid secret")
+    }
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
@@ -347,9 +353,14 @@ app.post("/api/changename", async (req,res) => {
   //check if secret valid
   var secret = req.body.secret;
   var newUsername = req.body.username;
+  if(!uuid.validate(secret)){
+    res.status(400).send("Invalid secret")
+  }
   var account = await sql`select username from accounts where secret=${secret}`;
   if(!account[0]) {
-    res.status(400).status(400).send({error: "Invalid secret"});
+    //fixed double status 
+    //res.status(400).status(400).send({error: "Invalid secret"});
+    res.status(400).send({error: "Invalid secret"})
     return;
   }
   var oldUsername = account[0].username;
@@ -578,7 +589,10 @@ app.post("/api/loginsecret", async (req, res) => {
 
   async function doit() {
     var secret = req.body.secret;
-
+    if(!uuid.validate(secret)){
+      res.send({error: "Invalid secret"})
+      return;
+    }
     var account = await sql`select * from accounts where secret=${secret}`;
 
     if (!account[0]) {
@@ -626,6 +640,9 @@ app.get("/shop", async (req, res) => {
   var secret = req.query.secret;
   var acc;
   if (secret != "undefined") {
+    if(!uuid.validate(secret)){
+      secret = "invalid"
+    }
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
@@ -838,6 +855,9 @@ io.on("connection", async (socket) => {
           name = name;
         }
       } else {
+        if(!uuid.validate(r)){
+          socket.send("ban", "Invalid secret, please try logging out and relogging in")
+        }
         var accounts = await sql`select * from accounts where secret=${r}`;
         if (!accounts[0]) {
           socket.send(
