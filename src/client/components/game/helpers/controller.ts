@@ -123,7 +123,9 @@ export default (scene: MainGame) => {
   scene.input.on(Phaser.Input.Events.POINTER_DOWN, () => {
     if (!sendData.mouseDown) sendData.changed = true;
     sendData.mouseDown = true;
-    if (myPlayer) myPlayer.setMouseDown(true);
+    if (myPlayer) {
+      myPlayer.setMouseDown(true);
+    }
   });
 
   // Send data to server if it has changed

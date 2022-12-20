@@ -1,5 +1,6 @@
 .errorbackground,
 .homebackground {
+  cursor: crosshair;
   background-color: rgb(128, 217, 128);
   border-radius: 10px;
   padding: 0px 20px 20px 20px;
@@ -8,13 +9,14 @@
 }
 
 .errorbackground {
+  cursor: crosshair;
   background-color: rgb(255, 128, 128);
   max-width: 60%;
   
   
 }
 .deathbox {
-  
+  cursor: crosshair;
   background-color: #90EE90;
   border-style:none;
   

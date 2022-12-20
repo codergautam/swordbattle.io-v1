@@ -137,7 +137,7 @@ export default class MainGame extends Phaser.Scene {
 
     this.players = new Map();
   }
-
+  
   start() {
     // Initialize grass
     this.grass = this.add.tileSprite((1280 / 2), (720 / 2), 1280, 720, 'grass')

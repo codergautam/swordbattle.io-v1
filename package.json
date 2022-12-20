@@ -4,7 +4,8 @@
   "description": "A multiplayer sword fighting game",
   "scripts": {
     "heroku-prebuild": "npm install --dev",
-    "build": "webpack --config webpack/prod.js ",
+    "buildprod": "webpack --config webpack/prod.js ",
+    "build": "webpack --config webpack/base.js ",
     "watch": "webpack --config webpack/base.js --watch --progress",
     "start-depricated": "webpack-dev-server --config webpack/base.js --open",
     "start": "tsc && node ./dist-server/server/server.js",

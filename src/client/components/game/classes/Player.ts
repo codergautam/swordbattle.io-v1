@@ -95,6 +95,7 @@ export default class Player extends Phaser.GameObjects.Container {
 
   setMouseDown(value: boolean) {
     if (this.mouseDownState !== value && (this.mouseDownValue === 0 || this.mouseDownValue === 50)) {
+      if(this.id == (this.scene as GameScene).ws.id && value) this.scene.sound.play('swing');
       this.mouseDownState = value;
     } else if (this.mouseDownValue !== 0 && this.mouseDownValue !== 50) {
       this.swingQueued = true;

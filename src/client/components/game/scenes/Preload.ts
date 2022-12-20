@@ -15,6 +15,9 @@ class Preload extends Phaser.Scene {
 
     this.load.image('sword', '/assets/images/sword.png');
     this.load.image('player', '/assets/images/player.png');
+    this.load.audio('swing', '/assets/sound/swing.mp3');
+    this.load.audio('opening', '/assets/sound/opening.mp3');
+    this.load.audio('damage', '/assets/sound/damage.mp3');
   }
 
   create() {
