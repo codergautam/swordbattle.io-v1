@@ -16,6 +16,8 @@ export default class MainGame extends Phaser.Scene {
   passedData: { name: string, keys: boolean, volume: number };
   players: Map<any, Player>;
   grass: Phaser.GameObjects.TileSprite;
+  controllerUpdate: () => void;
+  debugItems: any[];
   constructor() {
     super('maingame');
   }
@@ -24,6 +26,8 @@ export default class MainGame extends Phaser.Scene {
   }
 
   preload() {
+    // this.debugItems = [];
+
     this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
 
     this.connectingText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily: 'Hind Madurai, Arial' }).setOrigin(0.5, 0.5).setScrollFactor(0, 0).setScale(1);
@@ -44,13 +48,15 @@ export default class MainGame extends Phaser.Scene {
     this.ws.once('connect_error', (reason: string) => {
       this.events.emit('crash', reason);
     });
+    this.ws.once('connectionLost', (reason: string) => {
+      this.events.emit('crash', reason);
+    });
 
     this.ws.once('connected', () => {
       this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
     });
 
     this.ws.once(Packet.Type.ERROR.toString(), ([code]) => {
-      // console.log(PacketErrorTypes);
       const values = Object.values(PacketErrorTypes);
       const error = values.find((value: any) => value.code === code);
       this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
@@ -63,6 +69,7 @@ export default class MainGame extends Phaser.Scene {
       this.start();
 
       const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
+      player.setHealth(100);
       this.players.set(id, player);
 
       // Camera centered on player
@@ -77,10 +84,55 @@ export default class MainGame extends Phaser.Scene {
       player.move(pos);
     });
 
+    this.ws.on(Packet.Type.PLAYER_ROTATE.toString(), (d) => {
+      const { id, r } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setDirection(r);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_HEALTH.toString(), (d) => {
+      const { id, health } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setHealth(health);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_SWING.toString(), (d) => {
+      const { id, s } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.setMouseDown(s);
+    });
+
     this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
-      const { id, name, x, y, scale, angle } = d;
+      const { id, name, x, y, scale, angle, health } = d;
       const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+      player.setHealth(health);
       this.players.set(id, player);
+    });
+
+    this.ws.on(Packet.Type.PLAYER_REMOVE.toString(), (d) => {
+      const { id } = d;
+      const player = this.players.get(id);
+      if (!player) return;
+      player.destroy();
+      this.players.delete(id);
+    });
+
+    // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
+    //   this.debugItems.forEach((item: any) => item.destroy());
+    //   this.debugItems = [];
+    //   d.forEach((point) => {
+    //     console.log(point);
+    //     if (point.x) this.debugItems.push(this.add.circle(point.x, point.y, 5, 0xff0000, 1).setDepth(3));
+    //     else this.debugItems.push(this.add.circle(point[0], point[1], 5, 0xff0000, 1).setDepth(3));
+    //   });
+    // });
+
+    this.ws.on(Packet.Type.DIE.toString(), (kills,killer) => {
+      //this.events.emit('crash', 'You died.');
+      this.events.emit('death', 'You ded',kills,killer,0);
     });
 
     this.players = new Map();
@@ -121,5 +173,7 @@ export default class MainGame extends Phaser.Scene {
       ((this.cameras.main.scrollX / this.cameras.main.zoom) / this.grass.scale),
       ((this.cameras.main.scrollY / this.cameras.main.zoom) / this.grass.scale),
     );
+
+    this.controllerUpdate();
   }
 }

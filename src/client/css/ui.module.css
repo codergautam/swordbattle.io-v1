@@ -4,15 +4,28 @@
   border-radius: 10px;
   padding: 0px 20px 20px 20px;
   text-align: center;
+  
 }
 
 .errorbackground {
   background-color: rgb(255, 128, 128);
   max-width: 60%;
+  
+  
+}
+.deathbox {
+  
+  background-color: #90EE90;
+  border-style:none;
+  
+  
+  padding: 0px 20px 20px 20px;
+  max-width: 80%;
 }
 
 .errorbtn,
-.playbtn {
+.playbtn,
+.dedbtn{
   --primary-color: #4caf50;
   --primary-color-hover: #328f36;
   pointer-events: auto;
@@ -26,15 +39,21 @@
   border-radius: 10px;
   border: none;
   font-size: 160%;
+  
 }
 
 .errorbtn {
   --primary-color: #f44336;
   --primary-color-hover: #c62828;
 }
+.dedbtn {
+  --primary-color: #f44336;
+  --primary-color-hover: #c62828;
+}
 
 .errorbtn:hover,
-.playbtn:hover {
+.playbtn:hover,
+.dedbtn:hover{
   background-color: var(--primary-color-hover);
 }
 

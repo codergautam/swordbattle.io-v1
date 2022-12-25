@@ -6,6 +6,7 @@ Thumbs.db
 *.sublime-project
 *.sublime-workspace
 .breakpoints
+.replit
 
 # Vendors
 node_modules/
@@ -15,7 +16,6 @@ dist/
 dist-server/
 /npm-debug.log
 package-lock.json
-yarn.lock
 
 config.json
 .env

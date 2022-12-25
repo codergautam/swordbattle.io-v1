@@ -1,3 +1,4 @@
+import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import initWebsocket from '../helpers/initWebsocket';
 
@@ -34,11 +35,18 @@ export default class Ws extends Phaser.Events.EventEmitter {
         this.emit('connectionLost', err);
       };
     }).catch((err: string) => {
+      console.error(err);
       this.emit('connect_error', err);
     });
   }
   send(packet: Packet, json = false) {
     if (this.connected) {
+      // check if closing or closed
+      if (this.ws.readyState === 2 || this.ws.readyState === 3) {
+        this.emit('connectionLost', 'The connection to the server was closed unexpectedly.');
+        console.error('The connection to the server was closed unexpectedly.');
+        return;
+      }
       this.ws.send(packet.toBinary(json));
     }
   }
