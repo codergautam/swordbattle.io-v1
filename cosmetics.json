@@ -5,7 +5,6 @@
             "displayName": "Default",
             "url": "/assets/images/player.png",
             "price": 0,
-            "description": "The default skin"
         },
         {
             "name": "neon",
@@ -292,7 +291,7 @@
             "displayName": "Cardboard",
             "url": "/assets/images/cardboardPlayer.png",
             "price": 80000,
-            "description": "Pacakge and keep your coins safe"
+            "description": "Package and keep your coins safe"
         },
         {
             "name": "cactus",
