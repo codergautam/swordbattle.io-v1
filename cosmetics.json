@@ -822,9 +822,11 @@
             "name": "acol",
             "displayName": "Acol",
             "url": "/assets/images/acolPlayer.png",
-            "price": 1000000000,
-            "description": "I shall grind!!"
-        },
+            "price": 10000000000
+           "description": "I shall grind!"
+      
+        }
+
         
     ]
 }
