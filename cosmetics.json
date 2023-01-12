@@ -812,19 +812,19 @@
             "description": "You don't stand a chance-"
         },
         {
-            "name": "acol",
-            "displayName": "Acol",
-            "url": "/assets/images/acolPlayer.png",
-            "price": 45000000,
-            "description": "I shall grind!"
-        },
-        {
             "name": "dragon",
             "displayName": "Dragon",
             "url": "/assets/images/dragonPlayer.png",
             "price": 50000000,
             "description": "The king of the skies... and swords."
-        }
-
+        },
+         {
+            "name": "acol",
+            "displayName": "Acol",
+            "url": "/assets/images/acolPlayer.png",
+            "price": 1000000000,
+            "description": "I shall grind!!"
+        },
+        
     ]
 }
