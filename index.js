@@ -338,8 +338,8 @@ app.post("/api/equip", async (req, res) => {
   }
 });
 
-app.post("/ap/changepassword", async (req,res) => {
-  if(typeof req.body !== "object" || typeof req.body.secret !== "string" || typeof req.body.oldPass !== "string" || typeof req.body.newPass) {
+app.post("/api/changepassword", async (req,res) => {
+  if(typeof req.body !== "object" || typeof req.body.secret !== "string" || typeof req.body.oldPass !== "string" || typeof req.body.newPass !== "string") {
     res.status(400).send({error: "Missing fields"});
 		return;
   }
@@ -354,7 +354,7 @@ app.post("/ap/changepassword", async (req,res) => {
     return;
   };
 
-  oldPasshash = acccount[0].password;
+  oldPassHash = account[0].password;
   match = await bcrypt.compare(req.body.oldPass, oldPassHash);
   if (!match){
     res.send({error: "Invalid password"});
