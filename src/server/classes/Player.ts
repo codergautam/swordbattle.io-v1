@@ -9,6 +9,7 @@ import getRandomInt from '../helpers/getRandomInt';
 import Room from './Room';
 import WsRoom from './WsRoom';
 import roomlist from '../helpers/roomlist';
+import Coin from './Coin'
 import movePointAtAngle from '../helpers/movePointAtAngle';
 
 export default class Player {
@@ -29,8 +30,9 @@ export default class Player {
   roomId: string | number | undefined;
   health: number;
   maxHealth: number;
-  kills = 0;
-  killer = "";
+  xp: number;
+  kills: number;
+  killer: string;
 
   constructor(name: any) {
     this.name = name;
@@ -49,10 +51,9 @@ export default class Player {
     this.speed = 15;
     this.health = 100;
     this.maxHealth = 100;
+    this.xp = 0;
     this.kills = 0;
-    this.killer = "";
-    
-
+    this.killer = '';
     this.lastSeenPlayers = new Set();
 
     this.updated = {
@@ -128,9 +129,16 @@ export default class Player {
     const rangeBounds = this.getRangeBounds(true);
     room.quadTree.retrieve(rangeBounds).forEach((playerObj: any) => {
       const player = room.getPlayer(playerObj.id) as Player;
-      if (player.id === this.id) return;
-      if (this.hittingPlayer(player)) {
-        player.takeHit(this);
+      if (player === undefined) {
+        const coin = room.getCoin(playerObj.id) as Coin;
+        if (coin.hittingPlayer(this)) {
+          this.collectCoin(coin);
+        }
+      } else {
+        if (player.id === this.id) return;
+        if (this.hittingPlayer(player)) {
+          player.takeHit(this);
+        }
       }
     });
   }
@@ -140,14 +148,18 @@ export default class Player {
     this.updated.health = true;
     player.dealKnockback(this);
     if (this.health <= 0) {
-      player.kills+=1;
-      this.killer=player.name;
+      player.increaseKillCounter();
+      this.killer = player.name;
       this.die();
     }
   }
+
+  increaseKillCounter() {
+    this.kills += 1;
+  }
+
   die() {
-    
-    this.ws.send(new Packet(Packet.Type.DIE, [this.kills,this.killer]).toBinary(true));
+    this.ws.send(new Packet(Packet.Type.DIE, [this.kills, this.killer]).toBinary(true));
     this.room.removePlayer(this.id);
   }
 
@@ -263,8 +275,9 @@ export default class Player {
       this.updated.pos = true;
 
       const room = this.room as Room;
-      room.quadTree.retrieve(this.getRangeBounds(true)).forEach((playerObj: any) => {
-        const player = room.getPlayer(playerObj.id) as Player;
+      room.quadTree.retrieve(this.getRangeBounds(true)).forEach((playerObj) => {
+        const player = room.getPlayer((playerObj as any).id) as Player;
+        if (player === undefined) return;
         if (player.id === this.id) return;
         // eslint-disable-next-line max-len
         const cc = (p1x: number, p1y: number, r1: any, p2x: number, p2y: number, r2: any) => ((r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2);
@@ -291,6 +304,7 @@ export default class Player {
     const { quadTree } = room;
     if (!quadTree) return;
     const newSeenPlayers = new Set();
+    const newSeenCoins = new Set();
     const candidates = quadTree.retrieve(this.getRangeBounds());
 
     candidates.forEach((elem: any) => {
@@ -323,7 +337,19 @@ export default class Player {
       }
       newSeenPlayers.add(player.id);
     });
-
+    
+    candidates.forEach((elem: any) => {
+      const coin = room.getCoin(elem.id);
+      
+      if (!coin || !coin.isInRangeWith(this)) return;
+      
+      this.ws.send(new Packet(Packet.Type.COIN, { id: coin.id, position: coin.pos }).toBinary(true));
+      console.log("sent coin thingy...");
+      if (coin.hittingPlayer(this)) {
+        this.ws.send(new Packet(Packet.Type.COIN_COLLECT, { id:coin.id }).toBinary(true));
+      }
+    });
+    
     this.lastSeenPlayers.forEach((id: any) => {
       if (!newSeenPlayers.has(id)) {
         this.lastSeenPlayers.delete(id);
@@ -332,5 +358,12 @@ export default class Player {
     });
 
     this.lastSeenPlayers = newSeenPlayers;
+  }
+  
+  collectCoin(coin: any) {
+    const room = this.room as Room;
+    
+    this.xp += coin.value;
+    room.removeCoin(coin.id);
   }
 }

@@ -3,6 +3,7 @@ import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
 import Player from '../classes/Player';
+import Coin from '../classes/Coin'
 import Ws from '../classes/Ws';
 import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
@@ -134,6 +135,14 @@ export default class MainGame extends Phaser.Scene {
       //this.events.emit('crash', 'You died.');
       this.events.emit('death', 'You ded',kills,killer,0);
     });
+    
+    this.ws.on(Packet.Type.COIN.toString(), (d) => {
+      alert("COIN!!!!!!");
+    })
+    
+    this.ws.on(Packet.Type.COIN_COLLECT.toString(), () => {
+      // Coin collection event
+    })
 
     this.players = new Map();
   }
