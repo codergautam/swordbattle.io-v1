@@ -1,4 +1,5 @@
 import Quadtree from '@timohausmann/quadtree-js';
+import intersects from 'intersects';
 import clamp from '../../shared/clamp';
 import Evolutions from '../../shared/Evolutions';
 import Levels from '../../shared/Levels';
@@ -9,6 +10,7 @@ import Room from './Room';
 import WsRoom from './WsRoom';
 import roomlist from '../helpers/roomlist';
 import Coin from './Coin'
+import movePointAtAngle from '../helpers/movePointAtAngle';
 
 export default class Player {
   name: string;
@@ -29,6 +31,8 @@ export default class Player {
   health: number;
   maxHealth: number;
   xp: number;
+  kills: number;
+  killer: string;
 
   constructor(name: any) {
     this.name = name;
@@ -44,11 +48,13 @@ export default class Player {
     this.evolution = Evolutions.DEFAULT;
     this.swinging = false;
     this.swordThrown = false;
-    this.speed = 20;
+    this.speed = 15;
     this.health = 100;
     this.maxHealth = 100;
     this.xp = 0;
 
+    this.kills = 0;
+    this.killer = '';
     this.lastSeenPlayers = new Set();
 
     this.updated = {
@@ -141,32 +147,69 @@ export default class Player {
   takeHit(player: Player) {
     this.health -= player.damage;
     this.updated.health = true;
+    player.dealKnockback(this);
     if (this.health <= 0) {
+      player.increaseKillCounter();
+      this.killer = player.name;
       this.die();
     }
   }
+
+  increaseKillCounter() {
+    this.kills += 1;
+  }
+
   die() {
-    this.ws.send(new Packet(Packet.Type.DIE, []).toBinary(false));
+    this.ws.send(new Packet(Packet.Type.DIE, [this.kills, this.killer]).toBinary(true));
     this.room.removePlayer(this.id);
   }
 
+  calcSwordAngle() {
+    return (this.angle * 180) / Math.PI + 45;
+  }
+
   hittingPlayer(player: Player) {
-    // Check if distance is less than radius
-    const distance = Math.sqrt(
-      (this.pos.x - player.pos.x) ** 2 + (this.pos.y - player.pos.y) ** 2,
-    );
-    if (distance < (this.radius + player.radius) * 0.66) {
-      // Check if facing player
-      const angle = Math.atan2(
-        player.pos.y - this.pos.y,
-        player.pos.x - this.pos.x,
-      );
-      const angleDiff = Math.abs(angle - this.angle);
-      if (angleDiff < Math.PI / 3) {
-        return true;
-      }
+    const deep = 0;
+    const angles = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30];
+    // const pts = [];
+
+    for (const increment of angles) {
+      let angle = this.calcSwordAngle();
+
+      angle -= increment;
+
+      const sword = { x: 0, y: 0 };
+      const factor = (100 / (this.scale * 100)) * 1.5;
+      sword.x = this.pos.x + ((this.radius / factor) * Math.cos((angle * Math.PI) / 180));
+      sword.y = this.pos.y + ((this.radius / factor) * Math.sin((angle * Math.PI) / 180));
+
+      const tip = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius) * 0.2);
+      const base = movePointAtAngle([sword.x, sword.y], (((angle + 45) * Math.PI) / 180), (this.radius / 2) * 1.7);
+
+      // get the values needed for line-circle-collison
+      // pts.push(tip, base);
+
+      const radius = player.radius * player.scale * 2;
+
+      // check if enemy and player colliding
+      if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
     }
+    // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
     return false;
+  }
+
+  dealKnockback(player: Player) {
+    const minKb = 10;
+    const maxKb = 500;
+    // calculate kb by my scale and their scale
+    let kb = ((this.scale) / (player.scale)) * 100;
+    kb = clamp(kb, minKb, maxKb);
+    const x = Math.cos(this.angle) * kb;
+    const y = Math.sin(this.angle) * kb;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.x += x;
+    // eslint-disable-next-line no-param-reassign
+    player.pos.y += y;
   }
 
   getMovementInfo() {

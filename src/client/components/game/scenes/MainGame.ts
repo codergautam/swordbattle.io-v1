@@ -18,6 +18,7 @@ export default class MainGame extends Phaser.Scene {
   players: Map<any, Player>;
   grass: Phaser.GameObjects.TileSprite;
   controllerUpdate: () => void;
+  debugItems: any[];
   constructor() {
     super('maingame');
   }
@@ -26,6 +27,8 @@ export default class MainGame extends Phaser.Scene {
   }
 
   preload() {
+    // this.debugItems = [];
+
     this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
 
     this.connectingText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily: 'Hind Madurai, Arial' }).setOrigin(0.5, 0.5).setScrollFactor(0, 0).setScale(1);
@@ -118,8 +121,19 @@ export default class MainGame extends Phaser.Scene {
       this.players.delete(id);
     });
 
-    this.ws.on(Packet.Type.DIE.toString(), () => {
-      this.events.emit('crash', 'You died.');
+    // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
+    //   this.debugItems.forEach((item: any) => item.destroy());
+    //   this.debugItems = [];
+    //   d.forEach((point) => {
+    //     console.log(point);
+    //     if (point.x) this.debugItems.push(this.add.circle(point.x, point.y, 5, 0xff0000, 1).setDepth(3));
+    //     else this.debugItems.push(this.add.circle(point[0], point[1], 5, 0xff0000, 1).setDepth(3));
+    //   });
+    // });
+
+    this.ws.on(Packet.Type.DIE.toString(), (kills,killer) => {
+      //this.events.emit('crash', 'You died.');
+      this.events.emit('death', 'You ded',kills,killer,0);
     });
     
     this.ws.on(Packet.Type.COIN.toString(), (d) => {
