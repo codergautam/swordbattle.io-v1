@@ -52,7 +52,6 @@ export default class Player {
     this.health = 100;
     this.maxHealth = 100;
     this.xp = 0;
-
     this.kills = 0;
     this.killer = '';
     this.lastSeenPlayers = new Set();
