@@ -50,6 +50,8 @@ export default class Packet {
       PLAYER_REMOVE: 9,
       PLAYER_SWING: 11,
       DIE: 69,
+      COIN: 100,
+      COIN_COLLECT: 101,
     };
   }
 

@@ -4,12 +4,15 @@ import constants from '../helpers/constants';
 import idGen from '../helpers/idgen';
 import Player from './Player';
 import WsRoom from './WsRoom';
+import Coin from "./Coin"
 
 export default class Room {
   id: string | number;
   ws: any;
   players: Map<any, Player>;
   maxPlayers: any;
+  coins: Map<any, Coin>;
+  maxCoins: number;
   quadTree: QuadTree;
   lastTick: any;
 
@@ -20,6 +23,12 @@ export default class Room {
     this.ws = new WsRoom(this.id);
     this.players = new Map();
     this.maxPlayers = 4;
+    this.coins = new Map();
+    this.maxCoins = constants.max_coins;
+    
+    for (let i = 0; i < this.maxCoins; i++) {
+      this.coins.set(String(i), new Coin(String(i)));
+    };
 
     // Initialize quadtree for optimization and collision detection
     const start = -1 * (constants.map / 2);
@@ -42,6 +51,9 @@ export default class Room {
     this.quadTree.clear();
     this.players.forEach((player: any) => {
       this.quadTree.insert(player.getQuadTreeFormat());
+    });
+    this.coins.forEach((coin: any) => {
+      this.quadTree.insert(coin.getQuadTreeFormat());
     });
   }
 
@@ -68,9 +80,18 @@ export default class Room {
       }
     });
   }
-
+  
+  removeCoin(coinId: any) {
+    this.coins.delete(coinId);
+    console.log("collected coin!")
+  }
+  
   getPlayer(playerId: any) {
     return this.players.get(playerId);
+  }
+  
+  getCoin(coinId: any) {
+    return this.coins.get(coinId);
   }
 
   tick() {
@@ -78,7 +99,11 @@ export default class Room {
     const delta = now - this.lastTick;
     this.lastTick = now;
     this.refreshQuadTree();
-
+    
+    for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
+      this.coins.set(String(i), new Coin(String(i)));
+    };
+    
     // Iterate over all players in map
     this.players.forEach((player: Player) => {
       player.moveUpdate(delta);
