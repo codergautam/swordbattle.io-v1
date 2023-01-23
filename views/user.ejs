@@ -139,6 +139,14 @@ if(recent) {
     ></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
+      function decodeHTMLEntities(text) {
+        let textArea = document.createElement('textarea');
+        textArea.innerHTML = text;
+        res=textArea.value;
+        textArea.remove()
+        return res;
+      }
+      user = JSON.parse(decodeHTMLEntities("<%= JSON.stringify(user) %>"))
       function updateQueryStringParameter(uri, key, value) {
         var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
         var separator = uri.indexOf("?") !== -1 ? "&" : "?";
