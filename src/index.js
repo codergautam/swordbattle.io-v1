@@ -82,7 +82,7 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 300000;
+var adDelay = 450000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
 });
