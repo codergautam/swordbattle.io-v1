@@ -20,7 +20,8 @@ class AiPlayer extends Player {
         this.mousePos.viewport.height = 1000;
         this.chaseTime = 0;
         this.movementMode = "mouse";
-        
+        validSkins = ['player', 'yinyang', 'neon', 'sponge', 'vortex', 'bubble', 'bullseye', 'fox', 'spring']
+        this.skin = validSkins[Math.floor(Math.random()* validSkins.length)]
     }
     tick(coins, io, levels, chests) {
       if(PlayerList.deadPlayers.includes(this.id)) {
