@@ -1,2 +1,6 @@
 language = "nodejs"
 run = "npm start"
+
+[deployment]
+run = ["sh", "-c", "node ."]
+build = ["sh", "-c", "npm run prod"]

@@ -493,7 +493,7 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://06039e4d-eccc-4c28-b230-52e9f704012c.id.repl.co/" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://9d5cb7f4-d4fd-4b04-9e64-f743099eaa0d.id.repl.co" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
