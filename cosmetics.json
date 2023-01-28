@@ -8,6 +8,14 @@
             "description": "The default skin"
         },
         {
+            "name": "anniversary",
+            "displayName": "Anniversary",
+            "url": "/assets/images/anniversaryPlayer.png",
+            "price": 0,
+            "original": 36500000,
+            "description": "LIMITED TIME ONLY! Celebrate the 1 year anniversary of the game!"
+        },
+        {
             "name": "yinyang",
             "displayName": "Yin Yang",
             "url": "/assets/images/yinyangPlayer.png",
