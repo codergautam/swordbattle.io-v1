@@ -1,3 +1,5 @@
+import { Buffer } from 'buffer';
+
 export default class Packet {
   type: any;
   data: any;
@@ -5,6 +7,7 @@ export default class Packet {
   constructor(type: any, data: any) {
     this.type = type;
     this.data = data;
+    if(typeof window == "object" && !window.Buffer) window.Buffer = Buffer;
   }
 
   toJSON() {
