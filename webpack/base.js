@@ -2,7 +2,6 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
-const { BundleAnalyzerPlugin } = require('webpack-bundle-analyzer');
 
 module.exports = {
   mode: 'development',
@@ -31,7 +30,7 @@ module.exports = {
       },
       {
         test: /\.(css)$/,
-        loaders: ['style-loader', 'css-loader'],
+        use: ['style-loader', 'css-loader'],
       },
       {
         test: /\.(woff|woff2|ttf|eot)$/,
