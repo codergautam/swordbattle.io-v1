@@ -1785,6 +1785,8 @@ try {
 		var sKey = this.input.keyboard.addKey("S", false);
 		var dKey = this.input.keyboard.addKey("D",false);
 		var cKey = this.input.keyboard.addKey("C", false);
+		var fKey = this.input.keyboard.addKey("F", false);
+
 
 		try {
 			this.key = this.mobile && this.joyStick ?  this.joyStick.createCursorKeys() : this.cursors;
@@ -1806,6 +1808,10 @@ try {
 			}
 			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
 				this.socket.send("throw", []);
+			}
+
+			if(fKey.isDown && this.abilityButton && this.abilityButton.visible) {
+				this.socket.send("ability", []);
 			}
 
 			this.socket.send("move", controller);
