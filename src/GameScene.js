@@ -1785,7 +1785,7 @@ try {
 		var sKey = this.input.keyboard.addKey("S", false);
 		var dKey = this.input.keyboard.addKey("D",false);
 		var cKey = this.input.keyboard.addKey("C", false);
-		var fKey = this.input.keyboard.addKey("F", false);
+		var gKey = this.input.keyboard.addKey("G", false);
 
 
 		try {
@@ -1810,7 +1810,7 @@ try {
 				this.socket.send("throw", []);
 			}
 
-			if(fKey.isDown && this.abilityButton && this.abilityButton.visible) {
+			if(gKey.isDown && this.abilityButton && this.abilityButton.visible && !this.chat.toggled) {
 				this.socket.send("ability", []);
 			}
 
