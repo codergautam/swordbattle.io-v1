@@ -3,11 +3,12 @@ import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
 import Player from '../classes/Player';
-import Coin from '../classes/Coin'
+// import Coin from '../classes/Coin'
 import Ws from '../classes/Ws';
 import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
 import levels from '../../../../shared/Levels';
+import Leaderboard from '../classes/Leaderboard';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -19,6 +20,8 @@ export default class MainGame extends Phaser.Scene {
   grass: Phaser.GameObjects.TileSprite;
   controllerUpdate: () => void;
   debugItems: any[];
+  leaderboard: Leaderboard;
+  UICam: Phaser.Cameras.Scene2D.Camera;
   constructor() {
     super('maingame');
   }
@@ -30,6 +33,7 @@ export default class MainGame extends Phaser.Scene {
     // this.debugItems = [];
 
     this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
+    this.UICam = this.cameras.add(0, 0).setScroll(0, 0).setZoom(1).setOrigin(0, 0);
 
     this.connectingText = this.add.text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily: 'Hind Madurai, Arial' }).setOrigin(0.5, 0.5).setScrollFactor(0, 0).setScale(1);
 
@@ -109,6 +113,7 @@ export default class MainGame extends Phaser.Scene {
     this.ws.on(Packet.Type.PLAYER_ADD.toString(), (d) => {
       const { id, name, x, y, scale, angle, health } = d;
       const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+      this.UICam.ignore(player);
       player.setHealth(health);
       this.players.set(id, player);
     });
@@ -135,11 +140,11 @@ export default class MainGame extends Phaser.Scene {
       //this.events.emit('crash', 'You died.');
       this.events.emit('death', 'You ded',kills,killer,0);
     });
-    
+
     this.ws.on(Packet.Type.COIN.toString(), (d) => {
-      alert("COIN!!!!!!");
+      // console.log(d);
     })
-    
+
     this.ws.on(Packet.Type.COIN_COLLECT.toString(), () => {
       // Coin collection event
     })
@@ -154,6 +159,11 @@ export default class MainGame extends Phaser.Scene {
       .setScale(0.25, 0.25)
       .setScrollFactor(0, 0)
       .setDepth(1);
+
+      this.leaderboard = new Leaderboard(this, 0, 0).setDepth(999);
+      this.cameras.main.ignore([this.leaderboard]);
+      this.UICam.ignore([this.grass])
+
   }
 
   get myPlayer() {

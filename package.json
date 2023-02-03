@@ -44,6 +44,7 @@
     "html-webpack-plugin": "^5.5.0",
     "intersects": "^2.7.2",
     "phaser": "^3.55.2",
+    "phaser3-rex-plugins": "^1.1.80",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "react-router-dom": "^6.8.0",
