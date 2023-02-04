@@ -1,155 +1,177 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable prefer-const */
+import { StreamWriter } from '../../../../shared/lib/BitStream';
 import Packet from '../../../../shared/Packet';
 import Player from '../classes/Player';
+import { createPlayerMovePacket } from '../packets/packet';
 import MainGame from '../scenes/MainGame';
-import angleFromKeys from './angleFromKeys';
+// import angleFromKeys from './angleFromKeys';
+import getDirectionFromKeys from './angleFromKeys';
 
 interface keyObj {
-  up: Phaser.Input.Keyboard.Key;
-  down: Phaser.Input.Keyboard.Key;
-  left: Phaser.Input.Keyboard.Key;
-  right: Phaser.Input.Keyboard.Key;
+    up: Phaser.Input.Keyboard.Key;
+    down: Phaser.Input.Keyboard.Key;
+    left: Phaser.Input.Keyboard.Key;
+    right: Phaser.Input.Keyboard.Key;
+}
+interface SendData {
+    changed: boolean;
+    angle: number;
+    force: number;
+    move: number;
+    mouseDown: boolean;
 }
 
 const setMouseRot = (scene: MainGame, myPlayer: Player | undefined) => {
-  if (!myPlayer) return 0;
-  const mousePos = scene.input.mousePointer;
-  const angle = (Math.atan2(mousePos.y - (720 / 2), mousePos.x - (1280 / 2)) * 180) / Math.PI;
-  myPlayer.setDirection(angle);
-  return angle;
+    if (!myPlayer) return 0;
+    const mousePos = scene.input.mousePointer;
+    const angle = (Math.atan2(mousePos.y - 720 / 2, mousePos.x - 1280 / 2) * 180) / Math.PI;
+    myPlayer.setDirection(angle);
+    return angle;
 };
 let lastPacketSend = 0;
 export default (scene: MainGame) => {
-  // Get required stuff from scene
-  const { myPlayer, ws, passedData } = scene;
-  const { keys } = passedData;
+    // Get required stuff from scene
+    const { myPlayer, ws, passedData } = scene;
+    const { keys } = passedData;
 
-  // Set the rotation of the player to the mouse
-  setMouseRot(scene, myPlayer);
+    // Set the rotation of the player to the mouse
+    setMouseRot(scene, myPlayer);
 
-  // Initialize stuff to send
-  let sendData: any;
-  sendData = { changed: false };
+    // Initialize stuff to send
+    let sendData: SendData = { changed: false, angle: 0, force: 0, move: 0, mouseDown: false };
 
-  // Last direction
-  let lastDirection = 0;
+    // Last direction
+    let lastDirection = 0;
 
-  // Event for when mouse is moved
-  scene.input.on(Phaser.Input.Events.POINTER_MOVE, () => {
-    const angle = Number(Phaser.Math.DegToRad(setMouseRot(scene, myPlayer)).toPrecision(3));
-    if (angle !== lastDirection) {
-      sendData.changed = true;
-      sendData.angle = angle;
-      lastDirection = angle;
-    }
-  });
-
-  const { KeyCodes } = Phaser.Input.Keyboard;
-  const cursors = (scene.input.keyboard.addKeys({
-    up: KeyCodes.UP,
-    down: KeyCodes.DOWN,
-    left: KeyCodes.LEFT,
-    right: KeyCodes.RIGHT,
-    enter: KeyCodes.ENTER,
-    esc: KeyCodes.ESC,
-  }, false) as keyObj);
-
-  const key = cursors;
-
-  if (keys) {
-    const wKey = scene.input.keyboard.addKey('W', false);
-    const aKey = scene.input.keyboard.addKey('A', false);
-    const sKey = scene.input.keyboard.addKey('S', false);
-    const dKey = scene.input.keyboard.addKey('D', false);
-    let stoppedMoving = false;
-    const keyChange = () => {
-      let controller = { up: false, down: false, left: false, right: false };
-
-      try {
-        if (key.up.isDown || wKey.isDown) controller.up = true;
-        if (key.down.isDown || sKey.isDown) controller.down = true;
-        if (key.left.isDown || aKey.isDown) controller.left = true;
-        if (key.right.isDown || dKey.isDown) controller.right = true;
-
-        // Use controller to calculate angle
-        const angle = angleFromKeys(controller);
-
-        if (!sendData.move || sendData.move !== angle) {
-          sendData.move = angle;
-          // check if no keys are pressed
-          if (!controller.up && !controller.down && !controller.left && !controller.right) {
-            sendData.force = 0;
-            stoppedMoving = true;
-          } else if (stoppedMoving) {
-            sendData.force = 1;
-            stoppedMoving = false;
-          }
-
-          if (!('force' in sendData)) sendData.force = 1;
-          sendData.changed = true;
+    // Event for when mouse is moved
+    scene.input.on(Phaser.Input.Events.POINTER_MOVE, () => {
+        const angle = Number(Phaser.Math.DegToRad(setMouseRot(scene, myPlayer)).toPrecision(3));
+        if (angle !== lastDirection) {
+            sendData.changed = true;
+            sendData.angle = angle;
+            lastDirection = angle;
         }
-      } catch (e) {
-        console.log(e);
-      }
-    };
+    });
 
-    aKey.on('down', keyChange);
-    sKey.on('down', keyChange);
-    wKey.on('down', keyChange);
-    dKey.on('down', keyChange);
-    key.up.on('down', keyChange);
-    key.down.on('down', keyChange);
-    key.left.on('down', keyChange);
-    key.right.on('down', keyChange);
+    const { KeyCodes } = Phaser.Input.Keyboard;
+    const cursors = scene.input.keyboard.addKeys(
+        {
+            up: KeyCodes.UP,
+            down: KeyCodes.DOWN,
+            left: KeyCodes.LEFT,
+            right: KeyCodes.RIGHT,
+            enter: KeyCodes.ENTER,
+            esc: KeyCodes.ESC,
+        },
+        false
+    ) as keyObj;
 
-    // up
-    aKey.on('up', keyChange);
-    sKey.on('up', keyChange);
-    wKey.on('up', keyChange);
-    dKey.on('up', keyChange);
-    key.up.on('up', keyChange);
-    key.down.on('up', keyChange);
-    key.left.on('up', keyChange);
-    key.right.on('up', keyChange);
-  }
+    const key = cursors;
 
-  // Mouse down and up
-  scene.input.on(Phaser.Input.Events.POINTER_UP, () => {
-    sendData.changed = true;
-    sendData.mouseDown = false;
-    if (myPlayer) myPlayer.setMouseDown(false);
-  });
-  scene.input.on(Phaser.Input.Events.POINTER_DOWN, () => {
-    if (!sendData.mouseDown) sendData.changed = true;
-    sendData.mouseDown = true;
-    if (myPlayer) myPlayer.setMouseDown(true);
-  });
+    if (keys) {
+        const wKey = scene.input.keyboard.addKey('W', false);
+        const aKey = scene.input.keyboard.addKey('A', false);
+        const sKey = scene.input.keyboard.addKey('S', false);
+        const dKey = scene.input.keyboard.addKey('D', false);
+        let stoppedMoving = false;
+        const keyChange = () => {
+            let controller = { up: false, down: false, left: false, right: false };
 
-  // Send data to server if it has changed
-  // eslint-disable-next-line no-param-reassign
-  scene.controllerUpdate = () => {
-    if (sendData.changed) {
-      let toSend: {
-        md?: boolean;
-        d?: number;
-        m?: number;
-        f?: number;
-      };
-      toSend = {};
+            try {
+                if (key.up.isDown || wKey.isDown) controller.up = true;
+                if (key.down.isDown || sKey.isDown) controller.down = true;
+                if (key.left.isDown || aKey.isDown) controller.left = true;
+                if (key.right.isDown || dKey.isDown) controller.right = true;
 
-      if (sendData.angle !== undefined) toSend.d = sendData.angle;
-      if (sendData.force !== undefined) toSend.f = sendData.force;
-      if ((sendData.force !== undefined && toSend.f !== 0) || (sendData.force === undefined)) {
-        if (sendData.move !== undefined) toSend.m = sendData.move;
-      }
-      if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
+                // Use controller to calculate angle
+                const direction = getDirectionFromKeys(controller);
 
-      if ((toSend.f === undefined) && (toSend.m === undefined) && (Date.now() - lastPacketSend < 1000 / 10)) return;
-      const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
-      ws.send(packet, true);
-      lastPacketSend = Date.now();
-      sendData = { changed: false };
+                if (!sendData.move || sendData.move !== direction) {
+                    sendData.move = direction;
+                    // check if no keys are pressed
+                    if (!controller.up && !controller.down && !controller.left && !controller.right) {
+                        sendData.force = 0;
+                        stoppedMoving = true;
+                    } else if (stoppedMoving) {
+                        sendData.force = 1;
+                        stoppedMoving = false;
+                    }
+
+                    // if (!('force' in sendData)) sendData.force = 1;
+                    sendData.changed = true;
+                }
+            } catch (e) {
+                console.log(e);
+            }
+        };
+
+        aKey.on('down', keyChange);
+        sKey.on('down', keyChange);
+        wKey.on('down', keyChange);
+        dKey.on('down', keyChange);
+        key.up.on('down', keyChange);
+        key.down.on('down', keyChange);
+        key.left.on('down', keyChange);
+        key.right.on('down', keyChange);
+
+        // up
+        aKey.on('up', keyChange);
+        sKey.on('up', keyChange);
+        wKey.on('up', keyChange);
+        dKey.on('up', keyChange);
+        key.up.on('up', keyChange);
+        key.down.on('up', keyChange);
+        key.left.on('up', keyChange);
+        key.right.on('up', keyChange);
     }
-  };
+
+    // Mouse down and up
+    scene.input.on(Phaser.Input.Events.POINTER_UP, () => {
+        sendData.changed = true;
+        sendData.mouseDown = false;
+        if (myPlayer) myPlayer.setMouseDown(false);
+    });
+    scene.input.on(Phaser.Input.Events.POINTER_DOWN, () => {
+        if (!sendData.mouseDown) sendData.changed = true;
+        sendData.mouseDown = true;
+        if (myPlayer) myPlayer.setMouseDown(true);
+    });
+
+    // Send data to server if it has changed
+    // eslint-disable-next-line no-param-reassign
+    scene.controllerUpdate = () => {
+        if (sendData.changed) {
+            // let toSend: {
+            //     md?: boolean;
+            //     d?: number;
+            //     m?: number;
+            //     f?: number;
+            // };
+            // toSend = {};
+
+            // if (sendData.angle !== undefined) toSend.d = sendData.angle;
+            // if (sendData.force !== undefined) toSend.f = sendData.force;
+            // if ((sendData.force !== undefined && toSend.f !== 0) || sendData.force === undefined) {
+            //     if (sendData.move !== undefined) toSend.m = sendData.move;
+            // }
+            // if (sendData.mouseDown !== undefined) toSend.md = sendData.mouseDown;
+
+            // if (toSend.f === undefined && toSend.m === undefined && Date.now() - lastPacketSend < 1000 / 10) return;
+            if (Date.now() - lastPacketSend < 1000 / 10) return;
+
+            // const packet = new Packet(Packet.Type.PLAYER_MOVE, toSend);
+            // ws.send(packet, true);
+            /**
+             We will send all fields (angle, move direction, force, and mousedown) = 8 bytes 
+             We could send separate messages for each field but it seems overkill, since we would waste
+             some bytes on the packet type, and these fields change so often its probably best to send them all
+             */
+            createPlayerMovePacket(ws.streamWriter, sendData.angle, sendData.force, sendData.move, sendData.mouseDown);
+            ws.flushStream();
+
+            lastPacketSend = Date.now();
+            sendData.changed = false;
+        }
+    };
 };
