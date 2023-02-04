@@ -7,7 +7,7 @@
     "build": "webpack --config webpack/prod.js ",
     "watch": "webpack --config webpack/base.js --watch --progress",
     "start-depricated": "webpack-dev-server --config webpack/base.js --open",
-    "start": "tsc && node ./dist-server/server/server.js",
+    "start": "npx tsc && node ./dist-server/server/server.js",
     "fix": "prettier --write './src/client/**/*.js' && eslint --fix './src/client/**/*.js'",
     "style": "stylelint --fix './src/client/**/*.js'",
     "dev": "concurrently \"npm run watch\" \"npm run start\""
@@ -54,5 +54,8 @@
     "uWebSockets.js": "uNetworking/uWebSockets.js#v20.19.0",
     "webpack": "^5.75.0",
     "webpack-cli": "^5.0.1"
+  },
+  "devDependencies": {
+    "typescript": "^4.9.5"
   }
 }
