@@ -9,7 +9,8 @@
     "start-depricated": "webpack-dev-server --config webpack/base.js --open",
     "start": "tsc && node ./dist-server/server/server.js",
     "fix": "prettier --write './src/client/**/*.js' && eslint --fix './src/client/**/*.js'",
-    "style": "stylelint --fix './src/client/**/*.js'"
+    "style": "stylelint --fix './src/client/**/*.js'",
+    "dev": "concurrently \"npm run watch\" \"npm run start\""
   },
   "repository": {
     "type": "git",
@@ -40,6 +41,7 @@
     "babel-loader": "^9.1.2",
     "buffer": "^6.0.3",
     "clean-webpack-plugin": "^4.0.0",
+    "concurrently": "^7.6.0",
     "css-loader": "^6.7.3",
     "html-webpack-plugin": "^5.5.0",
     "intersects": "^2.7.2",
