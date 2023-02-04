@@ -1,0 +1,16 @@
+@import url('https://fonts.googleapis.com/css2?family=Hind+Madurai&display=swap');
+
+body {
+  margin: 0;
+  padding: 0;
+  font-family: 'Hind Madurai', sans-serif;
+  background-color: lightgreen;
+}
+canvas {
+  position: absolute;
+  top:0;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  margin:auto;
+}
