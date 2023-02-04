@@ -9,6 +9,7 @@ import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
 import levels from '../../../../shared/Levels';
 import { createJoinPacket } from '../packets/packet';
+import Leaderboard from '../classes/Leaderboard';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -20,6 +21,8 @@ export default class MainGame extends Phaser.Scene {
     grass: Phaser.GameObjects.TileSprite;
     controllerUpdate: () => void;
     debugItems: any[];
+  leaderboard: Leaderboard;
+  UICamera: Phaser.Cameras.Scene2D.Camera;
     constructor() {
         super('maingame');
     }
@@ -30,6 +33,7 @@ export default class MainGame extends Phaser.Scene {
     preload() {
         // this.debugItems = [];
 
+        this.UICamera = this.cameras.add(0, 0, this.game.canvas.width, this.game.canvas.height).setOrigin(0, 0).setScroll(0, 0);
         this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
 
         this.connectingText = this.add
@@ -79,6 +83,7 @@ export default class MainGame extends Phaser.Scene {
             const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
             player.setHealth(100);
             this.players.set(id, player);
+            this.UICamera.ignore(player);
 
             // Camera centered on player
             this.cameras.main.startFollow(player);
@@ -116,6 +121,7 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.Type.PLAYER_ADD.toString(), d => {
             const { id, name, x, y, scale, angle, health } = d;
             const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+            this.UICamera.ignore(player);
             player.setHealth(health);
             this.players.set(id, player);
         });
@@ -152,6 +158,9 @@ export default class MainGame extends Phaser.Scene {
         });
 
         this.players = new Map();
+        this.leaderboard = new Leaderboard(this, 0, 0);
+        this.cameras.main.ignore(this.leaderboard);
+
     }
 
     start() {
@@ -162,6 +171,8 @@ export default class MainGame extends Phaser.Scene {
             .setScale(0.25, 0.25)
             .setScrollFactor(0, 0)
             .setDepth(1);
+        this.UICamera.ignore([this.grass])
+
     }
 
     get myPlayer() {
