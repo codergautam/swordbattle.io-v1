@@ -10,6 +10,8 @@ import getServerUrl from '../helpers/getServerUrl';
 import levels from '../../../../shared/Levels';
 import { createJoinPacket } from '../packets/packet';
 import Leaderboard from '../classes/Leaderboard';
+import Border from '../classes/Border';
+import constants from '../../../../server/helpers/constants';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -23,6 +25,7 @@ export default class MainGame extends Phaser.Scene {
     debugItems: any[];
   leaderboard: Leaderboard;
   UICamera: Phaser.Cameras.Scene2D.Camera;
+  border: any;
     constructor() {
         super('maingame');
     }
@@ -35,6 +38,8 @@ export default class MainGame extends Phaser.Scene {
 
         this.UICamera = this.cameras.add(0, 0, this.game.canvas.width, this.game.canvas.height).setOrigin(0, 0).setScroll(0, 0);
         this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
+        this.border = new Border(this, 0, 0, constants.map.width, constants.map.height).setDepth(2);
+        this.UICamera.ignore(this.border);
 
         this.connectingText = this.add
             .text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily: 'Hind Madurai, Arial' })
@@ -185,6 +190,7 @@ export default class MainGame extends Phaser.Scene {
         if (this.connectingText.visible || !myPlayer) return;
         // Do game logic below
 
+        console.log(this.myPlayer?.x)
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
         this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
