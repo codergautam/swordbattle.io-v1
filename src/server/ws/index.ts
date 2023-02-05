@@ -6,6 +6,7 @@ import PacketErrorTypes from '../../shared/PacketErrorTypes';
 import roomList from '../helpers/roomlist';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 import constants from '../helpers/constants';
+import NanoTimer from "nanotimer";
 
 const mainRoom = new Room('main');
 (roomList as any).addRoom(mainRoom);
@@ -51,6 +52,5 @@ export default {
     },
 };
 
-setInterval(() => {
-    mainRoom.tick();
-}, 1000 / constants.expected_tps);
+const timer = new NanoTimer(false)
+timer.setInterval(() => mainRoom.tick(), '', Math.floor(1000 / constants.expected_tps) + 'm'); //m for ms
