@@ -80,3 +80,11 @@ export function writePlayerDiePacket(stream: StreamWriter, kills: number, killer
     stream.writeLEB128(kills);
     stream.writeString(killer);
 }
+
+export function writePlayerCoinPacket(stream: StreamWriter, id: string, x: number, y: number, radius: number) {
+    stream.writeU8(Packet.Type.COIN);
+    stream.writeString(id);
+    stream.writeF32(x);
+    stream.writeF32(y);
+    stream.writeF32(radius);
+}

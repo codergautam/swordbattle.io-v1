@@ -12,7 +12,7 @@ import DeathBox from './ui/DeathBox';
 
 export default class Game extends React.Component {
     game: Phaser.Game;
-    state: { activeScene: string; crashMessage: string | null; gameState: any };
+    state: { activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null };
     constructor(props: any) {
         super(props);
         this.state = {

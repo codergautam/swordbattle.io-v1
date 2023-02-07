@@ -6,7 +6,24 @@ import Player from './Player';
 import WsRoom from './WsRoom';
 import Coin from './Coin';
 import ObjectManager from '../../shared/lib/ObjectManager';
-import { writePlayerAddPacket, writePlayerJoinPacket } from '../packets/packet';
+import { writePlayerAddPacket, writePlayerCoinPacket, writePlayerJoinPacket } from '../packets/packet';
+
+function addMissingCoins(room: Room) {
+    for (let i = 0; i < room.maxCoins - room.coins.size; i++) {
+        let coin = new Coin(String(i));
+        room.coins.set(String(i), coin);
+
+        // Find players in range of coin
+        const candidates = room.quadTree.retrieve(coin.getRangeBounds());
+        candidates.forEach((candidate: any) => {
+                const candidatePlayer = room.players.get(candidate.id);
+                if (candidatePlayer && coin.isInRangeWith(candidatePlayer)) {
+                    // how do I send this to the client?
+                    // writePlayerCoinPacket(candidatePlayer.streamWriter, coin.id, coin.pos.x, coin.pos.y, coin.radius);
+                }
+        });
+    }
+}
 
 export default class Room {
     id: string | number;
@@ -29,10 +46,6 @@ export default class Room {
         this.coins = new Map();
         this.maxCoins = constants.max_coins;
 
-        for (let i = 0; i < this.maxCoins; i++) {
-            this.coins.set(String(i), new Coin(String(i)));
-        }
-
         // Initialize quadtree for optimization and collision detection
         /*
         We will set up the map from starting at 0,0 to map.width, map.height
@@ -47,6 +60,9 @@ export default class Room {
         });
 
         this.lastTick = Date.now();
+
+        addMissingCoins(this);
+
     }
 
     removePlayer(playerId: number) {
@@ -113,9 +129,7 @@ export default class Room {
         this.refreshQuadTree();
 
         // TODO: add coins
-        // for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
-        //     this.coins.set(String(i), new Coin(String(i)));
-        // }
+        addMissingCoins(this);
 
         // Iterate over all players in map
         this.players.array.forEach((player: Player) => {

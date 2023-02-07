@@ -303,8 +303,8 @@ export default class Player {
         this.pos.y += Math.sin(this.moveDir) * moveSpeed;
 
         // clamp this player to the world bounds
-        this.pos.x = clamp(this.pos.x, this.radius, constants.map.width - this.radius);
-        this.pos.y = clamp(this.pos.y, this.radius, constants.map.height - this.radius);
+        this.pos.x = clamp(this.pos.x, this.radius/2, constants.map.width - (this.radius/2));
+        this.pos.y = clamp(this.pos.y, this.radius/2, constants.map.height - (this.radius/2));
 
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
