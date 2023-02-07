@@ -155,7 +155,7 @@ export default class MainGame extends Phaser.Scene {
         });
 
         this.ws.on(Packet.Type.COIN.toString(), d => {
-            // alert("COIN!!!!!!");
+            console.log("coin", d);
         });
 
         this.ws.on(Packet.Type.COIN_COLLECT.toString(), () => {
@@ -190,7 +190,6 @@ export default class MainGame extends Phaser.Scene {
         if (this.connectingText.visible || !myPlayer) return;
         // Do game logic below
 
-        console.log(this.myPlayer?.x)
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
         this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
