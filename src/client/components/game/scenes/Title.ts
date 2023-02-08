@@ -41,6 +41,24 @@ class Title extends Phaser.Scene {
 
       this.scene.start('maingame', { name, keys: true, volume: 1 });
     });
+
+    this.events.on("settingsState", (opened) => {
+      if(opened) {
+        this.tweens.add({
+          targets: this.settingsBtn.button,
+          x: -1*this.settingsBtn.button.displayWidth,
+          duration: 250,
+          ease: 'Power2',
+        });
+      } else {
+        this.tweens.add({
+          targets: this.settingsBtn.button,
+          x: 0,
+          duration: 250,
+          ease: 'Power2',
+        });
+      }
+    })
   }
 }
 

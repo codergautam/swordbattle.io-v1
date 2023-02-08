@@ -3,15 +3,20 @@ import { Game } from 'phaser';
 import React from 'react';
 import styles from '../../../css/ui.module.css';
 import Title from '../scenes/Title';
+import 'animate.css';
 
-function close() {
+function close(setTransition) {
   const game = (window as any).game as Game;
   const scene = game.scene.keys.title as Title;
+  setTransition("animate__backOutRight");
+  setTimeout(() => {
   scene.events.emit('settingsBtnClicked');
+  }, 500);
 }
 
 export default function SettingsPage(props) {
   // check if localStorage is available
+  const [transition, setTransition] = React.useState("animate__backInLeft");
   let available = true;
   try {
     localStorage.setItem('test', 'test');
@@ -56,9 +61,10 @@ export default function SettingsPage(props) {
 
 
   return (
+    <div className={"animate__animated "+transition}>
     <div className={styles.settingsbackground}>
-      <button className={styles.modalCloseBtn} onClick={()=>close()}>X</button>
-      <h1 className={styles.titletext} style={{color: "white", marginBottom: 0, marginTop: "10px"}}>Settings</h1>
+      <button className={styles.modalCloseBtn} onClick={()=>close(setTransition)}>X</button>
+      <h1 className={styles.titletext} style={{color: "white", marginBottom: 0, marginTop: "5px"}}>Settings</h1>
       <label htmlFor="movement" style={{color: "white"}}>Movement mode:</label>&nbsp;
   <select name="movement" id="movement" value={settings.movementMode} onChange={(e) => setSettings({...settings, movementMode: e.target.value})}>
     <option value="mouse">Mouse Only</option>
@@ -82,6 +88,7 @@ export default function SettingsPage(props) {
     <option value="us2" id="us2">USA 2</option>
     <option value="eu1" id="eu1">Europe</option>
   </select>
+    </div>
     </div>
   );
 }

@@ -83,7 +83,7 @@ export default class Game extends React.Component {
                 }
                 if(scene.sys.settings.key === 'title') {
                     scene.events.on('settingsBtnClicked', () => {
-                        console.log('settingsBtnClicked');
+                        scene.events.emit('settingsState', !this.state.settingsOpen);
                         this.setState(prevState => Object.assign(prevState, { settingsOpen: !prevState.settingsOpen }));
                     });
                     scene.events.on('settingsChanged', (settings: object) => {
@@ -120,7 +120,7 @@ export default class Game extends React.Component {
                     height: crashMessage || dbox ? '100%' : activeScene === 'maingame' ? '0%' : '100%',
                 }}
             >
-                {activeScene === 'title' ? settingsOpen ? <SettingsPage settings={settings}/> : <TitleUI/> : null}
+                {activeScene === 'title' ? settingsOpen ? <SettingsPage settings={settings}/> : <TitleUI settingsOpen={settingsOpen} /> : null}
                 {crashMessage ? <ErrorModal message={crashMessage} /> : null}
                 {dbox? <DeathBox killer={deathKiller} kills={deathKills} coins={deathCoins} /> : null}
             </div>
