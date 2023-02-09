@@ -10,10 +10,15 @@ import '../../css/index.css';
 import ErrorModal from './ui/ErrorModal';
 import DeathBox from './ui/DeathBox';
 import SettingsPage from './ui/SettingsPage';
+import SignupUI from './ui/SignupUI';
+import LoginUI from './ui/LoginUI';
 
 export default class Game extends React.Component {
     game: Phaser.Game;
-    state: { activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any };
+    state: {
+        signupOpen: any;
+        loginOpen: any; activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any
+};
     constructor(props: any) {
         super(props);
         let storedSettings = null;
@@ -35,6 +40,8 @@ export default class Game extends React.Component {
             settingsOpen: false,
             deathKiller: null,
             settings: storedSettings,
+            signupOpen: false,
+            loginOpen: false,
         };
     }
 
@@ -91,6 +98,17 @@ export default class Game extends React.Component {
                         this.setState(prevState => Object.assign(prevState, { settings }));
                     });
 
+                    scene.events.on('loginBtnClicked', () => {
+                        console.log('loginBtnClicked');
+                        scene.events.emit('loginState', !this.state.loginOpen);
+                        this.setState(prevState => Object.assign(prevState, { loginOpen: !prevState.loginOpen }));
+                    });
+                    scene.events.on('signupBtnClicked', () => {
+                        console.log('signupBtnClicked');
+                        scene.events.emit('signupState', !this.state.signupOpen);
+                        this.setState(prevState => Object.assign(prevState, { signupOpen: !prevState.signupOpen }));
+                    });
+
                 }
                 scene.events.on('crash', (message: string) => {
                     this.setState(prevState => Object.assign(prevState, { crashMessage: message }));
@@ -107,7 +125,7 @@ export default class Game extends React.Component {
     }
 
     render() {
-        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen } = this.state;
+        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen, loginOpen, signupOpen } = this.state;
         return (
             <div
                 style={{
@@ -120,7 +138,12 @@ export default class Game extends React.Component {
                     height: crashMessage || dbox ? '100%' : activeScene === 'maingame' ? '0%' : '100%',
                 }}
             >
-                {activeScene === 'title' ? settingsOpen ? <SettingsPage settings={settings}/> : <TitleUI settingsOpen={settingsOpen} /> : null}
+                {activeScene === 'title' ?
+                settingsOpen ? <SettingsPage settings={settings}/> :
+                loginOpen ? <LoginUI loginOpen={loginOpen} /> :
+                signupOpen ? <SignupUI signupOpen={signupOpen} /> :
+
+                 <TitleUI settingsOpen={settingsOpen} /> : null}
                 {crashMessage ? <ErrorModal message={crashMessage} /> : null}
                 {dbox? <DeathBox killer={deathKiller} kills={deathKills} coins={deathCoins} /> : null}
             </div>
