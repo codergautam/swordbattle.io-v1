@@ -59,6 +59,41 @@ class Title extends Phaser.Scene {
         });
       }
     })
+
+    // document mouse move listener
+    document.addEventListener('mousemove', (e) => {
+      // x and y
+      let bounds = this.scale.canvasBounds
+
+      // convert mouse pos so that 0,0 is top left of canvas
+      let x = e.clientX - bounds.left;
+      let y = e.clientY - bounds.top;
+
+      // convert mouse pos so that 1280,720 is bottom right of canvas
+      x = x / bounds.width * 1280;
+      y = y / bounds.height * 720;
+
+      // Check if touching settingsBtn
+      if(this.settingsBtn.button.getBounds().contains(x, y)) {
+        if(this.settingsBtn.button.scaleX === 0.17) return;
+        this.tweens.add({
+          targets: this.settingsBtn.button,
+          scaleX: 0.17,
+          scaleY: 0.17,
+          duration: 250,
+          ease: 'Power2',
+        });
+      } else {
+        if(this.settingsBtn.button.scaleX === 0.15) return;
+        this.tweens.add({
+          targets: this.settingsBtn.button,
+          scaleX: 0.15,
+          scaleY: 0.15,
+          duration: 250,
+          ease: 'Power2',
+        });
+      }
+    });
   }
 }
 
