@@ -31,7 +31,12 @@ export default function SignupUI(props) {
     <div className={"animate__animated "+transition}>
     <div className={styles.settingsbackground}>
     <button className={styles.modalCloseBtn} onClick={()=>close(setTransition)}>X</button>
-      hello
+    <h1 className={styles.modalTitle}>Sign Up</h1>
+    <p className={styles.modalText}>Save your progress and unlock cosmetics!</p>
+    <input type="text" style={{marginTop: "5px"}} id="username" placeholder="Username" className={styles.textbox}/>
+    <input type="password" id="password" placeholder="Password" className={styles.textbox}/>
+    <input type="text" id="email" placeholder="Email" className={styles.textbox}/>
+    <button className={styles.playbtn} type="button" onClick={() => close(setTransition)}>Sign Up</button>
     </div>
     </div>
   );

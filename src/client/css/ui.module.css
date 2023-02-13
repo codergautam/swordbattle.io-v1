@@ -20,6 +20,38 @@
   position: relative;
 }
 
+.textbox {
+  --primary-color: #b3e8b4;
+  --primary-color-hover: #7bf081;
+  pointer-events: auto;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  background-color: var(--primary-color);
+  color: #000000;
+  display: block;
+  margin: 20px auto 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  font-size: 160%;
+}
+
+.modalTitle,
+.modalText {
+  font-family: 'Hind Madurai', Arial, sans-serif;
+  font-size: 300%;
+  text-align: center;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+.modalText {
+  font-size: 100%;
+  padding-bottom: 5px;
+}
+
+
+
 .modalCloseBtn {
   position: absolute;
   top: 0;
@@ -41,7 +73,6 @@
   transform: rotate(0deg);
   transition: all 0.2s linear;
 }
-
 
 .deathbox {
 
@@ -121,6 +152,13 @@
   .playbtn {
     font-size: 120%;
   }
+  .modalTitle {
+    font-size: 250%;
+  }
+  .textbox {
+    font-size: 120%;
+    margin: 20px auto 0px;
+  }
 }
 
 @media screen and (max-width: 500px),
@@ -141,6 +179,12 @@
     font-size: 100%;
     margin-top: 10px;
     margin-bottom: 0px;
+  }
+  .modalTitle {
+    font-size: 200%;
+  }
+  .textbox {
+    font-size: 100%;
   }
 }
 
