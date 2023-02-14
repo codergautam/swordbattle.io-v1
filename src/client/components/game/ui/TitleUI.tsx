@@ -3,6 +3,8 @@ import { Game } from 'phaser';
 import React from 'react';
 import styles from '../../../css/ui.module.css';
 import Title from '../scenes/Title';
+import 'animate.css';
+
 
 function playButtonClick(name: string) {
   const game = (window as any).game as Game;
@@ -10,7 +12,7 @@ function playButtonClick(name: string) {
   scene.events.emit('playButtonClicked', name);
 }
 
-export default function TitleUI() {
+export default function TitleUI(props: any) {
   // check if localStorage is available
   let available = true;
   try {
@@ -21,10 +23,12 @@ export default function TitleUI() {
   }
   const [name, setName] = React.useState(available ? (window.localStorage.getItem('name') || '') : '');
   return (
+    <div className={"animate__animated animate__backInDown"}>
     <div className={styles.homebackground}>
       <h1 className={styles.titletext}>Swordbattle.io</h1>
       <input type="text" maxLength={12} value={name} className={styles.namebox} onChange={(e) => setName(e.target.value)} placeholder="Name" />
       <button className={styles.playbtn} type="button" onClick={() => playButtonClick(name)}>Play</button>
+    </div>
     </div>
   );
 }

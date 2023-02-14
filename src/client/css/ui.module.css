@@ -1,24 +1,85 @@
 .errorbackground,
-.homebackground {
+.homebackground,
+.settingsbackground {
   background-color: rgb(128, 217, 128);
   border-radius: 10px;
-  padding: 0px 20px 20px 20px;
+  padding: 10px 20px 20px 20px;
   text-align: center;
-  
+
 }
 
 .errorbackground {
   background-color: rgb(255, 128, 128);
   max-width: 60%;
-  
-  
+
+
 }
+.settingsbackground {
+  max-width: 90%;
+  background-color: rgb(86, 87, 86);
+  position: relative;
+}
+
+.textbox {
+  --primary-color: #b3e8b4;
+  --primary-color-hover: #7bf081;
+  pointer-events: auto;
+  font-family: 'Franklin Gothic Medium', Arial, sans-serif;
+  background-color: var(--primary-color);
+  color: #000000;
+  display: block;
+  margin: 20px auto 10px;
+  padding: 5px 10px;
+  cursor: pointer;
+  border-radius: 10px;
+  border: none;
+  font-size: 160%;
+}
+
+.modalTitle,
+.modalText {
+  font-family: 'Hind Madurai', Arial, sans-serif;
+  font-size: 300%;
+  text-align: center;
+  color: white;
+  margin: 0;
+  padding: 0;
+}
+.modalText {
+  font-size: 100%;
+  padding-bottom: 5px;
+}
+
+
+
+.modalCloseBtn {
+  position: absolute;
+  top: 0;
+  right: 0;
+  appearance: none;
+  background-color: #000;
+  color: white;
+  border: 2px solid #fff;
+  height: 30px;
+  line-height: normal;
+  border-radius: 20px;
+  width: 30px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  top: -15px;
+  right: -15px;
+  cursor: pointer;
+  transform: rotate(0deg);
+  transition: all 0.2s linear;
+}
+
 .deathbox {
-  
+
   background-color: #90EE90;
   border-style:none;
-  
-  
+
+
   padding: 0px 20px 20px 20px;
   max-width: 80%;
 }
@@ -39,7 +100,7 @@
   border-radius: 10px;
   border: none;
   font-size: 160%;
-  
+
 }
 
 .errorbtn {
@@ -91,6 +152,13 @@
   .playbtn {
     font-size: 120%;
   }
+  .modalTitle {
+    font-size: 250%;
+  }
+  .textbox {
+    font-size: 120%;
+    margin: 20px auto 0px;
+  }
 }
 
 @media screen and (max-width: 500px),
@@ -112,10 +180,16 @@
     margin-top: 10px;
     margin-bottom: 0px;
   }
+  .modalTitle {
+    font-size: 200%;
+  }
+  .textbox {
+    font-size: 100%;
+  }
 }
 
 
-/* 
+/*
   cursor: not-allowed;
   background-color: lightgray;
  */
