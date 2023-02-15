@@ -29,6 +29,36 @@ async function createUser(username: string, password: string, email: string) {
   return user[0];
 }
 
+async function getUser(username: string) {
+  var user = await sql`select * from accounts where lower(username)=lower(${username})`;
+  return user[0];
+}
+
+async function loginSecret(usernameOrEmail: string, password: string) {
+  var user = await getUser(usernameOrEmail);
+  if(!user) throw new Error('User not found');
+  var match = await bcrypt.compare(password, user.password);
+  if(!match) throw new Error('Invalid password');
+  return user.secret;
+}
+
+async function changeName(username: string, newName: string) {
+  var user = await getUser(username);
+  if(!user) throw new Error('User not found');
+  var exists = await usernameExists(newName);
+  if(exists) throw new Error('Username already exists');
+  var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${user.secret}`;
+  if(daysSince[0].days && daysSince[0].days < 7) {
+    throw new Error('You can change your name again in ' + (7 - daysSince[0].days) + ' days');
+  }
+  await sql`update accounts set lastusernamechange=now() where secret=${user.secret}`;
+  await sql`update accounts set username=${newName} where secret=${user.secret}`;
+  await sql`UPDATE games SET name=${newName} WHERE lower(name)=${username.toLowerCase()} AND verified=true`;
+
+
+  return true;
+}
+
 export default {
   query: sql,
 }
