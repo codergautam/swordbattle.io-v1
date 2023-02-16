@@ -812,6 +812,13 @@
             "description": "You don't stand a chance-"
         },
         {
+            "name": "anniversary",
+            "displayName": "Anniversary",
+            "url": "/assets/images/anniversaryPlayer.png",
+            "price": 36500000,
+            "description": "Celebrate the 1 year anniversary of the game!"
+        },
+        {
             "name": "dragon",
             "displayName": "Dragon",
             "url": "/assets/images/dragonPlayer.png",

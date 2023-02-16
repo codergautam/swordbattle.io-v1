@@ -493,7 +493,7 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://9d5cb7f4-d4fd-4b04-9e64-f743099eaa0d.id.repl.co" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://usasword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
@@ -1785,6 +1785,8 @@ try {
 		var sKey = this.input.keyboard.addKey("S", false);
 		var dKey = this.input.keyboard.addKey("D",false);
 		var cKey = this.input.keyboard.addKey("C", false);
+		var gKey = this.input.keyboard.addKey("G", false);
+
 
 		try {
 			this.key = this.mobile && this.joyStick ?  this.joyStick.createCursorKeys() : this.cursors;
@@ -1806,6 +1808,10 @@ try {
 			}
 			if (cKey.isDown && this.meSword.visible && !this.chat.toggled) {
 				this.socket.send("throw", []);
+			}
+
+			if(gKey.isDown && this.abilityButton && this.abilityButton.visible && !this.chat.toggled) {
+				this.socket.send("ability", []);
 			}
 
 			this.socket.send("move", controller);
