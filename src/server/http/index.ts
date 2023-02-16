@@ -1,5 +1,7 @@
 import path from 'path';
 import fs from 'fs';
+import { routes } from './api/apiBase';
+import uws from 'uWebSockets.js';
 
 function contentType(p: string, res: { writeHeader: (arg0: string, arg1: string) => void; }){
   const ext = path.extname(p);
@@ -29,9 +31,12 @@ function contentType(p: string, res: { writeHeader: (arg0: string, arg1: string)
 }
 
 
-export default (res: any, req: any) => {
+export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
+const url = req.getUrl();
+// check if post
+console.log(req.getMethod());
+  if(req.getMethod().toLowerCase() === 'post' && routes[url]) return routes[url](res, req);
   try {
-    const url = req.getUrl();
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
     contentType(p, res);
     res.end(fs.readFileSync(path.resolve(__dirname, p)));
