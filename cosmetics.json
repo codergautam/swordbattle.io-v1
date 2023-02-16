@@ -784,6 +784,13 @@
             "description": "Scary... watch out"
         },
         {
+            "name": "laserfoil",
+            "displayName": "LaserFoil",
+            "url": "/assets/images/foilPlayer.png",
+            "price": 4500000,
+            "desctiption": "Cut them down."        
+        },
+        {
             "name": "scythe",
             "displayName": "Scythe",
             "url": "/assets/images/scythePlayer.png",
