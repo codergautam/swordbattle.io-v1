@@ -58,7 +58,16 @@ async function changeName(username: string, newName: string) {
 
   return true;
 }
+async function getUserFromSecret(secret: string) {
+  var user = await sql`select * from accounts where secret=${secret}`;
+  return user[0];
+}
 
 export default {
   query: sql,
+  createUser,
+  getUser,
+  loginSecret,
+  changeName,
+  getUserFromSecret
 }

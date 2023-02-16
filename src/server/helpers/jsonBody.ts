@@ -3,7 +3,7 @@ import uws from 'uWebSockets.js';
 /* Helper function for reading a posted JSON body */
 //returns json
 
-export default function readJson(res: uws.HttpResponse, cb: (json: JSON) => void, err: () => void) {
+export default function readJson(res: uws.HttpResponse, cb: (json: any) => void, err: () => void) {
   let buffer: any;
   /* Register data cb */
   res.onData((ab, isLast) => {

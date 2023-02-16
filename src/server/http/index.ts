@@ -34,7 +34,8 @@ function contentType(p: string, res: { writeHeader: (arg0: string, arg1: string)
 export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
 const url = req.getUrl();
 // check if post
-  if(req.getMethod() === 'POST' && routes[url]) return routes[url](res, req);
+console.log(req.getMethod());
+  if(req.getMethod().toLowerCase() === 'post' && routes[url]) return routes[url](res, req);
   try {
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
     contentType(p, res);
