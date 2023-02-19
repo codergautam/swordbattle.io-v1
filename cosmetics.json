@@ -57,6 +57,13 @@
             "description": "Very sneaky"
         },
         {
+            "name": "peppermint",
+            "displayName": "Peppermint",
+            "url": "/assets/images/peppermintPlayer.png",
+            "price": 600,
+            "description": "Tastes like coins"
+        },
+        {
             "name": "spring",
             "displayName": "Spring",
             "url": "/assets/images/springPlayer.png",
@@ -118,6 +125,13 @@
             "url": "/assets/images/hackerPlayer.png",
             "price": 5000,
             "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣"
+        },
+        {
+            "name": "red",
+            "displayName": "Red",
+            "url": "/assets/images/redPlayer.png",
+            "price": 5000,
+            "description": "Its a better default"
         },
         {
             "name": "frager201",
@@ -232,6 +246,13 @@
             "description": "Peaceful and relaxing."
         },
         {
+            "name": "flame",
+            "displayName": "Flame",
+            "url": "/assets/images/flamePlayer.png",
+            "price": 25000,
+            "description": "Dont like it? Set it ablaze"
+        },
+        {
             "name": "determined",
             "displayName": "Determined",
             "url": "/assets/images/determinedPlayer.png",
@@ -244,6 +265,13 @@
             "url": "/assets/images/tigerPlayer.png",
             "price": 30000,
             "description": "Don't get in the way of its claws..."
+        },
+        {
+            "name": "asteroid",
+            "displayName": "Asteroid",
+            "url": "/assets/images/asteroidPlayer.png",
+            "price": 32500,
+            "description": "Be the destruction"
         },
         {
             "name": "lightning",
@@ -309,6 +337,13 @@
             "description": "All hail the king"
         },
         {
+            "name": "xray",
+            "displayName": "X-Ray",
+            "url": "/assets/images/xrayPlayer.png",
+            "price": 50000,
+            "description": "Stare into your enemies soul"
+        },
+        {
             "name": "monkey",
             "displayName": "Monkey",
             "url": "/assets/images/monkeyPlayer.png",
@@ -349,6 +384,13 @@
             "url": "/assets/images/killerbotPlayer.png",
             "price": 60000,
             "description": "Makes your opponents wish they were fighting an actual bot"
+        },
+        {
+            "name": "comic",
+            "displayName": "Comic",
+            "url": "/assets/images/comicPlayer.png",
+            "price": 60000,
+            "description": "Be like the villain"
         },
         {
             "name": "masquerade",
@@ -505,6 +547,13 @@
             "description": "As juicy as coins"
         },
         {
+            "name": "bishop",
+            "displayName": "Bishop",
+            "url": "/assets/images/bishopPlayer.png",
+            "price": 135000,
+            "description": "Increase your immunity"
+        },
+        {
             "name": "covid",
             "displayName": "Covid",
             "url": "/assets/images/covidPlayer.png",
@@ -610,6 +659,13 @@
             "description": "Fade enemies out of existence"
         },
         {
+            "name": "thanksgiving",
+            "displayName": "Thanksgiving",
+            "url": "/assets/images/thanksgivingPlayer.png",
+            "price": 195000,
+            "description": "Say thanks for your coins"
+        },
+        {
             "name": "magician",
             "displayName": "Magician",
             "url": "/assets/images/magicianPlayer.png",
@@ -629,6 +685,13 @@
             "url": "/assets/images/vaporwavePlayer.png",
             "price": 210000,
             "description": "Vaporwave is back"
+        },
+        {
+            "name": "chainmail",
+            "displayName": "Chainmail",
+            "url": "/assets/images/chainmailPlayer.png",
+            "price": 220000,
+            "description": "Have some armor"
         },
         {
             "name": "glowing",
@@ -659,6 +722,13 @@
             "description": "Watch out for the talons..."
         },
         {
+            "name": "galaxy",
+            "displayName": "Galaxy",
+            "url": "/assets/images/galaxyPlayer.png",
+            "price": 310000,
+            "description": "Rule the cosmos"
+        },
+        {
             "name": "pirate",
             "displayName": "Pirate",
             "url": "/assets/images/piratePlayer.png",
@@ -673,6 +743,13 @@
             "description": "Its neumorphic"
         },
         {
+            "name": "eclipse",
+            "displayName": "Eclipse",
+            "url": "/assets/images/eclipsePlayer.png",
+            "price": 375000,
+            "description": "Make other players be in YOUR shadow"
+        },
+        {
             "name": "devex",
             "displayName": "Dev3x",
             "url": "/assets/images/devexPlayer.png",
@@ -680,11 +757,32 @@
             "description": "3x the power!"
         },
         {
+            "name": "apocalypse",
+            "displayName": "Apocalypse",
+            "url": "/assets/images/apocalypsePlayer.png",
+            "price": 410000,
+            "description": "End the world"
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
             "price": 500000,
             "description": "The best at PVP. Ever."
+        },
+        {
+            "name": "fish",
+            "displayName": "Fish",
+            "url": "/assets/images/fishPlayer.png",
+            "price": 600000,
+            "description": " 'C'est un poisson' FishyMine(C)TM"
+        },
+        {
+            "name": "shuriken",
+            "displayName": "Shuriken",
+            "url": "/assets/images/shurikenPlayer.png",
+            "price": 650000,
+            "description": "More than one edge"
         },
         {
             "name": "glitch",
@@ -705,6 +803,13 @@
             "url": "/assets/images/virusPlayer.png",
             "price": 750000,
             "description": "Infect them all"
+        },
+        {
+            "name": "ice cream",
+            "displayName": "Ice Cream",
+            "url": "/assets/images/icecreamPlayer.png",
+            "price": 800000,
+            "description": "I scream, you scream, your enemies scream"
         },
         {
             "name": "elements",
@@ -756,6 +861,13 @@
             "description": "Scrumptious!"
         },
         {
+            "name": "skull",
+            "displayName": "Skull",
+            "url": "/assets/images/skullPlayer.png",
+            "price": 1750000,
+            "description": "Scary"
+        },
+        {
             "name": "mitblade",
             "displayName": "MitBald",
             "url": "/assets/images/mitbladePlayer.png",
@@ -789,6 +901,13 @@
             "url": "/assets/images/scythePlayer.png",
             "price": 5000000,
             "description": "I'm coming for you!"
+        },
+        {
+            "name": "supremeneon",
+            "displayName": "Supreme Neon",
+            "url": "/assets/images/supremeneonPlayer.png",
+            "price": 6000000,
+            "description": "Neon but better"
         },
         {
             "name": "bush",
