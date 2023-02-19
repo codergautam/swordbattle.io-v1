@@ -2,6 +2,9 @@ const webpack = require('webpack');
 const path = require('path');
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const { CleanWebpackPlugin } = require('clean-webpack-plugin');
+const dotenv = require('dotenv');
+dotenv.config();
+console.log(process.env)
 
 module.exports = {
   mode: 'development',
@@ -48,6 +51,7 @@ module.exports = {
     }),
     new HtmlWebpackPlugin({
       template: './src/client/index.html',
+      CAPTCHASITE: process.env.CAPTCHASITE,
     }),
   ],
   resolve: {
