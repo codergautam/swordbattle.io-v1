@@ -23,3 +23,5 @@ Right now, just clone, run `npm i`, run `node setup` (only first run), and run `
 You can use this code as a base for your IO games, but please change it to a considerable amount, so it's a whole different game, and please give me credit. Under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry. Thanks.
 
 Thanks.
+
+[![DigitalOcean Referral Badge](https://web-platforms.sfo2.cdn.digitaloceanspaces.com/WWW/Badge%201.svg)](https://www.digitalocean.com/?refcode=78c9223db701&utm_campaign=Referral_Invite&utm_medium=Referral_Program&utm_source=badge)

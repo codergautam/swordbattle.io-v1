@@ -338,6 +338,34 @@ app.post("/api/equip", async (req, res) => {
   }
 });
 
+app.post("/api/changepassword", async (req,res) => {
+  if(typeof req.body !== "object" || typeof req.body.secret !== "string" || typeof req.body.oldPass !== "string" || typeof req.body.newPass !== "string") {
+    res.status(400).send({error: "Missing fields"});
+		return;
+  }
+  var secret = req.body.secret;
+  if(!schema.validate(req.body.newPass)) {
+		res.send({error:schema.validate(req.body.newPass, { details: true })[0].message});
+		return;
+	}
+  var account = await sql`SELECT password, secret FROM accounts WHERE secret=${secret}`;
+  if(!account[0]) {
+    res.status(400).status(400).send({error: "Invalid secret"});
+    return;
+  };
+
+  oldPassHash = account[0].password;
+  match = await bcrypt.compare(req.body.oldPass, oldPassHash);
+  if (!match){
+    res.send({error: "Invalid password"});
+		return;
+  };
+
+  newSecret = uuid.v4()
+  newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`
+  res.send({"Success": true, "secret": newSecret})
+});
+
 app.post("/api/changename", async (req,res) => {
 	if(typeof req.body!=="object" || typeof req.body.secret !== "string" || typeof req.body.username !== "string") {
 		res.status(400).send({error: "Missing fields"});

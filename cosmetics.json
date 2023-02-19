@@ -156,7 +156,7 @@
         },
         {
             "name": "meelee",
-            "displayName": "Meelee",
+            "displayName": "Melee",
             "url": "/assets/images/meeleePlayer.png",
             "price": 11000,
             "description": "Charge in headfirst"
@@ -812,12 +812,18 @@
             "description": "You don't stand a chance-"
         },
         {
+            "name": "anniversary",
+            "displayName": "Anniversary",
+            "url": "/assets/images/anniversaryPlayer.png",
+            "price": 36500000,
+            "description": "Celebrate the 1 year anniversary of the game!"
+        },
+        {
             "name": "dragon",
             "displayName": "Dragon",
             "url": "/assets/images/dragonPlayer.png",
             "price": 50000000,
             "description": "The king of the skies... and swords."
         }
-
     ]
 }
