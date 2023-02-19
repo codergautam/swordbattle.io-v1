@@ -29,12 +29,17 @@ async function createUser(username: string, password: string, email: string) {
   return user[0];
 }
 
-async function getUser(username: string) {
-  var user = await sql`select * from accounts where lower(username)=lower(${username})`;
+/**
+ * Get a user by their username or email
+ * @param identifier Username or email
+ * @returns SQL row
+ */
+async function getUser(identifier: string) {
+  var user = await sql`select * from accounts where lower(username)=lower(${identifier}) or lower(email)=lower(${identifier})`;
   return user[0];
 }
 
-async function loginSecret(usernameOrEmail: string, password: string) {
+async function login(usernameOrEmail: string, password: string) {
   var user = await getUser(usernameOrEmail);
   if(!user) throw new Error('User not found');
   var match = await bcrypt.compare(password, user.password);
@@ -67,7 +72,7 @@ export default {
   query: sql,
   createUser,
   getUser,
-  loginSecret,
+  login,
   changeName,
   getUserFromSecret
 }

@@ -35,7 +35,7 @@ export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
 const url = req.getUrl();
 // check if post
 console.log(req.getMethod());
-  if(req.getMethod().toLowerCase() === 'post' && routes[url]) return routes[url](res, req);
+  if(routes[url] && req.getMethod().toLowerCase() === routes[url].method.toLowerCase()) return routes[url].execute(res, req);
   try {
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
     contentType(p, res);
