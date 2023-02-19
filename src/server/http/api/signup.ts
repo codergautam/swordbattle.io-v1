@@ -74,7 +74,7 @@ export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
     if(!schema.validate(json.password)) {
       res.end(JSON.stringify({
         success: false,
-        message: "Invalid password"+((schema.validate(json.password, { list: true }) as any).join(",")),
+        message: "Invalid password: "+((schema.validate(json.password, { details: true }) as any)[0].message),
       }));
       return;
     }

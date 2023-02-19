@@ -47,6 +47,7 @@
     "concurrently": "^7.6.0",
     "css-loader": "^6.7.3",
     "dotenv": "^16.0.3",
+    "ejs": "^3.1.8",
     "email-validator": "^2.0.4",
     "html-webpack-plugin": "^5.5.0",
     "intersects": "^2.7.2",
