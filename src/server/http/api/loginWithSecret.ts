@@ -15,7 +15,9 @@ dotenv.config()
 
 export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
   console.log("signup");
+  try {
   readJson(res, async (json) => {
+    try {
     res.writeHeader('Content-Type', 'application/json');
 
     if(process.env.USERECAPTCHA !== 'false') {
@@ -70,9 +72,13 @@ export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
         message,
       }));
     }
-
-
+  } catch(e: any) {
+    console.log("Something went wrong");
+  }
   }, () => {
     console.log("Failed to read json");
   });
+  } catch(e: any) {
+    console.log("Something went wrong");
+  }
 }
