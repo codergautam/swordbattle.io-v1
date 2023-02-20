@@ -4,6 +4,7 @@ import fs from 'fs';
 import signup from './signup';
 import login from './login';
 import recaptchaSite from './recaptchaSiteKey';
+import loginWithSecret from './loginWithSecret';
 
 let routes: {[key: string]: {execute: Function, method: string}} = {};
 
@@ -16,6 +17,7 @@ function addRoute(url: string, method: Function, reqType: string = 'GET') {
 
 addRoute('/api/signup', signup, 'POST');
 addRoute('/api/login', login, 'POST');
+addRoute('/api/getData', loginWithSecret, 'POST')
 addRoute('/api/recaptchaSiteKey', recaptchaSite, 'GET');
 
 export {

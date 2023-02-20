@@ -14,6 +14,8 @@ function smoothHide(elem, x, y: any=elem.y, scene) {
   });
 }
 
+let recaptcha = ((window as any).grecaptcha as any);
+
 class Title extends Phaser.Scene {
   background: Phaser.GameObjects.Image;
   settingsBtn: any;
@@ -114,6 +116,38 @@ class Title extends Phaser.Scene {
     this.events.on("signupState", (opened) => {
       modalChange(opened);
     })
+    function attemptDisplayLogin(captcha, secret) {
+      console.log(captcha, secret)
+      fetch('/api/getData', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({secret, captcha}),
+      }).then((res) => res.json()).then((data) => {
+        console.log(data);
+      });
+    }
+    this.events.on("loginSuccess", (data: {secret: string, success: boolean}) => {
+      // Hide login/signup buttons
+      this.loginBtn.setVisible(false);
+      this.signupBtn.setVisible(false);
+      let secret = data.secret;
+
+      if(recaptcha) {
+        recaptcha.ready(function() {
+          fetch('/api/recaptchaSiteKey').then(res => res.json()).then(data => {
+            if(!data.success) attemptDisplayLogin(undefined, secret);
+            recaptcha.execute(data.siteKey, {action: 'relogin'}).then(token => {
+              attemptDisplayLogin(token, secret);
+            });
+          }).catch(err => {
+            console.error(err);
+            attemptDisplayLogin(undefined, secret);
+          });
+        });
+      }
+    });
 
     // document mouse move listener
     document.addEventListener('mousemove', (e) => {

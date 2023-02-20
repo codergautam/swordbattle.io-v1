@@ -61,7 +61,7 @@ function signup(setTransition, setSigningUp) {
       })
     }).then(res => res.json()).then(data => {
       if(data.success) {
-        scene.events.emit('signupSuccess', data);
+        scene.events.emit('loginSuccess', data);
         console.log("Logged in successfully!");
         setSigningUp(false);
         close(setTransition);

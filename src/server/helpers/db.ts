@@ -25,7 +25,8 @@ async function createUser(username: string, password: string, email: string) {
   if(exists) throw new Error('Email already exists');
   var hash = await bcrypt.hash(password, 10);
   let secret = uuidv4();
-  var user = await sql`insert into accounts (username, password, email, secret, skins) values (${username}, ${hash}, ${email}, ${secret}, ${JSON.stringify({collected: ["player"], selected: "player"})}) returning *`;
+  let id = uuidv4();
+  var user = await sql`insert into accounts (username, password, email, secret, skins, id) values (${username}, ${hash}, ${email}, ${secret}, ${JSON.stringify({collected: ["player"], selected: "player"})}, ${id}) returning *`;
   return user[0];
 }
 
