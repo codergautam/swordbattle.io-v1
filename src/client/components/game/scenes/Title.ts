@@ -24,6 +24,7 @@ class Title extends Phaser.Scene {
   loginBtn: ImageButton;
   signupBtn: ImageButton;
   userDropdown: UserDropdown;
+  mousePos: { x: number; y: number; };
 
   constructor() {
     super('title');
@@ -197,6 +198,8 @@ class Title extends Phaser.Scene {
       // convert mouse pos so that 1280,720 is bottom right of canvas
       x = x / bounds.width * 1280;
       y = y / bounds.height * 720;
+
+      this.mousePos = {x, y};
 
       // Check if touching loginBtn
       if(this.loginBtn.button.getBounds().contains(x, y) && this.loginBtn.button.scaleX !== 0.25) {
