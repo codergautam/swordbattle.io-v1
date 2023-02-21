@@ -15,6 +15,7 @@ class Preload extends Phaser.Scene {
     this.load.image('settings', '/assets/images/buttons/settings.png');
     this.load.image('login', '/assets/images/buttons/login.png');
     this.load.image('signup', '/assets/images/buttons/signup.png');
+    this.load.image('profile', '/assets/images/buttons/profile.png');
 
     this.load.image('title', 'assets/images/opening.png');
     this.load.image('grass', '/assets/images/background.jpeg');
