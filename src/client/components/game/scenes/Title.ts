@@ -87,6 +87,19 @@ class Title extends Phaser.Scene {
       ease: 'Power2',
     });
 
+
+    this.events.on("logoutClicked", () => {
+      this.userDropdown.smoothHide(() => {
+        this.userDropdown.destroy();
+        this.loginBtn.button.x = this.loginBtn.button.displayWidth;
+        this.signupBtn.button.x = this.signupBtn.button.displayWidth;
+        this.loginBtn.setVisible(true);
+        this.signupBtn.setVisible(true);
+
+        displayLoginAndSignupButtons();
+      });
+    })
+
     this.events.once('playButtonClicked', (suppliedName: string) => {
       let name = suppliedName;
       // The signup/login button is not started to be visible, user may might be logging in atm.
@@ -108,10 +121,18 @@ class Title extends Phaser.Scene {
         smoothHide(this.settingsBtn.button, -1*this.settingsBtn.button.displayWidth, undefined, this);
         smoothHide(this.loginBtn.button, this.loginBtn.button.displayWidth, undefined, this);
         smoothHide(this.signupBtn.button, this.signupBtn.button.displayWidth, undefined, this);
+        if(this.userDropdown?.active) {
+        this.userDropdown.smoothHide(() => {
+
+        });
+      }
       } else {
         smoothHide(this.settingsBtn.button, 0, undefined, this);
         smoothHide(this.loginBtn.button, 0, undefined, this);
         smoothHide(this.signupBtn.button, 0, undefined, this);
+        if(this.userDropdown?.active) {
+        this.userDropdown.show();
+        }
       }
     }
 
@@ -136,7 +157,7 @@ class Title extends Phaser.Scene {
           alert("Auto login failed. Please login manually.")
           displayLoginAndSignupButtons();
         } else {
-        this.userDropdown = new UserDropdown(this, 0, 0, data.user?.username);
+        this.userDropdown = new UserDropdown(this, 0, 0, data.user?.username, secret);
 
         this.loginBtn.setVisible(false);
         this.signupBtn.setVisible(false);

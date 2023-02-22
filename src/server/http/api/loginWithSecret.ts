@@ -1,4 +1,3 @@
-// post: /api/signup
 import uws from 'uWebSockets.js';
 import readJson from '../../helpers/jsonBody';
 import { verifyRecaptcha } from '../../helpers/recaptcha';
