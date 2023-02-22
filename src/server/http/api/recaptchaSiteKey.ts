@@ -1,4 +1,3 @@
-// post: /api/signup
 import uws from 'uWebSockets.js';
 import dotenv from 'dotenv'
 dotenv.config()

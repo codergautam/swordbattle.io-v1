@@ -101,6 +101,13 @@ export default class Game extends React.Component {
                     scene.events.on('loginSuccessFetch', (data: any) => {
                         this.setState(prevState => Object.assign(prevState, { user: data.user}));
                     })
+                    scene.events.on('logoutClicked', () => {
+                        this.setState(prevState => Object.assign(prevState, { user: null }));
+                    });
+                    scene.events.on('nameChange', (name: string) => {
+                        console.log('nameChange', name);
+                        this.setState(prevState => Object.assign(prevState, { user: { ...prevState.user, username: name } }));
+                    });
 
                     scene.events.on('loginBtnClicked', () => {
                         console.log('loginBtnClicked');

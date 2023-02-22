@@ -49,18 +49,29 @@ async function login(usernameOrEmail: string, password: string) {
 }
 
 async function changeName(username: string, newName: string) {
+  if(username.toLowerCase() === newName.toLowerCase()) throw new Error('New name is the same as the old one');
   var user = await getUser(username);
   if(!user) throw new Error('User not found');
   var exists = await usernameExists(newName);
-  if(exists) throw new Error('Username already exists');
-  var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${user.secret}`;
-  if(daysSince[0].days && daysSince[0].days < 7) {
-    throw new Error('You can change your name again in ' + (7 - daysSince[0].days) + ' days');
-  }
+  if(exists) throw new Error('Username already taken');
+  // var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${user.secret}`;
+  // if(daysSince[0].days && daysSince[0].days < 7) {
+  //   throw new Error('You can change your name again in ' + (7 - daysSince[0].days) + ' days');
+  // }
   await sql`update accounts set lastusernamechange=now() where secret=${user.secret}`;
   await sql`update accounts set username=${newName} where secret=${user.secret}`;
   await sql`UPDATE games SET name=${newName} WHERE lower(name)=${username.toLowerCase()} AND verified=true`;
+  // get usernamehistory
+  const historyRow = await sql`select usernamehistory from accounts where secret=${user.secret}`;
+  let history = historyRow[0];
+  if(!history) history = {usernamehistory: []};
+  if(!history.usernamehistory) history.usernamehistory = [];
+  if( typeof history.usernamehistory == "string") history.usernamehistory = JSON.parse(history.usernamehistory);
+  // add old name to history
+  history.usernamehistory.push({username, date: new Date().toISOString()});
 
+  // update usernamehistory
+  await sql`update accounts set usernamehistory=${JSON.stringify(history.usernamehistory)} where secret=${user.secret}`;
 
   return true;
 }

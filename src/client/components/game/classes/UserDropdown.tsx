@@ -1,5 +1,6 @@
 import Phaser from 'phaser';
 import BBCodeText from 'phaser3-rex-plugins/plugins/bbcodetext.js';
+import isLocalStorageAvailable from '../helpers/localStorageAvailable';
 import Title from '../scenes/Title';
 import Button from './Button';
 
@@ -11,8 +12,10 @@ export default class UserDropdown extends Phaser.GameObjects.Container {
   logoutButton: Button;
   changeNameBtn: any;
   profileBtn: Button;
-  constructor(scene: Title, x: number, y: number, name: string) {
+  secret: string;
+  constructor(scene: Title, x: number, y: number, name: string, secret: string) {
     super(scene, x, y);
+    this.secret = secret;
 
     this.text = new BBCodeText(scene, 1280, 0, name, {
       fontSize: '49px',
@@ -30,17 +33,44 @@ export default class UserDropdown extends Phaser.GameObjects.Container {
       ease: 'Power2',
     });
 
-    this.logoutButton = new Button(scene, 1280, 0, 'Logout', "#000000", "#ffffff", 15, 15, ()=>{}, ()=>{}, ()=>{}, scene);
+    this.logoutButton = new Button(scene, 1280, 0, 'Logout', "#000000", "#ffffff", 15, 15, ()=>{
+      scene.events.emit('logoutClicked');
+      if(isLocalStorageAvailable()) {
+        window.localStorage.removeItem('secret');
+      }
+    }, ()=>{}, ()=>{}, scene);
     this.logoutButton.x = 1280 + (this.logoutButton.background.displayWidth/2);
     this.logoutButton.setVisible(false);
 
-    this.changeNameBtn = new Button(scene, 1280, 0, 'Change Name', "#000000", "#ffffff", 15, 15, ()=>{}, ()=>{}, ()=>{}, scene);
+    this.changeNameBtn = new Button(scene, 1280, 0, 'Change Name', "#000000", "#ffffff", 15, 15, ()=>{
+      let newName = prompt("Enter your new name:");
+      if(!newName) return alert("Name cannot be empty!");
+      fetch('/api/changeName', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            secret: this.secret,
+            newName: newName,
+          })
+        }).then(res => res.json()).then(data => {
+          if(data.success) {
+            this.text.setText(newName as string);
+            scene.events.emit('nameChange', newName);
+            alert("Name changed successfully!");
+          } else {
+            alert(data.message);
+          }
+        });
+    }, ()=>{}, ()=>{}, scene);
     this.changeNameBtn.x = 1280 + (this.changeNameBtn.background.displayWidth/2);
     this.changeNameBtn.setVisible(false);
 
     // ProfileBtn
     this.profileBtn = new Button(scene, 1280, 0, 'Profile', "#000000", "#ffffff", 15, 15, ()=>{
-      console.log('Profile');
+      // open in new tab
+      window.open(`/${name}`, '_blank');
     }, ()=>{}, ()=>{}, scene);
     this.profileBtn.x = 1280 + (this.profileBtn.background.displayWidth/2);
     this.profileBtn.setVisible(false);
@@ -48,6 +78,8 @@ export default class UserDropdown extends Phaser.GameObjects.Container {
     this.add(this.text);
     this.add(this.profileIcon);
     this.add(this.logoutButton);
+    this.add(this.changeNameBtn);
+    this.add(this.profileBtn);
     scene.add.existing(this);
 
     this.clicked = false;
@@ -104,14 +136,18 @@ export default class UserDropdown extends Phaser.GameObjects.Container {
             duration: 100,
             ease: 'Power2',
           });
+          let i = 0;
           for(let elem of [this.logoutButton, this.changeNameBtn, this.profileBtn]) {
+            setTimeout(() => {
             elem.setVisible(true);
             scene.tweens.add({
               targets: [elem],
               x: 1280 - (elem.background.displayWidth/2) - 15,
-              duration: 100,
+              duration: 300,
               ease: 'Power2',
             });
+            }, i * 100);
+            i++;
           }
         } else {
           scene.tweens.add({
@@ -135,7 +171,31 @@ export default class UserDropdown extends Phaser.GameObjects.Container {
       }
     });
 
+}
 
+smoothHide(callback: () => void) {
+  for(let elem of [this.logoutButton, this.changeNameBtn, this.profileBtn, this.profileIcon, this.text]) {
+    let oldPos = elem.x;
+    this.scene.tweens.add({
+      targets: [elem],
+      x: 1280 + (elem.displayWidth/2),
+      duration: 100,
+      ease: 'Power2',
+      onComplete: () => {
+        elem.setVisible(false);
+        elem.x = oldPos;
+      }
+    });
+  }
+  setTimeout(() => {
+    callback();
+  }, 100);
+}
+
+show() {
+  for(let elem of [this.logoutButton, this.changeNameBtn, this.profileBtn, this.profileIcon, this.text]) {
+    elem.setVisible(true);
+  }
 }
 
 preUpdate() {
@@ -144,7 +204,7 @@ preUpdate() {
   this.profileIcon.scale = this.text.scale * 0.15;
 
 
-  this.profileBtn.y = this.text.y + this.text.displayHeight + 30;
+  this.profileBtn.y = this.text.y + this.text.displayHeight + 40;
   this.changeNameBtn.y = this.profileBtn.y + this.profileBtn.background.displayHeight + 5;
   this.logoutButton.y = this.changeNameBtn.y + this.changeNameBtn.background.displayHeight + 5;
 }
