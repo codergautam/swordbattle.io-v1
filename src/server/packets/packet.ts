@@ -66,11 +66,14 @@ export function writePlayerRemovePacket(stream: StreamWriter, id: number) {
     stream.writeLEB128(id);
 }
 
-export function writePlayerJoinPacket(stream: StreamWriter, wsID: number, x: number, y: number) {
+export function writePlayerJoinPacket(stream: StreamWriter, wsID: number, x: number, y: number, skin: string, name: string, verified: boolean) {
     stream.writeU8(Packet.Type.JOIN);
     stream.writeLEB128(wsID);
     stream.writeF32(x);
     stream.writeF32(y);
+    stream.writeString(skin);
+    stream.writeString(name);
+    stream.writeU8(+verified);
 }
 
 export function writePlayerDiePacket(stream: StreamWriter, kills: number, killer: string) {

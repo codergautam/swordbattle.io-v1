@@ -38,6 +38,8 @@ export default class Player {
     kills: number;
     killer: string;
     streamWriter: StreamWriter;
+    skin: string;
+    verified: boolean;
 
     constructor(name: any) {
         this.name = name;
@@ -62,6 +64,8 @@ export default class Player {
         this.kills = 0;
         this.killer = '';
         this.lastSeenPlayers = new Set();
+        this.skin = "player";
+        this.verified = false;
 
         this.updated = {
             pos: false,

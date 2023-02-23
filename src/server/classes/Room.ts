@@ -90,7 +90,7 @@ export default class Room {
         this.ws.addClient(ws);
         // Send a packet to the client to tell them they joined the room, along with position
         // ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
-        writePlayerJoinPacket(ourPlayer.streamWriter, ws.id, ourPlayer.pos.x, ourPlayer.pos.y);
+        writePlayerJoinPacket(ourPlayer.streamWriter, ws.id, ourPlayer.pos.x, ourPlayer.pos.y, ourPlayer.skin, ourPlayer.name, ourPlayer.verified);
         // Find all other players nearby and send them to the client
         const candidates = this.quadTree.retrieve(ourPlayer.getRangeBounds());
         candidates.forEach((candidate: any) => {

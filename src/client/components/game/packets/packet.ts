@@ -10,6 +10,7 @@ export function createPlayerMovePacket(stream: StreamWriter, angle: number, forc
 }
 
 export function createJoinPacket(stream: StreamWriter, name: string, verify: boolean) {
+    console.log('createJoinPacket', name, verify);
     stream.writeU8(Packet.Type.JOIN);
     stream.writeString(name);
     stream.writeU8(+verify);

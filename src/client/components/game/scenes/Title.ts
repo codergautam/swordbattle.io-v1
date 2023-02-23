@@ -113,7 +113,15 @@ class Title extends Phaser.Scene {
         console.log(e);
       }
 
-      this.scene.start('maingame', { name, keys: true, volume: 1 });
+      let loggedIn = false;
+      let secret;
+      if(this.userDropdown?.active) {
+        loggedIn = true;
+        secret = this.userDropdown.secret;
+      }
+      console.log("Logged in: " + loggedIn)
+
+      this.scene.start('maingame', { name : loggedIn ? secret : name, loggedIn, keys: true, volume: 1 });
     });
 
     const modalChange = (opened) => {
@@ -167,6 +175,10 @@ class Title extends Phaser.Scene {
         this.events.emit('loginSuccessFetch', data);
         if(isLocalStorageAvailable()) window.localStorage.setItem('secret', secret);
         }
+      }).catch((err) => {
+        console.error(err);
+        alert("Auto login failed. Please login manually.")
+        displayLoginAndSignupButtons();
       });
     };
     this.events.on("loginSuccess", (data: {secret: string, success: boolean}) => {
