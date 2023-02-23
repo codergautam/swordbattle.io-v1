@@ -18,7 +18,7 @@ export default class MainGame extends Phaser.Scene {
     loadBg: Phaser.GameObjects.Image;
     ws: Ws;
     connectingText: Phaser.GameObjects.Text;
-    passedData: { name: string; keys: boolean; volume: number };
+    passedData: { name: string; keys: boolean; volume: number; loggedIn: boolean };
     players: Map<any, Player>;
     grass: Phaser.GameObjects.TileSprite;
     controllerUpdate: () => void;
@@ -69,7 +69,8 @@ export default class MainGame extends Phaser.Scene {
 
         this.ws.once('connected', () => {
             // this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
-            createJoinPacket(this.ws.streamWriter, this.passedData.name, false);
+            console.log(this.passedData);
+            createJoinPacket(this.ws.streamWriter, this.passedData.name, this.passedData.loggedIn);
             this.ws.flushStream();
         });
 
@@ -79,13 +80,14 @@ export default class MainGame extends Phaser.Scene {
             this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
         });
 
-        this.ws.once(Packet.Type.JOIN.toString(), ([id, x, y]) => {
+        this.ws.once(Packet.Type.JOIN.toString(), ([id, x, y, skin, name, loggedIn]) => {
             this.ws.id = id;
             this.connectingText.destroy();
             this.loadBg.destroy();
             this.start();
 
-            const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
+            console.log('Joined as', id, x, y, skin, name, loggedIn);
+            const player = new Player(this, x, y, name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
             player.setHealth(100);
             this.players.set(id, player);
             this.UICamera.ignore(player);
