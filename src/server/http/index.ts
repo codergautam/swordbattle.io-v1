@@ -33,8 +33,6 @@ function contentType(p: string, res: { writeHeader: (arg0: string, arg1: string)
 
 export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
 const url = req.getUrl();
-// check if post
-console.log(req.getMethod());
   if(routes[url] && req.getMethod().toLowerCase() === routes[url].method.toLowerCase()) return routes[url].execute(res, req);
   try {
     const p = `../../../dist${url === '/' ? '/index.html' : url}`;
@@ -47,12 +45,7 @@ console.log(req.getMethod());
       contentType(p, res);
       res.end(fs.readFileSync(path.resolve(__dirname, p)));
     } catch {
-      res.writeStatus('404');
-      res.writeHeader('Content-Type', 'text/html');
-      res.end(JSON.stringify({
-        status: 404,
-        message: 'Error',
-      }));
+      return routes['/user/:username'].execute(res, req);
     }
   }
 };

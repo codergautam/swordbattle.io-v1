@@ -6,6 +6,8 @@ import login from './login';
 import recaptchaSite from './recaptchaSiteKey';
 import loginWithSecret from './loginWithSecret';
 import changeName from './changeName';
+import leaderboard from './leaderboard';
+import profile from './profile';
 
 let routes: {[key: string]: {execute: Function, method: string}} = {};
 
@@ -21,6 +23,8 @@ addRoute('/api/login', login, 'POST');
 addRoute('/api/getData', loginWithSecret, 'POST')
 addRoute('/api/changeName', changeName, 'POST')
 addRoute('/api/recaptchaSiteKey', recaptchaSite, 'GET');
+addRoute('/leaderboard', leaderboard, 'GET');
+addRoute('/user/:username', profile, 'GET');
 
 export {
   routes,
