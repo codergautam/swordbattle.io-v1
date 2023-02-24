@@ -40,15 +40,15 @@ export default class Player extends Phaser.GameObjects.Container {
     timestamp1: number = Date.now();
     timestamp2: number = Date.now();
     possitionBuffer: PositionBuffer[] = [];
+    loggedIn: boolean;
 
-
-    constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number) {
+    constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number, loggedIn: boolean = false) {
         super(scene, x, y);
         this.name = name;
         this.nameTag = new Phaser.GameObjects.Text(scene, 0, 0, name, {
             fontFamily: 'Arial',
             fontSize: '100px',
-            color: '#000000',
+            color: loggedIn ? "#0000FF" : '#000000',
         }).setOrigin(0.5, 0);
         this.healthBar = new HealthBar(scene, 0, 0, 100, 10);
         this.id = id;
@@ -57,6 +57,7 @@ export default class Player extends Phaser.GameObjects.Container {
         this.lastUpdate = Date.now();
         this.mouseDownState = false;
         this.mouseDownValue = 0;
+        this.loggedIn = loggedIn;
 
         dynamicSkinLoader(this.scene, this.skin).then(data => {
             this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);

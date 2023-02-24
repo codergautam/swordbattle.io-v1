@@ -12,6 +12,10 @@ class Preload extends Phaser.Scene {
 
     this.load.plugin('rexbbcodetextplugin', 'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/dist/rexbbcodetextplugin.min.js', true);
 
+    this.load.image('settings', '/assets/images/buttons/settings.png');
+    this.load.image('login', '/assets/images/buttons/login.png');
+    this.load.image('signup', '/assets/images/buttons/signup.png');
+    this.load.image('profile', '/assets/images/buttons/profile.png');
 
     this.load.image('title', 'assets/images/opening.png');
     this.load.image('grass', '/assets/images/background.jpeg');

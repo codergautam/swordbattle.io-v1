@@ -5,10 +5,11 @@ import Player from '../classes/Player';
 import unjoinedRoom from '../helpers/unjoinedRoom';
 import Room from '../classes/Room';
 import { StreamReader } from '../../shared/lib/BitStream';
+import db from '../helpers/db';
 
 export const streamReader = new StreamReader();
 
-export default (ws: any, buffer: ArrayBuffer) => {
+export default async (ws: any, buffer: ArrayBuffer) => {
     const mainRoom = (roomList as any).getRoom('main') as Room;
     streamReader.readFrom(buffer);
     while (streamReader.hasMoreData()) {
@@ -17,13 +18,26 @@ export default (ws: any, buffer: ArrayBuffer) => {
             case Packet.ClientHeaders.SPAWN:
                 const name = streamReader.readString();
                 const verify: boolean = !!streamReader.readU8();
+                // TODO: Some way to send custom error messages to client
+                let player;
+                if(verify) {
+                    // This means that the name is actually a secret for logging in
+                    const user = await db.getUserFromSecret(name);
+                    if(!user) {
+                        ws.end();
+                        return;
+                    }
 
-                // TODO: Verify that all data sent is valid
-                // Join the player into main room
-                const player = new Player(name);
+                    player = new Player(user.username);
+                    player.verified = true;
+                    // player.skin = user.skins.selected;
+
+                } else {
+                    player = new Player(name.substring(0,12));
+                }
                 ws.joinedAt = Date.now();
                 unjoinedRoom.removeClient(ws.id);
-                mainRoom.addPlayer(player, ws);
+                mainRoom.addPlayer(player as Player, ws);
                 break;
 
             case Packet.ClientHeaders.CONTROLS:

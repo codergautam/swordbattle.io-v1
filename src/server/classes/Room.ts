@@ -49,6 +49,9 @@ export default class Room {
         });
 
         this.lastTick = Date.now();
+
+        addMissingCoins(this);
+
     }
 
     removePlayer(playerId: number) {

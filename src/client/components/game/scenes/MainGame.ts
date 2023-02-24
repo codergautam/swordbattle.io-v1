@@ -13,13 +13,15 @@ import Leaderboard from '../classes/Leaderboard';
 import constants from '../../../../server/helpers/constants';
 import lerpTheta, { lerp } from '../helpers/angleInterp';
 import Coin from '../classes/Coin';
+import Border from '../classes/Border';
+import constants from '../../../../server/helpers/constants';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
     loadBg: Phaser.GameObjects.Image;
     ws: Ws;
     connectingText: Phaser.GameObjects.Text;
-    passedData: { name: string; keys: boolean; volume: number };
+    passedData: { name: string; keys: boolean; volume: number; loggedIn: boolean };
     players: Map<any, Player>;
     coins: Map<number, Coin>;
     grass: Phaser.GameObjects.TileSprite;
@@ -28,6 +30,7 @@ export default class MainGame extends Phaser.Scene {
     leaderboard: Leaderboard;
     UICamera: Phaser.Cameras.Scene2D.Camera;
     playerNames: Map<number, string> = new Map();
+  border: any;
     constructor() {
         super('maingame');
     }
@@ -40,6 +43,8 @@ export default class MainGame extends Phaser.Scene {
 
         this.UICamera = this.cameras.add(0, 0, this.game.canvas.width, this.game.canvas.height).setOrigin(0, 0).setScroll(0, 0);
         this.loadBg = this.add.image(0, 0, 'title').setOrigin(0).setScrollFactor(0, 0).setScale(0.7);
+        this.border = new Border(this, 0, 0, constants.map.width, constants.map.height).setDepth(2);
+        this.UICamera.ignore(this.border);
 
         this.connectingText = this.add
             .text(this.cameras.main.width / 2, this.cameras.main.height / 2, 'Connecting...', { fontSize: '64px', color: '#fff', fontFamily: 'Hind Madurai, Arial' })
@@ -68,8 +73,7 @@ export default class MainGame extends Phaser.Scene {
         });
 
         this.ws.once('connected', () => {
-            // this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
-            CPacketWriter.SPAWN(this.ws.streamWriter, this.passedData.name, false);
+            CPacketWriter.SPAWN(this.ws.streamWriter, this.passedData.name, this.passedData.loggedIn);
             // createJoinPacket(this.ws.streamWriter, this.passedData.name, false);
             this.ws.flushStream();
         });
@@ -80,13 +84,13 @@ export default class MainGame extends Phaser.Scene {
             this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
         });
 
-        this.ws.once(Packet.ServerHeaders.CLIENT_SPAWN.toString(), ([id, x, y, rotation, health]) => {
+        this.ws.once(Packet.ServerHeaders.CLIENT_SPAWN.toString(), ([id, x, y, rotation, health, skin, name, loggedIn]) => {
             this.ws.id = id;
             this.connectingText.destroy();
             this.loadBg.destroy();
             this.start();
 
-            const player = new Player(this, x, y, this.passedData.name, id, 'player').setDepth(2).setScale(levels[0].scale);
+            const player = new Player(this, x, y, this.passedData.name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
@@ -178,6 +182,7 @@ export default class MainGame extends Phaser.Scene {
             //this.events.emit('crash', 'You died.');
             this.events.emit('death', 'You ded', kills, killer, 0);
         });
+
 
         this.ws.on(Packet.ServerHeaders.COIN.toString(), d => {
             // alert("COIN!!!!!!");

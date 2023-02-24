@@ -125,8 +125,10 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const y = this.streamReader.readF32();
         const rotation = this.streamReader.readF32();
         const health = this.streamReader.readU8();
-
-        this.emit(packetType.toString(), [id, x, y, rotation, health]);
+        const skin = this.streamReader.readString();
+        const name = this.streamReader.readString();
+        const loggedIn = this.streamReader.readU8();
+        this.emit(packetType.toString(), [id, x, y, rotation, health, skin, name, loggedIn]);
     }
     createPlayer(packetType: number, time: number) {
         const id = this.streamReader.readULEB128();

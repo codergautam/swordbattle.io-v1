@@ -42,13 +42,16 @@ export const SPacketWriter = {
         stream.writeLEB128(kills);
         stream.writeString(killer);
     },
-    CLIENT_SPAWN: function(stream: StreamWriter, wsID: number, x: number, y: number, rotation: number, health: number) {
+    CLIENT_SPAWN: function(stream: StreamWriter, wsID: number, x: number, y: number, rotation: number, health: number, skin: string, name: string, verified: boolean) {
         stream.writeU8(Packet.ServerHeaders.CLIENT_SPAWN);
         stream.writeLEB128(wsID);
         stream.writeF32(x);
         stream.writeF32(y);
         stream.writeF32(rotation);
         stream.writeU8(health);
+        stream.writeString(skin);
+        stream.writeString(name);
+        stream.writeU8(+verified);
     },
     REMOVE_COIN: function(stream: StreamWriter, id: number) {
         stream.writeU8(Packet.ServerHeaders.REMOVE_COIN);
