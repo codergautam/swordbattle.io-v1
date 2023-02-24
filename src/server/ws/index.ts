@@ -16,7 +16,7 @@ setInterval(() => {
         if (client.joinedAt + 10000 < Date.now()) {
             // im not sure when this is actually executed so i cant really test a bitstream change here
             // eslint-disable-next-line max-len
-            client.send(new Packet(Packet.Type.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
+            // client.send(new Packet(Packet.Type.ERROR, PacketErrorTypes.JOIN_TIMEOUT.code).toBinary());
             client.end();
         }
     });
@@ -29,7 +29,7 @@ export default {
     /* other events (upgrade, open, ping, pong, close) */
     open: (ws: any) => {
         // eslint-disable-next-line no-param-reassign
-        ws.id = idgen();
+        ws.id = idgen.getID();
         // eslint-disable-next-line no-param-reassign
         ws.joinedAt = Date.now();
         console.log(`Client ${ws.id} connected`);

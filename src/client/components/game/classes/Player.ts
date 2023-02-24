@@ -5,6 +5,23 @@ import constants from '../../../../server/helpers/constants';
 import lerpTheta from '../helpers/angleInterp';
 import HealthBar from './HealthBar';
 
+type PositionBuffer = [number, number, number, number];
+
+const oldPositionBuffers: PositionBuffer[] = [];
+
+export function createPositionBuffer(timestamp: number, x: number, y: number, rotation: number): PositionBuffer {
+  const buffer = oldPositionBuffers.length ? oldPositionBuffers.pop() as PositionBuffer : [0, 0, 0, 0] as PositionBuffer;
+  buffer[0] = timestamp;
+  buffer[1] = x;
+  buffer[2] = y;
+  buffer[3] = rotation;
+  return buffer;
+}
+
+export function addPositionBuffer(snapshot: PositionBuffer) {
+    oldPositionBuffers.push(snapshot);
+}
+
 export default class Player extends Phaser.GameObjects.Container {
     id: string;
     skin: string;
@@ -20,6 +37,9 @@ export default class Player extends Phaser.GameObjects.Container {
     nameTag: Phaser.GameObjects.Text;
     healthBar: HealthBar;
     trueAngle: number;
+    timestamp1: number = Date.now();
+    timestamp2: number = Date.now();
+    possitionBuffer: PositionBuffer[] = [];
     loggedIn: boolean;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number, loggedIn: boolean = false) {
@@ -96,20 +116,6 @@ export default class Player extends Phaser.GameObjects.Container {
         } else if (this.mouseDownValue !== 0 && this.mouseDownValue !== 50) {
             this.swingQueued = true;
         }
-    }
-
-    move(pos: { x: number; y: number }) {
-        this.scene.tweens.add({
-            targets: this,
-            x: pos.x,
-            y: pos.y,
-            // old movement
-            // duration: 1000 / constants.expected_tps + 50,
-            // ease: 'Power2',
-            // new movement
-            duration: 1000 / constants.expected_tps,
-            ease: 'Linear',
-        });
     }
 
     setHealth(h: number) {

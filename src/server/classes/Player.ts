@@ -13,8 +13,9 @@ import Coin from './Coin';
 import movePointAtAngle from '../helpers/movePointAtAngle';
 import { getPointOnCircle } from '../helpers/getPointOnCircle';
 import { StreamWriter } from '../../shared/lib/BitStream';
-import { writePlayerAddPacket, writePlayerPositionPacket, writePlayerRotationPacket, writePlayerHealthPacket, writePlayerSwingPacket, writePlayerRemovePacket, writePlayerDiePacket } from '../packets/packet';
+import { SPacketWriter } from '../packets/packet';
 import { KeyStates } from '../../shared/KeyStates';
+import idGen from '../helpers/idgen';
 
 export default class Player {
     name: string;
@@ -28,9 +29,9 @@ export default class Player {
     id: any;
     force: number;
     moveDir: number;
-    updated: { pos: boolean; rot: boolean; health: boolean; swinging: boolean };
+    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean };
     speed: number;
-    lastSeenPlayers: Set<any>;
+    lastSeenEntities: Set<any>;
     roomId: string | number | undefined;
     health: number;
     maxHealth: number;
@@ -38,6 +39,9 @@ export default class Player {
     kills: number;
     killer: string;
     streamWriter: StreamWriter;
+    knockbackPlayer: any;
+    knockbackStage: number;
+    knockBackFrames: number = 3;
     skin: string;
     verified: boolean;
 
@@ -47,8 +51,8 @@ export default class Player {
         this.pos = {
             // x: getRandomInt(constants.spawn.min, constants.spawn.max),
             // y: getRandomInt(constants.spawn.min, constants.spawn.max),
-            x: 0,
-            y: 0,
+            x: 50,
+            y: 50,
         };
         this.moveDir = 0;
         this.angle = 0;
@@ -63,17 +67,18 @@ export default class Player {
         this.xp = 0;
         this.kills = 0;
         this.killer = '';
-        this.lastSeenPlayers = new Set();
+        this.lastSeenEntities = new Set();
         this.skin = "player";
-        this.verified = false;
+        this.verified = false; // Verified means they are logged in.
 
         this.updated = {
-            pos: false,
-            rot: false,
+            // pos: false,
+            // rot: false,
             health: false,
             swinging: false,
         };
         this.streamWriter = new StreamWriter();
+        this.knockbackStage = 0;
     }
 
     get healthPercent() {
@@ -102,8 +107,8 @@ export default class Player {
     }
 
     resetUpdated() {
-        this.updated.pos = false;
-        this.updated.rot = false;
+        // this.updated.pos = false;
+        // this.updated.rot = false;
         this.updated.health = false;
         this.updated.swinging = false;
     }
@@ -115,7 +120,7 @@ export default class Player {
         if (angle1 < -Math.PI && angle1 > Math.PI) return;
         if (this.angle !== angle1) {
             this.angle = angle1;
-            this.updated.rot = true;
+            // this.updated.rot = true;
         }
     }
 
@@ -158,8 +163,8 @@ export default class Player {
         room.quadTree.retrieve(rangeBounds).forEach((playerObj: any) => {
             const player = room.getPlayer(playerObj.id) as Player;
             if (player === undefined) {
-                const coin = room.getCoin(playerObj.id) as Coin;
-                if (coin.hittingPlayer(this)) {
+                const coin = player as Coin;
+                if (coin && coin.hittingPlayer(this)) {
                     this.collectCoin(coin);
                 }
             } else {
@@ -174,7 +179,7 @@ export default class Player {
     takeHit(player: Player) {
         this.health -= player.damage;
         this.updated.health = true;
-        player.dealKnockback(this);
+        this.dealKnockback(player)
         if (this.health <= 0) {
             player.increaseKillCounter();
             this.killer = player.name;
@@ -187,12 +192,11 @@ export default class Player {
     }
 
     die() {
-        // this.ws.send(new Packet(Packet.Type.DIE, [this.kills, this.killer]).toBinary(true));
-        writePlayerDiePacket(this.streamWriter, this.kills, this.killer);
+        SPacketWriter.CLIENT_DIED(this.streamWriter, this.kills, this.killer);
         /// set isBinary?: to true
-        this.ws.send(this.streamWriter.bytes(), true);
-        this.streamWriter.reset();
+        this.flushStream();
         this.room.removePlayer(this.id);
+        idGen.removeID(this.id)
     }
 
     calcSwordAngle() {
@@ -225,24 +229,29 @@ export default class Player {
             // check if enemy and player colliding
             if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
         }
-        // this.ws.send(new Packet(Packet.Type.DEBUG, pts).toBinary(true));
         return false;
     }
 
     dealKnockback(player: Player) {
-        const minKb = 10;
+        this.knockbackPlayer = player;
+        const minKb = 10;``
         const maxKb = 500;
         // calculate kb by my scale and their scale
-        let kb = (this.scale / player.scale) * 100;
+        let kb = (player.scale / this.scale) * 100;
         kb = clamp(kb, minKb, maxKb);
-        const x = Math.cos(this.angle) * kb;
-        const y = Math.sin(this.angle) * kb;
+
+        const x = Math.cos(player.angle) * kb / this.knockBackFrames;
+        const y = Math.sin(player.angle) * kb / this.knockBackFrames;
         // eslint-disable-next-line no-param-reassign
-        player.pos.x += x;
+        this.pos.x += x;
         // eslint-disable-next-line no-param-reassign
-        player.pos.y += y;
+        this.pos.y += y;
+
+        if (++this.knockbackStage === this.knockBackFrames) {
+            this.knockbackStage = 0;
+        }
         // make sure that this player will be sent their new position
-        player.updated.pos = true;
+        // player.updated.pos = true;
     }
 
     getMovementInfo() {
@@ -289,9 +298,9 @@ export default class Player {
         };
     }
 
-    isCollidingWithPlayer(player: Player) {
+    isCollidingWithCircle(object: Player | Coin) {
         // const cc = (p1x: number, p1y: number, r1: any, p2x: number, p2y: number, r2: any) => (r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2;
-        return ((this.radius + player.radius) / 2) ** 2 > (this.pos.x - player.pos.x) ** 2 + (this.pos.y - player.pos.y) ** 2;
+        return ((this.radius + object.radius) / 2) ** 2 > (this.pos.x - object.pos.x) ** 2 + (this.pos.y - object.pos.y) ** 2;
     }
 
     moveUpdate(delta: number) {
@@ -312,27 +321,37 @@ export default class Player {
 
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
-            this.updated.pos = true;
+            // this.updated.pos = true;
 
             const room = this.room as Room;
             room.quadTree.retrieve(this.getQuadTreeFormat()).forEach(playerObj => {
-                const player = room.getPlayer((playerObj as any).id) as Player;
-                if (player === undefined || player.id === this.id) return;
-
-                if (this.isCollidingWithPlayer(player)) {
-                    const angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
-                    // Get the point of the circle we collided with
-                    // BTW - I think the radius's are messed up here, we should not have to divide
-                    // by 2 in isCollidingWithPlayer method. But this works, and im not touching it anymore
-                    const { x, y } = getPointOnCircle(angle, player.pos.x, player.pos.y, player.radius * 0.9);
-                    this.pos.x = x;
-                    this.pos.y = y;
+                const coin = room.getCoin((playerObj as any).id) as Coin;
+                if (coin) {
+                    if (this.isCollidingWithCircle(coin)) {
+                        this.collectCoin(coin);
+                    }
+                } else {
+                    const player = room.getPlayer((playerObj as any).id) as Player;
+                    if (player === undefined || player.id === this.id) return;
+    
+                    if (this.isCollidingWithCircle(player)) {
+                        const angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
+                        // Get the point of the circle we collided with
+                        // BTW - I think the radius's are messed up here, we should not have to divide
+                        // by 2 in isCollidingWithPlayer method. But this works, and im not touching it anymore
+                        const { x, y } = getPointOnCircle(angle, player.pos.x, player.pos.y, player.radius * 0.9);
+                        this.pos.x = x;
+                        this.pos.y = y;
+                    }
                 }
             });
         }
+        if (this.knockbackStage !== 0 && this.knockbackStage < this.knockBackFrames) {
+            this.dealKnockback(this.knockbackPlayer)
+        }
     }
 
-    isInRangeWith(otherPlayer: Player) {
+    isInRangeWith(otherPlayer: Player | Coin) {
         const radius = this.getRangeRadius();
         const otherRadius = otherPlayer.getRangeRadius();
 
@@ -344,72 +363,60 @@ export default class Player {
     packets(room: Room) {
         const { quadTree } = room;
         if (!quadTree) return;
-        const newSeenPlayers = new Set();
-        const newSeenCoins = new Set();
+        const newSeenEntities = new Set();
+        // const newSeenCoins = new Set();
         const candidates = quadTree.retrieve(this.getRangeBounds());
 
-        candidates.forEach((elem: any) => {
-            if (elem.id === this.id) {
-                // if (this.updated.pos) this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, this.getMovementInfo()).toBinary(true));
-                if (this.updated.pos) writePlayerPositionPacket(this.streamWriter, this.id, this.pos.x, this.pos.y);
-
-                // eslint-disable-next-line max-len
-                // if (this.updated.health) this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: this.id, health: this.healthPercent }).toBinary(true));
-                if (this.updated.health) writePlayerHealthPacket(this.streamWriter, this.id, this.healthPercent);
-                return;
+        // add all players we should be able to see to list
+        candidates.forEach((entity: any) => {
+            const player = room.getPlayer(entity.id);
+            // if we are in range of the entity
+            if (player && this.isInRangeWith(player)) {
+                // add this entity to the seen players
+                newSeenEntities.add(player.id);
             }
-            // can be a coin or player, if its a player it will give undefined
-            const player = room.getPlayer(elem.id);
-
-            if (!player || !this.isInRangeWith(player)) return;
-
-            // this player has not been added to our view
-            if (!this.lastSeenPlayers.has(player.id)) {
-                this.lastSeenPlayers.add(player.id);
-                // this.ws.send(new Packet(Packet.Type.PLAYER_ADD, player.getFirstSendData()).toBinary(true));
-                writePlayerAddPacket(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.name, player.scale, player.health, player.evolution, player.swinging, player.swordThrown);
-            } else if (player.updated.pos) {
-                // this.ws.send(new Packet(Packet.Type.PLAYER_MOVE, player.getMovementInfo()).toBinary(true));
-                writePlayerPositionPacket(this.streamWriter, player.id, player.pos.x, player.pos.y);
+            const coin = room.getCoin(entity.id);
+            if (coin && this.isInRangeWith(coin)) {
+                newSeenEntities.add(coin.id);
             }
-            if (player.updated.rot) {
-                // this.ws.send(new Packet(Packet.Type.PLAYER_ROTATE, { id: player.id, r: player.angle }).toBinary(true));
-                writePlayerRotationPacket(this.streamWriter, player.id, player.angle);
-            }
-            if (player.updated.health) {
-                // eslint-disable-next-line max-len
-                // this.ws.send(new Packet(Packet.Type.PLAYER_HEALTH, { id: player.id, health: player.healthPercent }).toBinary(true));
-                writePlayerHealthPacket(this.streamWriter, player.id, player.healthPercent);
-            }
-            if (player.updated.swinging) {
-                // this.ws.send(new Packet(Packet.Type.PLAYER_SWING, { id: player.id, s: player.swinging }).toBinary(true));
-                writePlayerSwingPacket(this.streamWriter, player.id, player.swinging);
-            }
-            newSeenPlayers.add(player.id);
         });
-
-        // lets not send coins yet until we have it properly setup on the client side
-        // candidates.forEach((elem: any) => {
-        //     const coin = room.getCoin(elem.id);
-
-        //     if (!coin || !coin.isInRangeWith(this)) return;
-
-        //     this.ws.send(new Packet(Packet.Type.COIN, { id: coin.id, position: coin.pos }).toBinary(true));
-        //     // console.log("sent coin thingy...");
-        //     if (coin.hittingPlayer(this)) {
-        //         this.ws.send(new Packet(Packet.Type.COIN_COLLECT, { id: coin.id }).toBinary(true));
-        //     }
-        // });
-
-        this.lastSeenPlayers.forEach((id: any) => {
-            if (!newSeenPlayers.has(id)) {
-                this.lastSeenPlayers.delete(id);
-                // this.ws.send(new Packet(Packet.Type.PLAYER_REMOVE, { id }).toBinary(true));
-                writePlayerRemovePacket(this.streamWriter, id);
+        // find which entities we can no longer see, write remove packet for that player
+        this.lastSeenEntities.forEach(id => {
+            if (!newSeenEntities.has(id)) {
+                const isPlayer = !!room.getPlayer(id);
+                if (isPlayer) {
+                    // when we despawn a player because we are far away from it
+                    SPacketWriter.REMOVE_PLAYER(this.streamWriter, id);
+                } else {
+                    // when we despawn a coin because we are far away from it
+                    SPacketWriter.REMOVE_COIN(this.streamWriter, id);
+                }
+                this.lastSeenEntities.delete(id);
             }
         });
 
-        this.lastSeenPlayers = newSeenPlayers;
+        for (let i = 0; i < candidates.length; i++) {
+            const coin = room.getCoin((candidates[i] as any).id);
+            if (coin && !this.lastSeenEntities.has(coin.id) && this.isInRangeWith(coin)) {
+                SPacketWriter.CREATE_COIN(this.streamWriter, coin.id, coin.pos.x, coin.pos.y)
+                this.lastSeenEntities.add(coin.id)
+                continue;
+            }
+            const player = room.getPlayer((candidates[i] as any).id);
+            if (!player) continue;
+            if (this.lastSeenEntities.has(player.id)) {
+                SPacketWriter.UPDATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle)
+                if (player.updated.health) {
+                    SPacketWriter.PLAYER_HEALTH(this.streamWriter, player.id, player.healthPercent)
+                }
+                if (player.updated.swinging) {
+                    SPacketWriter.PLAYER_SWING(this.streamWriter, player.id, player.swinging)
+                }
+            } else if (this.isInRangeWith(player)) {
+                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent)
+                this.lastSeenEntities.add(player.id);
+            }
+        }
     }
     flushStream(): boolean {
         // send 1 packet containing all types of messages
@@ -427,5 +434,11 @@ export default class Player {
 
         this.xp += coin.value;
         room.removeCoin(coin.id);
+        idGen.removeID(coin.id);
+        this.room.players.array.forEach((player: Player) => {
+            if (player.lastSeenEntities.has(coin.id)) {
+                SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id);
+            }
+        })
     }
 }

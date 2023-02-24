@@ -2,14 +2,17 @@
 import Phaser from 'phaser';
 import Packet from '../../../../shared/Packet';
 import PacketErrorTypes from '../../../../shared/PacketErrorTypes';
-import Player from '../classes/Player';
+import Player, { createPositionBuffer, addPositionBuffer } from '../classes/Player';
 // import Coin from '../classes/Coin';
 import Ws from '../classes/Ws';
 import controller from '../helpers/controller';
 import getServerUrl from '../helpers/getServerUrl';
 import levels from '../../../../shared/Levels';
-import { createJoinPacket } from '../packets/packet';
+import { CPacketWriter } from '../packets/packet';
 import Leaderboard from '../classes/Leaderboard';
+import constants from '../../../../server/helpers/constants';
+import lerpTheta, { lerp } from '../helpers/angleInterp';
+import Coin from '../classes/Coin';
 import Border from '../classes/Border';
 import constants from '../../../../server/helpers/constants';
 // eslint-disable-next-line no-unused-vars
@@ -20,11 +23,13 @@ export default class MainGame extends Phaser.Scene {
     connectingText: Phaser.GameObjects.Text;
     passedData: { name: string; keys: boolean; volume: number; loggedIn: boolean };
     players: Map<any, Player>;
+    coins: Map<number, Coin>;
     grass: Phaser.GameObjects.TileSprite;
     controllerUpdate: () => void;
     debugItems: any[];
-  leaderboard: Leaderboard;
-  UICamera: Phaser.Cameras.Scene2D.Camera;
+    leaderboard: Leaderboard;
+    UICamera: Phaser.Cameras.Scene2D.Camera;
+    playerNames: Map<number, string> = new Map();
   border: any;
     constructor() {
         super('maingame');
@@ -68,27 +73,25 @@ export default class MainGame extends Phaser.Scene {
         });
 
         this.ws.once('connected', () => {
-            // this.ws.send(new Packet(Packet.Type.JOIN, { name: this.passedData.name, verify: false }));
-            console.log(this.passedData);
-            createJoinPacket(this.ws.streamWriter, this.passedData.name, this.passedData.loggedIn);
+            CPacketWriter.SPAWN(this.ws.streamWriter, this.passedData.name, this.passedData.loggedIn);
+            // createJoinPacket(this.ws.streamWriter, this.passedData.name, false);
             this.ws.flushStream();
         });
 
-        this.ws.once(Packet.Type.ERROR.toString(), ([code]) => {
+        this.ws.once(Packet.ServerHeaders.ERROR.toString(), ([code]) => {
             const values = Object.values(PacketErrorTypes);
             const error = values.find((value: any) => value.code === code);
             this.events.emit('crash', error ? (error as any).message : 'An unknown error occured.');
         });
 
-        this.ws.once(Packet.Type.JOIN.toString(), ([id, x, y, skin, name, loggedIn]) => {
+        this.ws.once(Packet.ServerHeaders.CLIENT_SPAWN.toString(), ([id, x, y, rotation, health, skin, name, loggedIn]) => {
             this.ws.id = id;
             this.connectingText.destroy();
             this.loadBg.destroy();
             this.start();
 
-            console.log('Joined as', id, x, y, skin, name, loggedIn);
-            const player = new Player(this, x, y, name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
-            player.setHealth(100);
+            const player = new Player(this, x, y, this.passedData.name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
+            player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
 
@@ -96,44 +99,59 @@ export default class MainGame extends Phaser.Scene {
             this.cameras.main.startFollow(player);
         });
 
+        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time]) => {
+            if (this.ws.id === id) return;
+            const name = this.playerNames.get(id) as string;
+            // const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
+            const player = new Player(this, x, y, name, id, 'player', rotation).setDepth(2).setScale(0.25);
+            player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
+            player.setHealth(health);
+            this.players.set(id, player);
+            this.UICamera.ignore(player);
+            console.log(this.players)
+        });
+
         // TODO: Test this on refresh scene
-        this.ws.on(Packet.Type.PLAYER_MOVE.toString(), d => {
-            const { id, pos } = d;
+        this.ws.on(Packet.ServerHeaders.UPDATE_PLAYER.toString(), d => {
+            const { id, pos, rotation, time } = d;
             const player = this.players.get(id);
             if (!player) return;
-            player.move(pos);
+            player.possitionBuffer.push(createPositionBuffer(time, pos.x, pos.y, rotation));
+
+            // player.oldPos.x = player.newPos.x;
+            // player.oldPos.y = player.newPos.y;
+            // player.newPos.x = pos.x;
+            // player.newPos.y = pos.y;
+            // player.timestamp1 = player.timestamp2;
+            // player.timestamp2 = Date.now();
+            // player.oldAngle = player.newAngle;
+            // player.newAngle = rotation;
+            if (this.myPlayer !== player)
+                player.setDirection(rotation);
         });
 
-        this.ws.on(Packet.Type.PLAYER_ROTATE.toString(), d => {
-            const { id, r } = d;
-            const player = this.players.get(id);
-            if (!player) return;
-            player.setDirection(r);
-        });
-
-        this.ws.on(Packet.Type.PLAYER_HEALTH.toString(), d => {
+        this.ws.on(Packet.ServerHeaders.PLAYER_HEALTH.toString(), d => {
             const { id, health } = d;
             const player = this.players.get(id);
-            if (!player) return;
+            if (!player) return;    
             player.setHealth(health);
         });
 
-        this.ws.on(Packet.Type.PLAYER_SWING.toString(), d => {
+        this.ws.on(Packet.ServerHeaders.PLAYER_SWING.toString(), d => {
             const { id, s } = d;
             const player = this.players.get(id);
             if (!player) return;
             player.setMouseDown(s);
         });
 
-        this.ws.on(Packet.Type.PLAYER_ADD.toString(), d => {
-            const { id, name, x, y, scale, angle, health } = d;
-            const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
-            this.UICamera.ignore(player);
-            player.setHealth(health);
-            this.players.set(id, player);
+        // player joined the server
+        this.ws.on(Packet.ServerHeaders.ADD_PLAYER.toString(), d => {
+            const { id, name /*, x, y, scale, angle, health*/ } = d;
+            console.log(this.players)
+            this.playerNames.set(id, name);
         });
 
-        this.ws.on(Packet.Type.PLAYER_REMOVE.toString(), d => {
+        this.ws.on(Packet.ServerHeaders.REMOVE_PLAYER.toString(), d => {
             const { id } = d;
             const player = this.players.get(id);
             if (!player) return;
@@ -141,6 +159,15 @@ export default class MainGame extends Phaser.Scene {
             this.players.delete(id);
         });
 
+        this.ws.on(Packet.ServerHeaders.CREATE_COIN.toString(), ({ id, x, y }) => {
+            const coin = new Coin(this, id, x, y);
+            this.coins.set(id, coin);
+            this.UICamera.ignore(coin);
+        })
+
+        this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id }) => {
+            this.coins.delete(id);
+        })
         // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
         //   this.debugItems.forEach((item: any) => item.destroy());
         //   this.debugItems = [];
@@ -151,20 +178,22 @@ export default class MainGame extends Phaser.Scene {
         //   });
         // });
 
-        this.ws.on(Packet.Type.DIE.toString(), (kills, killer) => {
+        this.ws.on(Packet.ServerHeaders.CLIENT_DIED.toString(), (kills, killer) => {
             //this.events.emit('crash', 'You died.');
             this.events.emit('death', 'You ded', kills, killer, 0);
         });
 
-        this.ws.on(Packet.Type.COIN.toString(), d => {
-            console.log("coin", d);
+
+        this.ws.on(Packet.ServerHeaders.COIN.toString(), d => {
+            // alert("COIN!!!!!!");
         });
 
-        this.ws.on(Packet.Type.COIN_COLLECT.toString(), () => {
+        this.ws.on(Packet.ServerHeaders.COIN_COLLECT.toString(), () => {
             // Coin collection event
         });
 
         this.players = new Map();
+        this.coins = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
         this.cameras.main.ignore(this.leaderboard);
 
@@ -186,11 +215,44 @@ export default class MainGame extends Phaser.Scene {
         return this.players.get(this.ws.id);
     }
 
+    interpolate(delta: number) {
+        const renderTime = Date.now() - (1000 / constants.expected_tps);
+
+        for (const player of this.players.values()) {
+            const posBuffer = player.possitionBuffer;
+
+            while (posBuffer.length >= 2 && posBuffer[1][0] <= renderTime) {
+                addPositionBuffer(posBuffer.shift() as any)
+            }
+            if (posBuffer.length >= 2 && posBuffer[0][0] <= renderTime && renderTime <= posBuffer[1][0] ) {
+                const timestamp1 = posBuffer[0][0]
+                const timestamp2 = posBuffer[1][0]
+                const lerpFactor = (renderTime - timestamp1) / (timestamp2 - timestamp1)
+
+                const newX = posBuffer[0][1] + (posBuffer[1][1] - posBuffer[0][1]) * lerpFactor
+                const newY = posBuffer[0][2] + (posBuffer[1][2] - posBuffer[0][2]) * lerpFactor
+                const newRotation = lerpTheta( posBuffer[0][3], posBuffer[1][3], lerpFactor)                
+
+                player.setPosition(newX,newY);
+                
+                // show no interpolation
+                // player.setPosition(posBuffer[1][1], posBuffer[1][2])
+                
+                if (player !== this.myPlayer)
+                    player.forceSetDirection(newRotation * (180 / Math.PI))
+
+            }
+        }
+    }
+
     update(time: number, delta: number) {
         // Return if still connecting
         const { myPlayer } = this;
         if (this.connectingText.visible || !myPlayer) return;
         // Do game logic below
+
+        this.interpolate(delta);
+    
 
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;

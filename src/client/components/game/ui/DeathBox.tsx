@@ -18,9 +18,9 @@ export default function DeathBox(props: {killer:string, kills:number, coins:numb
     <div className={styles.deathbox}>
       <h1 className={styles.titletext}>YOU DIED</h1>
       <p className={styles.namebox}>
-        {"Killer: "+kills[1]}
+        {"Killer: "+killer}
         {<br />}
-        {"Kills: "+kills[0]}
+        {"Kills: "+kills}
         {<br />}
         {"Coins: "+coins}
         
