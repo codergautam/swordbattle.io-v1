@@ -14,7 +14,7 @@ export default (ws: any, buffer: ArrayBuffer) => {
     while (streamReader.hasMoreData()) {
         const packetType = streamReader.readU8();
         switch (packetType) {
-            case Packet.Type.JOIN:
+            case Packet.ClientHeaders.SPAWN:
                 const name = streamReader.readString();
                 const verify: boolean = !!streamReader.readU8();
 
@@ -26,7 +26,7 @@ export default (ws: any, buffer: ArrayBuffer) => {
                 mainRoom.addPlayer(player, ws);
                 break;
 
-            case Packet.Type.PLAYER_MOVE:
+            case Packet.ClientHeaders.CONTROLS:
                 const angle = streamReader.readF32();
                 const force = streamReader.readU8();
                 const direction = streamReader.readU8();

@@ -37,8 +37,6 @@ export default class Ws extends Phaser.Events.EventEmitter {
                                 this.parseBinary(data);
                                 break;
                         }
-                        // const parsed = Packet.fromBinary(event.data);
-                        // this.emit(parsed.type, parsed.data);
                     } catch (e) {
                         console.error('error while parsing packet', e);
                     }
@@ -67,7 +65,6 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 console.error('The connection to the server was closed unexpectedly.');
                 return;
             }
-            // this.ws.send(packet.toBinary(json));
             this.ws.send(packet);
         }
     }
@@ -81,99 +78,134 @@ export default class Ws extends Phaser.Events.EventEmitter {
     }
     parseJSON(json) {}
     parseBinary(buffer: ArrayBuffer) {
+        const arrivalTime = Date.now();
         this.streamReader.readFrom(buffer);
         while (this.streamReader.hasMoreData()) {
             const packetType = this.streamReader.readU8();
             switch (packetType) {
-                case Packet.Type.JOIN:
-                    this.join(packetType);
-                    break;
-                case Packet.Type.PLAYER_MOVE:
-                    this.move(packetType);
-                    break;
-                case Packet.Type.PLAYER_ROTATE:
-                    this.rotate(packetType);
-                    break;
-                case Packet.Type.PLAYER_HEALTH:
+                case Packet.ServerHeaders.CLIENT_SPAWN:
+                    this.spawnData(packetType);
+                break;
+                case Packet.ServerHeaders.CREATE_PLAYER:
+                    this.createPlayer(packetType, arrivalTime);
+                break;
+                case Packet.ServerHeaders.UPDATE_PLAYER:
+                    this.updatePlayer(packetType, arrivalTime)
+                break;
+                case Packet.ServerHeaders.PLAYER_HEALTH:
                     this.health(packetType);
                     break;
-                case Packet.Type.PLAYER_SWING:
+                case Packet.ServerHeaders.PLAYER_SWING:
                     this.swing(packetType);
                     break;
-                case Packet.Type.PLAYER_ADD:
-                    this.addPlayer(packetType);
+                case Packet.ServerHeaders.ADD_PLAYER:
+                    this.playerJoinedServer(packetType);
                     break;
-                case Packet.Type.PLAYER_REMOVE:
+                case Packet.ServerHeaders.REMOVE_PLAYER:
                     this.removePlayer(packetType);
                     break;
-                case Packet.Type.DIE:
+                case Packet.ServerHeaders.CLIENT_DIED:
                     this.die(packetType);
                     break;
+                case Packet.ServerHeaders.CREATE_COIN:
+                    this.createCoin(packetType);
+                    break;
+                case Packet.ServerHeaders.REMOVE_COIN:
+                    this.removeCoin(packetType);
+                    break;
+                default:
+                    throw new Error("Unknown packet type received on client: " + packetType)
+                break;
             }
         }
     }
-    join(packetType: number) {
+    spawnData(packetType: number) {
         const id = this.streamReader.readULEB128();
         const x = this.streamReader.readF32();
         const y = this.streamReader.readF32();
-        this.emit(packetType.toString(), [id, x, y]);
-    }
-    move(packetType: number) {
-        const id = this.streamReader.readULEB128();
-        const x = this.streamReader.readF32();
-        const y = this.streamReader.readF32();
-        this.emit(packetType.toString(), { id, pos: { x, y } });
-    }
-    rotate(packetType: number) {
-        const id = this.streamReader.readULEB128();
         const rotation = this.streamReader.readF32();
-        this.emit(packetType.toString(), { id, r: rotation });
+        const health = this.streamReader.readU8();
+
+        this.emit(packetType.toString(), [id, x, y, rotation, health]);
+    }
+    createPlayer(packetType: number, time: number) {
+        const id = this.streamReader.readULEB128();
+        const x = this.streamReader.readF32();
+        const y = this.streamReader.readF32();
+        const rotation = this.streamReader.readF32();
+        const health = this.streamReader.readU8();
+        
+        this.emit(packetType.toString(), [id, x, y, rotation, health, time]);
+    }
+    updatePlayer(packetType: number, arrivalTime: number) {
+        const id = this.streamReader.readULEB128();
+        const x = this.streamReader.readF32();
+        const y = this.streamReader.readF32();
+        const rotation = this.streamReader.readF32();
+
+        this.emit(packetType.toString(), { id, pos: { x, y }, rotation, time: arrivalTime });
+
     }
     health(packetType: number) {
         const id = this.streamReader.readULEB128();
         const health = this.streamReader.readU8();
+        console.log("health", id, health)
         this.emit(packetType.toString(), { id, health });
     }
     swing(packetType: number) {
         const id = this.streamReader.readULEB128();
         // cast 0 or 1 to boolean
         const isSwinging = !!this.streamReader.readU8();
+        console.log("swing", id, isSwinging)
         this.emit(packetType.toString(), { id, s: isSwinging });
     }
-    addPlayer(packetType: number) {
+    playerJoinedServer(packetType: number) {
         const id = this.streamReader.readULEB128();
-        const x = this.streamReader.readF32();
-        const y = this.streamReader.readF32();
-        const angle = this.streamReader.readF32();
         const name = this.streamReader.readString();
-        const health = this.streamReader.readU8();
-        const evolution = this.streamReader.readU8();
-        const scale = this.streamReader.readF32();
+        // const x = this.streamReader.readF32();
+        // const y = this.streamReader.readF32();
+        // const angle = this.streamReader.readF32();
+        // const name = this.streamReader.readString();
+        // const health = this.streamReader.readU8();
+        // const evolution = this.streamReader.readU8();
+        // const scale = this.streamReader.readF32();
 
-        const bitflag = this.streamReader.readU8();
+        // const bitflag = this.streamReader.readU8();
         // checks the first two bits on this byte
         // eg: (if both are set) 1 1 0 0 0 0 0
-        const swinging = bitflag & 1;
-        const swordThrown = bitflag & 2;
+        // const swinging = bitflag & 1;
+        // const swordThrown = bitflag & 2;
         this.emit(packetType.toString(), {
             id,
             name,
-            x,
-            y,
-            scale,
-            angle,
-            health,
+            // x,
+            // y,
+            // scale,
+            // angle,
+            // health,
             // okay looks like the client doesn't even need evolution and the bitflag
             // oh well, its a good example for how you can do this in the future
         });
     }
     removePlayer(packetType: number) {
         const id = this.streamReader.readULEB128();
+
         this.emit(packetType.toString(), { id });
     }
     die(packetType: number) {
         const kills = this.streamReader.readULEB128();
         const killer = this.streamReader.readString();
+
         this.emit(packetType.toString(), kills, killer);
+    }
+    createCoin(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        const x = this.streamReader.readF32();
+        const y = this.streamReader.readF32();
+        this.emit(packetType.toString(), { id, x, y })
+    }
+    removeCoin(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        this.emit(packetType.toString(), { id })
     }
 }
