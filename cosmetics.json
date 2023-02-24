@@ -1,0 +1,836 @@
+{
+  "skins": [
+      {
+          "name": "player",
+          "displayName": "Default",
+          "url": "/assets/images/player.png",
+          "price": 0,
+          "description": "The default skin"
+      },
+      {
+          "name": "yinyang",
+          "displayName": "Yin Yang",
+          "url": "/assets/images/yinyangPlayer.png",
+          "price": 50,
+          "description": "Find a balance"
+      },
+      {
+          "name": "neon",
+          "displayName": "Neon",
+          "url": "/assets/images/neonPlayer.png",
+          "price": 100,
+          "description": "Ahhh.. So bright!"
+      },
+      {
+          "name": "sponge",
+          "displayName": "Sponge",
+          "url": "/assets/images/spongePlayer.png",
+          "price": 250,
+          "description": "Soaks up coins"
+      },
+      {
+          "name": "vortex",
+          "displayName": "Vortex",
+          "url": "/assets/images/vortexPlayer.png",
+          "price": 200,
+          "description": "The power is too strong.."
+      },
+      {
+          "name": "bubble",
+          "displayName": "Bubble",
+          "url": "/assets/images/bubblePlayer.png",
+          "price": 300,
+          "description": "Magical, colorful, mysterious"
+      },
+      {
+          "name": "bullseye",
+          "displayName": "Bullseye",
+          "url": "/assets/images/bullseyePlayer.png",
+          "price": 400,
+          "description": "It can't miss"
+      },
+      {
+          "name": "fox",
+          "displayName": "Fox",
+          "url": "/assets/images/foxPlayer.png",
+          "price": 500,
+          "description": "Very sneaky"
+      },
+      {
+          "name": "spring",
+          "displayName": "Spring",
+          "url": "/assets/images/springPlayer.png",
+          "price": 1000,
+          "description": "Spring is here!"
+      },
+      {
+          "name": "pig",
+          "displayName": "Pig",
+          "url": "/assets/images/pigPlayer.png",
+          "price": 1250,
+          "description": "It managed to survive the wolf..."
+      },
+      {
+          "name": "smile",
+          "displayName": "Smile",
+          "url": "/assets/images/smilePlayer.png",
+          "price": 1500,
+          "description": "Smile while you stab"
+      },
+      {
+          "name": "sad",
+          "displayName": "Sad",
+          "url": "/assets/images/sadPlayer.png",
+          "price": 2000,
+          "description": "Stab with sadness..."
+      },
+      {
+          "name": "glass",
+          "displayName": "Glass",
+          "url": "/assets/images/glassPlayer.png",
+          "price": 2250,
+          "description": "Why have gold when you can have glass?"
+      },
+      {
+          "name": "sick",
+          "displayName": "Sick",
+          "url": "/assets/images/sickPlayer.png",
+          "price": 2500,
+          "description": "I don't feel so good... I need coins"
+      },
+      {
+          "name": "clef",
+          "displayName": "Clef",
+          "url": "/assets/images/clefPlayer.png",
+          "price": 2750,
+          "description": "Lure them in..."
+      },
+      {
+          "name": "bowling",
+          "displayName": "Bowling",
+          "url": "/assets/images/bowlingPlayer.png",
+          "price": 3500,
+          "description": "It can knock people over like a pin"
+      },
+      {
+          "name": "hacker",
+          "displayName": "Hacker",
+          "url": "/assets/images/hackerPlayer.png",
+          "price": 5000,
+          "description": "ℙ𝕣𝕠 𝕙𝕒𝕔𝕜𝕖𝕣"
+      },
+      {
+          "name": "frager201",
+          "displayName": "Frager201",
+          "url": "/assets/images/frager201Player.png",
+          "price": 6000,
+          "description": "Dedicated to Frager201"
+      },
+      {
+          "name": "bread",
+          "displayName": "Bread",
+          "url": "/assets/images/breadPlayer.png",
+          "price": 7500,
+          "description": "Fresh, and tasty!"
+      },
+      {
+          "name": "starrynight",
+          "displayName": "Starry Night",
+          "url": "/assets/images/starrynightPlayer.png",
+          "price": 9000,
+          "description": "A nice sight before a kill"
+      },
+      {
+          "name": "cursed",
+          "displayName": "Cursde",
+          "url": "/assets/images/cursedPlayer.png",
+          "price": 9500,
+          "description": "Curse them to your advantage"
+      },
+      {
+          "name": "chef",
+          "displayName": "Chef",
+          "url": "/assets/images/chefPlayer.png",
+          "price": 10000,
+          "description": "Chop 'em up"
+      },
+      {
+          "name": "meelee",
+          "displayName": "Melee",
+          "url": "/assets/images/meeleePlayer.png",
+          "price": 11000,
+          "description": "Charge in headfirst"
+      },
+      {
+          "name": "radiation",
+          "displayName": "Radiation",
+          "url": "/assets/images/radiationPlayer.png",
+          "price": 12500,
+          "description": "Very Toxic..."
+      },
+      {
+          "name": "pizza",
+          "displayName": "Pizza",
+          "url": "/assets/images/pizzaPlayer.png",
+          "price": 14000,
+          "description": "A treat for a kill"
+      },
+      {
+          "name": "painting",
+          "displayName": "Painting",
+          "url": "/assets/images/paintingPlayer.png",
+          "price": 14500,
+          "description": "Paint your coins"
+      },
+      {
+          "name": "astronaut",
+          "displayName": "Astronaut",
+          "url": "/assets/images/astronautPlayer.png",
+          "price": 15000,
+          "description": "No gravity..."
+      },
+      {
+          "name": "matrix",
+          "displayName": "Matrix",
+          "url": "/assets/images/matrixPlayer.png",
+          "price": 17500,
+          "description": "Matrix: Its a mystery"
+      },
+      {
+          "name": "smokedetector",
+          "displayName": "Smoke Detector",
+          "url": "/assets/images/smokedetectorPlayer.png",
+          "price": 17500,
+          "description": "BEEP BEEP, scare your enemies"
+      },
+      {
+          "name": "student",
+          "displayName": "Student",
+          "url": "/assets/images/studentPlayer.png",
+          "price": 20000,
+          "description": "Study the arts of stabbing..."
+      },
+      {
+          "name": "ninja",
+          "displayName": "Ninja",
+          "url": "/assets/images/ninjaPlayer.png",
+          "price": 20000,
+          "description": "A skilled warrior"
+      },
+      {
+          "name": "viking",
+          "displayName": "Viking",
+          "url": "/assets/images/vikingPlayer.png",
+          "price": 22500,
+          "description": "A fearsome warrior"
+      },
+      {
+          "name": "sea",
+          "displayName": "Sea",
+          "url": "/assets/images/seaPlayer.png",
+          "price": 25000,
+          "description": "Peaceful and relaxing."
+      },
+      {
+          "name": "determined",
+          "displayName": "Determined",
+          "url": "/assets/images/determinedPlayer.png",
+          "price": 27500,
+          "description": "I. Need. Coins."
+      },
+      {
+          "name": "tiger",
+          "displayName": "Tiger",
+          "url": "/assets/images/tigerPlayer.png",
+          "price": 30000,
+          "description": "Don't get in the way of its claws..."
+      },
+      {
+          "name": "lightning",
+          "displayName": "Lightning",
+          "url": "/assets/images/lightningPlayer.png",
+          "price": 35000,
+          "description": "One zap and you're dead..."
+      },
+      {
+          "name": "smore",
+          "displayName": "Smore",
+          "url": "/assets/images/smorePlayer.png",
+          "price": 37500,
+          "description": "Delicious"
+      },
+      {
+          "name": "mystery",
+          "displayName": "Mystery",
+          "url": "/assets/images/mysteryPlayer.png",
+          "price": 40000,
+          "description": "Its a murder mystery..."
+      },
+      {
+          "name": "dayandnight",
+          "displayName": "Day and Night",
+          "url": "/assets/images/dayandnightPlayer.png",
+          "price": 42500,
+          "description": "Show your dedication no matter what time..."
+      },
+      {
+          "name": "cheese",
+          "displayName": "Cheese",
+          "url": "/assets/images/cheesePlayer.png",
+          "price": 45000,
+          "description": "Its cheese"
+      },
+      {
+          "name": "farmer",
+          "displayName": "Farmer",
+          "url": "/assets/images/farmerPlayer.png",
+          "price": 47500,
+          "description": "Trained in the fields"
+      },
+      {
+          "name": "medic",
+          "displayName": "Medic",
+          "url": "/assets/images/medicPlayer.png",
+          "price": 50000,
+          "description": "Heal.. or Stab..."
+      },
+      {
+          "name": "floral",
+          "displayName": "Floral",
+          "url": "/assets/images/floralPlayer.png",
+          "price": 52500,
+          "description": "Smells good like coins"
+      },
+      {
+          "name": "king",
+          "displayName": "King",
+          "url": "/assets/images/kingPlayer.png",
+          "price": 50000,
+          "description": "All hail the king"
+      },
+      {
+          "name": "monkey",
+          "displayName": "Monkey",
+          "url": "/assets/images/monkeyPlayer.png",
+          "price": 51000,
+          "description": "Le Monke"
+      },
+      {
+          "name": "pumpkin",
+          "displayName": "Pumpkin",
+          "url": "/assets/images/pumpkinPlayer.png",
+          "price": 52500,
+          "description": "Very spooky..."
+      },
+      {
+          "name": "santa",
+          "displayName": "Santa",
+          "url": "/assets/images/santaPlayer.png",
+          "price": 53000,
+          "description": "Ho ho ho"
+      },
+      {
+          "name": "superhero",
+          "displayName": "Superhero",
+          "url": "/assets/images/superheroPlayer.png",
+          "price": 55000,
+          "description": "Super skills for a super player"
+      },
+      {
+          "name": "movie",
+          "displayName": "Movie",
+          "url": "/assets/images/moviePlayer.png",
+          "price": 57500,
+          "description": "Eat coins like popcorn"
+      },
+      {
+          "name": "killerbot",
+          "displayName": "Killer Bot",
+          "url": "/assets/images/killerbotPlayer.png",
+          "price": 60000,
+          "description": "Makes your opponents wish they were fighting an actual bot"
+      },
+      {
+          "name": "masquerade",
+          "displayName": "Masquerade",
+          "url": "/assets/images/masqueradePlayer.png",
+          "price": 62500,
+          "description": "Wear your mask, and stab in disguise"
+      },
+      {
+          "name": "ham",
+          "displayName": "Ham",
+          "url": "/assets/images/hamPlayer.png",
+          "price": 65000,
+          "description": "Chomp"
+      },
+      {
+          "name": "chicken",
+          "displayName": "Chicken",
+          "url": "/assets/images/chickenPlayer.png",
+          "price": 65000,
+          "description": "A snack before slaughter"
+      },
+      {
+          "name": "cat",
+          "displayName": "Cat",
+          "url": "/assets/images/catPlayer.png",
+          "price": 65000,
+          "description": "Sharp claws... and easy kills"
+      },
+      {
+          "name": "wizard",
+          "displayName": "Wizard",
+          "url": "/assets/images/wizardPlayer.png",
+          "price": 67500,
+          "description": "Fight like magic"
+      },
+      {
+          "name": "angry",
+          "displayName": "Angry",
+          "url": "/assets/images/angryPlayer.png",
+          "price": 70000,
+          "description": "Let you anger drive you..."
+      },
+      {
+          "name": "fighter",
+          "displayName": "Fighter",
+          "url": "/assets/images/fighterPlayer.png",
+          "price": 72500,
+          "description": "Fight like a pro"
+      },
+      {
+          "name": "soldier",
+          "displayName": "Soldier",
+          "url": "/assets/images/soldierPlayer.png",
+          "price": 75000,
+          "description": "A hardened veteran"
+      },
+      {
+          "name": "cardboard",
+          "displayName": "Cardboard",
+          "url": "/assets/images/cardboardPlayer.png",
+          "price": 80000,
+          "description": "Pacakge and keep your coins safe"
+      },
+      {
+          "name": "cactus",
+          "displayName": "Cactus",
+          "url": "/assets/images/cactusPlayer.png",
+          "price": 90000,
+          "description": "Adds an extra poke to your stab"
+      },
+      {
+          "name": "baseball",
+          "displayName": "Baseball",
+          "url": "/assets/images/baseballPlayer.png",
+          "price": 95000,
+          "description": "Hit them off the map"
+      },
+      {
+          "name": "basketball",
+          "displayName": "Basketball",
+          "url": "/assets/images/basketballPlayer.png",
+          "price": 95000,
+          "description": "Shoot some coins into your shop"
+      },
+      {
+          "name": "quarterback",
+          "displayName": "Football",
+          "url": "/assets/images/quarterbackPlayer.png",
+          "price": 95000,
+          "description": "Be strong"
+      },
+      {
+          "name": "winter",
+          "displayName": "Winter",
+          "url": "/assets/images/winterPlayer.png",
+          "price": 100000,
+          "description": "I like it cold."
+      },
+      {
+          "name": "fall",
+          "displayName": "Fall",
+          "url": "/assets/images/fallPlayer.png",
+          "price": 100000,
+          "description": "I like it cool"
+      },
+      {
+          "name": "formal",
+          "displayName": "Formal",
+          "url": "/assets/images/formalPlayer.png",
+          "price": 115000,
+          "description": "They'll never expect the gentleman"
+      },
+      {
+          "name": "zombie",
+          "displayName": "Zombie",
+          "url": "/assets/images/zombiePlayer.png",
+          "price": 120000,
+          "description": "Eats the brains of enemies"
+      },
+      {
+          "name": "donut",
+          "displayName": "Donut",
+          "url": "/assets/images/donutPlayer.png",
+          "price": 120000,
+          "description": "Become hyper for a kill spree..."
+      },
+      {
+          "name": "burger",
+          "displayName": "Burger",
+          "url": "/assets/images/burgerPlayer.png",
+          "price": 125000,
+          "description": "As tasty as coins"
+      },
+      {
+          "name": "panda",
+          "displayName": "Panda",
+          "url": "/assets/images/pandaPlayer.png",
+          "price": 125000,
+          "description": "It looks cuddly but watch out..."
+      },
+      {
+          "name": "framework",
+          "displayName": "Framework",
+          "url": "/assets/images/frameworkPlayer.png",
+          "price": 125000,
+          "description": "Built like a rock..."
+      },
+      {
+          "name": "blueberry",
+          "displayName": "Blueberry",
+          "url": "/assets/images/blueberryPlayer.png",
+          "price": 130000,
+          "description": "As juicy as coins"
+      },
+      {
+          "name": "covid",
+          "displayName": "Covid",
+          "url": "/assets/images/covidPlayer.png",
+          "price": 140000,
+          "description": "Increase your immunity"
+      },
+      {
+          "name": "thief",
+          "displayName": "Thief",
+          "url": "/assets/images/thiefPlayer.png",
+          "price": 145000,
+          "description": "Steal coins from enemy"
+      },
+      {
+          "name": "emerald",
+          "displayName": "Emerald",
+          "url": "/assets/images/emeraldPlayer.png",
+          "price": 150000,
+          "description": "Oooh shiny...."
+      },
+      {
+          "name": "beach",
+          "displayName": "Beach",
+          "url": "/assets/images/beachPlayer.png",
+          "price": 150000,
+          "description": "Seems relaxing... but not for enemies"
+      },
+      {
+          "name": "trippy",
+          "displayName": "Trippy",
+          "url": "/assets/images/trippyPlayer.png",
+          "price": 155000,
+          "description": "PRO TIP: Wear this skin and spin to give enemies headaches"
+      },
+      {
+          "name": "sunset",
+          "displayName": "Sunset",
+          "url": "/assets/images/sunsetPlayer.png",
+          "price": 160000,
+          "description": "A beautiful sight"
+      },
+      {
+          "name": "cell",
+          "displayName": "Cell",
+          "url": "/assets/images/cellularPlayer.png",
+          "price": 165000,
+          "description": "Have stronger cells to be stronger"
+      },
+      {
+          "name": "luminescent",
+          "displayName": "Luminescent",
+          "url": "/assets/images/luminescentPlayer.png",
+          "price": 170000,
+          "description": "Glow with coins"
+      },
+      {
+          "name": "mage",
+          "displayName": "Mage",
+          "url": "/assets/images/magePlayer.png",
+          "price": 172500,
+          "description": "Cast a spell"
+      },
+      {
+          "name": "lava",
+          "displayName": "Lava",
+          "url": "/assets/images/lavaPlayer.png",
+          "price": 175000,
+          "description": "Hot Hot Hot"
+      },
+      {
+          "name": "unloaded",
+          "displayName": "Unloaded",
+          "url": "/assets/images/unloadedPlayer.png",
+          "price": 180000,
+          "description": "Error: Skin not loading, report to forum."
+      },
+      {
+          "name": "music",
+          "displayName": "Music",
+          "url": "/assets/images/musicPlayer.png",
+          "price": 180000,
+          "description": "Lure your opponents to death..."
+      },
+      {
+          "name": "hotmetal",
+          "displayName": "Hotmetal",
+          "url": "/assets/images/hotmetalPlayer.png",
+          "price": 185000,
+          "description": "Bring on the heat"
+      },
+      {
+          "name": "ice",
+          "displayName": "Ice",
+          "url": "/assets/images/icePlayer.png",
+          "price": 185000,
+          "description": "Bring on the cold"
+      },
+      {
+          "name": "faded",
+          "displayName": "Faded",
+          "url": "/assets/images/fadedPlayer.png",
+          "price": 190000,
+          "description": "Fade enemies out of existence"
+      },
+      {
+          "name": "magician",
+          "displayName": "Magician",
+          "url": "/assets/images/magicianPlayer.png",
+          "price": 195000,
+          "description": "Vanish enemies"
+      },
+      {
+          "name": "cyborg",
+          "displayName": "Cyborg",
+          "url": "/assets/images/cyborgPlayer.png",
+          "price": 200000,
+          "description": "AI-Assisted Stabbing"
+      },
+      {
+          "name": "vaporwave",
+          "displayName": "Vaporwave",
+          "url": "/assets/images/vaporwavePlayer.png",
+          "price": 210000,
+          "description": "Vaporwave is back"
+      },
+      {
+          "name": "glowing",
+          "displayName": "Glowing",
+          "url": "/assets/images/glowingPlayer.png",
+          "price": 225000,
+          "description": "Blind them with your radiance..."
+      },
+      {
+          "name": "scorpion",
+          "displayName": "Scorpion",
+          "url": "/assets/images/scorpionPlayer.png",
+          "price": 250000,
+          "description": "Poisoned wounds are the worst..."
+      },
+      {
+          "name": "illusionary",
+          "displayName": "Illusionary",
+          "url": "/assets/images/illusionaryPlayer.png",
+          "price": 275000,
+          "description": "So colorful..."
+      },
+      {
+          "name": "bird",
+          "displayName": "Eagle",
+          "url": "/assets/images/birdPlayer.png",
+          "price": 300000,
+          "description": "Watch out for the talons..."
+      },
+      {
+          "name": "pirate",
+          "displayName": "Pirate",
+          "url": "/assets/images/piratePlayer.png",
+          "price": 325000,
+          "description": "Fearsome"
+      },
+      {
+          "name": "neumorphism",
+          "displayName": "Neumorphism",
+          "url": "/assets/images/neumorphismPlayer.png",
+          "price": 350000,
+          "description": "Its neumorphic"
+      },
+      {
+          "name": "devex",
+          "displayName": "Dev3x",
+          "url": "/assets/images/devexPlayer.png",
+          "price": 400000,
+          "description": "3x the power!"
+      },
+      {
+          "name": "angel",
+          "displayName": "ANGEL",
+          "url": "/assets/images/angelPlayer.png",
+          "price": 500000,
+          "description": "The best at PVP. Ever."
+      },
+      {
+          "name": "glitch",
+          "displayName": "Glitch",
+          "url": "/assets/images/glitchPlayer.png",
+          "price": 750000,
+          "description": "Glitch them out of existence"
+      },
+      {
+          "name": "patchwork",
+          "displayName": "Patchwork",
+          "url": "/assets/images/patchworkPlayer.png",
+          "price": 750000,
+          "description": "Its only being held together by some glitch..."
+      },{
+          "name": "virus",
+          "displayName": "Virus",
+          "url": "/assets/images/virusPlayer.png",
+          "price": 750000,
+          "description": "Infect them all"
+      },
+      {
+          "name": "elements",
+          "displayName": "Elements",
+          "url": "/assets/images/elementsPlayer.png",
+          "price": 900000,
+          "description": "Be a swordbender... Make it your own element"
+      },
+      {
+          "name": "devil",
+          "displayName": "Devil",
+          "url": "/assets/images/devilPlayer.png",
+          "price": 1000000,
+          "description": "Now this will scare everyone!"
+      },
+      {
+          "name": "demon",
+          "displayName": "Demon",
+          "url": "/assets/images/demonPlayer.png",
+          "price": 1000000,
+          "description": "Brother of the devil"
+      },
+      {
+          "name": "mossmech",
+          "displayName": "Moss Mech",
+          "url": "/assets/images/mossmechPlayer.png",
+          "price": 1000001,
+          "description": "Rise from the wild and DOMINATE!"
+      },
+      {
+          "name": "honeycomb",
+          "displayName": "Honeycomb",
+          "url": "/assets/images/honeycombPlayer.png",
+          "price": 1250000,
+          "description": "Very sweet!"
+      },
+      {
+          "name": "storm",
+          "displayName": "Storm",
+          "url": "/assets/images/stormPlayer.png",
+          "price": 1250000,
+          "description": "A storm is brewing"
+      },
+      {
+          "name": "cookie",
+          "displayName": "Cookie",
+          "url": "/assets/images/cookiePlayer.png",
+          "price": 1500000,
+          "description": "Scrumptious!"
+      },
+      {
+          "name": "mitblade",
+          "displayName": "MitBald",
+          "url": "/assets/images/mitbladePlayer.png",
+          "price": 2000000,
+          "description": "\"Buy channel membership only $3!!!!\""
+      },
+      {
+          "name": "cylinder",
+          "displayName": "Cylinder",
+          "url": "/assets/images/cylinderPlayer.png",
+          "price": 2000001,
+          "description": "Its 3D. Its just better like that."
+      },
+      {
+          "name": "predator",
+          "displayName": "predator",
+          "url": "/assets/images/predatorPlayer.png",
+          "price": 3000000,
+          "description": "Hunt them down..."
+      },
+      {
+          "name": "reaper",
+          "displayName": "Reaper",
+          "url": "/assets/images/reaperPlayer.png",
+          "price": 4000000,
+          "description": "Scary... watch out"
+      },
+      {
+          "name": "laserfoil",
+          "displayName": "LaserFoil",
+          "url": "/assets/images/foilPlayer.png",
+          "price": 4500000,
+          "desctiption": "Cut them down."
+      },
+      {
+          "name": "scythe",
+          "displayName": "Scythe",
+          "url": "/assets/images/scythePlayer.png",
+          "price": 5000000,
+          "description": "I'm coming for you!"
+      },
+      {
+          "name": "bush",
+          "displayName": "Bush",
+          "url": "/assets/images/bushPlayer.png",
+          "price": 7500000,
+          "description": "The ultimate camouflage."
+      },
+      {
+          "name": "codergautamyt",
+          "displayName": "Coder Gautam YT",
+          "url": "/assets/images/codergautamytPlayer.png",
+          "price": 10000000,
+          "description": "The creator of swordbattle.."
+      },
+      {
+          "name": "assasin",
+          "displayName": "Assassin",
+          "url": "/assets/images/assasinPlayer.png",
+          "price": 20000000,
+          "description": "You don't stand a chance-"
+      },
+      {
+          "name": "anniversary",
+          "displayName": "Anniversary",
+          "url": "/assets/images/anniversaryPlayer.png",
+          "price": 36500000,
+          "description": "Celebrate the 1 year anniversary of the game!"
+      },
+      {
+          "name": "dragon",
+          "displayName": "Dragon",
+          "url": "/assets/images/dragonPlayer.png",
+          "price": 50000000,
+          "description": "The king of the skies... and swords."
+      }
+  ]
+}
