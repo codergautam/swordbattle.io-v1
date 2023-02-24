@@ -1,0 +1,372 @@
+<%
+function msToTime(duration) {
+    const portions = [];
+
+    const msInHour = 1000 * 60 * 60;
+    const hours = Math.trunc(duration / msInHour);
+    if (hours > 0) {
+      portions.push(hours + 'h');
+      duration = duration - (hours * msInHour);
+    }
+
+    const msInMinute = 1000 * 60;
+    const minutes = Math.trunc(duration / msInMinute);
+    if (minutes > 0) {
+      portions.push(minutes + 'm');
+      duration = duration - (minutes * msInMinute);
+    }
+
+    const seconds = Math.trunc(duration / 1000);
+    if (seconds > 0) {
+      portions.push(seconds + 's');
+    }
+
+    return portions.join(' ');
+  }
+
+  function numberWithCommas(x) {
+    return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+}
+
+function niceifyType(d) {
+	var table = {
+		'coins': 'Coins',
+		'kills': 'Kills',
+		'time': 'Survived',
+		'xp': 'XP',
+		'totalcoins': 'Total Coins',
+		'totalkills': 'Total Kills',
+		'totaltime': 'Total Playtime',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function niceifyDur(d) {
+	var table = {
+		'all': 'All-Time',
+		'day': 'Past Day',
+		'week': 'Past Week',
+	}
+	var arr = [table[d]]
+
+	arr = arr.concat(Object.values(table).filter(x => x != table[d]));
+
+	return arr;
+}
+function tableDur(d) {
+	var table = ["all", "day", "week"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
+function tableType(d) {
+	var table = ["coins", "kills", "time", "xp", "totalcoins", "totalkills", "totaltime"];
+	//remove d from table
+	table.splice(table.indexOf(d), 1);
+
+	return table;
+}
+  %>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Leaderboard</title>
+	<meta content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" name="viewport">
+	<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css">
+	<link rel="stylesheet" type="text/css" href="css/style.css">
+	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
+<script>
+	function updateQueryStringParameter(uri, key, value) {
+var re = new RegExp("([?&])" + key + "=.*?(&|$)", "i");
+var separator = uri.indexOf('?') !== -1 ? "&" : "?";
+if (uri.match(re)) {
+return uri.replace(re, '$1' + key + "=" + value + '$2');
+}
+else {
+return uri + separator + key + "=" + value;
+}
+}
+	function setOptions(time, type) {
+		if(!time) var time = "<%= duration %>"
+		if(!type) var type = "<%= type %>"
+		var url = window.location.href;
+		url = updateQueryStringParameter(url, "type", type);
+		url = updateQueryStringParameter(url, "duration", time);
+		console.log(url);
+		window.location.assign(url);
+
+
+	}
+</script>
+	<style>
+        @import url("https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap");
+body {
+	background: #f9f9f9;
+	font-family: "Roboto", sans-serif;
+}
+
+.main-content {
+	padding-top: 100px;
+	padding-bottom: 100px;
+}
+
+.leaderboard-card {
+	background: #fff;
+	margin-bottom: 30px;
+	border-radius: 5px;
+	overflow: hidden;
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+.leaderboard-card.leaderboard-card--first {
+	transform: scale(1.05);
+}
+.leaderboard-card.leaderboard-card--first .leaderboard-card__top {
+	background: linear-gradient(45deg, #7e57c2, #ab47bc);
+	color: #fff;
+}
+.leaderboard-card__top {
+	background: #f9f6ff;
+	padding: 20px 0 10px 0;
+}
+.leaderboard-card__body {
+	padding: 15px;
+	margin-top: -40px;
+}
+
+img.circle-img {
+	height: 70px;
+	width: 70px;
+	border-radius: 70px;
+	border: 3px solid #fff;
+	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+}
+img.circle-img.circle-img--small {
+	height: 55px;
+	width: 55px;
+	border-radius: 55px;
+}
+
+.table {
+	border-spacing: 0 15px;
+	border-collapse: separate;
+}
+.table thead tr th,
+.table thead tr td,
+.table tbody tr th,
+.table tbody tr td {
+	vertical-align: middle;
+	border: none;
+}
+.table thead tr th:nth-last-child(1),
+.table thead tr td:nth-last-child(1),
+.table tbody tr th:nth-last-child(1),
+.table tbody tr td:nth-last-child(1) {
+	text-align: center;
+}
+.table tbody tr {
+	box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+	border-radius: 5px;
+}
+.table tbody tr td {
+	background: #fff;
+}
+.table tbody tr td:nth-child(1) {
+	border-radius: 5px 0 0 5px;
+}
+.table tbody tr td:nth-last-child(1) {
+	border-radius: 0 5px 5px 0;
+}
+    </style>
+</head>
+<body>
+
+	<section class="main-content">
+
+		<div class="container">
+			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : type=="xp"?"XP":type=="totaltime"?"Total Playtime":type=="totalkills"?"Total Kills":"Total Coins") %> Leaderboard%></h1>
+            <br>
+            <h3><%=(duration == "all" ? "All-Time" : duration == "day" ? "Past Day" : "Past Week")%></h3>
+			<br>
+
+			<div class="dropdown dropdown d-inline-block">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+				  <%= niceifyType(type)[0] %>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[0]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[1] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[1]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[2] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[2]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[3] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[3]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[4] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[4]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[5] %></a>
+				  <a onclick="setOptions(undefined, '<%=tableType(type)[5]%>')" class="dropdown-item" href="#"><%= niceifyType(type)[6] %></a>
+
+				</div>
+			  </div>
+			  <div class="dropdown dropdown d-inline-block">
+				<button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+					<%= niceifyDur(duration)[0] %>
+				</button>
+				<div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+				  <a onclick="setOptions('<%=tableDur(duration)[0]%>')" class="dropdown-item" href="#"><%= niceifyDur(duration)[1] %></a>
+				  <a onclick="setOptions('<%=tableDur(duration)[1]%>')" class="dropdown-item" href="#"><%= niceifyDur(duration)[2] %></a>
+				</div>
+			  </div>
+
+			  <br>
+			  <br>
+			<div class="row">
+				<% if (lb.length > 2) { %>
+				<div class="col-sm-4">
+
+
+					<div class="leaderboard-card leaderboard-card--first">
+						<div class="leaderboard-card__top">
+							<% if (lb[0].verified) { %>
+								<h3 class="text-center">#1 - <a style="color:white;" href="/<%= lb[0].name %>"><%= lb[0].name %></a> </h3>
+								<% } else { %>
+							<h3 class="text-center">#1 - <%= lb[0].name %> </h3>
+							<% } %>
+						</div>
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+                                <br><br>
+
+								<% if (type != "xp" && !type.startsWith("total")) { %>
+
+								<h5 class="mb-0"><%= numberWithCommas(lb[0].coins) %> coins</h5>
+								<p class="text-muted mb-0">Kills: <%= lb[0].kills %>, Survived: <%= msToTime(lb[0].time) %>  </p>
+								<% } else { %>
+									<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[0].time):numberWithCommas(lb[0][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+								<% } %>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="leaderboard-card">
+						<div class="leaderboard-card__top">
+							<% if (lb[1].verified) { %>
+								<h3 class="text-center">#2 - <a style="color:black;" href="/<%= lb[1].name %>"><%= lb[1].name %></a> </h3>
+								<% } else { %>
+							<h3 class="text-center">#2 - <%= lb[1].name %> </h3>
+							<% } %>
+						</div>
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+                                <br><br>
+																<% if (type != "xp" && !type.startsWith("total")) { %>
+
+																	<h5 class="mb-0"><%= numberWithCommas(lb[1].coins) %> coins</h5>
+																	<p class="text-muted mb-0">Kills: <%= lb[1].kills %>, Survived: <%= msToTime(lb[1].time) %>  </p>
+																	<% } else { %>
+																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[1].time):numberWithCommas(lb[1][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+																	<% } %>
+
+							</div>
+						</div>
+					</div>
+				</div>
+				<div class="col-sm-4">
+					<div class="leaderboard-card">
+						<div class="leaderboard-card__top">
+							<% if (lb[2].verified) { %>
+								<h3 class="text-center">#3 - <a style="color:black;" href="/<%= lb[2].name %>"><%= lb[2].name %></a> </h3>
+								<% } else { %>
+							<h3 class="text-center">#3 - <%= lb[2].name %> </h3>
+							<% } %>
+						</div>
+
+						<div class="leaderboard-card__body">
+							<div class="text-center">
+                                <br><br>
+
+																<% if (type != "xp" && !type.startsWith("total")) { %>
+
+																	<h5 class="mb-0"><%= numberWithCommas(lb[2].coins) %> coins</h5>
+																	<p class="text-muted mb-0">Kills: <%= lb[2].kills %>, Survived: <%= msToTime(lb[2].time) %>  </p>
+																	<% } else { %>
+																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[2].time):numberWithCommas(lb[2][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+																	<% } %>
+
+							</div>
+						</div>
+
+					</div>
+				</div>
+				<% } else { %>
+					Not enough data.
+					<% } %>
+			</div>
+
+
+
+			<table class="table">
+				<thead>
+					<tr>
+						<th>Rank</th>
+						<% if (type != "xp" && !type.startsWith("total")) { %>
+						<th>Name</th>
+						<th>Coins</th>
+						<th>Kills</th>
+						<th>Survived</th>
+						<% } else { %>
+						<th>Name</th>
+						<th><%=type == "xp"?"xp":type.slice(5)%></th>
+						<% } %>
+					</tr>
+				</thead>
+				<tbody>
+                    <% for (var i = 3; i < lb.length; i++) { %>
+					<tr>
+						<a href="/<%= lb[i].name %>">
+							<td><b>#<%= i+1 %></b></td>
+						<td>
+							<div class="d-flex align-items-center">
+								<div class="user-info__basic">
+									<% if (lb[i].verified) { %>
+										<h5 class="mb-0"><a style="color:black;" href="/<%= lb[i].name %>"><%= lb[i].name %></a> </h3>
+										<% } else { %>
+									<h5 class="mb-0"><%= lb[i].name %> </h3>
+									<% } %>
+									<p class="text-muted mb-0"></p>
+								</div>
+							</div>
+						</td>
+						<% if (type != "xp" && !type.startsWith("total")) { %>
+						<td>
+							<div class="d-flex align-items-baseline">
+								<h4 class="mr-1"><%=numberWithCommas(lb[i].coins)%></h4>
+							</div>
+						</td>
+						<td><%= lb[i].kills %></td>
+						<td><%= msToTime(lb[i].time) %></td>
+						<% } else { %>
+							<td>
+
+									<h4 class="mr-1"><%=type=="totaltime"?msToTime(lb[i][type == "xp"?"xp":type.slice(5)]):numberWithCommas(lb[i][type == "xp"?"xp":type.slice(5)])%></h4>
+
+							</td>
+							<% } %>
+
+					</tr>
+                    <% } %>
+
+				</tbody>
+			</table>
+		</div>
+	</section>
+
+	<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js"></script>
+	<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.9/umd/popper.min.js"></script>
+	<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0/js/bootstrap.min.js"></script>
+
+
+</body>
+</html>
