@@ -333,7 +333,7 @@ export default class Player {
                 } else {
                     const player = room.getPlayer((playerObj as any).id) as Player;
                     if (player === undefined || player.id === this.id) return;
-    
+
                     if (this.isCollidingWithCircle(player)) {
                         const angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
                         // Get the point of the circle we collided with
@@ -366,7 +366,6 @@ export default class Player {
         const newSeenEntities = new Set();
         // const newSeenCoins = new Set();
         const candidates = quadTree.retrieve(this.getRangeBounds());
-
         // add all players we should be able to see to list
         candidates.forEach((entity: any) => {
             const player = room.getPlayer(entity.id);

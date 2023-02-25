@@ -160,7 +160,9 @@ export default class MainGame extends Phaser.Scene {
 
         this.ws.on(Packet.ServerHeaders.CREATE_COIN.toString(), ({ id, x, y }) => {
             const coin = new Coin(this, id, x, y);
+            coin.setDepth(2);
             this.coins.set(id, coin);
+            console.log(this.coins);
             this.UICamera.ignore(coin);
         })
 
@@ -185,6 +187,7 @@ export default class MainGame extends Phaser.Scene {
 
         this.ws.on(Packet.ServerHeaders.COIN.toString(), d => {
             // alert("COIN!!!!!!");
+            // console.log(d);
         });
 
         this.ws.on(Packet.ServerHeaders.COIN_COLLECT.toString(), () => {
@@ -251,8 +254,6 @@ export default class MainGame extends Phaser.Scene {
         // Do game logic below
 
         this.interpolate(delta);
-
-
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
         this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
