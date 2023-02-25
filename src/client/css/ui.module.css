@@ -142,6 +142,29 @@
   text-align: center;
 }
 
+.footer {
+  font-family: 'Hind Madurai', Arial, sans-serif;
+  font-size: 100%;
+  text-align: center;
+  color: white;
+  margin: 0;
+  padding: 0;
+  padding-bottom: 10px;
+}
+
+.footerElem {
+  display: inline-block;
+  margin: 0 10px;
+  transition: font-size 0.2s;
+}
+
+.footerLink {
+  color: white;
+}
+.footerElem:hover {
+  font-size: 40px;
+}
+
 @media screen and (max-width: 800px) {
   .titletext {
     font-size: 200%;
@@ -158,6 +181,12 @@
   .textbox {
     font-size: 120%;
     margin: 20px auto 0px;
+  }
+  .footerElem {
+    font-size: 25px;
+  }
+  .footerElem:hover {
+    font-size: 30px;
   }
 }
 
@@ -185,6 +214,12 @@
   }
   .textbox {
     font-size: 100%;
+  }
+  .footerElem {
+    font-size: 15px;
+  }
+  .footerElem:hover {
+    font-size: 20px;
   }
 }
 

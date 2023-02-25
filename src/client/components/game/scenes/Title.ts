@@ -219,6 +219,31 @@ class Title extends Phaser.Scene {
     } else displayLoginAndSignupButtons();
   } else displayLoginAndSignupButtons();
 
+  const emitBounds = () => {
+    let bounds = this.scale.canvasBounds;
+    this.events.emit('bounds', {
+      left: bounds.left,
+      top: bounds.top,
+      width: bounds.width,
+      height: bounds.height,
+      bottom: bounds.bottom,
+      right: bounds.right
+    });
+  }
+
+  emitBounds();
+
+  function resizedw(){
+    emitBounds();
+
+}
+
+var doit;
+window.onresize = ()=>{
+  clearTimeout(doit);
+  doit = setTimeout(resizedw, 100);
+};
+
     // document mouse move listener
     document.addEventListener('mousemove', (e) => {
       // x and y
