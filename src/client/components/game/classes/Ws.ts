@@ -136,7 +136,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const y = this.streamReader.readF32();
         const rotation = this.streamReader.readF32();
         const health = this.streamReader.readU8();
-        
+
         this.emit(packetType.toString(), [id, x, y, rotation, health, time]);
     }
     updatePlayer(packetType: number, arrivalTime: number) {
@@ -208,6 +208,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
     }
     removeCoin(packetType: number) {
         const id = this.streamReader.readULEB128();
-        this.emit(packetType.toString(), { id })
+        const collector = this.streamReader.readULEB128();
+        this.emit(packetType.toString(), { id, collector })
     }
 }

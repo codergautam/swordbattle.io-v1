@@ -7,8 +7,8 @@ export const SPacketWriter = {
         stream.writeLEB128(id);
         stream.writeF32(x);
         stream.writeF32(y);
-        stream.writeF32(rotation);    
-    
+        stream.writeF32(rotation);
+
     },
     ADD_PLAYER: function(stream: StreamWriter, id: number, name: string) {
         stream.writeU8(Packet.ServerHeaders.ADD_PLAYER);
@@ -53,9 +53,10 @@ export const SPacketWriter = {
         stream.writeString(name);
         stream.writeU8(+verified);
     },
-    REMOVE_COIN: function(stream: StreamWriter, id: number) {
+    REMOVE_COIN: function(stream: StreamWriter, id: number, collector: number = 0) {
         stream.writeU8(Packet.ServerHeaders.REMOVE_COIN);
         stream.writeLEB128(id);
+        stream.writeLEB128(collector);
     },
     CREATE_COIN: function(stream: StreamWriter, id: number, x: number, y: number) {
         stream.writeU8(Packet.ServerHeaders.CREATE_COIN);

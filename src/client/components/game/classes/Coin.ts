@@ -1,4 +1,5 @@
 import dynamicSkinLoader from "../helpers/dynamicSkinLoader";
+import Phaser from "phaser";
 
 export default class Coin extends Phaser.GameObjects.Container {
     id: number;
@@ -8,11 +9,9 @@ export default class Coin extends Phaser.GameObjects.Container {
         super(scene, x, y);
         this.id = id;
         this.skin = "coin";
-        
-        dynamicSkinLoader(this.scene, this.skin).then(data => {
-            this.coin = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);
+
+            this.coin = new Phaser.GameObjects.Image(this.scene, 0, 0, "coin").setScale(0.5);
             this.add(this.coin);
-        });
 
         this.addToUpdateList();
         this.scene.add.existing(this);

@@ -160,11 +160,14 @@ export default class MainGame extends Phaser.Scene {
 
         this.ws.on(Packet.ServerHeaders.CREATE_COIN.toString(), ({ id, x, y }) => {
             const coin = new Coin(this, id, x, y);
+            coin.setDepth(2);
             this.coins.set(id, coin);
+            console.log(this.coins);
             this.UICamera.ignore(coin);
         })
 
-        this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id }) => {
+        this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id, collector }) => {
+            this.coins.get(id)?.destroy();
             this.coins.delete(id);
         })
         // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
@@ -180,15 +183,6 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.CLIENT_DIED.toString(), (kills, killer) => {
             //this.events.emit('crash', 'You died.');
             this.events.emit('death', 'You ded', kills, killer, 0);
-        });
-
-
-        this.ws.on(Packet.ServerHeaders.COIN.toString(), d => {
-            // alert("COIN!!!!!!");
-        });
-
-        this.ws.on(Packet.ServerHeaders.COIN_COLLECT.toString(), () => {
-            // Coin collection event
         });
 
         this.players = new Map();
@@ -251,8 +245,6 @@ export default class MainGame extends Phaser.Scene {
         // Do game logic below
 
         this.interpolate(delta);
-
-
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
         this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
