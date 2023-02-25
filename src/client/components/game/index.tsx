@@ -12,12 +12,13 @@ import DeathBox from './ui/DeathBox';
 import SettingsPage from './ui/SettingsPage';
 import SignupUI from './ui/SignupUI';
 import LoginUI from './ui/LoginUI';
+import Footer from './ui/Footer';
 
 export default class Game extends React.Component {
     game: Phaser.Game;
     state: {
         signupOpen: any;
-        loginOpen: any; activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any; user: any;
+        loginOpen: any; activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any; user: any; bounds: any;
     };
     constructor(props: any) {
         super(props);
@@ -43,6 +44,7 @@ export default class Game extends React.Component {
             signupOpen: false,
             loginOpen: false,
             user: null,
+            bounds: null
         };
     }
 
@@ -108,6 +110,10 @@ export default class Game extends React.Component {
                         console.log('nameChange', name);
                         this.setState(prevState => Object.assign(prevState, { user: { ...prevState.user, username: name } }));
                     });
+                    scene.events.on('bounds', (bounds: any) => {
+                        console.log('bounds', bounds);
+                        this.setState(prevState => Object.assign(prevState, { ...prevState, bounds }));
+                    });
 
                     scene.events.on('loginBtnClicked', () => {
                         console.log('loginBtnClicked');
@@ -134,8 +140,10 @@ export default class Game extends React.Component {
     }
 
     render() {
-        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen, loginOpen, signupOpen, user } = this.state;
+        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen, loginOpen, signupOpen, user, bounds } = this.state;
+        console.log('bounds', bounds);
         return (
+            <div>
             <div
                 style={{
                     position: 'fixed',
@@ -155,6 +163,13 @@ export default class Game extends React.Component {
                  <TitleUI settingsOpen={settingsOpen} user={user} /> : null}
                 {crashMessage ? <ErrorModal message={crashMessage} /> : null}
                 {dbox? <DeathBox killer={deathKiller} kills={deathKills} coins={deathCoins}/> : null}
+            </div>
+            {/* Put the footer in the bottom center */}
+            <div style={{ position: 'fixed', bottom: bounds ? bounds.top: 0, left: 0, right: 0, zIndex: 1, display: activeScene === "title" ? '' : 'none' }}>
+                <center>
+            <Footer />
+            </center>
+            </div>
             </div>
         );
     }
