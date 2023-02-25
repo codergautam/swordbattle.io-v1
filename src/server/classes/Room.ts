@@ -50,7 +50,6 @@ export default class Room {
 
         this.lastTick = Date.now();
 
-        addMissingCoins(this);
 
     }
 
@@ -89,7 +88,7 @@ export default class Room {
         this.ws.addClient(ws);
 
         // tell the player to spawn
-        SPacketWriter.CLIENT_SPAWN(player.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent)
+        SPacketWriter.CLIENT_SPAWN(player.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.skin, player.name, player.verified);
 
         for (let i = 0; i < this.players.array.length; i++) {
             const otherPlayer = this.players.array[i] as Player;
@@ -144,7 +143,7 @@ export default class Room {
         this.lastTick = now;
         this.refreshQuadTree();
 
-        
+
         for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
             const id = idGen.getID();
             this.coins.set(id, new Coin(id));

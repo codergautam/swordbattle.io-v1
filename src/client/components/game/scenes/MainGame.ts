@@ -14,7 +14,6 @@ import constants from '../../../../server/helpers/constants';
 import lerpTheta, { lerp } from '../helpers/angleInterp';
 import Coin from '../classes/Coin';
 import Border from '../classes/Border';
-import constants from '../../../../server/helpers/constants';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -90,7 +89,7 @@ export default class MainGame extends Phaser.Scene {
             this.loadBg.destroy();
             this.start();
 
-            const player = new Player(this, x, y, this.passedData.name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
+            const player = new Player(this, x, y, name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
@@ -133,7 +132,7 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.PLAYER_HEALTH.toString(), d => {
             const { id, health } = d;
             const player = this.players.get(id);
-            if (!player) return;    
+            if (!player) return;
             player.setHealth(health);
         });
 
@@ -231,13 +230,13 @@ export default class MainGame extends Phaser.Scene {
 
                 const newX = posBuffer[0][1] + (posBuffer[1][1] - posBuffer[0][1]) * lerpFactor
                 const newY = posBuffer[0][2] + (posBuffer[1][2] - posBuffer[0][2]) * lerpFactor
-                const newRotation = lerpTheta( posBuffer[0][3], posBuffer[1][3], lerpFactor)                
+                const newRotation = lerpTheta( posBuffer[0][3], posBuffer[1][3], lerpFactor)
 
                 player.setPosition(newX,newY);
-                
+
                 // show no interpolation
                 // player.setPosition(posBuffer[1][1], posBuffer[1][2])
-                
+
                 if (player !== this.myPlayer)
                     player.forceSetDirection(newRotation * (180 / Math.PI))
 
@@ -252,7 +251,7 @@ export default class MainGame extends Phaser.Scene {
         // Do game logic below
 
         this.interpolate(delta);
-    
+
 
         // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
