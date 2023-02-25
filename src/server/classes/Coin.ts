@@ -6,9 +6,9 @@ export default class Coin {
   pos: { x: number; y: number };
   value: number;
   radius: number;
-  id: string;
+  id: number;
   
-  constructor(id: string) {
+  constructor(id: number) {
     this.pos = {
       x: getRandomInt(constants.spawn.min, constants.spawn.max),
       y: getRandomInt(constants.spawn.min, constants.spawn.max)

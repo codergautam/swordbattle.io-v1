@@ -15,7 +15,7 @@ export default async (ws: any, buffer: ArrayBuffer) => {
     while (streamReader.hasMoreData()) {
         const packetType = streamReader.readU8();
         switch (packetType) {
-            case Packet.Type.JOIN:
+            case Packet.ClientHeaders.SPAWN:
                 const name = streamReader.readString();
                 const verify: boolean = !!streamReader.readU8();
                 // TODO: Some way to send custom error messages to client
@@ -40,7 +40,7 @@ export default async (ws: any, buffer: ArrayBuffer) => {
                 mainRoom.addPlayer(player as Player, ws);
                 break;
 
-            case Packet.Type.PLAYER_MOVE:
+            case Packet.ClientHeaders.CONTROLS:
                 const angle = streamReader.readF32();
                 const force = streamReader.readU8();
                 const direction = streamReader.readU8();

@@ -22,6 +22,7 @@ class Preload extends Phaser.Scene {
 
     this.load.image('sword', '/assets/images/sword.png');
     this.load.image('player', '/assets/images/player.png');
+    this.load.image('coin', '/assets/images/coin.png');
   }
 
   create() {

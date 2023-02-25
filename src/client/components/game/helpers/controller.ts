@@ -3,7 +3,7 @@
 import { StreamWriter } from '../../../../shared/lib/BitStream';
 import Packet from '../../../../shared/Packet';
 import Player from '../classes/Player';
-import { createPlayerMovePacket } from '../packets/packet';
+import { CPacketWriter } from '../packets/packet';
 import MainGame from '../scenes/MainGame';
 // import angleFromKeys from './angleFromKeys';
 import getDirectionFromKeys from './angleFromKeys';
@@ -167,7 +167,7 @@ export default (scene: MainGame) => {
              We could send separate messages for each field but it seems overkill, since we would waste
              some bytes on the packet type, and these fields change so often its probably best to send them all
              */
-            createPlayerMovePacket(ws.streamWriter, sendData.angle, sendData.force, sendData.move, sendData.mouseDown);
+            CPacketWriter.CONTROLS(ws.streamWriter, sendData.angle, sendData.force, sendData.move, sendData.mouseDown);
             ws.flushStream();
 
             lastPacketSend = Date.now();

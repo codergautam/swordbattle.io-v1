@@ -6,24 +6,8 @@ import Player from './Player';
 import WsRoom from './WsRoom';
 import Coin from './Coin';
 import ObjectManager from '../../shared/lib/ObjectManager';
-import { writePlayerAddPacket, writePlayerCoinPacket, writePlayerJoinPacket } from '../packets/packet';
-
-function addMissingCoins(room: Room) {
-    for (let i = 0; i < room.maxCoins - room.coins.size; i++) {
-        let coin = new Coin(String(i));
-        room.coins.set(String(i), coin);
-
-        // Find players in range of coin
-        const candidates = room.quadTree.retrieve(coin.getRangeBounds());
-        candidates.forEach((candidate: any) => {
-                const candidatePlayer = room.players.get(candidate.id);
-                if (candidatePlayer && coin.isInRangeWith(candidatePlayer)) {
-                    // how do I send this to the client?
-                    // writePlayerCoinPacket(candidatePlayer.streamWriter, coin.id, coin.pos.x, coin.pos.y, coin.radius);
-                }
-        });
-    }
-}
+import { SPacketWriter } from '../packets/packet';
+import { StreamWriter } from '../../shared/lib/BitStream';
 
 export default class Room {
     id: string | number;
@@ -31,20 +15,25 @@ export default class Room {
     // players: Map<any, Player>;
     players: ObjectManager<Player>;
     maxPlayers: any;
-    coins: Map<any, Coin>;
+    coins: Map<number, Coin>;
     maxCoins: number;
     quadTree: QuadTree;
     lastTick: any;
 
-    constructor(id = idGen() as string | number) {
+    constructor(id: string) {
         // eslint-disable-next-line no-param-reassign
-        if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
+        // if (typeof id !== 'string' && typeof id !== 'number') id = idGen();
         this.id = id;
         this.ws = new WsRoom(this.id);
         this.players = new ObjectManager();
         this.maxPlayers = 4;
         this.coins = new Map();
         this.maxCoins = constants.max_coins;
+
+        for (let i = 0; i < this.maxCoins; i++) {
+            const id = idGen.getID();
+            this.coins.set(id, new Coin(id));
+        }
 
         // Initialize quadtree for optimization and collision detection
         /*
@@ -68,6 +57,17 @@ export default class Room {
     removePlayer(playerId: number) {
         this.players.removeById(playerId);
         this.ws.removeClient(playerId);
+        this.sendRemoveEntity(playerId);
+    }
+
+    sendRemoveEntity(id: number) {
+        // tell other clients to delete this entity
+        this.players.array.forEach(player => {
+            if (player.lastSeenEntities.has(id)) {
+                player.lastSeenEntities.delete(id);
+                SPacketWriter.REMOVE_PLAYER(player.streamWriter, id);
+            }
+        })
     }
 
     refreshQuadTree() {
@@ -81,36 +81,52 @@ export default class Room {
     }
 
     addPlayer(player: Player, ws: any) {
-        const ourPlayer = player;
-        ourPlayer.roomId = this.id;
-        ourPlayer.id = ws.id;
-        ourPlayer.wsRoom = this.ws;
+        player.roomId = this.id;
+        player.id = ws.id;
+        player.wsRoom = this.ws;
 
-        this.players.add(ourPlayer);
+        this.players.add(player);
         this.ws.addClient(ws);
-        // Send a packet to the client to tell them they joined the room, along with position
-        // ws.send(new Packet(Packet.Type.JOIN, [ws.id, ourPlayer.pos.x, ourPlayer.pos.y]).toBinary(true));
-        writePlayerJoinPacket(ourPlayer.streamWriter, ws.id, ourPlayer.pos.x, ourPlayer.pos.y, ourPlayer.skin, ourPlayer.name, ourPlayer.verified);
-        // Find all other players nearby and send them to the client
-        const candidates = this.quadTree.retrieve(ourPlayer.getRangeBounds());
-        candidates.forEach((candidate: any) => {
-            if (candidate.id !== ourPlayer.id) {
-                const candidatePlayer = this.players.get(candidate.id);
-                if (candidatePlayer && ourPlayer.isInRangeWith(candidatePlayer)) {
-                    // ws.send(new Packet(Packet.Type.PLAYER_ADD, candidatePlayer.getFirstSendData()).toBinary(true));
-                    const data = candidatePlayer.getFirstSendData();
-                    writePlayerAddPacket(player.streamWriter, data.id, data.x, data.y, data.angle, data.name, data.scale, data.health, data.evolution, data.swinging, data.swordThrown);
-                    ourPlayer.lastSeenPlayers.add(candidate.id);
-                }
-            }
-        });
+
+        // tell the player to spawn
+        SPacketWriter.CLIENT_SPAWN(player.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent)
+
+        for (let i = 0; i < this.players.array.length; i++) {
+            const otherPlayer = this.players.array[i] as Player;
+
+            // tell us about the other players names and id
+            SPacketWriter.ADD_PLAYER(player.streamWriter, otherPlayer.id, otherPlayer.name);
+
+            if (otherPlayer === player) continue;
+
+            // now tell the other players about us
+            SPacketWriter.ADD_PLAYER(otherPlayer.streamWriter, player.id, player.name);
+
+        }
+
+        // Send a packet to the client to tell them they joined the room, along with their position and id
+        // writePlayerJoinPacket(player.streamWriter, ws.id, player.pos.x, player.pos.y);
+        // Tell every singly player in the server about our info
+        // const candidates = this.quadTree.retrieve(player.getRangeBounds());
+        // candidates.forEach((candidate: any) => {
+        //     if (candidate.id !== player.id) {
+        //         const candidatePlayer = this.players.get(candidate.id);
+        //         if (candidatePlayer && player.isInRangeWith(candidatePlayer)) {
+        //             const data = candidatePlayer.getFirstSendData();
+        //             writePlayerJoinServerPacket(player.streamWriter, data.id, data.name);
+        //             player.lastSeenPlayers.add(candidate.id);
+        //         }
+        //     }
+        // });
         // isBinary?: true
-        ws.send(ourPlayer.streamWriter.bytes(), true);
-        ourPlayer.streamWriter.reset();
+        // ws.send(player.streamWriter.bytes(), true);
+        // player.streamWriter.reset();
     }
 
     removeCoin(coinId: any) {
         this.coins.delete(coinId);
+        idGen.removeID(coinId)
+        this.sendRemoveEntity(coinId);
         console.log('collected coin!');
     }
 
@@ -128,8 +144,11 @@ export default class Room {
         this.lastTick = now;
         this.refreshQuadTree();
 
-        // TODO: add coins
-        addMissingCoins(this);
+        
+        for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
+            const id = idGen.getID();
+            this.coins.set(id, new Coin(id));
+        }
 
         // Iterate over all players in map
         this.players.array.forEach((player: Player) => {
