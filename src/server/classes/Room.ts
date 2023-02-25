@@ -125,7 +125,6 @@ export default class Room {
     removeCoin(coinId: any) {
         this.coins.delete(coinId);
         idGen.removeID(coinId)
-        this.sendRemoveEntity(coinId);
         console.log('collected coin!');
     }
 

@@ -166,7 +166,8 @@ export default class MainGame extends Phaser.Scene {
             this.UICamera.ignore(coin);
         })
 
-        this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id }) => {
+        this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id, collector }) => {
+            this.coins.get(id)?.destroy();
             this.coins.delete(id);
         })
         // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
@@ -182,16 +183,6 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.CLIENT_DIED.toString(), (kills, killer) => {
             //this.events.emit('crash', 'You died.');
             this.events.emit('death', 'You ded', kills, killer, 0);
-        });
-
-
-        this.ws.on(Packet.ServerHeaders.COIN.toString(), d => {
-            // alert("COIN!!!!!!");
-            // console.log(d);
-        });
-
-        this.ws.on(Packet.ServerHeaders.COIN_COLLECT.toString(), () => {
-            // Coin collection event
         });
 
         this.players = new Map();

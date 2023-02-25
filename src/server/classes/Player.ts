@@ -436,7 +436,8 @@ export default class Player {
         idGen.removeID(coin.id);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
-                SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id);
+                console.log("sent remove coin packet to "+player.id )
+                SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
             }
         })
     }
