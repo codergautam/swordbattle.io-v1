@@ -7,6 +7,7 @@ import 'animate.css';
 
 
 function playButtonClick(name: string, props: any) {
+  if(props.attemptingLogin) return;
   const game = (window as any).game as Game;
   const scene = game.scene.keys.title as Title;
   console.log(props.user);
