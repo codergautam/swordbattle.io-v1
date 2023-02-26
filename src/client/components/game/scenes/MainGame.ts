@@ -138,7 +138,9 @@ export default class MainGame extends Phaser.Scene {
             const { id, s } = d;
             const player = this.players.get(id);
             if (!player) return;
-            player.setMouseDown(s);
+            if (this.myPlayer !== player) {
+                player.setMouseDown(s);
+            }
         });
 
         // player joined the server

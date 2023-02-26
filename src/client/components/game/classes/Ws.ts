@@ -115,7 +115,6 @@ export default class Ws extends Phaser.Events.EventEmitter {
                     break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
-                break;
             }
         }
     }

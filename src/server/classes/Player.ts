@@ -263,6 +263,8 @@ export default class Player {
 
     getQuadTreeFormat() {
         return {
+            // x: this.pos.x - this.radius,
+            // y: this.pos.y - this.radius,
             x: this.pos.x,
             y: this.pos.y,
             width: this.radius * 2,
@@ -321,10 +323,12 @@ export default class Player {
 
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
+            const room = this.room as Room;
+            const nearbyEntities = room.quadTree.retrieve(this.getQuadTreeFormat());
+            // console.log("collision", nearbyEntities.length, Math.random())
             // this.updated.pos = true;
 
-            const room = this.room as Room;
-            room.quadTree.retrieve(this.getQuadTreeFormat()).forEach(playerObj => {
+            nearbyEntities.forEach(playerObj => {
                 const coin = room.getCoin((playerObj as any).id) as Coin;
                 if (coin) {
                     if (this.isCollidingWithCircle(coin)) {
@@ -333,6 +337,7 @@ export default class Player {
                 } else {
                     const player = room.getPlayer((playerObj as any).id) as Player;
                     if (player === undefined || player.id === this.id) return;
+                    // console.log("near player")
 
                     if (this.isCollidingWithCircle(player)) {
                         const angle = Math.atan2(this.pos.y - player.pos.y, this.pos.x - player.pos.x);
@@ -433,7 +438,6 @@ export default class Player {
 
         this.xp += coin.value;
         room.removeCoin(coin.id);
-        idGen.removeID(coin.id);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
                 console.log("sent remove coin packet to "+player.id )
