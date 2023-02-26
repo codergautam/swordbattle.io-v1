@@ -7,6 +7,7 @@ import 'animate.css';
 
 
 function playButtonClick(name: string, props: any) {
+  if(props.attemptingLogin) return;
   const game = (window as any).game as Game;
   const scene = game.scene.keys.title as Title;
   console.log(props.user);
@@ -35,7 +36,7 @@ export default function TitleUI(props: any) {
     <div className={styles.homebackground}>
       <h1 className={styles.titletext}>Swordbattle.io</h1>
       <input type="text" maxLength={12} value={props.user?.username ?? name} className={styles.namebox} onChange={(e) => setName(e.target.value)} disabled={props.user?.username} placeholder="Name" />
-      <button className={styles.playbtn} type="button" onClick={() => playButtonClick(name, props)}>Play</button>
+      <button className={styles.playbtn} type="button" onClick={() => playButtonClick(name, props)}>{props.attemptingLogin ? "Connecting..." : "Play" }</button>
     </div>
     </div>
   );

@@ -18,7 +18,7 @@ export default class Game extends React.Component {
     game: Phaser.Game;
     state: {
         signupOpen: any;
-        loginOpen: any; activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any; user: any; bounds: any;
+        loginOpen: any; activeScene: string; crashMessage: string | null; gameState: any; dbox: string | null; deathKills: number | null; deathCoins: number | null; deathKiller: string | null; settingsOpen: boolean; settings: any; user: any; bounds: any; attemptingLogin: boolean; loginError: string | null; attemptingSignup: boolean; signupError: string | null;
     };
     constructor(props: any) {
         super(props);
@@ -44,7 +44,8 @@ export default class Game extends React.Component {
             signupOpen: false,
             loginOpen: false,
             user: null,
-            bounds: null
+            bounds: null,
+            attemptingLogin: false,
         };
     }
 
@@ -100,8 +101,14 @@ export default class Game extends React.Component {
                         console.log('settingsChanged', settings);
                         this.setState(prevState => Object.assign(prevState, { settings }));
                     });
+                    scene.events.on('attemptingLogin', () => {
+                        this.setState(prevState => Object.assign(prevState, { attemptingLogin: true }));
+                    });
+                    scene.events.on('loginFailed', () => {
+                        this.setState(prevState => Object.assign(prevState, { attemptingLogin: false }));
+                    });
                     scene.events.on('loginSuccessFetch', (data: any) => {
-                        this.setState(prevState => Object.assign(prevState, { user: data.user}));
+                        this.setState(prevState => Object.assign(prevState, { user: data.user, attemptingLogin: false }));
                     })
                     scene.events.on('logoutClicked', () => {
                         this.setState(prevState => Object.assign(prevState, { user: null }));
@@ -140,7 +147,7 @@ export default class Game extends React.Component {
     }
 
     render() {
-        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen, loginOpen, signupOpen, user, bounds } = this.state;
+        const { activeScene, crashMessage, dbox, gameState, settings, deathKills, deathCoins, deathKiller, settingsOpen, loginOpen, signupOpen, user, bounds, attemptingLogin } = this.state;
         console.log('bounds', bounds);
         return (
             <div>
@@ -160,7 +167,7 @@ export default class Game extends React.Component {
                 loginOpen ? <LoginUI loginOpen={loginOpen} /> :
                 signupOpen ? <SignupUI signupOpen={signupOpen} /> :
 
-                 <TitleUI settingsOpen={settingsOpen} user={user} /> : null}
+                 <TitleUI settingsOpen={settingsOpen} user={user} attemptingLogin={attemptingLogin} /> : null}
                 {crashMessage ? <ErrorModal message={crashMessage} /> : null}
                 {dbox? <DeathBox killer={deathKiller} kills={deathKills} coins={deathCoins}/> : null}
             </div>

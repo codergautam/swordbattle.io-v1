@@ -154,6 +154,7 @@ class Title extends Phaser.Scene {
       modalChange(opened);
     })
     let attemptDisplayLogin = (captcha, secret) => {
+      this.events.emit('attemptingLogin');
       fetch('/api/getData', {
         method: 'POST',
         headers: {
@@ -164,6 +165,7 @@ class Title extends Phaser.Scene {
         if(!data.success) {
           alert("Auto login failed. Please login manually.")
           displayLoginAndSignupButtons();
+          this.events.emit('loginFailed');
         } else {
         this.userDropdown = new UserDropdown(this, 0, 0, data.user?.username, secret);
 
@@ -178,6 +180,7 @@ class Title extends Phaser.Scene {
       }).catch((err) => {
         console.error(err);
         alert("Auto login failed. Please login manually.")
+        this.events.emit('loginFailed');
         displayLoginAndSignupButtons();
       });
     };

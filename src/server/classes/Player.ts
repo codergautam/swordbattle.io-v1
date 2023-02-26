@@ -397,7 +397,7 @@ export default class Player {
         for (let i = 0; i < candidates.length; i++) {
             const coin = room.getCoin((candidates[i] as any).id);
             if (coin && !this.lastSeenEntities.has(coin.id) && this.isInRangeWith(coin)) {
-                SPacketWriter.CREATE_COIN(this.streamWriter, coin.id, coin.pos.x, coin.pos.y)
+                SPacketWriter.CREATE_COIN(this.streamWriter, coin.id, coin.pos.x, coin.pos.y, coin.value)
                 this.lastSeenEntities.add(coin.id)
                 continue;
             }
@@ -438,6 +438,7 @@ export default class Player {
             if (player.lastSeenEntities.has(coin.id)) {
                 console.log("sent remove coin packet to "+player.id )
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
+                player.lastSeenEntities.delete(coin.id);
             }
         })
     }
