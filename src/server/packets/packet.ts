@@ -58,10 +58,11 @@ export const SPacketWriter = {
         stream.writeLEB128(id);
         stream.writeLEB128(collector);
     },
-    CREATE_COIN: function(stream: StreamWriter, id: number, x: number, y: number) {
+    CREATE_COIN: function(stream: StreamWriter, id: number, x: number, y: number, value: number) {
         stream.writeU8(Packet.ServerHeaders.CREATE_COIN);
         stream.writeLEB128(id);
         stream.writeF32(x);
         stream.writeF32(y);
+        stream.writeU8(value);
     }
 }

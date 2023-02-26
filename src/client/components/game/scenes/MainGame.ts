@@ -89,7 +89,7 @@ export default class MainGame extends Phaser.Scene {
             this.loadBg.destroy();
             this.start();
 
-            const player = new Player(this, x, y, name, id, skin, undefined, loggedIn).setDepth(2).setScale(levels[0].scale);
+            const player = new Player(this, x, y, name, id, skin, undefined, loggedIn).setDepth(4).setScale(levels[0].scale);
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
@@ -101,13 +101,11 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time]) => {
             if (this.ws.id === id) return;
             const name = this.playerNames.get(id) as string;
-            // const player = new Player(this, x, y, name, id, 'player', angle).setDepth(2).setScale(scale);
-            const player = new Player(this, x, y, name, id, 'player', rotation).setDepth(2).setScale(0.25);
+            const player = new Player(this, x, y, name, id, 'player', rotation).setDepth(3).setScale(0.25);
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
-            console.log(this.players)
         });
 
         // TODO: Test this on refresh scene
@@ -146,7 +144,6 @@ export default class MainGame extends Phaser.Scene {
         // player joined the server
         this.ws.on(Packet.ServerHeaders.ADD_PLAYER.toString(), d => {
             const { id, name /*, x, y, scale, angle, health*/ } = d;
-            console.log(this.players)
             this.playerNames.set(id, name);
         });
 
@@ -158,17 +155,41 @@ export default class MainGame extends Phaser.Scene {
             this.players.delete(id);
         });
 
-        this.ws.on(Packet.ServerHeaders.CREATE_COIN.toString(), ({ id, x, y }) => {
-            const coin = new Coin(this, id, x, y);
+        this.ws.on(Packet.ServerHeaders.CREATE_COIN.toString(), ({ id, x, y, value }) => {
+            const coin = new Coin(this, id, x, y, value);
             coin.setDepth(2);
             this.coins.set(id, coin);
-            console.log(this.coins);
             this.UICamera.ignore(coin);
         })
 
         this.ws.on(Packet.ServerHeaders.REMOVE_COIN.toString(), ({ id, collector }) => {
+            if (collector && collector !== 0 && this.players.has(collector) && this.coins.has(id)) {
+                // Glide coin to player
+                const coin = this.coins.get(id) as Coin;
+                const player = this.players.get(collector) as Player;
+
+                let startPos = { x: coin.x, y: coin.y };
+
+                this.tweens.addCounter({
+                    from: 0,
+                    to: 1,
+                    duration: 200,
+                    ease: 'Power2',
+                    onUpdate: (tween) => {
+                        const value = tween.getValue();
+                        coin.x = Phaser.Math.Linear(startPos.x, player.x, value);
+                        coin.y = Phaser.Math.Linear(startPos.y, player.y, value);
+                        coin.setAlpha(1 - value);
+                    },
+                    onComplete: () => {
+                        this.coins.get(id)?.destroy();
+                        this.coins.delete(id);
+                    }
+                });
+            } else {
             this.coins.get(id)?.destroy();
             this.coins.delete(id);
+            }
         })
         // this.ws.on(Packet.Type.DEBUG.toString(), (d) => {
         //   this.debugItems.forEach((item: any) => item.destroy());
