@@ -96,12 +96,12 @@ export default class Room {
             const otherPlayer = this.players.array[i] as Player;
 
             // tell us about the other players names and id
-            SPacketWriter.ADD_PLAYER(player.streamWriter, otherPlayer.id, otherPlayer.name);
+            SPacketWriter.ADD_PLAYER(player.streamWriter, otherPlayer.id, otherPlayer.name, otherPlayer.verified);
 
             if (otherPlayer === player) continue;
 
             // now tell the other players about us
-            SPacketWriter.ADD_PLAYER(otherPlayer.streamWriter, player.id, player.name);
+            SPacketWriter.ADD_PLAYER(otherPlayer.streamWriter, player.id, player.name, player.verified);
 
         }
 

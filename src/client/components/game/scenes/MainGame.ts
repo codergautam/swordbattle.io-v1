@@ -28,7 +28,7 @@ export default class MainGame extends Phaser.Scene {
     debugItems: any[];
     leaderboard: Leaderboard;
     UICamera: Phaser.Cameras.Scene2D.Camera;
-    playerNames: Map<number, string> = new Map();
+    playerNames: Map<number, {name: string; loggedIn: boolean;}> = new Map();
   border: any;
     constructor() {
         super('maingame');
@@ -98,10 +98,10 @@ export default class MainGame extends Phaser.Scene {
             this.cameras.main.startFollow(player);
         });
 
-        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time]) => {
+        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time, loggedIn]) => {
             if (this.ws.id === id) return;
-            const name = this.playerNames.get(id) as string;
-            const player = new Player(this, x, y, name, id, 'player', rotation).setDepth(3).setScale(0.25);
+            const name = this.playerNames.get(id) as { name: string; loggedIn: boolean};
+            const player = new Player(this, x, y, name.name, id, 'player', rotation, name.loggedIn).setDepth(3).setScale(0.25);
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
@@ -145,8 +145,8 @@ export default class MainGame extends Phaser.Scene {
 
         // player joined the server
         this.ws.on(Packet.ServerHeaders.ADD_PLAYER.toString(), d => {
-            const { id, name /*, x, y, scale, angle, health*/ } = d;
-            this.playerNames.set(id, name);
+            const { id, name, loggedIn /*, x, y, scale, angle, health*/ } = d;
+            this.playerNames.set(id, {name, loggedIn});
         });
 
         this.ws.on(Packet.ServerHeaders.REMOVE_PLAYER.toString(), d => {

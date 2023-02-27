@@ -10,9 +10,10 @@ export const SPacketWriter = {
         stream.writeF32(rotation);
 
     },
-    ADD_PLAYER: function(stream: StreamWriter, id: number, name: string) {
+    ADD_PLAYER: function(stream: StreamWriter, id: number, name: string, verified: boolean) {
         stream.writeU8(Packet.ServerHeaders.ADD_PLAYER);
         stream.writeLEB128(id);
+        stream.writeU8(+verified);
         stream.writeString(name);
     },
     PLAYER_HEALTH: function(stream: StreamWriter, id: number, health: number) {
