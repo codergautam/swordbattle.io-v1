@@ -19,6 +19,7 @@ export default class Room {
     maxCoins: number;
     quadTree: QuadTree;
     lastTick: any;
+    lastLeaderboardUpdate: any;
 
     constructor(id: string) {
         // eslint-disable-next-line no-param-reassign
@@ -29,6 +30,7 @@ export default class Room {
         this.maxPlayers = 4;
         this.coins = new Map();
         this.maxCoins = constants.max_coins;
+        this.lastLeaderboardUpdate = 0;
 
         for (let i = 0; i < this.maxCoins; i++) {
             const id = idGen.getID();
@@ -159,6 +161,29 @@ export default class Room {
         this.players.array.forEach((player: Player) => {
             player.flushStream();
         });
+
+        if(this.lastLeaderboardUpdate + 1000 < now) {
+            this.lastLeaderboardUpdate = now;
+                let playerArr = this.players.array.map((p: Player) => {
+                    return {
+                        id: p.id,
+                        name: p.name,
+                        coins: p.coins,
+                        scale: p.scale,
+                        verified: p.verified,
+                        x: p.pos.x,
+                        y: p.pos.y,
+                    }
+                }).sort((a: any, b: any) => {
+                    // Sort by coins
+                    return b.coins - a.coins;
+                });
+                this.players.array.forEach((player: Player) => {
+                    SPacketWriter.LEADERBOARD(player.streamWriter, playerArr);
+                });
+
+
+        }
 
         // eslint-disable-next-line no-param-reassign
         this.players.array.forEach((player: Player) => {

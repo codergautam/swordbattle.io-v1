@@ -35,7 +35,6 @@ export default class Player {
     roomId: string | number | undefined;
     health: number;
     maxHealth: number;
-    xp: number;
     kills: number;
     killer: string;
     streamWriter: StreamWriter;
@@ -44,6 +43,7 @@ export default class Player {
     knockBackFrames: number = 3;
     skin: string;
     verified: boolean;
+    coins: number;
 
     constructor(name: any) {
         this.name = name;
@@ -64,7 +64,7 @@ export default class Player {
         this.speed = 15;
         this.health = 100;
         this.maxHealth = 100;
-        this.xp = 0;
+        this.coins = 0;
         this.kills = 0;
         this.killer = '';
         this.lastSeenEntities = new Set();
@@ -436,7 +436,7 @@ export default class Player {
     collectCoin(coin: any) {
         const room = this.room as Room;
 
-        this.xp += coin.value;
+        this.coins += coin.value;
         room.removeCoin(coin.id);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {

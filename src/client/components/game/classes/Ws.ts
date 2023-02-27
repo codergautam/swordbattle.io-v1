@@ -113,6 +113,9 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.REMOVE_COIN:
                     this.removeCoin(packetType);
                     break;
+                case Packet.ServerHeaders.LEADERBOARD:
+                    this.leaderboard(packetType);
+                    break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
             }
@@ -210,5 +213,21 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const id = this.streamReader.readULEB128();
         const collector = this.streamReader.readULEB128();
         this.emit(packetType.toString(), { id, collector })
+    }
+    leaderboard(packetType: number) {
+        const leaderboardLength = this.streamReader.readULEB128();
+        const leaderboard: {id: number, name: string, coins: number, scale: number, verified: number, x: number, y: number}[] = [];
+        for (let i = 0; i < leaderboardLength; i++) {
+            const id = this.streamReader.readULEB128();
+            const name = this.streamReader.readString();
+            const coins = this.streamReader.readULEB128();
+            const scale = this.streamReader.readF32();
+            const verified = this.streamReader.readU8();
+            const x = this.streamReader.readF32();
+            const y = this.streamReader.readF32();
+            leaderboard.push({ id, name, coins, scale, verified, x, y });
+        }
+
+        this.emit(packetType.toString(), leaderboard);
     }
 }
