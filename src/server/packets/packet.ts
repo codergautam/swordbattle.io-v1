@@ -64,5 +64,19 @@ export const SPacketWriter = {
         stream.writeF32(x);
         stream.writeF32(y);
         stream.writeU8(value);
+    },
+    LEADERBOARD: function(stream: StreamWriter, leaderboard: any) {
+        stream.writeU8(Packet.ServerHeaders.LEADERBOARD);
+        stream.writeLEB128(leaderboard.length);
+        for (let i = 0; i < leaderboard.length; i++) {
+            // id, name, coins, scale, verified, x, y
+            stream.writeLEB128(leaderboard[i].id);
+            stream.writeString(leaderboard[i].name);
+            stream.writeLEB128(leaderboard[i].coins);
+            stream.writeF32(leaderboard[i].scale);
+            stream.writeU8(+leaderboard[i].verified);
+            stream.writeF32(leaderboard[i].x);
+            stream.writeF32(leaderboard[i].y);
+        }
     }
 }

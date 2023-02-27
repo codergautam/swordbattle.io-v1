@@ -206,6 +206,10 @@ export default class MainGame extends Phaser.Scene {
             this.events.emit('death', 'You ded', kills, killer, 0);
         });
 
+        this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
+            console.log(data);
+        });
+
         this.players = new Map();
         this.coins = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
