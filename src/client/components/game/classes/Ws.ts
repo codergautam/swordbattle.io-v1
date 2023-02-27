@@ -165,6 +165,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
     }
     playerJoinedServer(packetType: number) {
         const id = this.streamReader.readULEB128();
+        const loggedIn = this.streamReader.readU8();
         const name = this.streamReader.readString();
         // const x = this.streamReader.readF32();
         // const y = this.streamReader.readF32();
@@ -182,6 +183,7 @@ export default class Ws extends Phaser.Events.EventEmitter {
         this.emit(packetType.toString(), {
             id,
             name,
+            loggedIn,
             // x,
             // y,
             // scale,
