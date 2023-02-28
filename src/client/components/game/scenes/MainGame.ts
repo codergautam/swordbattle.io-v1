@@ -14,6 +14,7 @@ import constants from '../../../../server/helpers/constants';
 import lerpTheta, { lerp } from '../helpers/angleInterp';
 import Coin from '../classes/Coin';
 import Border from '../classes/Border';
+import GameStats from '../classes/GameStats';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -30,6 +31,7 @@ export default class MainGame extends Phaser.Scene {
     UICamera: Phaser.Cameras.Scene2D.Camera;
     playerNames: Map<number, {name: string; loggedIn: boolean;}> = new Map();
   border: any;
+    gameStats: GameStats;
     constructor() {
         super('maingame');
     }
@@ -205,17 +207,35 @@ export default class MainGame extends Phaser.Scene {
 
         this.ws.on(Packet.ServerHeaders.CLIENT_DIED.toString(), (kills, killer) => {
             //this.events.emit('crash', 'You died.');
-            this.events.emit('death', 'You ded', kills, killer, 0);
+            this.events.emit('death', 'You ded', kills, killer, this.gameStats.coins);
         });
 
-        this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
-            console.log(data);
-        });
 
         this.players = new Map();
         this.coins = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
+        this.gameStats = new GameStats(this, 0, 0);
+        this.gameStats.render();
         this.cameras.main.ignore(this.leaderboard);
+
+        this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
+            this.leaderboard.setLeaderboard(data);
+        });
+
+        this.ws.on(Packet.ServerHeaders.COIN_COUNT.toString(), ({count}) => {
+            let updated = this.leaderboard.lbData.map((d) => {
+                if(d.id == this.ws.id) {
+                    d.coins = count;
+                }
+                return d;
+            });
+            this.leaderboard.setLeaderboard(updated);
+            this.gameStats.setCoins(count);
+        });
+
+        this.ws.on(Packet.ServerHeaders.KILL_COUNT.toString(), ({count}) => {
+            this.gameStats.setKills(count);
+        });
 
     }
 
