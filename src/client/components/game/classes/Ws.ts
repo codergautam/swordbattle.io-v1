@@ -116,6 +116,12 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.LEADERBOARD:
                     this.leaderboard(packetType);
                     break;
+                case Packet.ServerHeaders.COIN_COUNT:
+                    this.coinCount(packetType);
+                    break;
+                case Packet.ServerHeaders.KILL_COUNT:
+                    this.killCount(packetType);
+                    break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
             }
@@ -192,6 +198,14 @@ export default class Ws extends Phaser.Events.EventEmitter {
             // okay looks like the client doesn't even need evolution and the bitflag
             // oh well, its a good example for how you can do this in the future
         });
+    }
+    coinCount(packetType: number) {
+        const count = this.streamReader.readULEB128();
+        this.emit(packetType.toString(), { count });
+    }
+    killCount(packetType: number) {
+        const count = this.streamReader.readULEB128();
+        this.emit(packetType.toString(), { count });
     }
     removePlayer(packetType: number) {
         const id = this.streamReader.readULEB128();

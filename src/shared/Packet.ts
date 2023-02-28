@@ -23,6 +23,8 @@ const SERVER_HEADERS = {
     COIN_COLLECT: C++,
     REMOVE_COIN: C++,
     CREATE_COIN: C++,
+    COIN_COUNT: C++,
+    KILL_COUNT: C++,
 }
 C = 0;
 const CLIENT_HEADERS = {

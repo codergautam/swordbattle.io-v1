@@ -189,6 +189,7 @@ export default class Player {
 
     increaseKillCounter() {
         this.kills += 1;
+        SPacketWriter.KILL_COUNT(this.streamWriter, this.kills);
     }
 
     die() {
@@ -442,6 +443,7 @@ export default class Player {
             if (player.lastSeenEntities.has(coin.id)) {
                 console.log("sent remove coin packet to "+player.id )
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
+                SPacketWriter.COIN_COUNT(player.streamWriter, this.coins);
                 player.lastSeenEntities.delete(coin.id);
             }
         })

@@ -66,6 +66,14 @@ export const SPacketWriter = {
         stream.writeF32(y);
         stream.writeU8(value);
     },
+    COIN_COUNT: function(stream: StreamWriter, count: number) {
+        stream.writeU8(Packet.ServerHeaders.COIN_COUNT);
+        stream.writeLEB128(count);
+    },
+    KILL_COUNT: function(stream: StreamWriter, count: number) {
+        stream.writeU8(Packet.ServerHeaders.KILL_COUNT);
+        stream.writeLEB128(count);
+    },
     LEADERBOARD: function(stream: StreamWriter, leaderboard: any) {
         stream.writeU8(Packet.ServerHeaders.LEADERBOARD);
         stream.writeLEB128(leaderboard.length);
