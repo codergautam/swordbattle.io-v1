@@ -8,6 +8,7 @@ import Coin from './Coin';
 import ObjectManager from '../../shared/lib/ObjectManager';
 import { SPacketWriter } from '../packets/packet';
 import { StreamWriter } from '../../shared/lib/BitStream';
+import Chest from './Chest';
 
 export default class Room {
     id: string | number;
@@ -16,10 +17,12 @@ export default class Room {
     players: ObjectManager<Player>;
     maxPlayers: any;
     coins: Map<number, Coin>;
+    chests: Map<number, Chest>;
     maxCoins: number;
     quadTree: QuadTree;
     lastTick: any;
     lastLeaderboardUpdate: any;
+    maxChests: any;
 
     constructor(id: string) {
         // eslint-disable-next-line no-param-reassign
@@ -29,12 +32,19 @@ export default class Room {
         this.players = new ObjectManager();
         this.maxPlayers = 4;
         this.coins = new Map();
+        this.chests = new Map();
         this.maxCoins = constants.max_coins;
+        this.maxChests = constants.max_chests;
         this.lastLeaderboardUpdate = 0;
 
         for (let i = 0; i < this.maxCoins; i++) {
             const id = idGen.getID();
             this.coins.set(id, new Coin(id));
+        }
+
+        for (let i = 0; i < this.maxChests; i++) {
+            const id = idGen.getID();
+            this.chests.set(id, new Chest(id));
         }
 
         // Initialize quadtree for optimization and collision detection
@@ -78,6 +88,9 @@ export default class Room {
         });
         this.coins.forEach((coin: any) => {
             this.quadTree.insert(coin.getQuadTreeFormat());
+        });
+        this.chests.forEach((chest: any) => {
+            this.quadTree.insert(chest.getQuadTreeFormat());
         });
     }
 
@@ -130,12 +143,28 @@ export default class Room {
         console.log('collected coin!');
     }
 
+    removeChest(chestId: any) {
+        this.chests.delete(chestId);
+        idGen.removeID(chestId)
+        console.log('collected chest!');
+    }
+
     getPlayer(playerId: any) {
         return this.players.get(playerId);
     }
 
     getCoin(coinId: any) {
         return this.coins.get(coinId);
+    }
+
+    getChest(chestId: any) {
+        return this.chests.get(chestId);
+    }
+
+    addCoins(drop: Coin[]) {
+        drop.forEach((coin: Coin) => {
+            this.coins.set(coin.id, coin);
+        });
     }
 
     tick() {
@@ -148,6 +177,10 @@ export default class Room {
         for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
             const id = idGen.getID();
             this.coins.set(id, new Coin(id));
+        }
+        for (let i = 0; i < this.maxChests - this.chests.size; i++) {
+            const id = idGen.getID();
+            this.chests.set(id, new Chest(id));
         }
 
         // Iterate over all players in map

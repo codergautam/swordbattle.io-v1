@@ -122,6 +122,15 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.KILL_COUNT:
                     this.killCount(packetType);
                     break;
+                case Packet.ServerHeaders.CHEST_HEALTH:
+                    this.chestHealth(packetType);
+                    break;
+                case Packet.ServerHeaders.CREATE_CHEST:
+                    this.createChest(packetType);
+                    break;
+                case Packet.ServerHeaders.REMOVE_CHEST:
+                    this.removeChest(packetType);
+                    break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
             }
@@ -245,5 +254,23 @@ export default class Ws extends Phaser.Events.EventEmitter {
         }
 
         this.emit(packetType.toString(), leaderboard);
+    }
+    removeChest(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        this.emit(packetType.toString(), { id })
+    }
+    createChest(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        const x = this.streamReader.readF32();
+        const y = this.streamReader.readF32();
+        const value = this.streamReader.readU8();
+        const health = this.streamReader.readF32();
+        const maxHealth = this.streamReader.readF32();
+        this.emit(packetType.toString(), { id, x, y, value, health, maxHealth })
+    }
+    chestHealth(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        const health = this.streamReader.readF32();
+        this.emit(packetType.toString(), { id, health })
     }
 }
