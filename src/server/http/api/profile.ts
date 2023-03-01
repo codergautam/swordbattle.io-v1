@@ -64,8 +64,12 @@ export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
   // Render
   if(data === null) {
     // 404
+    try {
     res.writeStatus("404");
     res.end("404");
+    } catch (err) {
+      console.log(err);
+    }
     return;
   }
   ejs.renderFile(path.join(process.cwd(), "ejs/user.ejs"), data as any, (err, str) => {

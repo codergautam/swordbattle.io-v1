@@ -87,5 +87,23 @@ export const SPacketWriter = {
             stream.writeF32(leaderboard[i].x);
             stream.writeF32(leaderboard[i].y);
         }
+    },
+    REMOVE_CHEST: function(stream: StreamWriter, id: number) {
+        stream.writeU8(Packet.ServerHeaders.REMOVE_CHEST);
+        stream.writeLEB128(id);
+    },
+    CREATE_CHEST: function(stream: StreamWriter, id: number, x: number, y: number, type: number, health: number, maxHealth: number) {
+        stream.writeU8(Packet.ServerHeaders.CREATE_CHEST);
+        stream.writeLEB128(id);
+        stream.writeF32(x);
+        stream.writeF32(y);
+        stream.writeU8(type);
+        stream.writeF32(health);
+        stream.writeF32(maxHealth);
+    },
+    CHEST_HEALTH: function(stream: StreamWriter, id: number, health: number) {
+        stream.writeU8(Packet.ServerHeaders.CHEST_HEALTH);
+        stream.writeLEB128(id);
+        stream.writeF32(health);
     }
 }

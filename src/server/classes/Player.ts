@@ -16,6 +16,7 @@ import { StreamWriter } from '../../shared/lib/BitStream';
 import { SPacketWriter } from '../packets/packet';
 import { KeyStates } from '../../shared/KeyStates';
 import idGen from '../helpers/idgen';
+import Chest from './Chest';
 
 export default class Player {
     name: string;
@@ -163,9 +164,14 @@ export default class Player {
         room.quadTree.retrieve(rangeBounds).forEach((playerObj: any) => {
             const player = room.getPlayer(playerObj.id) as Player;
             if (player === undefined) {
-                const coin = player as Coin;
-                if (coin && coin.hittingPlayer(this)) {
-                    this.collectCoin(coin);
+                const chest = room.getChest(playerObj.id) as Chest;
+                if (chest && this.hittingChest(chest)) {
+                    let drop = chest.hit(this);
+                    this.room.addCoins(drop);
+                    if(drop.length > 0) {
+                        // Destroy the chest
+                        room.removeChest(chest.id);
+                    }
                 }
             } else {
                 if (player.id === this.id) return;
@@ -232,6 +238,26 @@ export default class Player {
         }
         return false;
     }
+
+    hittingChest(chest: Chest) {
+        const angles = [-30, -25, -20, -15, -10, -5, 0, 5, 10, 15, 20, 25, 30];
+        for (const increment of angles) {
+
+          var angle = this.calcSwordAngle();
+          angle -= increment;
+
+          var sword = {x: 0, y: 0};
+          var factor = (100/(this.scale*100))*1.5;
+          sword.x = this.pos.x + (this.radius / factor) * Math.cos((angle * Math.PI) / 180);
+        sword.y = this.pos.y + (this.radius / factor) * Math.sin((angle * Math.PI) / 180);
+
+        var tip = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+        var base = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
+
+            if( intersects.lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) return true;
+        }
+      return false;
+      }
 
     dealKnockback(player: Player) {
         this.knockbackPlayer = player;
@@ -357,7 +383,7 @@ export default class Player {
         }
     }
 
-    isInRangeWith(otherPlayer: Player | Coin) {
+    isInRangeWith(otherPlayer: Player | Coin | Chest) {
         const radius = this.getRangeRadius();
         const otherRadius = otherPlayer.getRangeRadius();
 
@@ -379,22 +405,31 @@ export default class Player {
             if (player && this.isInRangeWith(player)) {
                 // add this entity to the seen players
                 newSeenEntities.add(player.id);
-            }
+            } else {
             const coin = room.getCoin(entity.id);
             if (coin && this.isInRangeWith(coin)) {
                 newSeenEntities.add(coin.id);
+            } else {
+            const chest = room.getChest(entity.id);
+            if (chest && this.isInRangeWith(chest)) {
+                newSeenEntities.add(chest.id);
             }
+        }
+        }
         });
         // find which entities we can no longer see, write remove packet for that player
         this.lastSeenEntities.forEach(id => {
             if (!newSeenEntities.has(id)) {
                 const isPlayer = !!room.getPlayer(id);
+                const isCoin = !isPlayer && !!room.getCoin(id);
                 if (isPlayer) {
                     // when we despawn a player because we are far away from it
                     SPacketWriter.REMOVE_PLAYER(this.streamWriter, id);
-                } else {
+                } else if(isCoin) {
                     // when we despawn a coin because we are far away from it
                     SPacketWriter.REMOVE_COIN(this.streamWriter, id);
+                } else {
+                    SPacketWriter.REMOVE_CHEST(this.streamWriter, id);
                 }
                 this.lastSeenEntities.delete(id);
             }
@@ -407,6 +442,19 @@ export default class Player {
                 this.lastSeenEntities.add(coin.id)
                 continue;
             }
+
+            const chest = room.getChest((candidates[i] as any).id);
+            if (chest && this.isInRangeWith(chest)) {
+                if(!this.lastSeenEntities.has(chest.id) ) {
+                SPacketWriter.CREATE_CHEST(this.streamWriter, chest.id, chest.pos.x, chest.pos.y, chest.type, chest.health, chest.maxHealth);
+                this.lastSeenEntities.add(chest.id)
+                } else if(chest.updated.health) {
+                    SPacketWriter.CHEST_HEALTH(this.streamWriter, chest.id, chest.health);
+                    chest.updated.health = false;
+                }
+                continue;
+            }
+
             const player = room.getPlayer((candidates[i] as any).id);
             if (!player) continue;
             if (this.lastSeenEntities.has(player.id)) {
@@ -441,7 +489,6 @@ export default class Player {
         room.removeCoin(coin.id);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
-                console.log("sent remove coin packet to "+player.id )
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
                 SPacketWriter.COIN_COUNT(player.streamWriter, this.coins);
                 player.lastSeenEntities.delete(coin.id);

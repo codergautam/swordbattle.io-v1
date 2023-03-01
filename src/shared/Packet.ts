@@ -25,6 +25,9 @@ const SERVER_HEADERS = {
     CREATE_COIN: C++,
     COIN_COUNT: C++,
     KILL_COUNT: C++,
+    CREATE_CHEST: C++,
+    REMOVE_CHEST: C++,
+    CHEST_HEALTH: C++,
 }
 C = 0;
 const CLIENT_HEADERS = {
