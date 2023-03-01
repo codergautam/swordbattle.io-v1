@@ -12,9 +12,10 @@ export default class Coin {
     this.value = value;
     this.radius = this.value * 10;
     this.pos = pos ?? {
-      x: getRandomInt(constants.spawn.min - this.radius, constants.spawn.max + this.radius),
-      y: getRandomInt(constants.spawn.min - this.radius, constants.spawn.max + this.radius),
+      x: getRandomInt(constants.spawn.min + (this.radius*2), constants.spawn.max - (this.radius*2)),
+      y: getRandomInt(constants.spawn.min + (this.radius*2), constants.spawn.max - (this.radius*2)),
     };
+
     this.id = id;
   }
 

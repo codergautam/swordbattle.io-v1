@@ -168,6 +168,10 @@ export default class Player {
                 if (chest && this.hittingChest(chest)) {
                     let drop = chest.hit(this);
                     this.room.addCoins(drop);
+                    if(drop.length > 0) {
+                        // Destroy the chest
+                        room.removeChest(chest.id);
+                    }
                 }
             } else {
                 if (player.id === this.id) return;
@@ -446,6 +450,7 @@ export default class Player {
                 this.lastSeenEntities.add(chest.id)
                 } else if(chest.updated.health) {
                     SPacketWriter.CHEST_HEALTH(this.streamWriter, chest.id, chest.health);
+                    chest.updated.health = false;
                 }
                 continue;
             }
@@ -484,7 +489,6 @@ export default class Player {
         room.removeCoin(coin.id);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
-                console.log("sent remove coin packet to "+player.id )
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
                 SPacketWriter.COIN_COUNT(player.streamWriter, this.coins);
                 player.lastSeenEntities.delete(coin.id);

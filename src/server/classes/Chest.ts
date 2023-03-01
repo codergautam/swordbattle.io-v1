@@ -7,9 +7,11 @@ import idGen from '../helpers/idgen';
 
 function getTypeRandomly() {
   let rand = Math.random();
-  return constants.chest_ratio.findIndex((ratio) => {
+  let found = constants.chest_ratio.findIndex((ratio) => {
     return ratio < rand;
-  })+1;
+  }) + 1
+  if(found === 0) found++;
+  return found;
 }
 
 
@@ -70,8 +72,9 @@ export default class Chest {
 
     this.width = 352;
     this.height = 223;
-    this.width = this.width * this.scale;
-    this.height = this.height * this.scale;
+    // WHY /2 ? I don't know, but it works
+    this.width = this.width * this.scale /2;
+    this.height = this.height * this.scale /2;
 
     this.pos = {
       x: getRandomInt(constants.spawn.min + this.width, constants.spawn.max - this.width),
@@ -97,13 +100,13 @@ export default class Chest {
     if(toDrop > 500) coinSizes.unshift(15);
     if(toDrop > 1000) coinSizes.unshift(25);
     if(toDrop > 5000) coinSizes.unshift(50);
+    console.log("you just broke a type " + this.type + " chest and got " + toDrop + " coins")
 
     while (toDrop > 0) {
       // Find biggest coinsize that fits in toDrop
       var usedCoinSize = coinSizes.find((c)=>toDrop>=c) as number;
       var x = getRandomInt(this.pos.x, this.pos.x + this.width);
       var y = getRandomInt(this.pos.y, this.pos.y + this.height);
-
       drop.push(new Coin(idGen.getID(),usedCoinSize, { x: x, y: y }));
       toDrop -= usedCoinSize;
     }

@@ -24,6 +24,14 @@ class Preload extends Phaser.Scene {
     this.load.image('player', '/assets/images/player.png');
     this.load.image('coin', '/assets/images/coin.png');
     this.load.image('kill', '/assets/images/kill.png');
+
+    // load chests
+    this.load.image('chest1', '/assets/images/chests/chest.png');
+    this.load.image('chest2', '/assets/images/chests/uncommonChest.png');
+    this.load.image('chest3', '/assets/images/chests/rareChest.png');
+    this.load.image('chest4', '/assets/images/chests/epicChest.png');
+    this.load.image('chest5', '/assets/images/chests/legendaryChest.png');
+    this.load.image('chest6', '/assets/images/chests/mythicalChest.png');
   }
 
   create() {

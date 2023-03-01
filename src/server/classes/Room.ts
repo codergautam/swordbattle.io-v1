@@ -140,7 +140,6 @@ export default class Room {
     removeCoin(coinId: any) {
         this.coins.delete(coinId);
         idGen.removeID(coinId)
-        console.log('collected coin!');
     }
 
     removeChest(chestId: any) {

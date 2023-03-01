@@ -15,6 +15,7 @@ import lerpTheta, { lerp } from '../helpers/angleInterp';
 import Coin from '../classes/Coin';
 import Border from '../classes/Border';
 import GameStats from '../classes/GameStats';
+import Chest from '../classes/Chest';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -32,6 +33,7 @@ export default class MainGame extends Phaser.Scene {
     playerNames: Map<number, {name: string; loggedIn: boolean;}> = new Map();
   border: any;
     gameStats: GameStats;
+    chests: any;
     constructor() {
         super('maingame');
     }
@@ -213,6 +215,7 @@ export default class MainGame extends Phaser.Scene {
 
         this.players = new Map();
         this.coins = new Map();
+        this.chests = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
         this.gameStats = new GameStats(this, 0, 0);
         this.gameStats.render();
@@ -236,6 +239,28 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.KILL_COUNT.toString(), ({count}) => {
             this.gameStats.setKills(count);
         });
+
+        this.ws.on(Packet.ServerHeaders.CREATE_CHEST.toString(), ({ id, x, y, value, health, maxHealth }) => {
+            const chest = new Chest(this, id, x, y, value, health)
+            chest.setDepth(2);
+            this.chests.set(id, chest);
+            console.log(chest);
+            this.UICamera.ignore(chest);
+        });
+
+        this.ws.on(Packet.ServerHeaders.CHEST_HEALTH.toString(), ({ id, health, maxHealth }) => {
+            const chest = this.chests.get(id);
+            if (chest) {
+                chest.setHealth(health);
+            }
+        });
+
+        this.ws.on(Packet.ServerHeaders.REMOVE_CHEST.toString(), ({ id }) => {
+            // Destroy chest
+            this.chests.get(id)?.destroy();
+            this.chests.delete(id);
+        });
+
 
     }
 
