@@ -23,7 +23,7 @@ A more detailed guide will be released soon but for now, follow these instructio
 
 ## Code Usage
 
-You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry.
+You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github repository. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry.
 
 Thanks.
 
