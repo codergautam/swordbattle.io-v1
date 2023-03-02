@@ -16,6 +16,7 @@ import Coin from '../classes/Coin';
 import Border from '../classes/Border';
 import GameStats from '../classes/GameStats';
 import Chest from '../classes/Chest';
+import MiniMap from '../classes/MiniMap';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -34,6 +35,7 @@ export default class MainGame extends Phaser.Scene {
   border: any;
     gameStats: GameStats;
     chests: any;
+    miniMap: any;
     constructor() {
         super('maingame');
     }
@@ -218,6 +220,7 @@ export default class MainGame extends Phaser.Scene {
         this.chests = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
         this.gameStats = new GameStats(this, 0, 0);
+        this.miniMap = new MiniMap(this, 1270, 710);
         this.gameStats.render();
         this.cameras.main.ignore(this.leaderboard);
 
