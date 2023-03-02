@@ -21,8 +21,9 @@ class AiPlayer extends Player {
         this.chaseTime = 0;
         this.movementMode = "mouse";
         let tf= Math.random();
+        let validSkins = ["player", "yinyang", "neon", "sponge", "vortex", "bubble", "bullseye", "fox", "spring"];
+        
         if (tf > .75){
-          validSkins = ["player", "yinyang", "neon", "sponge", "vortex", "bubble", "bullseye", "fox", "spring"];
           this.skin = validSkins[Math.floor(Math.random()* validSkins.length)];
         } else {
           this.skin = "player";
