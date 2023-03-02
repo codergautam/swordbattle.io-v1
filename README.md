@@ -19,7 +19,7 @@ A more detailed guide will be released soon but for now, follow these instructio
 2. Cd into your folder and run `npm i` and `node setup`
 3. After each change build with `npm run build`
 4. Start the program with `node .`
-5. 
+5. Create a pull request to merge into this respiratory
 
 ## Code Usage
 
