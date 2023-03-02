@@ -4,14 +4,14 @@ function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
 const { faker } = require("@faker-js/faker");
-const lerp = (x, y, a) => x * (1 - a) + y * a; 
+const lerp = (x, y, a) => x * (1 - a) + y * a;
 class AiPlayer extends Player {
     constructor(id) {
       var aiName = faker.name.findName().split(" ");
       // this is because some names have Mr. or Ms. in them
       if (aiName.length > 2) aiName = aiName[1];
       else aiName = aiName[0];
-       
+
         super(id,  aiName);
         this.ai = true;
         this.target = undefined;
@@ -20,12 +20,12 @@ class AiPlayer extends Player {
         this.mousePos.viewport.height = 1000;
         this.chaseTime = 0;
         this.movementMode = "mouse";
-        tf= Math.random()
+        let tf= Math.random();
         if (tf > .75){
-          validSkins = ['player', 'yinyang', 'neon', 'sponge', 'vortex', 'bubble', 'bullseye', 'fox', 'spring']
-          this.skin = validSkins[Math.floor(Math.random()* validSkins.length)]
+          validSkins = ["player", "yinyang", "neon", "sponge", "vortex", "bubble", "bullseye", "fox", "spring"];
+          this.skin = validSkins[Math.floor(Math.random()* validSkins.length)];
         } else {
-          this.skin = 'player'
+          this.skin = "player";
         }
     }
     tick(coins, io, levels, chests) {
@@ -36,14 +36,14 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       if(this.target) {
         if(this.target.type == "player") this.chaseTime += 1;
         if(this.target.type==="player" && Date.now() - this.lastHit > getRandomInt(300, 700)) {
-          
+
           if(this.chaseTime > 20) {
             this.target = this.getClosestEntity(coins);
             this.chaseTime = 0;
           }
           this.lastHit = Date.now();
          [coins,chests] = this.down(!this.mouseDown, coins, io, chests);
-        } 
+        }
         var tPos = this.getTpos();
         this.toSword = {
           x: this.mousePos.viewport.width / 2 + (tPos.x - this.pos.x),
@@ -69,7 +69,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       };
       if(this.target) {
         var tPos = this.getTpos();
-      
+
       if(tPos.x > this.pos.x) controller.right = true;
       if(tPos.x < this.pos.x) controller.left = true;
       if(tPos.y > this.pos.y) controller.down = true;
@@ -95,7 +95,7 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
     }
     getClosestEntity(entities) {
       if(entities.length > 0) {
-      const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y); 
+      const distanceFromThis = (pos) => Math.hypot(this.pos.x - pos.x, this.pos.y - pos.y);
       var closest = entities.sort((a,b)=>distanceFromThis(a.pos)-distanceFromThis(b.pos))[0];
       if(closest.hasOwnProperty("joinTime")) {
         closest = closest.getSendObj();

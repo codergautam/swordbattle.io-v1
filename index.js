@@ -653,21 +653,13 @@ app.get("/shop", async (req, res) => {
   //get user data
   var secret = req.query.secret;
   var acc;
-  if (secret != "undefined") {
+ 
+if (secret != "undefined") {
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
       acc = account[0];
-      var yo =
-        await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
-      var skinStats = await sql`SELECT skins->'collected' as collected from accounts;`;
-      var counts = {};
-      skinStats.forEach((x) => {
-        x.collected.forEach((y) => {
-          if (counts[y]) counts[y]++;
-          else counts[y] = 1;
-        });
-      });
+      var yo = await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
 
       acc.bal = yo[0].sum + acc.coins;
     }
@@ -677,7 +669,7 @@ app.get("/shop", async (req, res) => {
     cosmetics: cosmetics,
     account: acc,
     secret: secret,
-    counts
+
   });
 });
 
