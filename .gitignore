@@ -46,6 +46,7 @@ dist/
 ehthumbs.db
 Thumbs.db
 node_modules/
+env.json
 repl.env
 .env
 .DS_Store

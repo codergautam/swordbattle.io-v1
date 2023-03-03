@@ -86,7 +86,7 @@ img {
 .card_content {
   padding: 1rem;
   text-align: center;
- 
+
 }
 .card_title {
   color: #ffffff;
@@ -99,7 +99,7 @@ img {
 .card_text {
   color: #ffffff;
   font-size: 0.875rem;
-  line-height: 1.5; 
+  line-height: 1.5;
   font-weight: 400;
 }
 a {
@@ -138,7 +138,7 @@ function numberWithCommas(x) {
             "Content-Type": "application/json"
           }
         }).then(function(data) {
-          
+
           if(data.status == 200) {
             bal -= price;
            document.getElementById("balt").innerHTML = "Balance: "+numberWithCommas(bal)+" ";
@@ -147,12 +147,12 @@ function numberWithCommas(x) {
           //set size of image
           document.getElementById("balt").lastChild.width = "30";
           obj.innerHTML = "EQUIP"
-          var currentBuys = document.getElementById("buycount"+skin).innerHTML.trim().split(" ")[0];
+          // var currentBuys = document.getElementById("buycount"+skin).innerHTML.trim().split(" ")[0];
           // check if no letters in currentBuys
-          if (!currentBuys.match(/[a-z]/i)) {
+          // if (!currentBuys.match(/[a-z]/i)) {
             // if no letters, add 1
-            document.getElementById("buycount"+skin).innerHTML = Number(currentBuys)+1+" buy"+(Number(currentBuys)+1 == 1 ? "" : "s");
-          }
+            // document.getElementById("buycount"+skin).innerHTML = Number(currentBuys)+1+" buy"+(Number(currentBuys)+1 == 1 ? "" : "s");
+          // }
           obj.onclick = function() {
             equip(skin,obj);
           }
@@ -196,7 +196,7 @@ function numberWithCommas(x) {
                   }
                 }
               }
-          
+
             });
           } else {
             data.text().then(function(text) {
@@ -205,7 +205,7 @@ function numberWithCommas(x) {
             });
           }
         });
-      
+
       }
     </script>
     <div class="main" style="background-color: black;">
@@ -215,10 +215,10 @@ function numberWithCommas(x) {
         <br>
        <div id="skins">
         <ul class="cards">
-  
+
             <% cosmetics.skins.forEach(function(skin) { %>
- 
-        
+
+
           <li class="cards_item">
             <div class="card">
               <div class="card_image"><center><img src="<%= skin.url %>"></center></div>
@@ -238,28 +238,24 @@ function numberWithCommas(x) {
                     return e;
                   } %>
                   <p style="color: white;" id="buycount<%=skin.name%>">
-                  <% if(counts.hasOwnProperty(skin.name)) { %>
-                    <%= abbreviate_number(counts[skin.name]) %> buy<%= counts[skin.name] == 1 ? "" : "s" %>
-                    <% } else {%>
-                    0 buys
-                  <% }  %>
+              
                 </p>
                 </p>
                 <% if(account.skins.selected.toLowerCase() == skin.name.toLowerCase()) {%>
-                  <button class="btn card_btn" skin="<%=skin.name%>"> EQUIPPED</button> 
+                  <button class="btn card_btn" skin="<%=skin.name%>"> EQUIPPED</button>
                 <%} else if(account.skins.collected.includes(skin.name.toLowerCase())) {%>
                   <button class="btn card_btn" skin="<%=skin.name%>" onclick="equip('<%=skin.name%>',this)"> EQUIP </button>
                   <% } else {%>
                 <button class="btn card_btn" skin="<%=skin.name%>" onclick="buy('<%=skin.name%>', '<%=skin.price%>',this)"> <%- (skin.original ? '<s>'+numberWithCommas(skin.original)+'</s>' : "") %>  <b><%= numberWithCommas(skin.price) %></b> <img width="20" src="/assets/images/coin.png"></button>
               <% } %>
-             
-            
+
+
               </div>
             </div>
           </li>
          <% }) %>
          <br>
-     
+
         </ul>
         <br>
         <center><button id="closeShop1" style="font-size: xx-large;">Close</button></center>
@@ -274,6 +270,6 @@ function numberWithCommas(x) {
 <% }  %>
 
       </div>
-      
-    
+
+
   </div>

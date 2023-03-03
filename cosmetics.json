@@ -680,6 +680,13 @@
             "description": "AI-Assisted Stabbing"
         },
         {
+            "name": "mummy",
+            "displayName": "Mummy",
+            "url": "/assets/images/mummyPlayer.png",
+            "price": 200000,
+            "description": "Back from the dead!"
+        },
+        {
             "name": "vaporwave",
             "displayName": "Vaporwave",
             "url": "/assets/images/vaporwavePlayer.png",
@@ -775,7 +782,7 @@
             "displayName": "Fish",
             "url": "/assets/images/fishPlayer.png",
             "price": 600000,
-            "description": " 'C'est un poisson' FishyMine(C)TM"
+            "description": "C'est un poisson!"
         },
         {
             "name": "shuriken",
@@ -896,6 +903,13 @@
             "description": "Scary... watch out"
         },
         {
+            "name": "laserfoil",
+            "displayName": "Laserfoil",
+            "url": "/assets/images/laserfoilPlayer.png",
+            "price": 4500000,
+            "desctiption": "Cut them down."
+        },
+        {
             "name": "scythe",
             "displayName": "Scythe",
             "url": "/assets/images/scythePlayer.png",
@@ -922,6 +936,13 @@
             "url": "/assets/images/codergautamytPlayer.png",
             "price": 10000000,
             "description": "The creator of swordbattle.."
+        },
+        {
+            "name": "microwave",
+            "displayName": "Microwave",
+            "url": "/assets/images/microwavePlayer.png",
+            "price": 10000000,
+            "description": "The power of the Great Microwave will burn you to ashes..."
         },
         {
             "name": "assasin",

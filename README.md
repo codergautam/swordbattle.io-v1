@@ -1,6 +1,6 @@
 # Welcome!
 
-Swordbattle.io is a multiplayer game where you PvP with 2D swords, and try to gain coins. The more coins you have, the more bigger and powerful you get! Try to become the biggest of them all..
+Swordbattle.io is a multiplayer game where players fight each other with diffrent 2D swords, and try to gain coins. The more coins you have, the more bigger and powerful you get! Try to become the biggest of them all..
 
 ### [Play now!](http://swordbattle.io)
 ### [Forum (most active)](https://forum.codergautam.dev)
@@ -13,14 +13,17 @@ Swordbattle.io is a multiplayer game where you PvP with 2D swords, and try to ga
 
 ## Contributing
 
-I'm working on a detailed guide so you can help out with the code! Stay tuned.
+A more detailed guide will be released soon but for now, follow these instructions:
 
-Right now, just clone, run `npm i`, run `node setup` (only first run), and run `npm run build` (always run after changes), and start with `node .`
-
+1. Clone this respiratory with `git clone` or git desktop
+2. Cd into your folder and run `npm i` and `node setup`
+3. After each change build with `npm run build`
+4. Start the program with `node .`
+5. Create a pull request to merge into this respiratory
 
 ## Code Usage
 
-You can use this code as a base for your IO games, but please change it to a considerable amount, so it's a whole different game, and please give me credit. Under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry. Thanks.
+You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietry.
 
 Thanks.
 
