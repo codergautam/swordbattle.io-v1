@@ -1,8 +1,7 @@
 # Welcome!
 
-You can play now at [swordbattle.io](http://swordbattle.io) and see the [leaderboard](https://www.swordbattle.io/leaderboard). Swordbattle.io is a multiplayer game where players fight each other with different 2D swords, and try to gain coins. The more coins you have, the bigger and more powerful you get! Try to become the biggest of them all..
-e, the bigger and more powerful you get! Try to become the biggest of them all..
-
+Swordbattle.io is a multiplayer game where players fight each other with diffrent 2D swords, and try to gain coins. The more coins you have, the bigger and powerful you get! Try to become the biggest of them all..
+You can play now at [swordbattle.io](http://swordbattle.io) and see the [leaderboard](https://www.swordbattle.io/leaderboard).
 
 ## Community
 * [Forum (most active)](https://forum.codergautam.dev)
@@ -12,11 +11,11 @@ e, the bigger and more powerful you get! Try to become the biggest of them all..
 
 A more detailed guide will be released soon but for now, follow these instructions:
 
-1. Clone this respiratory with `git clone` or git desktop
+1. Clone this repository with `git clone` or git desktop
 2. Cd into your folder and run `npm i` and `node setup`
 3. After each change build with `npm run build`
 4. Start the program with `node .`
-5. Create a pull request to merge into this respiratory
+5. Create a pull request to merge into this repository
 6. A few things in [CONTRIBUTING.md](https://github.com/codergautam/swordbattle.io/blob/main/CONTRIBUTING.md)
 
 ## Code Usage
