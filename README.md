@@ -19,8 +19,7 @@ A more detailed guide will be released soon but for now, follow these instructio
 6. A few things in [CONTRIBUTING.md](https://github.com/codergautam/swordbattle.io/blob/main/CONTRIBUTING.md)
 
 ## Code Usage
-
-You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take my code and make it proprietary.
+You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take this free code and make it proprietary.
 
 Thanks.
 
