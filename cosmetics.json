@@ -889,6 +889,13 @@
             "description": "Its 3D. Its just better like that."
         },
         {
+            "name": "microwave",
+            "displayName": "Microwave",
+            "url": "/assets/images/microwavePlayer.png",
+            "price": 2500000,
+            "description": "The microwave will burn you to ashes..."
+        },
+        {
             "name": "predator",
             "displayName": "predator",
             "url": "/assets/images/predatorPlayer.png",
@@ -936,13 +943,6 @@
             "url": "/assets/images/codergautamytPlayer.png",
             "price": 10000000,
             "description": "The creator of swordbattle.."
-        },
-        {
-            "name": "microwave",
-            "displayName": "Microwave",
-            "url": "/assets/images/microwavePlayer.png",
-            "price": 10000000,
-            "description": "The power of the Great Microwave will burn you to ashes..."
         },
         {
             "name": "assasin",
