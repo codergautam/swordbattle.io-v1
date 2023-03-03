@@ -551,7 +551,7 @@
             "displayName": "Bishop",
             "url": "/assets/images/bishopPlayer.png",
             "price": 135000,
-            "description": "Increase your immunity"
+            "description": "When in doubt, move diagonally with the Bishop skin!"
         },
         {
             "name": "covid",
