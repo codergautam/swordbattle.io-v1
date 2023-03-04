@@ -376,7 +376,8 @@ export default class Player {
                         // Get the point of the circle we collided with
                         // BTW - I think the radius's are messed up here, we should not have to divide
                         // by 2 in isCollidingWithPlayer method. But this works, and im not touching it anymore
-                        const { x, y } = getPointOnCircle(angle, player.pos.x, player.pos.y, player.radius * 0.9);
+                        // const { x, y } = getPointOnCircle(angle, player.pos.x, player.pos.y, player.radius * 0.9);
+                        const { x, y } = getPointOnCircle(angle, player.pos.x, player.pos.y, ((player.radius + this.radius) / 2) * 0.9);
                         this.pos.x = x;
                         this.pos.y = y;
                     }
