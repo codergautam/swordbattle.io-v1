@@ -55,7 +55,7 @@ export default class Chest extends Phaser.GameObjects.Container {
         this.width = 352;
         this.height = 223;
         this.scale = raritys[type-1].scale;
-        this.healthBar = new HealthBar(this.scene, 0, 5, this.displayWidth/2, 10);
+        this.healthBar = new HealthBar(this.scene, 0, 5, this.chestImage.displayWidth, 10);
         this.add(this.healthBar);
         this.healthBar.maxValue = raritys[type-1].health;
         this.healthBar.value = health;
