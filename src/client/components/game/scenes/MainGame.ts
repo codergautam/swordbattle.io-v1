@@ -17,6 +17,7 @@ import Border from '../classes/Border';
 import GameStats from '../classes/GameStats';
 import Chest from '../classes/Chest';
 import MiniMap from '../classes/MiniMap';
+import LevelBar from '../classes/LevelBar';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -36,6 +37,7 @@ export default class MainGame extends Phaser.Scene {
     gameStats: GameStats;
     chests: any;
     miniMap: any;
+    levelBar: LevelBar;
     constructor() {
         super('maingame');
     }
@@ -104,14 +106,23 @@ export default class MainGame extends Phaser.Scene {
             this.cameras.main.startFollow(player);
         });
 
-        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time, loggedIn]) => {
+        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time, level, skin]) => {
             if (this.ws.id === id) return;
             const name = this.playerNames.get(id) as { name: string; loggedIn: boolean};
-            const player = new Player(this, x, y, name.name, id, 'player', rotation, name.loggedIn).setDepth(3).setScale(0.25);
+            const player = new Player(this, x, y, name.name, id, skin, rotation, name.loggedIn).setDepth(3).setScale(levels[level].scale);
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
+        });
+
+        this.ws.on(Packet.ServerHeaders.PLAYER_LEVEL.toString(), ({id, level}) => {
+            const player = this.players.get(id);
+            if (!player) return;
+            player.setScale(levels[level].scale);
+            if(player.id == this.ws.id) {
+                this.updateGrass();
+            }
         });
 
         // TODO: Test this on refresh scene
@@ -220,9 +231,10 @@ export default class MainGame extends Phaser.Scene {
         this.chests = new Map();
         this.leaderboard = new Leaderboard(this, 0, 0);
         this.gameStats = new GameStats(this, 0, 0);
-        this.miniMap = new MiniMap(this, 1270, 710);
+        this.miniMap = new MiniMap(this, 1280-10, 720-10);
+        this.levelBar = new LevelBar(this, 1280 - 10 - 300 - (1280/1.5),720 - 50, 1280/1.5, 40);
         this.gameStats.render();
-        this.cameras.main.ignore(this.leaderboard);
+        this.cameras.main.ignore([this.leaderboard, this.gameStats, this.miniMap, this.levelBar]);
 
         this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
             this.leaderboard.setLeaderboard(data);
@@ -313,14 +325,10 @@ export default class MainGame extends Phaser.Scene {
         }
     }
 
-    update(time: number, delta: number) {
-        // Return if still connecting
+    updateGrass() {
         const { myPlayer } = this;
-        if (this.connectingText.visible || !myPlayer) return;
-        // Do game logic below
+        if (!myPlayer) return;
 
-        this.interpolate(delta);
-        // this.myPlayer.x += 1;
         this.grass.width = 1280 / this.cameras.main.zoom / this.grass.scale;
         this.grass.height = 720 / this.cameras.main.zoom / this.grass.scale;
 
@@ -332,6 +340,17 @@ export default class MainGame extends Phaser.Scene {
 
         this.grass.setTileScale(this.cameras.main.zoom);
         this.grass.setTilePosition(this.cameras.main.scrollX / this.cameras.main.zoom / this.grass.scale, this.cameras.main.scrollY / this.cameras.main.zoom / this.grass.scale);
+    }
+
+    update(time: number, delta: number) {
+        // Return if still connecting
+        const { myPlayer } = this;
+        if (this.connectingText.visible || !myPlayer) return;
+        // Do game logic below
+        this.updateGrass();
+
+        this.interpolate(delta);
+        // this.myPlayer.x += 1;
 
         this.controllerUpdate();
     }

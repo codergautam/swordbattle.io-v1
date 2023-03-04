@@ -98,6 +98,9 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.PLAYER_SWING:
                     this.swing(packetType);
                     break;
+                case Packet.ServerHeaders.PLAYER_LEVEL:
+                    this.playerLevel(packetType);
+                    break;
                 case Packet.ServerHeaders.ADD_PLAYER:
                     this.playerJoinedServer(packetType);
                     break;
@@ -153,8 +156,10 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const y = this.streamReader.readF32();
         const rotation = this.streamReader.readF32();
         const health = this.streamReader.readU8();
+        const level = this.streamReader.readF32();
+        const skin = this.streamReader.readString();
 
-        this.emit(packetType.toString(), [id, x, y, rotation, health, time]);
+        this.emit(packetType.toString(), [id, x, y, rotation, health, time, level, skin]);
     }
     updatePlayer(packetType: number, arrivalTime: number) {
         const id = this.streamReader.readULEB128();
@@ -272,5 +277,10 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const id = this.streamReader.readULEB128();
         const health = this.streamReader.readF32();
         this.emit(packetType.toString(), { id, health })
+    }
+    playerLevel(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        const level = this.streamReader.readF32();
+        this.emit(packetType.toString(), { id, level });
     }
 }

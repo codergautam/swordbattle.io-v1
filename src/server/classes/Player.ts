@@ -30,7 +30,7 @@ export default class Player {
     id: any;
     force: number;
     moveDir: number;
-    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean };
+    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean; level: boolean };
     speed: number;
     lastSeenEntities: Set<any>;
     roomId: string | number | undefined;
@@ -45,6 +45,7 @@ export default class Player {
     skin: string;
     verified: boolean;
     coins: number;
+    level: number;
 
     constructor(name: any) {
         this.name = name;
@@ -71,12 +72,14 @@ export default class Player {
         this.lastSeenEntities = new Set();
         this.skin = "player";
         this.verified = false; // Verified means they are logged in.
+        this.level = 0;
 
         this.updated = {
             // pos: false,
             // rot: false,
             health: false,
             swinging: false,
+            level: false
         };
         this.streamWriter = new StreamWriter();
         this.knockbackStage = 0;
@@ -112,6 +115,7 @@ export default class Player {
         // this.updated.rot = false;
         this.updated.health = false;
         this.updated.swinging = false;
+        this.updated.level = false;
     }
 
     setAngle(angle: number) {
@@ -184,6 +188,7 @@ export default class Player {
 
     takeHit(player: Player) {
         this.health -= player.damage;
+        this.health = Math.round(this.health);
         this.updated.health = true;
         this.dealKnockback(player)
         if (this.health <= 0) {
@@ -309,7 +314,7 @@ export default class Player {
     }
 
     get damage() {
-        return 80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale;
+        return Math.round(80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale);
     }
 
     getFirstSendData() {
@@ -426,7 +431,7 @@ export default class Player {
                     // when we despawn a player because we are far away from it
                     SPacketWriter.REMOVE_PLAYER(this.streamWriter, id);
                 } else if(isCoin) {
-                    // when we despawn a coin because we are far away from it
+                    // when we despawn a coin because we are far away from itfw
                     SPacketWriter.REMOVE_COIN(this.streamWriter, id);
                 } else {
                     SPacketWriter.REMOVE_CHEST(this.streamWriter, id);
@@ -465,8 +470,11 @@ export default class Player {
                 if (player.updated.swinging) {
                     SPacketWriter.PLAYER_SWING(this.streamWriter, player.id, player.swinging)
                 }
+                if(player.updated.level) {
+                  SPacketWriter.PLAYER_LEVEL(this.streamWriter, player.id, player.level)
+                }
             } else if (this.isInRangeWith(player)) {
-                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent)
+                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.level, player.skin)
                 this.lastSeenEntities.add(player.id);
             }
         }
@@ -494,5 +502,19 @@ export default class Player {
                 player.lastSeenEntities.delete(coin.id);
             }
         })
-    }
+
+        // Levels
+        console.log("coins", this.coins);
+        let bestLevel = [...Levels].reverse().findIndex((level) => level.coins <= this.coins);
+        if (bestLevel === -1) return;
+        // Convert bestLevel to un-reversed index
+        bestLevel = Levels.length - bestLevel - 1;
+        if (bestLevel > this.level) {
+            let levelData = Levels[bestLevel];
+            this.level = bestLevel;
+            this.scale = levelData.scale;
+            this.updated.level = true;
+        }
+      }
+
 }
