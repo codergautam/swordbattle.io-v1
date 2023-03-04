@@ -654,7 +654,7 @@ app.get("/shop", async (req, res) => {
   var secret = req.query.secret;
   var acc;
  
-if (secret != "undefined") {
+if (secret != undefined) {
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
