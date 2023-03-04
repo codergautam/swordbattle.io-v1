@@ -10,7 +10,7 @@ export default class MiniMap extends Phaser.GameObjects.Container {
   constructor(scene: MainGame, x: number, y: number) {
     super(scene, x, y);
 
-    this.box = new Phaser.GameObjects.Rectangle(scene, 0, 0, 200, 200, 0x00FF00).setOrigin(1, 1);
+    this.box = new Phaser.GameObjects.Rectangle(scene, 0, 0, 200, 200, 0x006400).setOrigin(1, 1);
     this.players = new Map();
     this.add(this.box);
     scene.add.existing(this);

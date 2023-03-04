@@ -21,13 +21,15 @@ export const SPacketWriter = {
         stream.writeLEB128(id);
         stream.writeU8(health);
     },
-    CREATE_PLAYER: function(stream: StreamWriter, id: number, x: number, y: number, rotation: number, health: number) {
+    CREATE_PLAYER: function(stream: StreamWriter, id: number, x: number, y: number, rotation: number, health: number, level: number, skin: string) {
         stream.writeU8(Packet.ServerHeaders.CREATE_PLAYER);
         stream.writeLEB128(id);
         stream.writeF32(x);
         stream.writeF32(y);
         stream.writeF32(rotation);
         stream.writeU8(health);
+        stream.writeF32(level);
+        stream.writeString(skin);
     },
     REMOVE_PLAYER: function(stream: StreamWriter, id: number) {
         stream.writeU8(Packet.ServerHeaders.REMOVE_PLAYER);
@@ -105,5 +107,10 @@ export const SPacketWriter = {
         stream.writeU8(Packet.ServerHeaders.CHEST_HEALTH);
         stream.writeLEB128(id);
         stream.writeF32(health);
+    },
+    PLAYER_LEVEL: function(stream: StreamWriter, id: number, level: number) {
+        stream.writeU8(Packet.ServerHeaders.PLAYER_LEVEL);
+        stream.writeLEB128(id);
+        stream.writeF32(level);
     }
 }
