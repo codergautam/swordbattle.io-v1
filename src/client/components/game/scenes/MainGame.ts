@@ -266,6 +266,7 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.CHEST_HEALTH.toString(), ({ id, health, maxHealth }) => {
             const chest = this.chests.get(id);
             if (chest) {
+                chest.setReceived();
                 chest.setHealth(health);
             }
         });

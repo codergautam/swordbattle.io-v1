@@ -95,7 +95,7 @@ export default class Player {
 
     getRangeRadius(hit = false) {
         const base = this.scale * constants.player_radius * 2;
-        const radius = hit ? base : (500 + base * 1.5) / 2;
+        const radius = hit ? base : (500 + base * 2) / 2;
         return radius;
     }
 
@@ -454,7 +454,7 @@ export default class Player {
                 if(!this.lastSeenEntities.has(chest.id) ) {
                 SPacketWriter.CREATE_CHEST(this.streamWriter, chest.id, chest.pos.x, chest.pos.y, chest.type, chest.health, chest.maxHealth);
                 this.lastSeenEntities.add(chest.id)
-                } else if(chest.updated.health) {
+                } else if(chest.updated.health || Date.now() - chest.lastSent > 5000) {
                     SPacketWriter.CHEST_HEALTH(this.streamWriter, chest.id, chest.health);
                     chest.updated.health = false;
                 }

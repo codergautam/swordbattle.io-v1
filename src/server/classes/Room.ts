@@ -193,6 +193,12 @@ export default class Room {
         this.players.array.forEach((player: Player) => {
             player.flushStream();
         });
+        for(let chest of Array.from(this.chests.values())) {
+            if(Date.now() - chest.lastSent > 5000) {
+                chest.lastSent = Date.now();
+                this.chests.set(chest.id, chest);
+            }
+        }
 
         if(this.lastLeaderboardUpdate + 1000 < now) {
             this.lastLeaderboardUpdate = now;
