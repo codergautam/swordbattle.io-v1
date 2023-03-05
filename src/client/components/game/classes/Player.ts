@@ -4,6 +4,7 @@ import MainGame from '../scenes/MainGame';
 import constants from '../../../../server/helpers/constants';
 import lerpTheta from '../helpers/angleInterp';
 import HealthBar from './HealthBar';
+import Levels from '../../../../shared/Levels';
 
 type PositionBuffer = [number, number, number, number];
 
@@ -41,6 +42,7 @@ export default class Player extends Phaser.GameObjects.Container {
     timestamp2: number = Date.now();
     possitionBuffer: PositionBuffer[] = [];
     loggedIn: boolean;
+    level: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number, loggedIn: boolean = false) {
         super(scene, x, y);
@@ -80,6 +82,11 @@ export default class Player extends Phaser.GameObjects.Container {
 
         this.addToUpdateList();
         this.scene.add.existing(this);
+    }
+
+    setLevel(level: number) {
+        this.level = level;
+        this.setScale(Levels[level].scale);
     }
 
     forceSetDirection(angle1: number) {

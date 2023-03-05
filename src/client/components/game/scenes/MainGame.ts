@@ -18,6 +18,7 @@ import GameStats from '../classes/GameStats';
 import Chest from '../classes/Chest';
 import MiniMap from '../classes/MiniMap';
 import LevelBar from '../classes/LevelBar';
+import PopupMessage from '../classes/PopupMessage';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -38,6 +39,7 @@ export default class MainGame extends Phaser.Scene {
     chests: any;
     miniMap: any;
     levelBar: LevelBar;
+    levelUpMessage: null | PopupMessage;
     constructor() {
         super('maingame');
     }
@@ -119,9 +121,28 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.PLAYER_LEVEL.toString(), ({id, level}) => {
             const player = this.players.get(id);
             if (!player) return;
-            player.setScale(levels[level].scale);
+            let diff = level - player.level;
+            player.setLevel(level);
             if(player.id == this.ws.id) {
                 this.updateGrass();
+                if(!this.levelUpMessage || !this.levelUpMessage.visible) {
+                    this.levelUpMessage = new PopupMessage(this, `Level Up! ${diff > 1 ? `${diff}x` : ""}`, 1280/2, 720/5).setDepth(99);
+                    this.levelUpMessage.text.setOrigin(0.5, 0.5);
+                    this.levelUpMessage.text.setFontSize(60);
+                    this.cameras.main.ignore(this.levelUpMessage);
+                }
+                 else {
+                    let txt = this.levelUpMessage.text.text;
+                    let actDiff = 0;
+                    console.log(txt.replace(/[^0-9]/g, ''));
+                    if(txt.replace(/[^0-9]/g, '').length == 0) actDiff = 1;
+                    else actDiff = parseInt(txt.replace(/[^0-9]/g, ''));
+
+                    this.levelUpMessage.text.setText(`Level Up! ${diff + actDiff}x`);
+                    this.levelUpMessage.restartTween();
+
+
+                }
             }
         });
 
@@ -235,6 +256,7 @@ export default class MainGame extends Phaser.Scene {
         this.levelBar = new LevelBar(this, 1280 - 10 - 300 - (1280/1.5),720 - 50, 1280/1.5, 40);
         this.gameStats.render();
         this.cameras.main.ignore([this.leaderboard, this.gameStats, this.miniMap, this.levelBar]);
+        this.levelUpMessage = null;
 
         this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
             this.leaderboard.setLeaderboard(data);
