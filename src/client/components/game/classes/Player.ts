@@ -104,6 +104,7 @@ export default class Player extends Phaser.GameObjects.Container {
         if (this.mySelf) {
             this.forceSetDirection(angle);
         } else {
+            try {
             const startAngle = this.player.angle + this.mouseDownValue;
             this.scene.tweens.addCounter({
                 from: 0,
@@ -114,6 +115,14 @@ export default class Player extends Phaser.GameObjects.Container {
                     this.forceSetDirection(angleInterp);
                 },
             });
+            } catch (e) {
+                console.log(e, "Failed to set direction");
+                try {
+                    this.forceSetDirection(angle);
+                } catch (e) {
+                    console.log(e, "Failed to force set direction");
+                }
+            }
         }
     }
 
@@ -152,7 +161,7 @@ export default class Player extends Phaser.GameObjects.Container {
             }
         }
 
-        if (this.player.visible) {
+        if (this.player && this.player.visible) {
             this.nameTag.setFontSize(125 * this.player.scale);
             this.healthBar.width = this.player.displayWidth;
             this.healthBar.height = this.player.displayHeight / 10;

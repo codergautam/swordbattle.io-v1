@@ -9,6 +9,7 @@ import ObjectManager from '../../shared/lib/ObjectManager';
 import { SPacketWriter } from '../packets/packet';
 import { StreamWriter } from '../../shared/lib/BitStream';
 import Chest from './Chest';
+import AiPlayer from './AiPlayer';
 
 export default class Room {
     id: string | number;
@@ -96,20 +97,20 @@ export default class Room {
 
     addPlayer(player: Player, ws: any) {
         player.roomId = this.id;
-        player.id = ws.id;
+        if(ws) player.id = ws.id;
         player.wsRoom = this.ws;
 
         this.players.add(player);
-        this.ws.addClient(ws);
+        if(ws) this.ws.addClient(ws);
 
         // tell the player to spawn
-        SPacketWriter.CLIENT_SPAWN(player.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.skin, player.name, player.verified);
+        if(!player.ai) SPacketWriter.CLIENT_SPAWN(player.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.skin, player.name, player.verified);
 
         for (let i = 0; i < this.players.array.length; i++) {
             const otherPlayer = this.players.array[i] as Player;
 
             // tell us about the other players names and id
-            SPacketWriter.ADD_PLAYER(player.streamWriter, otherPlayer.id, otherPlayer.name, otherPlayer.verified);
+            if(!player.ai) SPacketWriter.ADD_PLAYER(player.streamWriter, otherPlayer.id, otherPlayer.name, otherPlayer.verified);
 
             if (otherPlayer === player) continue;
 
@@ -173,6 +174,11 @@ export default class Room {
         this.refreshQuadTree();
 
 
+        for(let i = this.players.array.filter((p)=>p.ai).length; i < constants.max_ai; i++) {
+            const id = idGen.getID();
+            const ai = new AiPlayer(id, "Im an ai");
+            this.addPlayer(ai, undefined);
+        }
         for (let i = 0; i < this.maxCoins - this.coins.size; i++) {
             const id = idGen.getID();
             this.coins.set(id, new Coin(id));
@@ -188,7 +194,11 @@ export default class Room {
         });
 
         this.players.array.forEach((player: Player) => {
+            if(player.ai) {
+                (player as AiPlayer).tick(this);
+            } else {
             player.packets(this);
+            }
         });
         this.players.array.forEach((player: Player) => {
             player.flushStream();
@@ -217,7 +227,7 @@ export default class Room {
                     return b.coins - a.coins;
                 });
                 this.players.array.forEach((player: Player) => {
-                    SPacketWriter.LEADERBOARD(player.streamWriter, playerArr);
+                    if(!player.ai) SPacketWriter.LEADERBOARD(player.streamWriter, playerArr);
                 });
 
 

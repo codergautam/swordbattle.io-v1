@@ -13,7 +13,6 @@ dotenv.config()
 
 
 export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
-  console.log("signup");
   try {
   readJson(res, async (json) => {
     try {

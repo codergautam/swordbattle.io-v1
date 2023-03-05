@@ -112,6 +112,7 @@ export default class MainGame extends Phaser.Scene {
             if (this.ws.id === id) return;
             const name = this.playerNames.get(id) as { name: string; loggedIn: boolean};
             const player = new Player(this, x, y, name.name, id, skin, rotation, name.loggedIn).setDepth(3).setScale(levels[level].scale);
+            console.log("Created player: " + name.name + " with id: " + id + " and skin: " + skin + " and rotation: " + rotation + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and")
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
@@ -184,6 +185,7 @@ export default class MainGame extends Phaser.Scene {
         // player joined the server
         this.ws.on(Packet.ServerHeaders.ADD_PLAYER.toString(), d => {
             const { id, name, loggedIn /*, x, y, scale, angle, health*/ } = d;
+            console.log("Got playername from server: " + name + " " + loggedIn + " " + id + "")
             this.playerNames.set(id, {name, loggedIn});
         });
 

@@ -23,7 +23,7 @@ export default class Player {
     pos: { x: number; y: number };
     angle: number;
     scale: number;
-    evolution: any;
+    evolution: number;
     swinging: boolean;
     swordThrown: boolean;
     wsRoom!: WsRoom;
@@ -46,6 +46,9 @@ export default class Player {
     verified: boolean;
     coins: number;
     level: number;
+    ai: boolean;
+    joinTime: number;
+    type: string;
 
     constructor(name: any) {
         this.name = name;
@@ -73,6 +76,9 @@ export default class Player {
         this.skin = "player";
         this.verified = false; // Verified means they are logged in.
         this.level = 0;
+        this.ai = false;
+        this.joinTime = Date.now();
+        this.type = "player";
 
         this.updated = {
             // pos: false,
@@ -86,7 +92,7 @@ export default class Player {
     }
 
     get healthPercent() {
-        return clamp(this.health / this.maxHealth, 0, 1) * 100;
+        return Math.round(clamp(this.health / this.maxHealth, 0, 1) * 100);
     }
 
     get room() {
@@ -151,6 +157,13 @@ export default class Player {
         // if (Number.isNaN(moveDir1)) return;
         // if (moveDir < -360 && moveDir > 360) return;
         // this.moveDir = (moveDir * Math.PI) / 180;
+    }
+
+    setMoveDirRadians(moveDir: number) {
+        const moveDir1 = Number(moveDir);
+        if (Number.isNaN(moveDir1)) return;
+        if (moveDir < -Math.PI && moveDir > Math.PI) return;
+        this.moveDir = moveDir1;
     }
 
     setMouseDown(s: boolean) {
@@ -349,10 +362,10 @@ export default class Player {
         this.pos.x += Math.cos(this.moveDir) * moveSpeed;
         this.pos.y += Math.sin(this.moveDir) * moveSpeed;
 
+
         // clamp this player to the world bounds
         this.pos.x = clamp(this.pos.x, this.radius/2, constants.map.width - (this.radius/2));
         this.pos.y = clamp(this.pos.y, this.radius/2, constants.map.height - (this.radius/2));
-
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
             const room = this.room as Room;
@@ -482,6 +495,7 @@ export default class Player {
     }
     flushStream(): boolean {
         // send 1 packet containing all types of messages
+        if(!this.ws) return false;
         if (this.streamWriter.size() > 0) {
             // isBinary?: true
             this.ws.send(this.streamWriter.bytes(), true);
