@@ -505,7 +505,6 @@ export default class Player {
         })
 
         // Levels
-        console.log("coins", this.coins);
         let bestLevel = [...Levels].reverse().findIndex((level) => level.coins <= this.coins);
         if (bestLevel === -1) return;
         // Convert bestLevel to un-reversed index
