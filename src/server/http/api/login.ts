@@ -53,7 +53,6 @@ export default (res: uws.HttpResponse, req: uws.HttpRequest) => {
       return;
     }
 
-    console.log(user);
     // Check password
     try {
       await db.login(identifier, password);

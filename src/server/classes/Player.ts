@@ -23,7 +23,7 @@ export default class Player {
     pos: { x: number; y: number };
     angle: number;
     scale: number;
-    evolution: any;
+    evolution: number;
     swinging: boolean;
     swordThrown: boolean;
     wsRoom!: WsRoom;
@@ -46,6 +46,9 @@ export default class Player {
     verified: boolean;
     coins: number;
     level: number;
+    ai: boolean;
+    joinTime: number;
+    type: string;
 
     constructor(name: any) {
         this.name = name;
@@ -73,6 +76,9 @@ export default class Player {
         this.skin = "player";
         this.verified = false; // Verified means they are logged in.
         this.level = 0;
+        this.ai = false;
+        this.joinTime = Date.now();
+        this.type = "player";
 
         this.updated = {
             // pos: false,
@@ -86,7 +92,7 @@ export default class Player {
     }
 
     get healthPercent() {
-        return clamp(this.health / this.maxHealth, 0, 1) * 100;
+        return Math.round(clamp(this.health / this.maxHealth, 0, 1) * 100);
     }
 
     get room() {
@@ -95,7 +101,7 @@ export default class Player {
 
     getRangeRadius(hit = false) {
         const base = this.scale * constants.player_radius * 2;
-        const radius = hit ? base : (500 + base * 1.5) / 2;
+        const radius = hit ? base : (500 + base * 2) / 2;
         return radius;
     }
 
@@ -151,6 +157,13 @@ export default class Player {
         // if (Number.isNaN(moveDir1)) return;
         // if (moveDir < -360 && moveDir > 360) return;
         // this.moveDir = (moveDir * Math.PI) / 180;
+    }
+
+    setMoveDirRadians(moveDir: number) {
+        const moveDir1 = Number(moveDir);
+        if (Number.isNaN(moveDir1)) return;
+        if (moveDir < -Math.PI && moveDir > Math.PI) return;
+        this.moveDir = moveDir1;
     }
 
     setMouseDown(s: boolean) {
@@ -230,13 +243,14 @@ export default class Player {
             sword.x = this.pos.x + (this.radius / factor) * Math.cos((angle * Math.PI) / 180);
             sword.y = this.pos.y + (this.radius / factor) * Math.sin((angle * Math.PI) / 180);
 
-            const tip = movePointAtAngle([sword.x, sword.y], ((angle + 45) * Math.PI) / 180, this.radius * 0.2);
-            const base = movePointAtAngle([sword.x, sword.y], ((angle + 45) * Math.PI) / 180, (this.radius / 2) * 1.7);
+            var tip = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+        var base = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
+
 
             // get the values needed for line-circle-collison
             // pts.push(tip, base);
 
-            const radius = player.radius * player.scale * 2;
+            const radius = player.radius * player.scale;
 
             // check if enemy and player colliding
             if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
@@ -314,7 +328,7 @@ export default class Player {
     }
 
     get damage() {
-        return Math.round(80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale);
+        return Math.round((80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale) / 3);
     }
 
     getFirstSendData() {
@@ -349,10 +363,10 @@ export default class Player {
         this.pos.x += Math.cos(this.moveDir) * moveSpeed;
         this.pos.y += Math.sin(this.moveDir) * moveSpeed;
 
+
         // clamp this player to the world bounds
         this.pos.x = clamp(this.pos.x, this.radius/2, constants.map.width - (this.radius/2));
         this.pos.y = clamp(this.pos.y, this.radius/2, constants.map.height - (this.radius/2));
-
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
             const room = this.room as Room;
@@ -454,7 +468,7 @@ export default class Player {
                 if(!this.lastSeenEntities.has(chest.id) ) {
                 SPacketWriter.CREATE_CHEST(this.streamWriter, chest.id, chest.pos.x, chest.pos.y, chest.type, chest.health, chest.maxHealth);
                 this.lastSeenEntities.add(chest.id)
-                } else if(chest.updated.health) {
+                } else if(chest.updated.health || Date.now() - chest.lastSent > 5000) {
                     SPacketWriter.CHEST_HEALTH(this.streamWriter, chest.id, chest.health);
                     chest.updated.health = false;
                 }
@@ -482,6 +496,7 @@ export default class Player {
     }
     flushStream(): boolean {
         // send 1 packet containing all types of messages
+        if(!this.ws) return false;
         if (this.streamWriter.size() > 0) {
             // isBinary?: true
             this.ws.send(this.streamWriter.bytes(), true);
@@ -496,16 +511,15 @@ export default class Player {
 
         this.coins += coin.value;
         room.removeCoin(coin.id);
+        SPacketWriter.COIN_COUNT(this.streamWriter, this.coins);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
-                SPacketWriter.COIN_COUNT(player.streamWriter, this.coins);
                 player.lastSeenEntities.delete(coin.id);
             }
         })
 
         // Levels
-        console.log("coins", this.coins);
         let bestLevel = [...Levels].reverse().findIndex((level) => level.coins <= this.coins);
         if (bestLevel === -1) return;
         // Convert bestLevel to un-reversed index

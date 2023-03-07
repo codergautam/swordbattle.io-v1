@@ -4,6 +4,7 @@ import MainGame from '../scenes/MainGame';
 import constants from '../../../../server/helpers/constants';
 import lerpTheta from '../helpers/angleInterp';
 import HealthBar from './HealthBar';
+import Levels from '../../../../shared/Levels';
 
 type PositionBuffer = [number, number, number, number];
 
@@ -41,6 +42,7 @@ export default class Player extends Phaser.GameObjects.Container {
     timestamp2: number = Date.now();
     possitionBuffer: PositionBuffer[] = [];
     loggedIn: boolean;
+    level: number;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number, loggedIn: boolean = false) {
         super(scene, x, y);
@@ -82,6 +84,11 @@ export default class Player extends Phaser.GameObjects.Container {
         this.scene.add.existing(this);
     }
 
+    setLevel(level: number) {
+        this.level = level;
+        this.setScale(Levels[level].scale);
+    }
+
     forceSetDirection(angle1: number) {
         this.trueAngle = angle1;
         const angle = angle1 - this.mouseDownValue;
@@ -97,6 +104,7 @@ export default class Player extends Phaser.GameObjects.Container {
         if (this.mySelf) {
             this.forceSetDirection(angle);
         } else {
+            try {
             const startAngle = this.player.angle + this.mouseDownValue;
             this.scene.tweens.addCounter({
                 from: 0,
@@ -107,6 +115,14 @@ export default class Player extends Phaser.GameObjects.Container {
                     this.forceSetDirection(angleInterp);
                 },
             });
+            } catch (e) {
+                console.log(e, "Failed to set direction");
+                try {
+                    this.forceSetDirection(angle);
+                } catch (e) {
+                    console.log(e, "Failed to force set direction");
+                }
+            }
         }
     }
 
@@ -145,7 +161,7 @@ export default class Player extends Phaser.GameObjects.Container {
             }
         }
 
-        if (this.player.visible) {
+        if (this.player && this.player.visible) {
             this.nameTag.setFontSize(125 * this.player.scale);
             this.healthBar.width = this.player.displayWidth;
             this.healthBar.height = this.player.displayHeight / 10;

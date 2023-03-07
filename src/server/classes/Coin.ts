@@ -7,16 +7,19 @@ export default class Coin {
   value: number;
   radius: number;
   id: number;
+  type: string;
 
   constructor(id: number, value: number = getRandomInt(constants.coin.min_value, constants.coin.max_value), pos?: { x: number; y: number }) {
     this.value = value;
-    this.radius = this.value * 10;
+    this.radius = Math.min(this.value * 10, constants.coin.max_value * 10);
+
     this.pos = pos ?? {
       x: getRandomInt(constants.spawn.min + (this.radius*2), constants.spawn.max - (this.radius*2)),
       y: getRandomInt(constants.spawn.min + (this.radius*2), constants.spawn.max - (this.radius*2)),
     };
 
     this.id = id;
+    this.type = "coin";
   }
 
   getRangeRadius() {

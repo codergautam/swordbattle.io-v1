@@ -52,7 +52,7 @@ updatePlayer(id: string ,newX: number, newY: number, newScale: number, tween: bo
   // Convert map coordinates to minimap coordinates
   let x = (newX / map.width) * miniMap.width;
   let y = (newY / map.height) * miniMap.height;
-  let scale = (miniMap.width / map.width) * newScale * 10;
+  let scale = (miniMap.width / map.width) * newScale * 7.5;
 
   goPos.x = x;
   goPos.y = y;

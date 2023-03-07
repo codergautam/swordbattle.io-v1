@@ -9,6 +9,8 @@ export default class Chest extends Phaser.GameObjects.Container {
   chestImage: any;
   healthBar: HealthBar;
   health: number;
+  idText: Phaser.GameObjects.Text;
+  lastReceived: number;
     constructor(scene: Phaser.Scene, id: number, x: number, y: number, type: number, health: number) {
         super(scene, x, y);
         this.id = id;
@@ -55,12 +57,15 @@ export default class Chest extends Phaser.GameObjects.Container {
         this.width = 352;
         this.height = 223;
         this.scale = raritys[type-1].scale;
-        this.healthBar = new HealthBar(this.scene, 0, 5, this.chestImage.displayWidth, 10);
+        this.idText = new Phaser.GameObjects.Text(this.scene, 0, 0, id.toString(), { fontSize: "20px" });
+        this.healthBar = new HealthBar(this.scene, 0, 0, this.chestImage.displayWidth, 10);
+        this.lastReceived = Date.now();
         this.add(this.healthBar);
         this.healthBar.maxValue = raritys[type-1].health;
         this.healthBar.value = health;
         if(this.healthBar.maxValue > 1) this.healthBar.draw();
 
+        this.add(this.idText);
 
         this.scene.add.existing(this);
     }
@@ -72,7 +77,14 @@ export default class Chest extends Phaser.GameObjects.Container {
         if(this.healthBar.maxValue > 1) this.healthBar.draw();
     }
 
+    setReceived() {
+        this.lastReceived = Date.now();
+    }
+
     // eslint-disable-next-line class-methods-use-this
-    // preUpdate() {
-    // }
+    preUpdate() {
+        if (Date.now() - this.lastReceived > 7000) {
+            this.destroy();
+        }
+    }
 }

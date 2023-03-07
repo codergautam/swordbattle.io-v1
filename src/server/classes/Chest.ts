@@ -26,6 +26,7 @@ export default class Chest {
   height: number;
   maxHealth: number;
   updated: { health: boolean; };
+  lastSent: number;
 
   constructor(id: number, type: number = getTypeRandomly()) {
     this.type = type;
@@ -70,6 +71,7 @@ export default class Chest {
       health: true
     }
 
+    this.lastSent = 0;
     this.width = 352;
     this.height = 223;
     // WHY /2 ? I don't know, but it works

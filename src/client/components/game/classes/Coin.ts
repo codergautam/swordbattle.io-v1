@@ -1,5 +1,6 @@
 import dynamicSkinLoader from "../helpers/dynamicSkinLoader";
 import Phaser from "phaser";
+import constants from "../../../../server/helpers/constants";
 
 export default class Coin extends Phaser.GameObjects.Container {
     id: number;
@@ -10,7 +11,7 @@ export default class Coin extends Phaser.GameObjects.Container {
         this.id = id;
         this.skin = "coin";
 
-            this.coin = new Phaser.GameObjects.Image(this.scene, 0, 0, "coin").setScale(0.1 + (value / 30));
+            this.coin = new Phaser.GameObjects.Image(this.scene, 0, 0, "coin").setScale((0.1 + (Math.min(value, constants.coin.max_value) / 30)))
             this.add(this.coin);
 
         this.addToUpdateList();

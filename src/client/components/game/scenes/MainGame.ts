@@ -18,6 +18,7 @@ import GameStats from '../classes/GameStats';
 import Chest from '../classes/Chest';
 import MiniMap from '../classes/MiniMap';
 import LevelBar from '../classes/LevelBar';
+import PopupMessage from '../classes/PopupMessage';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -38,6 +39,7 @@ export default class MainGame extends Phaser.Scene {
     chests: any;
     miniMap: any;
     levelBar: LevelBar;
+    levelUpMessage: null | PopupMessage;
     constructor() {
         super('maingame');
     }
@@ -110,6 +112,7 @@ export default class MainGame extends Phaser.Scene {
             if (this.ws.id === id) return;
             const name = this.playerNames.get(id) as { name: string; loggedIn: boolean};
             const player = new Player(this, x, y, name.name, id, skin, rotation, name.loggedIn).setDepth(3).setScale(levels[level].scale);
+            console.log("Created player: " + name.name + " with id: " + id + " and skin: " + skin + " and rotation: " + rotation + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and")
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
@@ -119,9 +122,28 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.PLAYER_LEVEL.toString(), ({id, level}) => {
             const player = this.players.get(id);
             if (!player) return;
-            player.setScale(levels[level].scale);
+            let diff = level - player.level;
+            player.setLevel(level);
             if(player.id == this.ws.id) {
                 this.updateGrass();
+                if(!this.levelUpMessage || !this.levelUpMessage.visible) {
+                    this.levelUpMessage = new PopupMessage(this, `Level Up! ${diff > 1 ? `${diff}x` : ""}`, 1280/2, 720/5).setDepth(99);
+                    this.levelUpMessage.text.setOrigin(0.5, 0.5);
+                    this.levelUpMessage.text.setFontSize(60);
+                    this.cameras.main.ignore(this.levelUpMessage);
+                }
+                 else {
+                    let txt = this.levelUpMessage.text.text;
+                    let actDiff = 0;
+                    console.log(txt.replace(/[^0-9]/g, ''));
+                    if(txt.replace(/[^0-9]/g, '').length == 0) actDiff = 1;
+                    else actDiff = parseInt(txt.replace(/[^0-9]/g, ''));
+
+                    this.levelUpMessage.text.setText(`Level Up! ${diff + actDiff}x`);
+                    this.levelUpMessage.restartTween();
+
+
+                }
             }
         });
 
@@ -163,6 +185,7 @@ export default class MainGame extends Phaser.Scene {
         // player joined the server
         this.ws.on(Packet.ServerHeaders.ADD_PLAYER.toString(), d => {
             const { id, name, loggedIn /*, x, y, scale, angle, health*/ } = d;
+            console.log("Got playername from server: " + name + " " + loggedIn + " " + id + "")
             this.playerNames.set(id, {name, loggedIn});
         });
 
@@ -235,12 +258,13 @@ export default class MainGame extends Phaser.Scene {
         this.levelBar = new LevelBar(this, 1280 - 10 - 300 - (1280/1.5),720 - 50, 1280/1.5, 40);
         this.gameStats.render();
         this.cameras.main.ignore([this.leaderboard, this.gameStats, this.miniMap, this.levelBar]);
+        this.levelUpMessage = null;
 
         this.ws.on(Packet.ServerHeaders.LEADERBOARD.toString(), (data) => {
             this.leaderboard.setLeaderboard(data);
         });
 
-        this.ws.on(Packet.ServerHeaders.COIN_COUNT.toString(), ({count}) => {
+        this.ws.on(Packet.ServerHeaders.COIN_COUNT.toString(), ({count, id}) => {
             let updated = this.leaderboard.lbData.map((d) => {
                 if(d.id == this.ws.id) {
                     d.coins = count;
@@ -266,6 +290,7 @@ export default class MainGame extends Phaser.Scene {
         this.ws.on(Packet.ServerHeaders.CHEST_HEALTH.toString(), ({ id, health, maxHealth }) => {
             const chest = this.chests.get(id);
             if (chest) {
+                chest.setReceived();
                 chest.setHealth(health);
             }
         });
