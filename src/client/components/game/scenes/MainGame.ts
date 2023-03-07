@@ -264,7 +264,7 @@ export default class MainGame extends Phaser.Scene {
             this.leaderboard.setLeaderboard(data);
         });
 
-        this.ws.on(Packet.ServerHeaders.COIN_COUNT.toString(), ({count}) => {
+        this.ws.on(Packet.ServerHeaders.COIN_COUNT.toString(), ({count, id}) => {
             let updated = this.leaderboard.lbData.map((d) => {
                 if(d.id == this.ws.id) {
                     d.coins = count;

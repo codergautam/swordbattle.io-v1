@@ -243,13 +243,14 @@ export default class Player {
             sword.x = this.pos.x + (this.radius / factor) * Math.cos((angle * Math.PI) / 180);
             sword.y = this.pos.y + (this.radius / factor) * Math.sin((angle * Math.PI) / 180);
 
-            const tip = movePointAtAngle([sword.x, sword.y], ((angle + 45) * Math.PI) / 180, this.radius * 0.2);
-            const base = movePointAtAngle([sword.x, sword.y], ((angle + 45) * Math.PI) / 180, (this.radius / 2) * 1.7);
+            var tip = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
+        var base = movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
+
 
             // get the values needed for line-circle-collison
             // pts.push(tip, base);
 
-            const radius = player.radius * player.scale * 2;
+            const radius = player.radius * player.scale;
 
             // check if enemy and player colliding
             if (intersects.lineCircle(tip[0], tip[1], base[0], base[1], player.pos.x, player.pos.y, radius)) return true;
@@ -327,7 +328,7 @@ export default class Player {
     }
 
     get damage() {
-        return Math.round(80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale);
+        return Math.round((80 * this.scale > 30 ? 30 + (80 * this.scale - 30) / 5 : 80 * this.scale) / 3);
     }
 
     getFirstSendData() {
@@ -510,10 +511,10 @@ export default class Player {
 
         this.coins += coin.value;
         room.removeCoin(coin.id);
+        SPacketWriter.COIN_COUNT(this.streamWriter, this.coins);
         this.room.players.array.forEach((player: Player) => {
             if (player.lastSeenEntities.has(coin.id)) {
                 SPacketWriter.REMOVE_COIN(player.streamWriter, coin.id, this.id);
-                SPacketWriter.COIN_COUNT(player.streamWriter, this.coins);
                 player.lastSeenEntities.delete(coin.id);
             }
         })

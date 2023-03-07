@@ -11,6 +11,7 @@ class AiPlayer extends Player {
   movementMode: string;
   mouseDown: any;
   mousePos: any;
+  lastPlayerFollow: number;
     constructor(id: any, name: any) {
       // var aiName = "Test"
       // // this is because some names have Mr. or Ms. in them
@@ -23,6 +24,7 @@ class AiPlayer extends Player {
         this.target = undefined;
         this.lastHit = Date.now();
         this.moveDir = 0;
+        this.lastPlayerFollow = Date.now();
         this.chaseTime = 0;
         this.movementMode = "mouse";
         let tf= Math.random();
@@ -39,13 +41,33 @@ class AiPlayer extends Player {
     tick(room: Room) {
 
       let entities = this.getEntities(room);
-if(!this.target || !this.entityExists(this.target, entities)) this.target = this.getClosestEntity(entities);
+if(!this.target || !this.entityExists(this.target, entities)) {
+  if(this.lastPlayerFollow > Date.now()) {
+    entities = Array.from(room.coins.values());
+  }
+  this.target = this.getClosestEntity(entities);
+  if(this.target.type == "player") this.lastPlayerFollow = Date.now();
+}
       if(this.target) {
         // Move towards target
         let tpos = this.getTpos(room);
         if(tpos) {
           let dir = Math.atan2(tpos.y - this.pos.y, tpos.x - this.pos.x);
           this.setMoveDirRadians(dir);
+          this.setAngle(dir);
+          if(this.target.type == "player") {
+            this.chaseTime = Date.now();
+            if(this.lastHit + 1000 < Date.now()) {
+              this.lastHit = Date.now();
+              this.setMouseDown(true)
+            } else if(this.lastHit + 200 < Date.now() && this.swinging) {
+              this.setMouseDown(false)
+            }
+            if(this.chaseTime - this.lastPlayerFollow > 5000) {
+              this.target = undefined;
+              this.lastPlayerFollow = Date.now() + 5000;
+            }
+          }
         }
       }
     }
