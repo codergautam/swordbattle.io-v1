@@ -1,5 +1,7 @@
 import Phaser from 'phaser';
 import Title from './Title';
+import evolutionData from '../../../../shared/evolutionData.json'
+
 
 class Preload extends Phaser.Scene {
   constructor() {
@@ -32,6 +34,10 @@ class Preload extends Phaser.Scene {
     this.load.image('chest4', '/assets/images/chests/epicChest.png');
     this.load.image('chest5', '/assets/images/chests/legendaryChest.png');
     this.load.image('chest6', '/assets/images/chests/mythicalChest.png');
+
+    Object.values(evolutionData).forEach((evolData: any) => {
+      this.load.image(evolData.name+"Overlay", evolData.image);
+    });
   }
 
   create() {

@@ -112,5 +112,12 @@ export const SPacketWriter = {
         stream.writeU8(Packet.ServerHeaders.PLAYER_LEVEL);
         stream.writeLEB128(id);
         stream.writeF32(level);
+    },
+    EVOLVE_CHOOSE: function(stream: StreamWriter, choices: number[]) {
+        stream.writeU8(Packet.ServerHeaders.EVOLVE_CHOOSE);
+        stream.writeLEB128(choices.length);
+        for (let i = 0; i < choices.length; i++) {
+            stream.writeU8(choices[i]);
+        }
     }
 }

@@ -29,6 +29,8 @@ const SERVER_HEADERS = {
     REMOVE_CHEST: C++,
     CHEST_HEALTH: C++,
     PLAYER_LEVEL: C++,
+
+    EVOLVE_CHOOSE: C++,
 }
 C = 0;
 const CLIENT_HEADERS = {

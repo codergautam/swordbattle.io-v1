@@ -134,6 +134,9 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.REMOVE_CHEST:
                     this.removeChest(packetType);
                     break;
+                case Packet.ServerHeaders.EVOLVE_CHOOSE:
+                    this.evolveChoose(packetType);
+                    break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
             }
@@ -180,7 +183,6 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const id = this.streamReader.readULEB128();
         // cast 0 or 1 to boolean
         const isSwinging = !!this.streamReader.readU8();
-        console.log("swing", id, isSwinging)
         this.emit(packetType.toString(), { id, s: isSwinging });
     }
     playerJoinedServer(packetType: number) {
@@ -282,5 +284,13 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const id = this.streamReader.readULEB128();
         const level = this.streamReader.readF32();
         this.emit(packetType.toString(), { id, level });
+    }
+    evolveChoose(packetType: number) {
+        const length = this.streamReader.readULEB128();
+        let choices: number[] = [];
+        for (let i = 0; i < length; i++) {
+            choices.push(this.streamReader.readU8());
+        }
+        this.emit(packetType.toString(),  choices);
     }
 }

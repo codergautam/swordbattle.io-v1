@@ -90,12 +90,14 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     forceSetDirection(angle1: number) {
+        if(this.sword && this.player) {
         this.trueAngle = angle1;
         const angle = angle1 - this.mouseDownValue;
         this.sword.angle = angle + 45;
         this.player.angle = angle;
         this.sword.x = this.player.displayWidth * 0.69 * Math.cos(this.sword.rotation);
         this.sword.y = this.player.displayWidth * 0.69 * Math.sin(this.sword.rotation);
+        }
     }
 
     setDirection(angle1: number) {

@@ -49,6 +49,7 @@ export default class Player {
     ai: boolean;
     joinTime: number;
     type: string;
+    evolutionQueue: number[][];
 
     constructor(name: any) {
         this.name = name;
@@ -79,6 +80,10 @@ export default class Player {
         this.ai = false;
         this.joinTime = Date.now();
         this.type = "player";
+        this.evolutionQueue = [[
+            Evolutions.BERSERKER,
+            Evolutions.TANK
+        ]];
 
         this.updated = {
             // pos: false,
@@ -280,10 +285,10 @@ export default class Player {
 
     dealKnockback(player: Player) {
         this.knockbackPlayer = player;
-        const minKb = 10;``
-        const maxKb = 500;
+        const minKb = 10;
+        const maxKb = 800;
         // calculate kb by my scale and their scale
-        let kb = (player.scale / this.scale) * 100;
+        let kb = (player.scale / this.scale) * 200;
         kb = clamp(kb, minKb, maxKb);
 
         const x = Math.cos(player.angle) * kb / this.knockBackFrames;

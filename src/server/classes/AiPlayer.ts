@@ -46,7 +46,7 @@ if(!this.target || !this.entityExists(this.target, entities)) {
     entities = Array.from(room.coins.values());
   }
   this.target = this.getClosestEntity(entities);
-  if(this.target.type == "player") this.lastPlayerFollow = Date.now();
+  if(this.target && this.target.type == "player") this.lastPlayerFollow = Date.now();
 }
       if(this.target) {
         // Move towards target

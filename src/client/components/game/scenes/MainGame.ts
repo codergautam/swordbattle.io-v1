@@ -19,6 +19,7 @@ import Chest from '../classes/Chest';
 import MiniMap from '../classes/MiniMap';
 import LevelBar from '../classes/LevelBar';
 import PopupMessage from '../classes/PopupMessage';
+import EvoChooser from '../classes/EvoChooser';
 // eslint-disable-next-line no-unused-vars
 
 export default class MainGame extends Phaser.Scene {
@@ -40,6 +41,7 @@ export default class MainGame extends Phaser.Scene {
     miniMap: any;
     levelBar: LevelBar;
     levelUpMessage: null | PopupMessage;
+    evoChooser: null | EvoChooser;
     constructor() {
         super('maingame');
     }
@@ -256,6 +258,7 @@ export default class MainGame extends Phaser.Scene {
         this.gameStats = new GameStats(this, 0, 0);
         this.miniMap = new MiniMap(this, 1280-10, 720-10);
         this.levelBar = new LevelBar(this, 1280 - 10 - 300 - (1280/1.5),720 - 50, 1280/1.5, 40);
+        this.evoChooser = null;
         this.gameStats.render();
         this.cameras.main.ignore([this.leaderboard, this.gameStats, this.miniMap, this.levelBar]);
         this.levelUpMessage = null;
@@ -283,7 +286,6 @@ export default class MainGame extends Phaser.Scene {
             const chest = new Chest(this, id, x, y, value, health)
             chest.setDepth(2);
             this.chests.set(id, chest);
-            console.log(chest);
             this.UICamera.ignore(chest);
         });
 
@@ -292,6 +294,11 @@ export default class MainGame extends Phaser.Scene {
             if (chest) {
                 chest.setReceived();
                 chest.setHealth(health);
+            }
+        });
+        this.ws.on(Packet.ServerHeaders.EVOLVE_CHOOSE.toString(), (choices) => {
+            if(!this.evoChooser) {
+                this.evoChooser = new EvoChooser(this, 0, 0, choices);
             }
         });
 
