@@ -263,6 +263,7 @@ app.post("/api/buy", async (req, res) => {
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
       acc = account[0];
+      if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
       var yo =
         await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
       acc.bal = yo[0].sum + acc.coins;
@@ -316,6 +317,7 @@ app.post("/api/equip", async (req, res) => {
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
       acc = account[0];
+      if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
       if (acc.skins.collected.includes(item.name)) {
         var newskins = acc.skins;
         newskins.selected = item.name;
@@ -653,12 +655,13 @@ app.get("/shop", async (req, res) => {
   //get user data
   var secret = req.query.secret;
   var acc;
- 
+
 if (secret != "undefined") {
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
     if (account[0]) {
       acc = account[0];
+      if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
       var yo = await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
 
       acc.bal = yo[0].sum + acc.coins;
@@ -790,7 +793,9 @@ app.get("/:user", async (req, res, next) => {
       await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
     var lb2 =
       await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
-    res.render("user.ejs", {
+
+      if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
+      res.render("user.ejs", {
       user: dbuser[0],
       games: yo,
       stats: stats,
