@@ -67,14 +67,15 @@ function storageAvailable(type) {
 
 var sva = storageAvailable("localStorage");
 //var sva=false
-var playPreroll = true;
+var playPreroll = false;
 if(sva && window.localStorage.getItem("lastAd") === null) {
-window.localStorage.setItem("lastAd", Date.now());
-var lastAd = Date.now();
+window.localStorage.setItem("lastAd", 0);
+var lastAd = 0;
 } else if(!sva) {
-  var lastAd =Date.now();
+  var lastAd = 0;
 } else {
   var lastAd = Number(window.localStorage.getItem("lastAd"));
+    playPreproll = true;
 }
 //alert(lastAd)
 var scale = "scale(1)";
@@ -84,6 +85,7 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
 
 var adDelay = 150000;
 var gameScene = new GameScene((data) => {
+    playPreroll = true;
     titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
 });
 
