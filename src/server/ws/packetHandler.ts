@@ -54,6 +54,12 @@ export default async (ws: any, buffer: ArrayBuffer) => {
                 _player.setForce(force);
                 break;
 
+            case Packet.ClientHeaders.EVOLVE_CHOSEN:
+                const chosen = streamReader.readU8();
+                const _player2 = mainRoom.getPlayer(ws.id);
+                if (!_player2) return;
+                _player2.setEvolveChosen(chosen);
+
             default:
                 // don't throw error here or people can crash game if they purposely send bad packets
                 console.log('unknown packet type: ' + packetType);

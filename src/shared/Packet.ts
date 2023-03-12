@@ -31,11 +31,13 @@ const SERVER_HEADERS = {
     PLAYER_LEVEL: C++,
 
     EVOLVE_CHOOSE: C++,
+    PLAYER_EVOLUTION: C++,
 }
 C = 0;
 const CLIENT_HEADERS = {
     CONTROLS: C++,
     SPAWN: C++,
+    EVOLVE_CHOSEN: C++,
 }
 // can refactor this above^ in later
 export default class Packet {

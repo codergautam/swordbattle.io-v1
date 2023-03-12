@@ -137,7 +137,6 @@ export default class MainGame extends Phaser.Scene {
                  else {
                     let txt = this.levelUpMessage.text.text;
                     let actDiff = 0;
-                    console.log(txt.replace(/[^0-9]/g, ''));
                     if(txt.replace(/[^0-9]/g, '').length == 0) actDiff = 1;
                     else actDiff = parseInt(txt.replace(/[^0-9]/g, ''));
 
@@ -298,8 +297,19 @@ export default class MainGame extends Phaser.Scene {
         });
         this.ws.on(Packet.ServerHeaders.EVOLVE_CHOOSE.toString(), (choices) => {
             if(!this.evoChooser) {
-                this.evoChooser = new EvoChooser(this, 0, 0, choices);
+                this.evoChooser = new EvoChooser(this, 0, 0, choices, (choice) => {
+                    this.evoChooser?.destroy();
+                    this.evoChooser = null;
+                    CPacketWriter.EVOLVE_CHOSEN(this.ws.streamWriter, choice);
+                });
             }
+        });
+        this.ws.on(Packet.ServerHeaders.PLAYER_EVOLUTION.toString(), ({id, evolution}) => {
+            const player = this.players.get(id);
+            if(player) {
+                player.setEvolution(evolution);
+            }
+
         });
 
         this.ws.on(Packet.ServerHeaders.REMOVE_CHEST.toString(), ({ id }) => {

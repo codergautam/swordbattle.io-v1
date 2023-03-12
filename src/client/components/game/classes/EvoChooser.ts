@@ -5,7 +5,7 @@ import evolutionData from '../../../../shared/evolutionData.json'
 export default class EvoChooser extends Phaser.GameObjects.Container {
   buttonObjs: Phaser.GameObjects.GameObject[][] = [];
   topText: Phaser.GameObjects.Text;
-  constructor(scene: MainGame, x: number, y: number, choices: number[]) {
+  constructor(scene: MainGame, x: number, y: number, choices: number[], callback: (choice: number) => void) {
     super(scene, x, y);
 
     this.buttonObjs = [];
@@ -47,6 +47,13 @@ export default class EvoChooser extends Phaser.GameObjects.Container {
         color: '#FFFFFF',
       }).setOrigin(0.5, 0.5);
       this.buttonObjs[i].push(text);
+
+      // Onclick
+      buttonBack.setInteractive();
+      buttonBack.on('pointerdown', () => {
+        callback(choices[i]);
+      });
+
 
 
       this.add(buttonBack);

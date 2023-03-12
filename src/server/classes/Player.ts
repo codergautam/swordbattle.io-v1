@@ -30,7 +30,7 @@ export default class Player {
     id: any;
     force: number;
     moveDir: number;
-    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean; level: boolean };
+    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean; level: boolean; evolution: boolean; };
     speed: number;
     lastSeenEntities: Set<any>;
     roomId: string | number | undefined;
@@ -90,7 +90,8 @@ export default class Player {
             // rot: false,
             health: false,
             swinging: false,
-            level: false
+            level: false,
+            evolution: false,
         };
         this.streamWriter = new StreamWriter();
         this.knockbackStage = 0;
@@ -127,6 +128,7 @@ export default class Player {
         this.updated.health = false;
         this.updated.swinging = false;
         this.updated.level = false;
+        this.updated.evolution = false;
     }
 
     setAngle(angle: number) {
@@ -351,6 +353,11 @@ export default class Player {
         };
     }
 
+    setEvolveChosen(evolveChosen: number) {
+        this.evolution = evolveChosen;
+        this.updated.evolution = true;
+    }
+
     isCollidingWithCircle(object: Player | Coin) {
         // const cc = (p1x: number, p1y: number, r1: any, p2x: number, p2y: number, r2: any) => (r1 + r2) ** 2 > (p1x - p2x) ** 2 + (p1y - p2y) ** 2;
         return ((this.radius + object.radius) / 2) ** 2 > (this.pos.x - object.pos.x) ** 2 + (this.pos.y - object.pos.y) ** 2;
@@ -493,8 +500,11 @@ export default class Player {
                 if(player.updated.level) {
                   SPacketWriter.PLAYER_LEVEL(this.streamWriter, player.id, player.level)
                 }
+                if(player.updated.evolution) {
+                    SPacketWriter.PLAYER_EVOLUTION(this.streamWriter, player.id, player.evolution)
+                }
             } else if (this.isInRangeWith(player)) {
-                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.level, player.skin)
+                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.level, player.skin, player.evolution);
                 this.lastSeenEntities.add(player.id);
             }
         }

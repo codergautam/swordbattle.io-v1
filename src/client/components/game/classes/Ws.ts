@@ -137,6 +137,9 @@ export default class Ws extends Phaser.Events.EventEmitter {
                 case Packet.ServerHeaders.EVOLVE_CHOOSE:
                     this.evolveChoose(packetType);
                     break;
+                case Packet.ServerHeaders.PLAYER_EVOLUTION:
+                    this.playerEvolution(packetType);
+                    break;
                 default:
                     throw new Error("Unknown packet type received on client: " + packetType)
             }
@@ -161,8 +164,14 @@ export default class Ws extends Phaser.Events.EventEmitter {
         const health = this.streamReader.readU8();
         const level = this.streamReader.readF32();
         const skin = this.streamReader.readString();
+        const evolution = this.streamReader.readU8();
 
-        this.emit(packetType.toString(), [id, x, y, rotation, health, time, level, skin]);
+        this.emit(packetType.toString(), [id, x, y, rotation, health, time, level, skin, evolution]);
+    }
+    playerEvolution(packetType: number) {
+        const id = this.streamReader.readULEB128();
+        const evolution = this.streamReader.readU8();
+        this.emit(packetType.toString(), { id, evolution });
     }
     updatePlayer(packetType: number, arrivalTime: number) {
         const id = this.streamReader.readULEB128();
