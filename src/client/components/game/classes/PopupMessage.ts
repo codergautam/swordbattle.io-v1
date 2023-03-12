@@ -15,9 +15,14 @@ export default class PopupMessage extends Phaser.GameObjects.Container {
     }
 
     stopTween() {
+        try {
         this.tween.stop();
+        } catch (e) {
+            console.log(e);
+        }
     }
     restartTween() {
+        try {
       this.stopTween();
         this.scene.tweens.add({
             targets: this.text,
@@ -29,9 +34,13 @@ export default class PopupMessage extends Phaser.GameObjects.Container {
                 this.startTween();
             }
         })
+        } catch (e) {
+            console.log(e);
+        }
     }
     startTween() {
 
+        try {
       this.tween = this.scene.tweens.add({
         targets: this.text,
         y: -30,
@@ -45,6 +54,10 @@ export default class PopupMessage extends Phaser.GameObjects.Container {
             this.destroy();
         }
     });
+
+        } catch (e) {
+            console.log(e);
+        }
     }
     // eslint-disable-next-line class-methods-use-this
     // preUpdate() {

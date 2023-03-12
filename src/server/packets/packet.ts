@@ -21,7 +21,7 @@ export const SPacketWriter = {
         stream.writeLEB128(id);
         stream.writeU8(health);
     },
-    CREATE_PLAYER: function(stream: StreamWriter, id: number, x: number, y: number, rotation: number, health: number, level: number, skin: string) {
+    CREATE_PLAYER: function(stream: StreamWriter, id: number, x: number, y: number, rotation: number, health: number, level: number, skin: string, evolution: number) {
         stream.writeU8(Packet.ServerHeaders.CREATE_PLAYER);
         stream.writeLEB128(id);
         stream.writeF32(x);
@@ -30,6 +30,12 @@ export const SPacketWriter = {
         stream.writeU8(health);
         stream.writeF32(level);
         stream.writeString(skin);
+        stream.writeU8(evolution);
+    },
+    PLAYER_EVOLUTION: function(stream: StreamWriter, id: number, evolution: number) {
+        stream.writeU8(Packet.ServerHeaders.PLAYER_EVOLUTION);
+        stream.writeLEB128(id);
+        stream.writeU8(evolution);
     },
     REMOVE_PLAYER: function(stream: StreamWriter, id: number) {
         stream.writeU8(Packet.ServerHeaders.REMOVE_PLAYER);
@@ -112,5 +118,12 @@ export const SPacketWriter = {
         stream.writeU8(Packet.ServerHeaders.PLAYER_LEVEL);
         stream.writeLEB128(id);
         stream.writeF32(level);
+    },
+    EVOLVE_CHOOSE: function(stream: StreamWriter, choices: number[]) {
+        stream.writeU8(Packet.ServerHeaders.EVOLVE_CHOOSE);
+        stream.writeLEB128(choices.length);
+        for (let i = 0; i < choices.length; i++) {
+            stream.writeU8(choices[i]);
+        }
     }
 }

@@ -5,6 +5,8 @@ import constants from '../../../../server/helpers/constants';
 import lerpTheta from '../helpers/angleInterp';
 import HealthBar from './HealthBar';
 import Levels from '../../../../shared/Levels';
+import Evolutions from '../../../../shared/Evolutions';
+import evolutionData from '../../../../shared/evolutionData.json';
 
 type PositionBuffer = [number, number, number, number];
 
@@ -43,6 +45,8 @@ export default class Player extends Phaser.GameObjects.Container {
     possitionBuffer: PositionBuffer[] = [];
     loggedIn: boolean;
     level: number;
+    evolution: number;
+    evolutionOverlay: Phaser.GameObjects.Image;
 
     constructor(scene: Phaser.Scene, x: number, y: number, name: string, id: string, skin: string, angle?: number, loggedIn: boolean = false) {
         super(scene, x, y);
@@ -80,6 +84,7 @@ export default class Player extends Phaser.GameObjects.Container {
             }
         });
 
+        this.evolution = Evolutions.DEFAULT;
         this.addToUpdateList();
         this.scene.add.existing(this);
     }
@@ -89,13 +94,25 @@ export default class Player extends Phaser.GameObjects.Container {
         this.setScale(Levels[level].scale);
     }
 
+    setEvolution(evolution: number) {
+        this.evolution = evolution;
+        this.evolutionOverlay?.destroy();
+        this.evolutionOverlay = new Phaser.GameObjects.Image(this.scene, 0, 0, evolutionData[evolution].name+"Overlay").setScale(0.5);
+        this.add(this.evolutionOverlay);
+    }
+
     forceSetDirection(angle1: number) {
+        if(this.sword && this.player) {
         this.trueAngle = angle1;
         const angle = angle1 - this.mouseDownValue;
         this.sword.angle = angle + 45;
-        this.player.angle = angle;
+        this.player.angle = angle + this.mouseDownValue - 90;
         this.sword.x = this.player.displayWidth * 0.69 * Math.cos(this.sword.rotation);
         this.sword.y = this.player.displayWidth * 0.69 * Math.sin(this.sword.rotation);
+        if(this.evolutionOverlay) {
+            this.evolutionOverlay.angle = angle + this.mouseDownValue - 90;
+        }
+        }
     }
 
     setDirection(angle1: number) {

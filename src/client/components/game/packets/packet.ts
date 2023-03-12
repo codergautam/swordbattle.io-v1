@@ -14,5 +14,9 @@ export const CPacketWriter = {
         stream.writeU8(Packet.ClientHeaders.SPAWN);
         stream.writeString(name);
         stream.writeU8(+verify);
+    },
+    EVOLVE_CHOSEN: function(stream: StreamWriter, choice: number) {
+        stream.writeU8(Packet.ClientHeaders.EVOLVE_CHOSEN);
+        stream.writeU8(choice);
     }
 }

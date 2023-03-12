@@ -36,7 +36,6 @@ setLeaderboard(data: any) {
   for (let i = 0; i < Math.min(5, data.length); i++) {
     let player = data[i];
     text += `[size=30]#${i+1} - ${player.verified ? "[color=#0000FF]":""}${player.name}${player.verified?"[/color]":""} - ${player.coins}[/size]\n`;
-    console.log(player.id, (this.scene as MainGame).ws.id);
     if(player.id == (this.scene as MainGame).ws.id) {
       amIfound = true;
     }

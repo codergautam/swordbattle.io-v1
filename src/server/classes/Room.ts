@@ -119,6 +119,10 @@ export default class Room {
 
         }
 
+        if(!player.ai && player.evolutionQueue.length > 0) {
+            SPacketWriter.EVOLVE_CHOOSE(player.streamWriter, player.evolutionQueue[0]);
+        }
+
         // Send a packet to the client to tell them they joined the room, along with their position and id
         // writePlayerJoinPacket(player.streamWriter, ws.id, player.pos.x, player.pos.y);
         // Tell every singly player in the server about our info

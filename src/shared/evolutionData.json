@@ -1,0 +1,10 @@
+{
+  "1": {
+    "name": "Berserker",
+    "image": "/assets/images/evolutions/berserkerOverlay.png"
+  },
+  "2": {
+    "name": "Tank",
+    "image": "/assets/images/evolutions/tankOverlay.png"
+  }
+}

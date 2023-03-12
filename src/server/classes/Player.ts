@@ -30,7 +30,7 @@ export default class Player {
     id: any;
     force: number;
     moveDir: number;
-    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean; level: boolean };
+    updated: { /*pos: boolean; rot: boolean;*/ health: boolean; swinging: boolean; level: boolean; evolution: boolean; };
     speed: number;
     lastSeenEntities: Set<any>;
     roomId: string | number | undefined;
@@ -49,6 +49,7 @@ export default class Player {
     ai: boolean;
     joinTime: number;
     type: string;
+    evolutionQueue: number[][];
 
     constructor(name: any) {
         this.name = name;
@@ -79,13 +80,18 @@ export default class Player {
         this.ai = false;
         this.joinTime = Date.now();
         this.type = "player";
+        this.evolutionQueue = [[
+            Evolutions.BERSERKER,
+            Evolutions.TANK
+        ]];
 
         this.updated = {
             // pos: false,
             // rot: false,
             health: false,
             swinging: false,
-            level: false
+            level: false,
+            evolution: false,
         };
         this.streamWriter = new StreamWriter();
         this.knockbackStage = 0;
@@ -122,6 +128,7 @@ export default class Player {
         this.updated.health = false;
         this.updated.swinging = false;
         this.updated.level = false;
+        this.updated.evolution = false;
     }
 
     setAngle(angle: number) {
@@ -280,10 +287,10 @@ export default class Player {
 
     dealKnockback(player: Player) {
         this.knockbackPlayer = player;
-        const minKb = 10;``
-        const maxKb = 500;
+        const minKb = 10;
+        const maxKb = 800;
         // calculate kb by my scale and their scale
-        let kb = (player.scale / this.scale) * 100;
+        let kb = (player.scale / this.scale) * 200;
         kb = clamp(kb, minKb, maxKb);
 
         const x = Math.cos(player.angle) * kb / this.knockBackFrames;
@@ -344,6 +351,11 @@ export default class Player {
             id: this.id,
             health: this.healthPercent,
         };
+    }
+
+    setEvolveChosen(evolveChosen: number) {
+        this.evolution = evolveChosen;
+        this.updated.evolution = true;
     }
 
     isCollidingWithCircle(object: Player | Coin) {
@@ -488,8 +500,11 @@ export default class Player {
                 if(player.updated.level) {
                   SPacketWriter.PLAYER_LEVEL(this.streamWriter, player.id, player.level)
                 }
+                if(player.updated.evolution) {
+                    SPacketWriter.PLAYER_EVOLUTION(this.streamWriter, player.id, player.evolution)
+                }
             } else if (this.isInRangeWith(player)) {
-                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.level, player.skin)
+                SPacketWriter.CREATE_PLAYER(this.streamWriter, player.id, player.pos.x, player.pos.y, player.angle, player.healthPercent, player.level, player.skin, player.evolution);
                 this.lastSeenEntities.add(player.id);
             }
         }
