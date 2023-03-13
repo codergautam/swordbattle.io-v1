@@ -85,8 +85,7 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
 
 var adDelay = 300000;
 var gameScene = new GameScene((data) => {
-    playPreroll = true;
-    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
+    titleScene.playPreroll = (Date.now() - lastAd > adDelay);
 });
 
 var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
