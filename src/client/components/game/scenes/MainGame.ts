@@ -110,15 +110,16 @@ export default class MainGame extends Phaser.Scene {
             this.cameras.main.startFollow(player);
         });
 
-        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time, level, skin]) => {
+        this.ws.on(Packet.ServerHeaders.CREATE_PLAYER.toString(), ([id, x, y, rotation, health, time, level, skin, evolution]) => {
             if (this.ws.id === id) return;
             const name = this.playerNames.get(id) as { name: string; loggedIn: boolean};
             const player = new Player(this, x, y, name.name, id, skin, rotation, name.loggedIn).setDepth(3).setScale(levels[level].scale);
-            console.log("Created player: " + name.name + " with id: " + id + " and skin: " + skin + " and rotation: " + rotation + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and rotation: " + rotation + " and time: " + time + " and level: " + level + " and skin: " + skin + " and name: " + name.name + " and logged in: " + name.loggedIn + " and level: " + level + " and scale: " + levels[level].scale + " and time: " + time + " and x: " + x + " and y: " + y + " and health: " + health + " and")
+            console.log("the evolution is: " + evolution)
             player.possitionBuffer.push(createPositionBuffer(time, x, y, rotation));
             player.setHealth(health);
             this.players.set(id, player);
             this.UICamera.ignore(player);
+            player.setEvolution(evolution);
         });
 
         this.ws.on(Packet.ServerHeaders.PLAYER_LEVEL.toString(), ({id, level}) => {
