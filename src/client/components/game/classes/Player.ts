@@ -66,8 +66,8 @@ export default class Player extends Phaser.GameObjects.Container {
         this.loggedIn = loggedIn;
 
         dynamicSkinLoader(this.scene, this.skin).then(data => {
-            this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5);
-            this.sword = new Phaser.GameObjects.Image(this.scene, 0, 0, data.sword).setScale(0.5);
+            this.player = new Phaser.GameObjects.Image(this.scene, 0, 0, data.skin).setScale(0.5).setDepth(2);
+            this.sword = new Phaser.GameObjects.Image(this.scene, 0, 0, data.sword).setScale(0.5).setDepth(3);
 
             this.add([this.player, this.sword, this.healthBar]);
 
@@ -95,9 +95,10 @@ export default class Player extends Phaser.GameObjects.Container {
     }
 
     setEvolution(evolution: number) {
+        if(evolution <= 0) return;
         this.evolution = evolution;
         this.evolutionOverlay?.destroy();
-        this.evolutionOverlay = new Phaser.GameObjects.Image(this.scene, 0, 0, evolutionData[evolution].name+"Overlay").setScale(0.5);
+        this.evolutionOverlay = new Phaser.GameObjects.Image(this.scene, 0, 0, evolutionData[evolution].name+"Overlay").setScale(0.5).setDepth(4);
         this.add(this.evolutionOverlay);
     }
 
