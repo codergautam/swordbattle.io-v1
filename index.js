@@ -167,6 +167,9 @@ var oldlevels = [
   {coins: 60000, scale: 1.63},
   {coins: 100000, scale: 1.7},
   {coins: 200000, scale: 1.8},
+  {coins: 300000, scale: 1.9},
+  {coins: 400000, scale: 2},
+  {coins: 500000, scale: 2.5},
 ];
 app.set("trust proxy", true);
 /*
