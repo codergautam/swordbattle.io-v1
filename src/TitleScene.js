@@ -2,6 +2,7 @@ import ImgButton from "./components/PhaserImgButton";
 import axios from "axios";
 import Phaser from "phaser";
 import {CAPTCHASITE} from "../config.json";
+import { json } from "express";
 
 class TitleScene extends Phaser.Scene {
   constructor(playPreroll, callback) {
@@ -437,6 +438,28 @@ class TitleScene extends Phaser.Scene {
               }
             });
         }
+      };
+      document.getElementById("changepassword").onclick = () => {
+        let oldpasswd = prompt("Old Password:")
+        let newpasswd = prompt("New password:")
+        fetch("api/changepassword", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json"
+          },
+          body: JSON.stringify({
+            newPass: newpasswd,
+            oldPass: oldpasswd,
+            secret: window.localStorage['secret']
+          })
+        }).then((res)=>{
+          if (res.status == 200){
+            window.localStorage['secret'] = JSON.parse(res)['secret']
+            window.location.reload()
+          } else {
+            alert(JSON.parse(res)['error'])
+          }
+        })
       };
       document.getElementById("logout").onclick = () => {
         this.dropdown.destroy();

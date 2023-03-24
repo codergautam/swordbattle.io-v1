@@ -350,25 +350,25 @@ app.post("/api/changepassword", async (req,res) => {
   }
   var secret = req.body.secret;
   if(!schema.validate(req.body.newPass)) {
-		res.send({error:schema.validate(req.body.newPass, { details: true })[0].message});
+		res.status(400).send({error:schema.validate(req.body.newPass, { details: true })[0].message});
 		return;
 	}
   var account = await sql`SELECT password, secret FROM accounts WHERE secret=${secret}`;
   if(!account[0]) {
-    res.status(400).status(400).send({error: "Invalid secret"});
+    res.status(400).send({error: "Invalid secret"});
     return;
   };
 
   oldPassHash = account[0].password;
   match = await bcrypt.compare(req.body.oldPass, oldPassHash);
   if (!match){
-    res.send({error: "Invalid password"});
+    res.status(400).send({error: "Invalid password"});
 		return;
   };
 
   newSecret = uuid.v4()
   newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`
-  res.send({"Success": true, "secret": newSecret})
+  res.send({"success": true, "secret": newSecret})
 });
 
 app.post("/api/changename", async (req,res) => {
