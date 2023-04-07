@@ -67,14 +67,15 @@ function storageAvailable(type) {
 
 var sva = storageAvailable("localStorage");
 //var sva=false
-var playPreroll = true;
+var playPreroll = false;
 if(sva && window.localStorage.getItem("lastAd") === null) {
-window.localStorage.setItem("lastAd", Date.now());
-var lastAd = Date.now();
+window.localStorage.setItem("lastAd", 0);
+var lastAd = 0;
 } else if(!sva) {
-  var lastAd =Date.now();
+  var lastAd = 0;
 } else {
   var lastAd = Number(window.localStorage.getItem("lastAd"));
+    playPreroll = true;
 }
 //alert(lastAd)
 var scale = "scale(1)";
@@ -82,9 +83,9 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 450000;
+var adDelay = 120000;
 var gameScene = new GameScene((data) => {
-    titleScene.playPreroll = (playPreroll && Date.now() - lastAd > adDelay);
+    titleScene.playPreroll = (Date.now() - lastAd > adDelay);
 });
 
 var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {

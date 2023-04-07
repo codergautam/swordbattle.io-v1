@@ -114,16 +114,21 @@ function numberWithCommas(x) {
 <div class="body" >
   <% if(account) { %>
     <script>
+    let buying = false;
       function numberWithCommas(x) {
         return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
       }
       var secret = "<%= secret %>";
       var bal = "<%= account.bal %>";
       function buy(skin,price,obj) {
+      if(buying) {
+      return alert("Please wait until your other buy completes")
+      }
         if(Number(bal) < price) {
           alert("Not enough coins");
           return;
         }
+        buying = true;
         obj.innerHTML = "Buying...";
         obj.onclick = () => {};
         var endpoint = "/api/buy";
@@ -138,6 +143,7 @@ function numberWithCommas(x) {
             "Content-Type": "application/json"
           }
         }).then(function(data) {
+        buying = false;
 
           if(data.status == 200) {
             bal -= price;
@@ -167,6 +173,9 @@ function numberWithCommas(x) {
             alert(text);
            });
           }
+        }).catch((e)=>{
+        alert("Failed to buy");
+        buying = false;
         });
       }
       function equip(skin,obj) {
