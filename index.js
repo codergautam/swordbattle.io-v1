@@ -72,8 +72,9 @@ const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
  var {recaptcha, localServer} = require("./config.json");
 
-// DISABLED DUE TO PEOPLE HAVING ISSUES
 
+// DISABLED DUE TO PEOPLE HAVING ISSUES
+recaptcha = false;
 // recaptcha = true;
 
 var passwordValidator = require("password-validator");
