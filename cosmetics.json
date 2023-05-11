@@ -135,10 +135,10 @@
         },
         {
             "name": "frager201",
-            "displayName": "Frager201",
+            "displayName": "Frager",
             "url": "/assets/images/frager201Player.png",
             "price": 6000,
-            "description": "Dedicated to Frager201"
+            "description": "Frag your way through"
         },
         {
             "name": "bread",
@@ -265,6 +265,13 @@
             "url": "/assets/images/tigerPlayer.png",
             "price": 30000,
             "description": "Don't get in the way of its claws..."
+        },
+        {
+            "name": "frumpythefrog",
+            "displayName": "Frumpy the Frog",
+            "url": "/assets/images/frumpythefrogPlayer.png",
+            "price": 30000,
+            "description": "A frog named Frumpy"
         },
         {
             "name": "asteroid",
@@ -568,6 +575,13 @@
             "description": "Steal coins from enemy"
         },
         {
+            "name": "alarm",
+            "displayName": "Alarm Clock",
+            "url": "/assets/images/alarmPlayer.png",
+            "price": 147500,
+            "description": "Shak'em before they are ready"
+        },
+        {
             "name": "emerald",
             "displayName": "Emerald",
             "url": "/assets/images/emeraldPlayer.png",
@@ -601,6 +615,13 @@
             "url": "/assets/images/cellularPlayer.png",
             "price": 165000,
             "description": "Have stronger cells to be stronger"
+        },
+        {
+            "name": "compass",
+            "displayName": "Compass",
+            "url": "/assets/images/compassPlayer.png",
+            "price": 167500,
+            "description": "Points you towards coins"
         },
         {
             "name": "luminescent",
@@ -750,6 +771,13 @@
             "description": "Its neumorphic"
         },
         {
+            "name": "incendiary",
+            "displayName": "Incendiary",
+            "url": "/assets/images/incendiaryPlayer.png",
+            "price": 360000,
+            "description": "Melt your gold"
+        },
+        {
             "name": "eclipse",
             "displayName": "Eclipse",
             "url": "/assets/images/eclipsePlayer.png",
@@ -771,11 +799,32 @@
             "description": "End the world"
         },
         {
+            "name": "onion",
+            "displayName": "Onion",
+            "url": "/assets/images/onionPlayer.png",
+            "price": 425000,
+            "description": "Help! My eyes are watering!"
+        },
+        {
+            "name": "pie",
+            "displayName": "Pie",
+            "url": "/assets/images/piePlayer.png",
+            "price": 450000,
+            "description": "A snack before destruction"
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
             "price": 500000,
             "description": "The best at PVP. Ever."
+        },
+        {
+            "name": "scuba",
+            "displayName": "Scuba",
+            "url": "/assets/images/scubaPlayer.png",
+            "price": 600000,
+            "description": "Go deep for coins"
         },
         {
             "name": "fish",
@@ -810,6 +859,13 @@
             "url": "/assets/images/virusPlayer.png",
             "price": 750000,
             "description": "Infect them all"
+        },
+        {
+            "name": "arachne",
+            "displayName": "Arachne",
+            "url": "/assets/images/arachnePlayer.png",
+            "price": 775000,
+            "description": "Crawl all over the coins"
         },
         {
             "name": "ice cream",
@@ -868,6 +924,13 @@
             "description": "Scrumptious!"
         },
         {
+            "name": "computer",
+            "displayName": "Computer",
+            "url": "/assets/images/computerPlayer.png",
+            "price": 1600000,
+            "description": "Play swordbattle on swordbattle"
+        },
+        {
             "name": "skull",
             "displayName": "Skull",
             "url": "/assets/images/skullPlayer.png",
@@ -889,11 +952,25 @@
             "description": "Its 3D. Its just better like that."
         },
         {
+            "name": "solarsystem",
+            "displayName": "Solar Sytem",
+            "url": "/assets/images/solarsystemPlayer.png",
+            "price": 2250000,
+            "description": "PLUTO"
+        },
+        {
             "name": "microwave",
             "displayName": "Microwave",
             "url": "/assets/images/microwavePlayer.png",
             "price": 2500000,
             "description": "The microwave will burn you to ashes..."
+        },
+        {
+            "name": "soundwave",
+            "displayName": "Soundwave",
+            "url": "/assets/images/soundwavePlayer.png",
+            "price": 2750000,
+            "description": "BOOM!!!"
         },
         {
             "name": "predator",
