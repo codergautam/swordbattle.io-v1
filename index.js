@@ -1266,7 +1266,7 @@ setInterval(async () => {
 	var sockets = await io.fetchSockets();
 
 	sockets.forEach((b) => {
-		if (!b.joined && Date.now() - b.joinTime > 10000) {
+		if (!b.joined && Date.now() - b.joinTime > 60000) {
 			b.send(
 				"ban",
 				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device."
