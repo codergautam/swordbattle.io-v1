@@ -29,7 +29,7 @@
     "leo-profanity": "^1.5.0",
     "on-screen-keyboard-detector": "^2.3.0",
     "password-validator": "^5.2.1",
-    "phaser": "^3.55.2",
+    "phaser": "3.55.2",  
     "postgres": "^1.0.2",
     "potato-detection": "^1.0.2",
     "purgomalum-swear-filter": "^1.0.2",

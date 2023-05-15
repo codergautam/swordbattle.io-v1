@@ -72,8 +72,9 @@ const moderation = require("./moderation");
 const { v4: uuidv4 } = require("uuid");
  var {recaptcha, localServer} = require("./config.json");
 
-// DISABLED DUE TO PEOPLE HAVING ISSUES
 
+// DISABLED DUE TO PEOPLE HAVING ISSUES
+recaptcha = false;
 // recaptcha = true;
 
 var passwordValidator = require("password-validator");
@@ -129,6 +130,8 @@ if (production) {
 	});
 	app.use(limiter);
 }
+
+let xplb = null;
 
 var oldlevels = [
 	{coins: 5, scale: 0.28},
@@ -268,7 +271,7 @@ app.post("/api/buy", async (req, res) => {
       acc = account[0];
       if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
       var yo =
-        await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
+        await sql`SELECT sum(coins) FROM stats WHERE lower(username)=${acc.username.toLowerCase()}`;
       acc.bal = yo[0].sum + acc.coins;
       if (acc.skins.collected.includes(item.name)) {
         res.status(400).send("Skin already owned");
@@ -449,6 +452,8 @@ app.post("/api/changename", async (req,res) => {
   await sql`UPDATE accounts SET username=${newUsername}, lastusernamechange=now() WHERE secret=${secret}`;
   //update username in games
   await sql`UPDATE games SET name=${newUsername} WHERE lower(name)=${oldUsernameLower} AND verified=true`;
+  //update username in stats
+  await sql`UPDATE stats SET username=${newUsername} WHERE lower(username)=${oldUsernameLower}`;
 
   res.status(200).send("Success");
 
@@ -665,7 +670,7 @@ if (secret != "undefined") {
     if (account[0]) {
       acc = account[0];
       if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
-      var yo = await sql`SELECT sum(coins) FROM games WHERE lower(name)=${acc.username.toLowerCase()} AND verified='true';`;
+      var yo = await sql`SELECT sum(coins) FROM stats WHERE lower(username)=${acc.username.toLowerCase()}`;
 
       acc.bal = yo[0].sum + acc.coins;
     }
@@ -680,46 +685,81 @@ if (secret != "undefined") {
 });
 
 app.get("/leaderboard", async (req, res) => {
-  //SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < 86400 ORDER BY coins DESC LIMIT 10
 
-  //var lb= await sql`SELECT * FROM games ORDER BY coins DESC LIMIT 13`;
-  var type = ["coins", "kills", "time", "xp","totalkills","totaltime","totalcoins"].includes(req.query.type)
+  var type = ["coins", "kills", "time", "xp","totalstabs","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
     : "xp";
+
   var duration = ["all", "day", "week", "xp"].includes(req.query.duration)
     ? req.query.duration
     : "all";
   if (type !== "xp" && !type.startsWith("total")) {
+
     if (duration != "all") {
       var lb =
-        await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        await sql`SELECT *, name as username from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
         } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 103`;
     } else {
-      var lb = await sql`SELECT * from games ORDER BY ${sql(
+      var lb = await sql`SELECT *, name as username from games ORDER BY ${sql(
         type
       )} DESC, created_at DESC LIMIT 103`;
     }
   } else {
+
     if (duration != "all") {
       if(type == "xp"){
-      var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
-          duration == "day" ? "86400" : "608400"
-        } group by name order by xp desc limit 103`;
+        // await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        //   duration == "day" ? "86400" : "608400"
+        // } group by name order by xp desc limit 103`;
+        var lb;
+        if(duration == "day") {
+         lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date=current_date-1 group by username order by xp desc limit 103`;
+        } else {
+          // week
+           lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-8 group by username order by xp desc limit 103`;
+
+        }
       }else{
-        var lb =
-        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
-          duration == "day" ? "86400" : "608400"
-        } group by name order by ${sql(type.slice(5))} desc limit 103`;
+  if(type == "totaltime") type = "totalgame_time";
+
+        // var lb =
+        // await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        //   duration == "day" ? "86400" : "608400"
+        // } group by name order by ${sql(type.slice(5))} desc limit 103`;
+        var lb;
+        if(duration == "day") {
+           lb =
+          await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date=current_date-1 group by username order by ${sql(type.slice(5))} desc limit 103`;
+         } else {
+            // week
+               lb =
+              await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date>current_date-8 group by username order by ${sql(type.slice(5))} desc limit 103`;
+
+          }
       }
     } else {
+  if(type == "time") type = "game_time";
+  if(type == "totaltime") type = "totalgame_time";
+
+
       if (type == "xp") {
-      var lb =
-        await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc limit 103`;
+        if(!xplb) {
+        xplb = xplb = await sql`
+        SELECT username, (SUM(coins) + SUM(stabs) * 300) AS xp
+  FROM public.stats
+  GROUP BY username
+  ORDER BY xp DESC;`;
+        }
+      var lb = xplb.slice(0, 103);
       } else {
+        console.log(type.slice(5), "ufdgfighigfhigfh");
         var lb =
-        await sql`select name,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from games where verified = true group by name order by ${sql(type.slice(5))} desc limit 103`;
+        await sql`SELECT username, (SUM(${sql(type.slice(5))})) AS ${sql(type.slice(5))}
+        FROM public.stats
+        GROUP BY username
+        ORDER BY ${sql(type.slice(5))} DESC
+        LIMIT 103;`;
       }
       }
     lb = lb.map((x) => {
@@ -729,6 +769,9 @@ app.get("/leaderboard", async (req, res) => {
   }
 
   console.log(type, duration);
+  if(type == "totalgame_time") type = "totaltime";
+  if(type == "game_time") type = "time";
+
   res.render("leaderboard.ejs", { lb: lb, type: type, duration: duration });
 });
 
@@ -746,7 +789,7 @@ app.get("/:user", async (req, res, next) => {
     next();
   } else {
     var yo =
-      await sql`SELECT * FROM games WHERE lower(name)=${user.toLowerCase()} AND verified='true';`;
+      await sql`SELECT * FROM stats WHERE lower(username)=${user.toLowerCase()}`;
 
     /*
 		TODO
@@ -778,24 +821,24 @@ app.get("/:user", async (req, res, next) => {
 
 */
 
-    var stats = await sql`
-		select a.dt,b.name,b.xp,b.kills,b.coins,b.time from
-		(
-		select distinct(created_at::date) as Dt from games where created_at >= ${
-      dbuser[0].created_at
-    }::date-1
-		order by created_at::date
-		) a
-		left join
-		(
-		  SELECT name,created_at::date as dt1,(sum(coins)+(sum(kills)*300)) as xp,sum(kills) as kills ,sum(coins) as coins,
-		  sum(time) as time FROM games WHERE verified='true' and lower(name)=${user.toLowerCase()} group by name,created_at::date
-		) b on a.dt=b.dt1 order by a.dt asc
-		`;
-    var lb =
-      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
+var stats = await sql`SELECT a.dt::date as dt, COALESCE(b.name, ${user.toLowerCase()}) as name, COALESCE(b.xp, 0) as xp, COALESCE(b.kills, 0) as kills, COALESCE(b.coins, 0) as coins, COALESCE(b.time, 0) as time
+FROM (
+  SELECT DISTINCT (generate_series(MIN(game_date), CURRENT_DATE, '1 day')) AS dt
+  FROM public.stats
+  WHERE lower(username) = ${user.toLowerCase()}
+) a
+LEFT JOIN (
+  SELECT game_date AS dt1, username AS name, (SUM(coins) + (SUM(stabs) * 300)) AS xp, SUM(stabs) AS kills, SUM(coins) AS coins, SUM(game_time) AS time
+  FROM public.stats
+  WHERE lower(username) = ${user.toLowerCase()}
+  GROUP BY game_date, username
+) b ON a.dt = b.dt1
+ORDER BY a.dt ASC;
+`;
+console.log(stats);
+    var lb = xplb;
     var lb2 =
-      await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true and EXTRACT(EPOCH FROM (now() - created_at)) < 86400 group by name order by xp desc`;
+      await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date=current_date group by username order by xp desc`;
 
       if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
       res.render("user.ejs", {
@@ -894,9 +937,8 @@ io.on("connection", async (socket) => {
 					thePlayer.verified = true;
 					thePlayer.skin = accounts[0].skins.selected;
 
-          var lb =
-          await sql`select name,(sum(coins)+(sum(kills)*300)) as xp from games where verified = true group by name order by xp desc`;
-          var rt = lb.findIndex((x) => x.name == name) + 1;
+          var rt = xplb.findIndex((x) => x.username == name) + 1;
+          console.log(rt);
           if(rt <= 100) {
             thePlayer.ranking = rt;
           }
@@ -1111,8 +1153,23 @@ console.log(thePlayer.name + " - " + socket.id + " disconnected");
                 io.sockets.send("coin", [drop, [thePlayer.pos.x, thePlayer.pos.y]]);
 
 
-
+                if(thePlayer.coins > 100000 || thePlayer.kills > 20 || thePlayer.time > 1800000) {
 		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
+                }
+                if(thePlayer.verified) {
+                  /*
+                  INSERT INTO public.stats (username, game_time, game_count, stabs, coins)
+VALUES ('player1', 1000, 1, 5, 10)
+ON CONFLICT (game_date, username)
+DO UPDATE SET
+  game_time = public.stats.game_time + EXCLUDED.game_time,
+  game_count = public.stats.game_count + EXCLUDED.game_count,
+  stabs = public.stats.stabs + EXCLUDED.stabs,
+  coins = public.stats.coins + EXCLUDED.coins;
+                  */
+                  sql`INSERT INTO stats (username, game_time, game_count, stabs, coins) VALUES (${thePlayer.name}, ${Date.now() - thePlayer.joinTime}, 1, ${thePlayer.kills}, ${thePlayer.coins}) ON CONFLICT (username, game_date) DO UPDATE SET game_time = stats.game_time + EXCLUDED.game_time, game_count = stats.game_count + EXCLUDED.game_count, stabs = stats.stabs + EXCLUDED.stabs, coins = stats.coins + EXCLUDED.coins`;
+                }
+
 
 		PlayerList.deletePlayer(socket.id);
 		socket.broadcast.send("playerLeave", socket.id);
@@ -1265,7 +1322,7 @@ setInterval(async () => {
 	var sockets = await io.fetchSockets();
 
 	sockets.forEach((b) => {
-		if (!b.joined && Date.now() - b.joinTime > 10000) {
+		if (!b.joined && Date.now() - b.joinTime > 60000) {
 			b.send(
 				"ban",
 				"You have been kicked for not sending JOIN packet. <br>This is likely due to slow wifi.<br>If this keeps happening, try restarting your device."
@@ -1356,6 +1413,15 @@ setInterval(async () => {
 
 server.listen(process.env.PORT || 3000, () => {
   console.log("server started on port: ", process.env.PORT || 3000);
+  setTimeout(async () => {
+    if(!xplb) {
+      xplb = await sql`
+      SELECT username, (SUM(coins) + SUM(stabs) * 300) AS xp
+FROM public.stats
+GROUP BY username
+ORDER BY xp DESC;`;
+    }
+  }, 1000);
 });
 
 process.on("SIGTERM", () => {
@@ -1485,15 +1551,41 @@ async function cleanExit() {
             "</h1><hr>"
         );
         socket.disconnect();
+        if(player.coins > 100000 || player.kills > 20 || player.time > 1800000) {
         await sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${
           player.name
         }, ${player.coins}, ${player.kills}, ${Date.now() - player.joinTime}, ${
           player.verified
         })`;
       }
+      if(player.verified) {
+        /*
+        INSERT INTO public.stats (username, game_time, game_count, stabs, coins)
+VALUES ('player1', 1000, 1, 5, 10)
+ON CONFLICT (game_date, username)
+DO UPDATE SET
+  game_time = public.stats.game_time + EXCLUDED.game_time,
+  game_count = public.stats.game_count + EXCLUDED.game_count,
+  stabs = public.stats.stabs + EXCLUDED.stabs,
+  coins = public.stats.coins + EXCLUDED.coins;
+        */
+        await sql`INSERT INTO stats (username, game_time, game_count, stabs, coins) VALUES (${
+          player.name
+        }, ${Date.now() - player.joinTime}, 1, ${player.kills}, ${
+          player.coins
+        }) ON CONFLICT (username, game_date) DO UPDATE SET game_time = stats.game_time + EXCLUDED.game_time, game_count = stats.game_count + EXCLUDED.game_count, stabs = stats.stabs + EXCLUDED.stabs, coins = stats.coins + EXCLUDED.coins`;
+      }
+      }
     }
   }
 }
+
+setInterval(async () => {
+ xplb = await sql`SELECT username, (SUM(coins) + SUM(stabs) * 300) AS xp
+ FROM public.stats
+ GROUP BY username
+ ORDER BY xp DESC;`;
+}, 120000);
 
 /*
 http.createServer(function (req, res) {
