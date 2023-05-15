@@ -697,11 +697,11 @@ app.get("/leaderboard", async (req, res) => {
 
     if (duration != "all") {
       var lb =
-        await sql`SELECT * from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
+        await sql`SELECT *, name as username from games where EXTRACT(EPOCH FROM (now() - created_at)) < ${
           duration == "day" ? "86400" : "608400"
         } ORDER BY ${sql(type)} DESC, created_at DESC LIMIT 103`;
     } else {
-      var lb = await sql`SELECT * from games ORDER BY ${sql(
+      var lb = await sql`SELECT *, name as username from games ORDER BY ${sql(
         type
       )} DESC, created_at DESC LIMIT 103`;
     }
