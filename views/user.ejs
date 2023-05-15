@@ -104,12 +104,12 @@ if(recent) {
  var today = new Date();
   var diff = today - date;
   var days = Math.floor(diff / 86400000);
-  if(days-1 == 0) {
+  if(days == 0) {
     return "today";
-  } else if(days-1 == 1) {
+  } else if(days-2 == 0 || days-1 == 0) {
     return "yesterday";
   } else {
-    return days-1 + " days ago";
+    return days + " days ago";
   }
 } else return false
 }
