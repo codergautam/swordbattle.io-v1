@@ -8,7 +8,7 @@ function getRandomInt(min, max) {
 var map = 15000;
 const evolutions = require("./evolutions");
 
-class Player { 
+class Player {
   constructor(id, name) {
     this.ai = false;
     this.ranking = false;
@@ -42,7 +42,7 @@ class Player {
 
     this.ability = 0;
     this.abilityActive = false;
-    
+
    this.skin = "player";
     this.levelScale = 0.25;
 
@@ -63,13 +63,13 @@ class Player {
   }
   moveWithMouse() {
 
-  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
+  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000);
     var since =( Date.now() - this.lastMove ) / 1000;
-    
-    
+
+
     var go = since * this.speed;
 
-    const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1); 
+    const distance = (x1, y1, x2, y2) => Math.hypot(x2 - x1, y2 - y1);
 
     var power = distance(this.mousePos.x, this.mousePos.y, this.mousePos.viewport.width/2, this.mousePos.viewport.height/2);
 power = (power/((this.mousePos.viewport.height+this.mousePos.viewport.width)/2))*100;
@@ -81,10 +81,10 @@ if(power < 15)  power = 0;
 go *= power/100;
 
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    
+
 
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (this.calcSwordAngle()+45)*Math.PI/180 , go);
-    
+
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);
 
@@ -93,13 +93,13 @@ go *= power/100;
   }
   move(controller) {
     function getCardinal(angle) {
-      /** 
+      /**
        * Customize by changing the number of directions you have
        * We have 8
        */
       const degreePerDirection = 360 / 8;
-    
-      /** 
+
+      /**
        * Offset the angle by half of the degrees per direction
        * Example: in 4 direction system North (320-45) becomes (0-90)
        */
@@ -131,11 +131,11 @@ go *= power/100;
 
     var players = Object.values(PlayerList.players);
   //  console.log(this.id+" => ("+this.pos.x+", "+this.pos.y+")")
-  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000); 
+  if(Date.now() - this.lastMove > 5000) this.lastMove = (Date.now() - 1000);
     var since =( Date.now() - this.lastMove ) / 1000;
-    
+
         const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    
+
     var go = since * this.speed;
     if(this.movementMode == "keys") {
 
@@ -155,7 +155,7 @@ var move = true;
    } else if(controller.left) {
       moveAngle -= 45;
    }
-      
+
     } else if(controller.down) {
        moveAngle = 180;
 
@@ -164,7 +164,7 @@ var move = true;
    } else if(controller.left) {
       moveAngle += 45;
    }
-   
+
     } else if(controller.left) {
       var moveAngle = -90;
     } else if(controller.right) {
@@ -174,10 +174,10 @@ var move = true;
       move = false;
     }
 
-    
+
 
     var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (moveAngle)*Math.PI/180 , go);
-    
+
     if(move) {
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);
@@ -188,7 +188,7 @@ var move = true;
     if(this.pos.y <= -(map/2)) this.pos.y = -(map/2);
     if(this.pos.y >= map/2) this.pos.y = map/2;
 
-    moveAngle = getCardinal(moveAngle);  
+    moveAngle = getCardinal(moveAngle);
 
     } else {
       var moveAngle = getCardinal(this.moveWithMouse());
@@ -203,8 +203,8 @@ var move = true;
         this.pos.x = player.pos.x + Math.cos(angle) * (radius + playerSize / 2);
         this.pos.y = player.pos.y + Math.sin(angle) * (radius + playerSize / 2);
       });
-      
-    
+
+
 
     this.lastMove = Date.now();
     PlayerList.updatePlayer(this);
@@ -217,11 +217,11 @@ var move = true;
   }
   doKnockback(player, angle=player.calcSwordAngle()) {
     const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
-    
+
     var oldPos = this.pos;
 
   var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (angle+45)*Math.PI/180 , Math.max(player.power-this.resistance,50));
-    
+
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);
 
@@ -230,7 +230,7 @@ var move = true;
     }
   }
   collectCoins(coins, io, levels) {
-    
+
 
            var touching = coins.filter((coin) => coin.touchingPlayer(this));
 
@@ -239,7 +239,7 @@ var move = true;
           this.coins+= coin.value;
           if(this.level <= levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
-  
+
 
             var oldLevel = this.level;
           var levelsPassed = [];
@@ -252,12 +252,12 @@ var move = true;
                     this.levelScale = level.scale;
                   }
                 });
-              
+
                 var evoLevels = levelsPassed.slice(oldLevel-this.level).filter(level => level.evolutions)?.map((e)=>e.evolutions).map((e)=>e.map((f)=>f.name));
                 this.evolutionQueue = [...this.evolutionQueue, ...evoLevels].filter((e)=>e);
-              
+
                 if(levelsPassed.length > 0) this.checkSubEvolutions();
-            
+
           }
 
 
@@ -273,17 +273,17 @@ var move = true;
   }
   checkSubEvolutions() {
     if(
-      evolutions[this.evolution] 
-      && evolutions[this.evolution].subEvolutions 
-      && evolutions[this.evolution].subEvolutions.length > 2 
-      && evolutions[this.evolution].subEvolutions[0] <= this.coins 
+      evolutions[this.evolution]
+      && evolutions[this.evolution].subEvolutions
+      && evolutions[this.evolution].subEvolutions.length > 2
+      && evolutions[this.evolution].subEvolutions[0] <= this.coins
       && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1] && q[1] == evolutions[this.evolution].subEvolutions[2]) == -1
       ) this.evolutionQueue.push(evolutions[this.evolution].subEvolutions.slice(1).map((e)=>e.name));
 
   }
   hittingPlayer(player) {
 
-  
+
   var deep = 0;
   var angles = [-5,0,5,10,15,25,30,35,40,45, 50,55];
 
@@ -291,7 +291,7 @@ var move = true;
 
     var angle = this.calcSwordAngle();
     angle -= increment;
-   
+
     var sword = {x: 0, y: 0};
     var factor = (100/(this.scale*100))*1.5;
     sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180));
@@ -301,7 +301,7 @@ var move = true;
   var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
 
                           //get the values needed for line-circle-collison
-                       
+
                           var radius = player.radius *player.scale;
 
                           //check if enemy and player colliding
@@ -353,7 +353,7 @@ return false;
       } else this.abilityActive = false;
     }
 
-    if(!this.swordInHand) { 
+    if(!this.swordInHand) {
       this.speed *= 1.5;
    this.resistance /= 1.5;
  this.maxHealth /= 1.5;
@@ -377,11 +377,11 @@ return false;
     if(this.ai) {
       this.target = this.getClosestEntity(this.getEntities(coins));
       PlayerList.updatePlayer(this);
-    } 
+    }
     if(enemy.ai) {
       enemy.target = enemy.getClosestEntity(coins);
     PlayerList.updatePlayer(enemy);
-    } 
+    }
 
 
     if(Date.now() - enemy.joinTime >= 5000) {
@@ -398,23 +398,40 @@ return false;
       if(!this.ai && socket) socket.send("dealHit", [enemy.id]);
       if(!enemy.ai && socketById) socketById.send("takeHit", [this.id]);
       //enemy has 0 or less than 0 health, time to kill
-    if(!enemy.ai) sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
+    if(!enemy.ai) {
+      if(enemy.coins > 100000 || enemy.kills > 20 || enemy.time > 1800000) {
+      sql`INSERT INTO games (name, coins, kills, time, verified, killedby, killerverified) VALUES (${enemy.name}, ${enemy.coins}, ${enemy.kills}, ${Date.now() - enemy.joinTime}, ${enemy.verified}, ${this.name}, ${this.verified})`;
+      }
+      if(enemy.verified) {
+        /*
+        INSERT INTO public.stats (username, game_time, game_count, stabs, coins)
+VALUES ('player1', 1000, 1, 5, 10)
+ON CONFLICT (game_date, username)
+DO UPDATE SET
+  game_time = public.stats.game_time + EXCLUDED.game_time,
+  game_count = public.stats.game_count + EXCLUDED.game_count,
+  stabs = public.stats.stabs + EXCLUDED.stabs,
+  coins = public.stats.coins + EXCLUDED.coins;
+        */
 
+        sql`INSERT INTO stats (username, game_time, game_count, stabs, coins) VALUES (${enemy.name}, ${Date.now() - enemy.joinTime}, 1, ${enemy.kills}, ${enemy.coins}) ON CONFLICT (username, game_date) DO UPDATE SET game_time = stats.game_time + EXCLUDED.game_time, game_count = stats.game_count + EXCLUDED.game_count, stabs = stats.stabs + EXCLUDED.stabs, coins = stats.coins + EXCLUDED.coins;`;
+      }
+    }
       //increment killcount by 1
       this.kills += 1;
 
       //tell clients that this enemy died
       if(!enemy.ai && socketById) {
 
-        
-        
+
+
       socketById.send("youDied", {
         killedBy: this.name,
         killerVerified: this.verified,
         killedById: this.id,
         timeSurvived: Date.now() - enemy.joinTime,
       });
-    
+
       socketById.broadcast.send("playerDied", [enemy.id, {
         killedBy: {id: this.id, name: this.name},
       }]);
@@ -446,7 +463,7 @@ return false;
       }
 
         io.sockets.send("coin", [drop, [enemy.pos.x, enemy.pos.y]]);
-      
+
       //log a message
       console.log(this.name+" killed " + enemy.name);
 
@@ -470,7 +487,7 @@ return false;
   checkCollisions(coins, chests, io) {
     //hit cooldown
 
-        
+
     if (this.mouseDown && Date.now() - this.lastSwing > this.damageCooldown) {
       this.lastSwing = Date.now();
       Object.values(PlayerList.players).forEach((enemy) => {
@@ -487,7 +504,7 @@ return false;
       });
 
 
-    
+
           //chest collisions
           chests.forEach((chest) => {
             if (this.hittingChest(chest)) {
@@ -503,10 +520,10 @@ return false;
               //remove the chest
               chests.splice(chests.indexOf(chest), 1);
               io.sockets.send("collected", [chest.id, this.id, false]);
-    
+
               //drop coins at that spot
               var drop = chest.open();
-    
+
               io.sockets.send("coin", [drop, [chest.pos.x+(chest.width/2), chest.pos.y+(chest.height/2)]]);
                 coins.push(...drop);
               }
@@ -522,15 +539,15 @@ return false;
 
       var angle = this.calcSwordAngle();
       angle -= increment;
-     
+
       var sword = {x: 0, y: 0};
       var factor = (100/(this.scale*100))*1.5;
       sword.x = this.pos.x + (this.size / factor * Math.cos(angle * Math.PI / 180));
       sword.y = this.pos.y + (this.size/ factor * Math.sin(angle * Math.PI / 180));
-  
+
     var tip = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale));
     var base = this.movePointAtAngle([sword.x, sword.y], ((angle+45) * Math.PI / 180), (this.radius*this.scale)*-1.5);
-  
+
         if( intersects.lineBox(tip[0], tip[1], base[0], base[1], chest.pos.x, chest.pos.y, chest.width, chest.height)) return true;
     }
   return false;
