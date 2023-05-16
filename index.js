@@ -714,10 +714,10 @@ app.get("/leaderboard", async (req, res) => {
         // } group by name order by xp desc limit 103`;
         var lb;
         if(duration == "day") {
-         lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date=current_date-1 group by username order by xp desc limit 103`;
+         lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc limit 103`;
         } else {
           // week
-           lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-8 group by username order by xp desc limit 103`;
+           lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-7 group by username order by xp desc limit 103`;
 
         }
       }else{
@@ -835,10 +835,10 @@ LEFT JOIN (
 ) b ON a.dt = b.dt1
 ORDER BY a.dt ASC;
 `;
-console.log(stats);
+
     var lb = xplb;
     var lb2 =
-      await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date=current_date group by username order by xp desc`;
+      await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
 
       if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
       res.render("user.ejs", {
@@ -849,6 +849,8 @@ console.log(stats);
       lb2: lb2,
       cosmetics: JSON.parse(fs.readFileSync("./cosmetics.json"))
     });
+
+    await sql`UPDATE accounts SET views=views+1 WHERE lower(username)=${user.toLowerCase()}`;
   }
 });
 
