@@ -120,8 +120,9 @@ function getRandomInt(min, max) {
 }
 
 var production = process.env.PRODUCTION == "true";
+const rateLimit = require("express-rate-limit");
+
 if (production) {
-	const rateLimit = require("express-rate-limit");
 	const limiter = rateLimit({
 		windowMs: 60 * 1000, // 1 min
 		max: 700, // limit each IP to 700 requests per min
@@ -187,6 +188,7 @@ app.all("*", (req, res, next) => {
   try {
   const ip = req.headers["x-forwarded-for"].split(",")[0];
   console.log("IP", ip);
+  req.ip = ip;
   // if ip is in ban list, send 403
   if (moderation.bannedIps.includes(ip)) {
     res.status(403).send("You are banned, contact gautam@swordbattle.io for appeal<br>Have a terrible day :)");
@@ -778,7 +780,18 @@ app.get("/settings", async (req, res) => {
   );
 });
 
+app.use("/:user", rateLimit({
+  windowMs: 10000,
+  max: 1,
+  message: "You are doing that too much. Please wait 10 seconds."
+}));
+let ipusers = {};
 app.get("/:user", async (req, res, next) => {
+  console.log("IP: " + req.ip + " is looking at " + req.params.user);
+  if (!ipusers[req.params.user.toLowerCase()]) {
+    ipusers[req.params.user.toLowerCase()] = [];
+  }
+
   var user = req.params.user;
   var dbuser =
     await sql`SELECT * from accounts where lower(username)=lower(${user})`;
@@ -836,6 +849,13 @@ ORDER BY a.dt ASC;
     var lb2 =
       await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
 
+      if (!ipusers[req.params.user.toLowerCase()].includes(req.ip)) {
+        ipusers[req.params.user.toLowerCase()].push(req.ip);
+      await sql`UPDATE accounts SET views=views+1 WHERE lower(username)=${user.toLowerCase()}`;
+
+      dbuser[0].views++;
+      }
+
       if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
       res.render("user.ejs", {
       user: dbuser[0],
@@ -846,7 +866,7 @@ ORDER BY a.dt ASC;
       cosmetics: JSON.parse(fs.readFileSync("./cosmetics.json"))
     });
 
-    await sql`UPDATE accounts SET views=views+1 WHERE lower(username)=${user.toLowerCase()}`;
+
   }
 });
 

@@ -276,7 +276,7 @@ if(recent) {
         <%         function conv(num) {
           return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
         } %>
-        <%= conv(user.views+1) %> profile views
+        <%= conv(user.views) %> profile views
         </h3>
         <br />
         <div class="row">
