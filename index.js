@@ -835,7 +835,6 @@ LEFT JOIN (
 ) b ON a.dt = b.dt1
 ORDER BY a.dt ASC;
 `;
-console.log(stats);
     var lb = xplb;
     var lb2 =
       await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
