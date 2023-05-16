@@ -20,7 +20,6 @@ var process = require("process");
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
 
-
 var usewebhook = false;
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
@@ -847,6 +846,8 @@ ORDER BY a.dt ASC;
       lb2: lb2,
       cosmetics: JSON.parse(fs.readFileSync("./cosmetics.json"))
     });
+
+    await sql`UPDATE accounts SET views=views+1 WHERE lower(username)=${user.toLowerCase()}`;
   }
 });
 
