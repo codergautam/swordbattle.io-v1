@@ -22,6 +22,7 @@ const filtery = new Filtery();
 
 console.log("Starting server...");
 
+
 var usewebhook = false;
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
