@@ -432,7 +432,6 @@ app.post("/api/changename", async (req,res) => {
 
   //get days since lastchange
   var daysSince = await sql`select (now()::date - lastusernamechange::date) as days from accounts where secret=${secret}`;
-  console.log(daysSince[0].days);
 
   if(daysSince[0].days !== null && daysSince[0].days < 7) {
     res.status(400).send({error: `You can change your username again in ${7-daysSince[0].days} days`});
@@ -715,6 +714,7 @@ app.get("/leaderboard", async (req, res) => {
         var lb;
         if(duration == "day") {
          lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc limit 103`;
+
         } else {
           // week
            lb = await sql`select username, (sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-7 group by username order by xp desc limit 103`;
@@ -753,7 +753,6 @@ app.get("/leaderboard", async (req, res) => {
         }
       var lb = xplb.slice(0, 103);
       } else {
-        console.log(type.slice(5), "ufdgfighigfhigfh");
         var lb =
         await sql`SELECT username, (SUM(${sql(type.slice(5))})) AS ${sql(type.slice(5))}
         FROM public.stats
@@ -768,7 +767,6 @@ app.get("/leaderboard", async (req, res) => {
     });
   }
 
-  console.log(type, duration);
   if(type == "totalgame_time") type = "totaltime";
   if(type == "game_time") type = "time";
 
@@ -835,11 +833,12 @@ LEFT JOIN (
 ) b ON a.dt = b.dt1
 ORDER BY a.dt ASC;
 `;
-
+console.log(stats);
     var lb = xplb;
     var lb2 =
       await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
 
+      await sql`UPDATE accounts SET views = views + 1 WHERE lower(username)=lower(${user})`;
       if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
       res.render("user.ejs", {
       user: dbuser[0],
@@ -940,7 +939,6 @@ io.on("connection", async (socket) => {
 					thePlayer.skin = accounts[0].skins.selected;
 
           var rt = xplb.findIndex((x) => x.username == name) + 1;
-          console.log(rt);
           if(rt <= 100) {
             thePlayer.ranking = rt;
           }
