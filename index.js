@@ -729,11 +729,11 @@ app.get("/leaderboard", async (req, res) => {
         var lb;
         if(duration == "day") {
            lb =
-          await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date=current_date-1 group by username order by ${sql(type.slice(5))} desc limit 103`;
+          await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date>current_date-1 group by username order by ${sql(type.slice(5))} desc limit 103`;
          } else {
             // week
                lb =
-              await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date>current_date-8 group by username order by ${sql(type.slice(5))} desc limit 103`;
+              await sql`select username,sum(${sql(type.slice(5))}) as ${sql(type.slice(5))} from stats where game_date>current_date-7 group by username order by ${sql(type.slice(5))} desc limit 103`;
 
           }
       }
@@ -836,7 +836,6 @@ ORDER BY a.dt ASC;
     var lb2 =
       await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
 
-      await sql`UPDATE accounts SET views = views + 1 WHERE lower(username)=lower(${user})`;
       if(typeof user.skins == "string") user.skins = JSON.parse(user.skins);
       res.render("user.ejs", {
       user: dbuser[0],
