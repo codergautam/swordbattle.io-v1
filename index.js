@@ -780,16 +780,30 @@ app.get("/settings", async (req, res) => {
   );
 });
 
-app.use("/:user", rateLimit({
-  windowMs: 10000,
-  max: 1,
-  message: "You are doing that too much. Please wait 10 seconds."
-}));
+
 let ipusers = {};
+let ips = {};
 app.get("/:user", async (req, res, next) => {
   console.log("IP: " + req.ip + " is looking at " + req.params.user);
   if (!ipusers[req.params.user.toLowerCase()]) {
     ipusers[req.params.user.toLowerCase()] = [];
+  }
+
+  if(!ips[req.ip]) {
+    ips[req.ip] = {
+      time: Date.now(),
+      count: 0
+    };
+  }
+  console.log(ips[req.ip].count, Date.now() - ips[req.ip].time);
+  if(ips[req.ip].count > 5) {
+    res.send("The server is currently under heavy load. Please refresh in a few seconds to load this profile.");
+    return;
+  }
+
+  if(Date.now() - ips[req.ip].time > 30000) {
+    ips[req.ip].time = Date.now();
+    ips[req.ip].count = 0;
   }
 
   var user = req.params.user;
@@ -798,6 +812,9 @@ app.get("/:user", async (req, res, next) => {
   if (!dbuser[0]) {
     next();
   } else {
+
+    ips[req.ip].count++;
+
     var yo =
       await sql`SELECT * FROM stats WHERE lower(username)=${user.toLowerCase()}`;
 
