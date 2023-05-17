@@ -796,15 +796,17 @@ app.get("/:user", async (req, res, next) => {
     };
   }
   console.log(ips[req.ip].count, Date.now() - ips[req.ip].time);
+	
+	  if(Date.now() - ips[req.ip].time > 30000) {
+    ips[req.ip].time = Date.now();
+    ips[req.ip].count = 0;
+  }
   if(ips[req.ip].count > 5) {
     res.send("The server is currently under heavy load. Please refresh in a few seconds to load this profile.");
     return;
   }
 
-  if(Date.now() - ips[req.ip].time > 30000) {
-    ips[req.ip].time = Date.now();
-    ips[req.ip].count = 0;
-  }
+
 
   var user = req.params.user;
   var dbuser =
