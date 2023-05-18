@@ -664,6 +664,8 @@ app.get("/shop", async (req, res) => {
   var secret = req.query.secret;
   var acc;
 
+  let counts = {};
+
 if (secret != "undefined") {
     var account =
       await sql`select skins,coins,username from accounts where secret=${secret}`;
@@ -671,6 +673,16 @@ if (secret != "undefined") {
       acc = account[0];
       if(typeof acc.skins == "string") acc.skins = JSON.parse(acc.skins);
       var yo = await sql`SELECT sum(coins) FROM stats WHERE lower(username)=${acc.username.toLowerCase()}`;
+
+      var skinStats = await sql`SELECT skins->'collected' as collected from accounts;`;
+      skinStats.forEach((x) => {
+        if(x?.collected) {
+        x.collected.forEach((y) => {
+          if (counts[y]) counts[y]++;
+          else counts[y] = 1;
+        });
+        }
+      });
 
       acc.bal = yo[0].sum + acc.coins;
     }
@@ -680,7 +692,7 @@ if (secret != "undefined") {
     cosmetics: cosmetics,
     account: acc,
     secret: secret,
-
+    counts
   });
 });
 
@@ -796,7 +808,7 @@ app.get("/:user", async (req, res, next) => {
     };
   }
   console.log(ips[req.ip].count, Date.now() - ips[req.ip].time);
-	
+
 	  if(Date.now() - ips[req.ip].time > 30000) {
     ips[req.ip].time = Date.now();
     ips[req.ip].count = 0;

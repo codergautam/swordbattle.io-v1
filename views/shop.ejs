@@ -153,12 +153,12 @@ function numberWithCommas(x) {
           //set size of image
           document.getElementById("balt").lastChild.width = "30";
           obj.innerHTML = "EQUIP"
-          // var currentBuys = document.getElementById("buycount"+skin).innerHTML.trim().split(" ")[0];
+          var currentBuys = document.getElementById("buycount"+skin).innerHTML.trim().split(" ")[0];
           // check if no letters in currentBuys
-          // if (!currentBuys.match(/[a-z]/i)) {
+          if (!currentBuys.match(/[a-z]/i)) {
             // if no letters, add 1
-            // document.getElementById("buycount"+skin).innerHTML = Number(currentBuys)+1+" buy"+(Number(currentBuys)+1 == 1 ? "" : "s");
-          // }
+            document.getElementById("buycount"+skin).innerHTML = Number(currentBuys)+1+" buy"+(Number(currentBuys)+1 == 1 ? "" : "s");
+          }
           obj.onclick = function() {
             equip(skin,obj);
           }
@@ -247,7 +247,11 @@ function numberWithCommas(x) {
                     return e;
                   } %>
                   <p style="color: white;" id="buycount<%=skin.name%>">
-              
+                    <% if(counts.hasOwnProperty(skin.name)) { %>
+                      <%= abbreviate_number(counts[skin.name]) %> buy<%= counts[skin.name] == 1 ? "" : "s" %>
+                      <% } else {%>
+                      0 buys
+                    <% }  %>
                 </p>
                 </p>
                 <% if(account.skins.selected.toLowerCase() == skin.name.toLowerCase()) {%>

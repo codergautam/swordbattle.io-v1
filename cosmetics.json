@@ -903,6 +903,13 @@
             "description": "Rise from the wild and DOMINATE!"
         },
         {
+            "name": "explosion",
+            "displayName": "Explosion",
+            "url": "/assets/images/explosionPlayer.png",
+            "price": 1150000,
+            "description": "I hope they're not nukes.."
+        },
+        {
             "name": "honeycomb",
             "displayName": "Honeycomb",
             "url": "/assets/images/honeycombPlayer.png",
