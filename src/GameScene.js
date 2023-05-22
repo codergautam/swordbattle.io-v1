@@ -99,8 +99,8 @@ class GameScene extends Phaser.Scene {
 
 				//player
 
-				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
-				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.meSword = this.add.image(400, 100, "sword").setScale(0.85).setDepth(50).setAlpha(0.5);
+				this.mePlayer = this.add.image(400, 100, "player").setScale(0.85).setDepth(51).setAlpha(0.5);
 				this.meChat = this.add.text(0,0,"", {
 					fontFamily: "Georgia",
 				}).setOrigin(0.5).setDepth(71);
@@ -712,8 +712,8 @@ class GameScene extends Phaser.Scene {
 						down: false,
 						playerObj: undefined,
 						lastTick: Date.now(),
-						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.25).setDepth(49),
-						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.25).setDepth(49),
+						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.85).setDepth(49),
+						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.85).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
 						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
 							fontFamily: "serif",
@@ -1928,7 +1928,7 @@ try {
 			if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy);
 
 			if(enemy.playerObj) var scale = enemy.playerObj.scale;
-			else var scale = 0.25;
+			else var scale = 0.85;
 			enemy.bar.width = (enemy.player.height*scale / 0.9375);
 			enemy.bar.height = (enemy.player.height*scale*0.150);
 			enemy.bar.x = enemy.player.x  - enemy.bar.width / 2;
@@ -1988,7 +1988,7 @@ try {
 
 		var myObj = this.myObj;
 
-		if(!myObj) myObj = {scale: 0.25};
+		if(!myObj) myObj = {scale: 0.85};
 		try {
 		this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375);
 		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);

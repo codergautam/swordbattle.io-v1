@@ -20,7 +20,7 @@ class Player {
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)};
     this.kills = 0;
     this.speed = 700;
-    this.scale = 0.25;
+    this.scale = 0.85;
     this.damage = 10;
     this.level = 1;
     this.lastChat = Date.now();
@@ -44,7 +44,7 @@ class Player {
     this.abilityActive = false;
 
    this.skin = "player";
-    this.levelScale = 0.25;
+    this.levelScale = 0.85;
 
     this.resistance = 20;
     this.power = 200;
