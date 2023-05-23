@@ -12,11 +12,15 @@ body {
   font-family: 'Franklin Gothic Medium', Arial, sans-serif;
 }
 
-iframe {
-  position: absolute;
+
+iframe:not(#swordbattle-io_970x250 > iframe) {
   width: 100%;
   height: 100%;
+}
+iframe{
+    position: absolute;
   z-index: 1000;
+  
 }
 
 canvas {
