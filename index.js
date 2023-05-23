@@ -20,6 +20,8 @@ var process = require("process");
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
 
+var ipInfo = require("ip-info-finder");
+
 var usewebhook = false;
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
@@ -972,7 +974,11 @@ io.on("connection", async (socket) => {
           socket.disconnect();
           return;
         }
+
+
+
       }
+
 
       var thePlayer = new Player(socket.id, name);
       thePlayer.updateValues();
@@ -995,6 +1001,24 @@ io.on("connection", async (socket) => {
 				PlayerList.setPlayer(socket.id, thePlayer);
 				console.log("player joined -> " + socket.id);
 				socket.broadcast.send("new", thePlayer.getSendObj());
+
+        if(options.country) {
+          if(tryverify && accounts[0].country) {
+            thePlayer.country = accounts[0].country;
+          } else {
+            // use ip
+            ipInfo.getIPInfo(socket.ip).then((res) => {
+              if(res?.CountryInfo?.code) {
+                thePlayer.country = res.CountryInfo.code;
+                console.log("country",res.CountryInfo.code);
+              }
+            }).catch((e) => {
+              console.log(e);
+            });
+          }
+        }
+
+        // thePlayer.country = "IN";
 
 				var allPlayers = Object.values(PlayerList.players);
 				allPlayers = allPlayers.filter((player) => player.id != socket.id);
@@ -1113,7 +1137,7 @@ io.on("connection", async (socket) => {
     if(PlayerList.has(socket.id)) {
       var player = PlayerList.getPlayer(socket.id);
       if(!player.swordInHand) return;
-      if(Date.now() - player.lastSwordThrow < player.throwCoolDown) return;
+      if(Date.now() - player.lastSwordThrow < player.throwCooldown) return;
       player.swordInHand = false;
       flyingSwords.push({hit: [], scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
       player.lastSwordThrow = Date.now();

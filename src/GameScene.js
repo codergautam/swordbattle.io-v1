@@ -5,6 +5,7 @@ import ClassPicker from "./components/ClassPicker.js";
 import {locations} from "./bushes.json";
 import Phaser from "phaser";
 import {CAPTCHASITE,localServer} from "./../config.json";
+import { countryCodeEmoji } from "country-code-emoji";
 
 import io from "./Io.js";
 
@@ -715,9 +716,9 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.85).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.85).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" ("+countryCodeEmoji(player.country)+")":""}`, {
 							fontFamily: "serif",
-							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"||player.name.toLowerCase()=="cosmicwarlord"?"#FF0000":"#0000FF" :"#000000",
+							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"?"#FF0000":"#0000FF" :"#000000",
 							fontSize: "25px"
 						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
@@ -2053,7 +2054,7 @@ try {
 					});
 				}
 
-				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.country?" [color=#00FF00]("+countryCodeEmoji(playerObj.country)+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			});
 			if(!amIinit) {
@@ -2081,7 +2082,7 @@ try {
 				}
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 
-				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.country?"[color=#00FF00]("+countryCodeEmoji(playerObj.country)+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			}
 			if(!this.spectating) {

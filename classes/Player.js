@@ -31,6 +31,7 @@ class Player {
     this.lastSwordThrow = 0;
     this.throwCooldown = 5000;
     this.throwDamageMultiplier = 1;
+    this.country = "";
 
     this.evolutionQueue = [];
     this.evolution = "";
@@ -364,8 +365,9 @@ return false;
    this.damage *= 0.5;
    this.power *= 0.8;
 
+   if(this.throwDamageMultiplier) {
    this.damage *= this.throwDamageMultiplier;
-
+   }
     }
 
   }
@@ -560,7 +562,7 @@ DO UPDATE SET
 
 
   getSendObj() {
-    return {swordInHand: this.swordInHand, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos, ranking: this.ranking};
+    return {swordInHand: this.swordInHand, country: this.country, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos, ranking: this.ranking};
   }
 }
 

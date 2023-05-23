@@ -1,4 +1,6 @@
 const Evolution = require("./Evolution");
+const Archer = require("./Archer");
+const BodyBuilder = require("./BodyBuilder");
 class Samurai extends Evolution {
     constructor() {
         super();

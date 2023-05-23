@@ -27,7 +27,7 @@ class TitleScene extends Phaser.Scene {
   }
   create() {
       this.lastAdRef = 0;
-    
+
     this.optimalServer = "us2";
 
     const pingServers = (sethtml = true) => {
@@ -122,7 +122,8 @@ class TitleScene extends Phaser.Scene {
         this.options = {
           movementMode: this.mobile?"keys":"mouse",
           sound: "normal",
-          server: "auto"
+          server: "auto",
+          country: false
         };
         window.localStorage.setItem("options", JSON.stringify(this.options));
       }
@@ -130,7 +131,8 @@ class TitleScene extends Phaser.Scene {
       this.options = {
         movementMode: this.mobile?"keys":"mouse",
         sound: "normal",
-        server: "auto"
+        server: "auto",
+        country: false
       };
     }
 
@@ -168,7 +170,7 @@ class TitleScene extends Phaser.Scene {
 
       this.promo.getChildByName("close").onclick = () => {
         this.promo.destroy();
-        
+
       };
       pingServers(false);
 
@@ -218,6 +220,7 @@ class TitleScene extends Phaser.Scene {
       document.getElementById("movement").value = this.options.movementMode;
       document.getElementById("sound").value = this.options.sound;
       document.getElementById("server").value = this.options.server;
+      document.getElementById("country").checked = this.options.country;
 
       //ping servers
       pingServers();
@@ -244,6 +247,10 @@ class TitleScene extends Phaser.Scene {
       };
       document.getElementById("server").onchange = () => {
         this.options.server = document.getElementById("server").value;
+        if (access) window.localStorage.setItem("options", JSON.stringify(this.options));
+      };
+      document.getElementById("country").onchange = () => {
+        this.options.country = document.getElementById("country").checked;
         if (access) window.localStorage.setItem("options", JSON.stringify(this.options));
       };
 
@@ -289,7 +296,7 @@ class TitleScene extends Phaser.Scene {
                   this.nameBox.destroy();
                   document.getElementById("game").focus();
                   this.callback(myName, this.music, this.secret);
-                  
+
                   document.getElementById("swordbattle-io_970x250").style.display = "none";
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
 
@@ -305,7 +312,7 @@ class TitleScene extends Phaser.Scene {
 
             this.callback(myName, this.music, this.secret);
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
-            
+
             document.getElementById("swordbattle-io_970x250").style.display = "none";
           }
         } else {
@@ -313,9 +320,9 @@ class TitleScene extends Phaser.Scene {
           this.nameBox.destroy();
           this.callback(myName, this.music, this.secret);
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
-          
+
           document.getElementById("swordbattle-io_970x250").style.display = "none";
-          
+
         }
       }
     };
@@ -812,16 +819,15 @@ this.shopLoading = false;
         document.getElementById("swordbattle-io_970x250").style.display = "";
       aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
       } catch(e) {
-        
+
       }
     } else if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=460) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible)){
       // remove the ad
-      console.log("remove ad")
       document.getElementById("swordbattle-io_970x250").style.display = "none";
     } else if(document.getElementById("swordbattle-io_970x250").style.display == "none") {
       document.getElementById("swordbattle-io_970x250").style.display = ""
     }
-    
+
   }
 }
 
