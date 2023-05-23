@@ -30,6 +30,7 @@ class Player {
     this.swordInHand = true;
     this.lastSwordThrow = 0;
     this.throwCooldown = 5000;
+    this.throwDamageMultiplier = 1;
 
     this.evolutionQueue = [];
     this.evolution = "";
@@ -362,6 +363,8 @@ return false;
    this.health /= 1.5;
    this.damage *= 0.5;
    this.power *= 0.8;
+
+   this.damage *= this.throwDamageMultiplier;
 
     }
 

@@ -1,13 +1,15 @@
 
 
 const Evolution = require("./Evolution");
+const Fishergod = require("./Fishergod");
+const Archer = require("./Archer");
 class Fisherman extends Evolution {
     constructor() {
         super();
         this.name = "fisherman";
         this.abilityDuration = 8000;
         this.abilityCooldown = 40000;
-        this.subEvolutions = [];
+        this.subEvolutions = [40000, new Fishergod(), new Archer()];
     }
     default() {
         return {
@@ -28,10 +30,10 @@ class Fisherman extends Evolution {
             healWait: 0.5,
             healAmount: 3,
             scale: 3,
-            power: -2,
+            power: -2.5,
             damageCooldown: 0.3,
             resistance: 1,
-            damage: 1.2,
+            damage: 0.5,
             speed: 2.5,
         };
     }

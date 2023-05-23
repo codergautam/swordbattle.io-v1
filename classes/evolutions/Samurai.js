@@ -5,7 +5,7 @@ class Samurai extends Evolution {
         this.name = "rook";
         this.abilityDuration = 8000;
         this.abilityCooldown = 50000;
-        this.subEvolutions = [];
+        this.subEvolutions = [40000, new Archer(), new BodyBuilder()];
     }
     default() {
         return {

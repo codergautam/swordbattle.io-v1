@@ -134,7 +134,7 @@ if (production) {
 let xplb = null;
 
 var oldlevels = [
-	{coins: 5, scale: 0.85},
+	{coins: 5, scale: 0.85, evolutions: [evolutions.tank, evolutions.berserker]},
 	{coins: 15, scale: 0.86},
 	{coins: 25, scale: 0.87},
 	{coins: 35, scale: 0.88},
@@ -156,7 +156,7 @@ var oldlevels = [
 	{coins: 2750, scale: 1.1},
 	{coins: 3000, scale: 1.15},
   {coins: 4000, scale: 1.17},
-	{coins: 5000, scale: 1.2, evolutions: [evolutions.tank, evolutions.berserker]},
+	{coins: 5000, scale: 1.2},
 	{coins: 7500, scale: 1.3},
 	{coins: 9000, scale: 1.5},
 	{coins: 10000, scale: 1.53},

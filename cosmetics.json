@@ -555,10 +555,10 @@
         },
         {
             "name": "bishop",
-            "displayName": "Bishop",
+            "displayName": "Chess Bishop",
             "url": "/assets/images/bishopPlayer.png",
             "price": 135000,
-            "description": "When in doubt, move diagonally with the Bishop skin!"
+            "description": "Deliver the final checkmate to your opponent."
         },
         {
             "name": "covid",
