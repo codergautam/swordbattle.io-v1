@@ -2,34 +2,35 @@ const Evolution = require("./Evolution");
 class Samurai extends Evolution {
     constructor() {
         super();
-        this.name = "samurai";
-        this.abilityDuration = 3000;
-        this.abilityCooldown = 80000;
+        this.name = "rook";
+        this.abilityDuration = 8000;
+        this.abilityCooldown = 50000;
         this.subEvolutions = [];
     }
     default() {
         return {
-            maxHealth: 1.3,
-            health: 1.3,
-            speed: 0.75,
-            scale: 1.5,
-            power: 1.25,
-            resistance: 0.9,
-            damage: 1.25,
-            damageCooldown: 1,
+            maxHealth: 1.6,
+            health: 1.6,
+            speed: 1.2,
+            scale: 1.3,
+            power: 1,
+            resistance: 5.5,
+            damage: 1.6,
+            damageCooldown: 1.3,
             healAmount: 1.5,
+            healWait: 2
         };
     }
     ability() {
         return {
             healWait: 0,
-            healAmount: 5,
-            scale: 2.5,
-            power: 3,
-            damageCooldown: 0.5,
-            damage: 2,
-            resistance: 0.5,
-            speed: 4,
+            healAmount: 1.5,
+            scale: 1.6,
+            power: 1.5,
+            damageCooldown: 0.9,
+            resistance: 1,
+            damage: 1.2,
+            speed: 1.5,
         };
     }
 }

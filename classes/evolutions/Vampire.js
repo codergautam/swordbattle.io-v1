@@ -5,7 +5,7 @@ class Warrior extends Evolution {
         super();
         this.name = "vampire";
         this.abilityDuration = 7000;
-        this.abilityCooldown = 40000;
+        this.abilityCooldown = 35000;
         this.subEvolutions = [];
     }
     default() {
@@ -19,14 +19,14 @@ class Warrior extends Evolution {
             damage: 1.1,
             damageCooldown: 0.85,
             healAmount: 0.8,
-            leech: 1.1,
+            leech: 1.3,
         };
     }
     ability() {
         return {
-            leech: 1.2,
-            speed: 1.7,
-            resistance: 1,
+            leech: 2,
+            speed: 1.8,
+            resistance: 1.5,
         };
     }
 }

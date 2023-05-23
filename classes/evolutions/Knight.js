@@ -4,7 +4,7 @@ class Knight extends Evolution {
         super();
         this.name = "knight";
         this.abilityDuration = 10000;
-        this.abilityCooldown = 60000;
+        this.abilityCooldown = 50000;
         this.subEvolutions = [];
     }
     default() {
@@ -22,7 +22,7 @@ class Knight extends Evolution {
             power: 0.7,
             resistance: 0.2,
             damage: 1.5,
-            damageCooldown: 0.3,
+            damageCooldown: 0.4,
         };
     }
 }
