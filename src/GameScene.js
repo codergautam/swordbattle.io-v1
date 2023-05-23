@@ -716,7 +716,7 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.85).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.85).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" ("+countryCodeEmoji(player.country)+")":""}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" "+countryCodeEmoji(player.country)+")":""}`, {
 							fontFamily: "serif",
 							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"?"#FF0000":"#0000FF" :"#000000",
 							fontSize: "25px"
