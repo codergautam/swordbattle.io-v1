@@ -332,7 +332,7 @@ return false;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
-    this.speed = clamp(740 -  (this.scale* 160),350,570);
+    this.speed = clamp(740 -  (this.scale* 70),550,1000);
     this.throwCooldown = 5000;
 
     this.power = convert(0.25, 200, this.scale);

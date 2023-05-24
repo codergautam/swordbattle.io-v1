@@ -8,12 +8,12 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
 
-  
+
  window.addEventListener("online", handleConnection);
 window.addEventListener("offline", handleConnection);
 
 function handleConnection() {
-  
+
   if (!navigator.onLine) {
 
     		document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
@@ -45,7 +45,7 @@ var config = {
     scale: {
         mode:Phaser.Scale.RESIZE,
     }
-    
+
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
@@ -83,7 +83,7 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 120000;
+var adDelay = 360000;
 var gameScene = new GameScene((data) => {
     titleScene.playPreroll = (Date.now() - lastAd > adDelay);
 });
