@@ -120,7 +120,7 @@ class TitleScene extends Phaser.Scene {
         this.options = JSON.parse(window.localStorage.getItem("options"));
       } else {
         this.options = {
-          movementMode: this.mobile?"keys":"mouse",
+          movementMode: "keys",
           sound: "normal",
           server: "auto",
           country: false
@@ -129,7 +129,7 @@ class TitleScene extends Phaser.Scene {
       }
     } else {
       this.options = {
-        movementMode: this.mobile?"keys":"mouse",
+        movementMode: "keys",
         sound: "normal",
         server: "auto",
         country: false
@@ -815,9 +815,9 @@ this.shopLoading = false;
       console.log((this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460), (this.canvas.height - (this.nameBox.y+this.nameBox.height)));
       this.lastAdRef = Date.now();
       try {
-        console.log("adding ad")
+        console.log("adding ad");
         document.getElementById("swordbattle-io_970x250").style.display = "";
-      aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
+      aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x250"); });
       } catch(e) {
 
       }

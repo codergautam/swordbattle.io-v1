@@ -704,7 +704,7 @@ class GameScene extends Phaser.Scene {
 									});
 								});
 
-				const addPlayer = (player) => {
+				const addPlayer = (player) => { 
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
 					/* vendors contains the element we're looking for */
 
