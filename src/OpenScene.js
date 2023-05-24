@@ -4,8 +4,8 @@ function msToTime(duration) {
       seconds = Math.floor((duration / 1000) % 60),
       minutes = Math.floor((duration / (1000 * 60)) % 60),
       hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-  
-  
+
+
     return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
   }
 
@@ -32,7 +32,7 @@ class OpenScene extends Phaser.Scene {
         this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
    this.progressText = this.add.text(0,0,"please wait.").setOrigin(0.5,0.5);
-      
+
       this.loadText.setFontSize(this.canvas.width/20);
       this.progressText.setFontSize(this.canvas.width/40);
       this.loadText.x = this.canvas.width/2;
@@ -52,7 +52,9 @@ var progress = 1 - (remainder / total);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
-  
+
+        this.load.image("crown", "/assets/images/crown.png");
+
         // samurai evolution
         this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
         // warrior evolution
@@ -93,7 +95,7 @@ var progress = 1 - (remainder / total);
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
         this.load.image("starParticle", "/assets/images/star.png");
         this.load.image("bush", "/assets/images/bush.png");
-        
+
         this.load.image("chatbtn", "/assets/images/chat.png");
         this.load.image("throwbtn", "/assets/images/throw.png");
         this.load.image("loginbtn", "/assets/images/login.png");
@@ -127,16 +129,16 @@ var progress = 1 - (remainder / total);
 
         this.scale.fullscreenTarget = document.getElementById("game");
         console.timeEnd("load");
-  
+
     }
 
     create() {
-    
+
              this.scene.stop();
              this.scene.start("title");
     }
     update() {
-    
+
     }
 }
 

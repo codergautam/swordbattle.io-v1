@@ -112,6 +112,7 @@ class GameScene extends Phaser.Scene {
 
 
 
+
 				//killcounter
 
 				try {
@@ -375,6 +376,11 @@ class GameScene extends Phaser.Scene {
 			// this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
+
+
+				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.1).setAlpha(1);
+				this.cameras.main.ignore(this.crown);
+
 
 				//bushes
 				this.bushes = [];
@@ -907,6 +913,8 @@ class GameScene extends Phaser.Scene {
 				this.socket.on("all", (players) => {
 					this.all.players = players.filter((p) => p.id != this.socket.id);
 					this.all.lastUpdate = Date.now();
+					var highestCoins = players.filter(x => x.id != this.socket.id).sort((a, b) => b.coins - a.coins)[0];
+
 					players.forEach(player => {
 						if(!this.spectating && player.id != this.socket.id) {
 						if(this.miniMap.people.find(x => x.id === player.id)) {
@@ -920,9 +928,14 @@ class GameScene extends Phaser.Scene {
 							if(this.enemies.find(x => x.id === player.id) || (miniMapPlayer.circle.x == 0 && miniMapPlayer.circle.y == 0) ) {
 								miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 								miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+
+								if(highestCoins.id == player.id) {
+									this.crown.x = miniMapPlayer.circle.x;
+									this.crown.y = miniMapPlayer.circle.y;
+								}
 							} else {
 							this.tweens.add({
-								targets: miniMapPlayer.circle,
+								targets: highestCoins.id == player.id ? [miniMapPlayer.circle, this.crown] : miniMapPlayer.circle,
 								x: (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor,
 								y: (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor,
 								duration: 1000+this.ping,
@@ -948,6 +961,8 @@ class GameScene extends Phaser.Scene {
 					}
 				}
 					});
+
+
                     if(players.length < this.miniMap.people.length) {
           var remaining = this.miniMap.people.filter((p) => !players.find(x => x.id === p.id));
           for (var remain of remaining) {
@@ -956,7 +971,17 @@ class GameScene extends Phaser.Scene {
           }
           }
 
-				});
+					// find player with highest coins
+
+					if(highestCoins) {
+						// find minimap player with highest coins
+						let miniMapPlayer = this.miniMap.people.find(x => x.id === highestCoins.id);
+						if(miniMapPlayer) {
+							this.crown.displayWidth = miniMapPlayer.circle.radius * 3;
+							this.crown.displayHeight = miniMapPlayer.circle.radius * 3;
+					}
+				};
+			});
 				this.socket.on("me", (player) => {
 
 					if(this.loadrect.visible) {
