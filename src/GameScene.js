@@ -317,6 +317,9 @@ class GameScene extends Phaser.Scene {
 				this.cursors.enter.on("down", () => {
 
 					if(this.loadtext.visible) return;
+					if(this.refreshInt) {
+						clearInterval(this.refreshInt);
+					}
 					this.chat.toggled = !this.chat.toggled;
           if(this.spectating) {
 			  if(this.deadText.visible) {
@@ -326,11 +329,11 @@ class GameScene extends Phaser.Scene {
 			  }
 
             try {
-                      
+
                 document.getElementById("swordbattle-io_970x90").style.display = "none";
-        
+
                     } catch(e) {
-                      
+
                     }
 
           }
@@ -454,20 +457,19 @@ class GameScene extends Phaser.Scene {
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
 
-              let refreshInt;
                 try {
                   aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-                  
+
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                let refreshInt = setInterval(() => {
-                  
+                 this.refreshInt = setInterval(() => {
+
                   aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-                  
-                }, 3000);
+
+                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
-              
+
 							this.dataText.y += this.dataText.height*1.5;
 
               this.statsText.destroy();
@@ -476,16 +478,16 @@ class GameScene extends Phaser.Scene {
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
-                    if(refreshInt) {
-        clearInterval(refreshInt);
+                    if(this.refreshInt) {
+        clearInterval(this.refreshInt);
         }
                     try {
-                      
-                document.getElementById("swordbattle-io_970x90").style.display = "none";        
+
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
                     } catch(e) {
-                      
+
                     }
-                    
+
                     this.callback();
                     this.socket.disconnect();
           this.scene.start("title");
@@ -737,7 +739,7 @@ class GameScene extends Phaser.Scene {
 									});
 								});
 
-				const addPlayer = (player) => { 
+				const addPlayer = (player) => {
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
 					/* vendors contains the element we're looking for */
 
@@ -1693,22 +1695,21 @@ class GameScene extends Phaser.Scene {
 								var msg = msgs[Math.floor(Math.random() * msgs.length)];
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
-let refreshInt;
                 try {
                   aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-                  
-                  
-                
+
+
+
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                let refreshInt = setInterval(() => {
-                  
+                this.refreshInt = setInterval(() => {
+
                   aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-                  
-                }, 3000);
+
+                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
-                
+
 
 							this.dataText.y += this.dataText.height*1.5;
                  this.cameras.main.ignore(this.dataText);
@@ -1722,14 +1723,14 @@ let refreshInt;
       this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
         try {
                 document.getElementById("swordbattle-io_970x90").style.display = "none";
-          
+
         } catch(e) {
-          
+
         }
-        if(refreshInt) {
-        clearInterval(refreshInt);
+        if(this.refreshInt) {
+        clearInterval(this.refreshInt);
         }
-        
+
         this.callback();
         this.socket.disconnect();
 
