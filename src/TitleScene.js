@@ -19,6 +19,7 @@ class TitleScene extends Phaser.Scene {
     } catch (e) {
       console.log("captcha hasnt loaded yet");
     }
+    
 
     // document.cookie = "validate=madebycodergautamdonthackorelseurstupid";
 
@@ -26,6 +27,12 @@ class TitleScene extends Phaser.Scene {
 
   }
   create() {
+    document.getElementById("90pxadstyle").innerHTML = `
+    #swordbattle-io_970x90 > iframe {
+  bottom: 100px;
+          left: 50%;
+  transform: translateX(-50%);
+}`
       this.lastAdRef = 0;
 
     this.optimalServer = "us2";
@@ -296,8 +303,15 @@ class TitleScene extends Phaser.Scene {
                   this.nameBox.destroy();
                   document.getElementById("game").focus();
                   this.callback(myName, this.music, this.secret);
-
+document.getElementById("90pxadstyle").innerHTML = `
+    #swordbattle-io_970x90 > iframe {
+  bottom: 0px;
+          left: 50%;
+  transform: translateX(-50%);
+}`
                   document.getElementById("swordbattle-io_970x250").style.display = "none";
+                  document.getElementById("swordbattle-io_970x90").style.display = "none";
+                  
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
 
                   console.log("Preroll Ad Completed: " + evt);
@@ -310,7 +324,15 @@ class TitleScene extends Phaser.Scene {
           } else {
             this.nameBox.destroy();
 
+            document.getElementById("90pxadstyle").innerHTML = `
+    #swordbattle-io_970x90 > iframe {
+  bottom: 0px;
+          left: 50%;
+  transform: translateX(-50%);
+}`
             this.callback(myName, this.music, this.secret);
+                  document.getElementById("swordbattle-io_970x90").style.display = "none";
+            
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
 
             document.getElementById("swordbattle-io_970x250").style.display = "none";
@@ -318,7 +340,15 @@ class TitleScene extends Phaser.Scene {
         } else {
 
           this.nameBox.destroy();
+          document.getElementById("90pxadstyle").innerHTML = `
+    #swordbattle-io_970x90 > iframe {
+  bottom: 0px;
+          left: 50%;
+  transform: translateX(-50%);
+}`
           this.callback(myName, this.music, this.secret);
+                  document.getElementById("swordbattle-io_970x90").style.display = "none";
+          
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
 
           document.getElementById("swordbattle-io_970x250").style.display = "none";
@@ -817,15 +847,31 @@ this.shopLoading = false;
       try {
         console.log("adding ad")
         document.getElementById("swordbattle-io_970x250").style.display = "";
+      document.getElementById("swordbattle-io_970x90").style.display = "none";
+        
       aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
       } catch(e) {
 
       }
-    } else if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=460) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible)){
+    } else if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 5000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 160)) {
+      // hide other ads
+      try {
+      document.getElementById("swordbattle-io_970x250").style.display = "none";
+      document.getElementById("swordbattle-io_970x90").style.display = "";
+      aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+      } catch(e) {
+        
+      }
+      
+      
+    } else if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=160) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible)){
       // remove the ad
       document.getElementById("swordbattle-io_970x250").style.display = "none";
+      document.getElementById("swordbattle-io_970x90").style.display = "none";
     } else if(document.getElementById("swordbattle-io_970x250").style.display == "none") {
       document.getElementById("swordbattle-io_970x250").style.display = ""
+      document.getElementById("swordbattle-io_970x90").style.display = "";
+      
     }
 
   }

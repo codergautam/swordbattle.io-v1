@@ -325,6 +325,14 @@ class GameScene extends Phaser.Scene {
           this.scene.start("title");
 			  }
 
+            try {
+                      
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
+        
+                    } catch(e) {
+                      
+                    }
+
           }
 		  if(this.spectating) return;
 				 if(this.chat.toggled) {
@@ -445,6 +453,21 @@ class GameScene extends Phaser.Scene {
               this.dataText.destroy();
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+
+              let refreshInt;
+                try {
+                  aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  
+                document.getElementById("swordbattle-io_970x90").style.display = "";
+                let refreshInt = setInterval(() => {
+                  
+                  aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  
+                }, 3000);
+                } catch(e) {
+                  console.log(e);
+                }
+              
 							this.dataText.y += this.dataText.height*1.5;
 
               this.statsText.destroy();
@@ -453,6 +476,16 @@ class GameScene extends Phaser.Scene {
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+                    if(refreshInt) {
+        clearInterval(refreshInt);
+        }
+                    try {
+                      
+                document.getElementById("swordbattle-io_970x90").style.display = "none";        
+                    } catch(e) {
+                      
+                    }
+                    
                     this.callback();
                     this.socket.disconnect();
           this.scene.start("title");
@@ -1660,6 +1693,22 @@ class GameScene extends Phaser.Scene {
 								var msg = msgs[Math.floor(Math.random() * msgs.length)];
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+let refreshInt;
+                try {
+                  aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  
+                  
+                
+                document.getElementById("swordbattle-io_970x90").style.display = "";
+                let refreshInt = setInterval(() => {
+                  
+                  aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  
+                }, 3000);
+                } catch(e) {
+                  console.log(e);
+                }
+                
 
 							this.dataText.y += this.dataText.height*1.5;
                  this.cameras.main.ignore(this.dataText);
@@ -1671,6 +1720,16 @@ class GameScene extends Phaser.Scene {
 
 
       this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+        try {
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
+          
+        } catch(e) {
+          
+        }
+        if(refreshInt) {
+        clearInterval(refreshInt);
+        }
+        
         this.callback();
         this.socket.disconnect();
 
