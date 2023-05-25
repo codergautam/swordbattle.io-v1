@@ -26,22 +26,22 @@ function getRandomInt(min, max) {
         rare: {
           scale: 2,
           drop: [250,500],
-          health: 50,
+          health: 75,
         },
         epic: {
           scale: 2.5,
           drop: [500,1000],
-          health:  150
+          health: 250
         },
         legendary: {
           scale: 3,
           drop: [1000,2500],
-          health: 350
+          health: 500
         },
         mythical: {
           scale: 5,
-          drop: [5000,10000],
-          health: 750
+          drop: [7000,12000],
+          health: 1000
         }
       };
       this.width = 352;
