@@ -223,7 +223,13 @@ var move = true;
 
     var oldPos = this.pos;
 
-  var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (angle+45)*Math.PI/180 , Math.max(player.power-this.resistance,50));
+    let force;
+    if((player.evolution == "fisherman" || player.evolution == "fishergod")) {
+      force = player.power-this.resistance;
+    } else {
+      force = Math.max(player.power-this.resistance,50);
+    }
+  var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (angle+45)*Math.PI/180 , force);
 
     this.pos.x = clamp(pos[0], -(map/2), map/2);
     this.pos.y = clamp(pos[1],-(map/2), map/2);

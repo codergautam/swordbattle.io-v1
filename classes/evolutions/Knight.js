@@ -7,7 +7,7 @@ class Knight extends Evolution {
         this.name = "knight";
         this.abilityDuration = 10000;
         this.abilityCooldown = 50000;
-        this.subEvolutions = [20000, new Fisherman(), new Samurai()];
+        this.subEvolutions = [2000, new Fisherman(), new Samurai()];
     }
     default() {
         return {

@@ -9,7 +9,7 @@ class Rook extends Evolution {
         this.name = "rook";
         this.abilityDuration = 8000;
         this.abilityCooldown = 50000;
-        this.subEvolutions = [20000, new Samurai(), new Lumberjack()];
+        this.subEvolutions = [2000, new Samurai(), new Lumberjack()];
     }
     default() {
         return {

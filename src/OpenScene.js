@@ -79,6 +79,28 @@ var progress = 1 - (remainder / total);
         // rook evolution
         this.load.image("rookPlayer", "/assets/images/rookSkin.png");
 
+        // archer evolution
+        // this.load.image("archerPlayer", "/assets/images/archerSkin.png");
+        this.load.image("archerPlayer", "/assets/images/bushPlayer.png");
+
+        // Bodybuilder evolution
+        // this.load.image("bodybuilderPlayer", "/assets/images/bodybuilderSkin.png");
+        this.load.image("bodybuilderPlayer", "/assets/images/bushPlayer.png");
+
+        // Fishergod evolution
+        // this.load.image("fishergodPlayer", "/assets/images/fishergodSkin.png");
+        this.load.image("fishergodPlayer", "/assets/images/bushPlayer.png");
+
+        // fisherman evolution
+        // this.load.image("fishermanPlayer", "/assets/images/fishermanSkin.png");
+        this.load.image("fishermanPlayer", "/assets/images/bushPlayer.png");
+
+        // lumberjack evolution
+        this.load.image("lumberjackPlayer", "/assets/images/lumberjackSkin.png");
+
+        // samurai evolution
+        // this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
+        this.load.image("samuraiPlayer", "/assets/images/bushPlayer.png");
 
 
         this.load.image("background", "/assets/images/background.jpeg");

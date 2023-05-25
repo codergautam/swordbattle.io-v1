@@ -11,34 +11,34 @@ class Archer extends Evolution {
     }
     default() {
         return {
-            maxHealth: 1.4,
-            health: 1.4,
-            speed: 1.4,
-            scale: 0.6,
-            power: 3,
+            maxHealth: 0.4,
+            health: 0.4,
+            speed: 1.2,
+            scale: 1,
+            power: 1.3,
             resistance: 0.5,
-            damage: 0.1,
+            damage: 0.05,
             damageCooldown: 1,
-            healAmount: 1.5,
-            healWait: 1,
-            throwCooldown: 0.3,
-            throwDamageMultiplier: 40,
+            healAmount: 1,
+            healWait: 3,
+            throwCooldown: 0.5,
+            throwDamageMultiplier: 2,
         };
     }
     ability() {
         return {
-            maxHealth: 1.4,
-            health: 1.4,
+            maxHealth: 0.5,
+            health: 0.5,
             speed: 2,
             scale: 0.4,
-            power: 3,
-            resistance: 0.5,
-            damage: 0.1,
+            power: 1.5,
+            resistance: 0.2,
+            damage: 0.05,
             damageCooldown: 1,
             healAmount: 1.5,
             healWait: 1,
-            throwCooldown: 0.1,
-            throwDamageMultiplier: 30,
+            throwCooldown: 0.4,
+            throwDamageMultiplier: 5,
         };
     }
 }

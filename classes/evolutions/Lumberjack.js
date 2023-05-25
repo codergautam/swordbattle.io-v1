@@ -9,7 +9,7 @@ class Lumberjack extends Evolution {
         this.name = "lumberjack";
         this.abilityDuration = 5000;
         this.abilityCooldown = 55000;
-        this.subEvolutions = [40000, new Archer(), new BodyBuilder()];
+        this.subEvolutions = [4000, new Archer(), new BodyBuilder()];
     }
     default() {
         return {
@@ -19,7 +19,7 @@ class Lumberjack extends Evolution {
             scale: 1.1,
             power: 1.3,
             resistance: 1.2,
-            damage: 1.6,
+            damage: 1.8,
             damageCooldown: 1.5,
             healAmount: 1.5,
             healWait: 2.5,

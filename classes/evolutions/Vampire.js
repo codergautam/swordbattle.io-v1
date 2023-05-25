@@ -9,7 +9,7 @@ class Warrior extends Evolution {
         this.name = "vampire";
         this.abilityDuration = 7000;
         this.abilityCooldown = 35000;
-        this.subEvolutions = [20000, new Fisherman(), new Lumberjack()];
+        this.subEvolutions = [2000, new Fisherman(), new Lumberjack()];
     }
     default() {
         return {
