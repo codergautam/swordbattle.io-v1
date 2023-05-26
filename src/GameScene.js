@@ -378,7 +378,7 @@ class GameScene extends Phaser.Scene {
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 
-				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.1).setAlpha(1);
+				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.03).setAlpha(1);
 				this.cameras.main.ignore(this.crown);
 
 

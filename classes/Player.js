@@ -224,7 +224,7 @@ var move = true;
     var oldPos = this.pos;
 
     let force;
-    if((player.evolution == "fisherman" || player.evolution == "fishergod")) {
+    if((player.evolution == "fisherman")) {
       force = player.power-this.resistance;
     } else {
       force = Math.max(player.power-this.resistance,50);
