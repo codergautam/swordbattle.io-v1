@@ -1,10 +1,10 @@
 
 
 const Evolution = require("./Evolution");
-class BodyBuilder extends Evolution {
+class Juggernaut extends Evolution {
     constructor() {
         super();
-        this.name = "bodybuilder";
+        this.name = "juggernaut";
         this.abilityDuration = 8000;
         this.abilityCooldown = 50000;
         this.subEvolutions = [];
@@ -35,4 +35,4 @@ class BodyBuilder extends Evolution {
         };
     }
 }
-module.exports = BodyBuilder;
+module.exports = Juggernaut;

@@ -82,9 +82,8 @@ var progress = 1 - (remainder / total);
         // archer evolution
         this.load.image("archerPlayer", "/assets/images/archerSkin.png");
 
-        // Bodybuilder evolution
-        // this.load.image("bodybuilderPlayer", "/assets/images/bodybuilderSkin.png");
-        this.load.image("bodybuilderPlayer", "/assets/images/bushPlayer.png");
+        // Juggernaut evolution
+        this.load.image("juggernautPlayer", "/assets/images/juggernautPlayer.png");
 
         // archergod evolution
         // this.load.image("archergodPlayer", "/assets/images/archergodSkin.png");

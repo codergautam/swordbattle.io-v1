@@ -1,7 +1,6 @@
 
 
 const Evolution = require("./Evolution");
-const Archer = require("./Archer");
 class Fisherman extends Evolution {
     constructor() {
         super();
@@ -29,11 +28,12 @@ class Fisherman extends Evolution {
             healWait: 0.5,
             healAmount: 3,
             scale: 1.2,
-            power: -0.3,
+            power: 1,
             damageCooldown: 0.3,
             resistance: 1,
             damage: 0.5,
             speed: 2.5,
+            throwCooldown: 0,
         };
     }
 }

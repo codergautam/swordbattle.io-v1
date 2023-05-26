@@ -224,11 +224,13 @@ var move = true;
     var oldPos = this.pos;
 
     let force;
-    if((player.evolution == "fisherman")) {
-      force = player.power-this.resistance;
+    if((player.evolution == "fisherman") && !player.swordInHand) {
+      this.pos.x = player.pos.x;
+      this.pos.y = player.pos.y;
+
     } else {
       force = Math.max(player.power-this.resistance,50);
-    }
+
   var pos = this.movePointAtAngle([this.pos.x, this.pos.y], (angle+45)*Math.PI/180 , force);
 
     this.pos.x = clamp(pos[0], -(map/2), map/2);
@@ -237,6 +239,7 @@ var move = true;
     if(this.touchingPlayer(player)) {
       this.pos = oldPos;
     }
+  }
   }
   collectCoins(coins, io, levels) {
 
@@ -340,6 +343,7 @@ return false;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
     this.speed = clamp(740 -  (this.scale* 70),550,1000);
     this.throwCooldown = 5000;
+    this.throwDamageMultiplier = 1;
 
     this.power = convert(0.25, 200, this.scale);
     this.resistance = convert(0.25, 20, this.scale);
@@ -373,6 +377,7 @@ return false;
 
    if(this.throwDamageMultiplier) {
    this.damage *= this.throwDamageMultiplier;
+   console.log("throw damage", this.throwDamageMultiplier);
    }
     }
 

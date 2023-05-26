@@ -464,10 +464,10 @@ display:inline-block;
             let psum = 0;
             return nums.map(x => psum += x);
           };
-          var xpData =  <%- "["+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
-          var coinsData =  <%- "["+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
-          var killsData =  <%- "["+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
-            var timeData =  <%- "["+stats.map((e) => `"${e.time?e.time:0}"`).join(",")+"]" %>
+          var xpData =  <%- "[0,"+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
+          var coinsData =  <%- "[0,"+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
+          var killsData =  <%- "[0,"+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
+            var timeData =  <%- "[0,"+stats.map((e) => `"${e.time?e.time:0}"`).join(",")+"]" %>
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
