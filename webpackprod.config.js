@@ -35,7 +35,7 @@ const config = {
         { from: "src/sw.js", to: "" },
         { from: "src/manifest.json", to: "" },
         { from: "src/settings.html", to: "" },
-        { from: "src/styles.css", to: "./" },
+        { from: "src/styless.css", to: "./" },
       ],
     }), 
   ],
