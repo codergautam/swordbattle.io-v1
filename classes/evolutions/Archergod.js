@@ -6,13 +6,13 @@ class Archergod extends Evolution {
         super();
         this.name = "archergod";
         this.abilityDuration = 8000;
-        this.abilityCooldown = 20000;
+        this.abilityCooldown = 40000;
         this.subEvolutions = [];
     }
     default() {
         return {
-            maxHealth: 0.7,
-            health: 0.7,
+            maxHealth: 0.5,
+            health: 0.5,
             speed: 1.3,
             scale: 1,
             power: 1.5,
@@ -22,13 +22,13 @@ class Archergod extends Evolution {
             healAmount: 1.8,
             healWait: 0.4,
             throwCooldown: 0.5,
-            throwDamageMultiplier: 180,
+            throwDamageMultiplier: 120,
         };
     }
     ability() {
         return {
-            maxHealth: 1.8,
-            health: 1.8,
+            maxHealth: 1.3,
+            health: 1.3,
             speed: 2.5,
             scale: 0.5,
             power: 1.5,
@@ -38,7 +38,7 @@ class Archergod extends Evolution {
             healAmount: 2,
             healWait: 0,
             throwCooldown: 0.3,
-            throwDamageMultiplier: 280,
+            throwDamageMultiplier: 200,
         };
     }
 }
