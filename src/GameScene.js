@@ -45,6 +45,7 @@ class GameScene extends Phaser.Scene {
 	create() {
 		var map = 15000;
 		this.failedLoads = [];
+		this.countries = {};
 
         this.levels = [];
 
@@ -757,7 +758,7 @@ class GameScene extends Phaser.Scene {
 						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.85).setDepth(49),
 						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.85).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" "+countryCodeEmoji(player.country)+")":""}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" ("+countryCodeEmoji(player.country)+")":""}`, {
 							fontFamily: "serif",
 							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"?"#FF0000":"#0000FF" :"#000000",
 							fontSize: "25px"
@@ -808,6 +809,12 @@ class GameScene extends Phaser.Scene {
 					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 					enemy.bar.bar.setDepth(69);
+				if(!this.countries) this.countries = {};
+				if(player.country) {
+					this.countries[player.id] = player.country;
+				}
+
+					enemy.country = player.country;
 
 					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag,enemy.chatText, this.graphics]);
 					this.enemies.push(enemy);
@@ -918,6 +925,14 @@ class GameScene extends Phaser.Scene {
 					if(this.myObj?.coins > this.highestCoins?.coins) {
 						this.highestCoins = this.myObj;
 					}
+
+					// remove keys from this.country that aren't in players
+
+					Object.keys(this.countries).forEach(key => {
+						if(!players.find(x => x.id == key)) {
+							delete this.countries[key];
+						}
+					});
 
 					players.forEach(player => {
 						if(!this.spectating && player.id != this.socket.id) {
@@ -1150,6 +1165,12 @@ class GameScene extends Phaser.Scene {
 					this.mePlayer.setScale(player.scale);
 					this.meBar.maxValue = player.maxHealth;
 					this.meBar.setHealth(player.health);
+
+					if(player.country) {
+						if(!this.countries) this.countries = {};
+						this.countries[player.id] = player.country;
+					}
+
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
 
 					var show = 1000;
@@ -2111,6 +2132,7 @@ try {
 		var enemies = this.all.players.map((p) => {return {playerObj: p};});
 
 		enemies.push({playerObj: this.myObj});
+		console.log(this.countries)
 		try {
 			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
 			var text = "";
@@ -2125,13 +2147,9 @@ try {
 					var rankingColors = [
 						{color: "#90EE90", ranking: 100},
 						{color: "#023020", ranking: 50},
-
 						{color: "#ffa500", ranking: 10},
-
 						{color: "#ffff00", ranking: 5},
-
 						{color: "#ff0000", ranking: 1},
-
 					];
 				var rankingColor;
 				if(playerObj.ranking) {
@@ -2144,7 +2162,7 @@ try {
 					});
 				}
 
-				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.country?" [color=#00FF00]("+countryCodeEmoji(playerObj.country)+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${this.countries[playerObj.id]?" [color=#00FF00]("+countryCodeEmoji(this.countries[playerObj.id])+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			});
 			if(!amIinit) {
@@ -2172,7 +2190,7 @@ try {
 				}
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 
-				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.country?"[color=#00FF00]("+countryCodeEmoji(playerObj.country)+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${this.countries[playerObj.id]?"[color=#00FF00]("+countryCodeEmoji(this.countries[playerObj.id])+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			}
 			if(!this.spectating) {
