@@ -7,7 +7,7 @@ class Lumberjack extends Evolution {
         this.name = "lumberjack";
         this.abilityDuration = 5000;
         this.abilityCooldown = 55000;
-        this.subEvolutions = [40000, new Fisherman(), new Juggernaut()];
+        this.subEvolutions = [50000, new Fisherman(), new Juggernaut()];
     }
     default() {
         return {

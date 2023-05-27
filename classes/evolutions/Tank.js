@@ -11,7 +11,7 @@ class Tank extends Evolution {
         this.name = "tank";
         this.abilityDuration = 5000;
         this.abilityCooldown = 60000;
-        this.subEvolutions = [10000, new Warrior(), new Rook()];
+        this.subEvolutions = [15000, new Warrior(), new Rook()];
     }
     default() {
         return {
