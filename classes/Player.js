@@ -208,7 +208,6 @@ var move = true;
       });
 
 
-
     this.lastMove = Date.now();
     PlayerList.updatePlayer(this);
   }

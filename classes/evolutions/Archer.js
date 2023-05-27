@@ -9,7 +9,7 @@ class Archer extends Evolution {
         this.name = "archer";
         this.abilityDuration = 5000;
         this.abilityCooldown = 20000;
-        this.subEvolutions = [400, new Archergod(), new Fisherman()];
+        this.subEvolutions = [40000, new Archergod(), new Fisherman()];
     }
     default() {
         return {

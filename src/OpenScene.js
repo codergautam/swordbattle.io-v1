@@ -29,7 +29,7 @@ class OpenScene extends Phaser.Scene {
       }
       console.time("load");
         this.e = true;
-        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0xFC46AA).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
    this.progressText = this.add.text(0,0,"please wait.").setOrigin(0.5,0.5);
 
@@ -86,8 +86,7 @@ var progress = 1 - (remainder / total);
         this.load.image("juggernautPlayer", "/assets/images/juggernautPlayer.png");
 
         // archergod evolution
-        // this.load.image("archergodPlayer", "/assets/images/archergodSkin.png");
-        this.load.image("archergodPlayer", "/assets/images/bushPlayer.png");
+        this.load.image("archergodPlayer", "/assets/images/archergodSkin.png");
 
         // fisherman evolution
         this.load.image("fishermanPlayer", "/assets/images/fishermanSkin.png");
