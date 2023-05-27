@@ -376,7 +376,6 @@ return false;
 
    if(this.throwDamageMultiplier) {
    this.damage *= this.throwDamageMultiplier;
-   console.log("throw damage", this.throwDamageMultiplier);
    }
     }
 
