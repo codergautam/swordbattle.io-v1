@@ -19,7 +19,7 @@ class Player {
     this.coins = 0;
     this.pos = {x: getRandomInt(-250,250), y: getRandomInt(-250,250)};
     this.kills = 0;
-    this.speed = 700;
+    this.speed = 600;
     this.scale = 0.85;
     this.damage = 10;
     this.level = 1;
@@ -340,7 +340,7 @@ return false;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
-    this.speed = clamp(740 -  (this.scale* 70),550,1000);
+    this.speed = clamp(720 -  (this.scale* 90),550,1000);
     this.throwCooldown = 5000;
     this.throwDamageMultiplier = 1;
 
