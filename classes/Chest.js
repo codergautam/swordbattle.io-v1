@@ -14,32 +14,32 @@ function getRandomInt(min, max) {
       const clamp = (x, min, max) => Math.max(Math.min(x, max), min);
       this.raritys = {
         normal: {
-          scale: 1,
+          scale: 0.75,
           drop: [50,100],
           health: 1
         },
         uncommon: {
-          scale: 1.5,
+          scale: 1,
           drop: [100,250],
           health: 25
         },
         rare: {
-          scale: 2,
+          scale: 1.25,
           drop: [250,500],
           health: 75,
         },
         epic: {
-          scale: 2.5,
+          scale: 1.5,
           drop: [500,1000],
           health: 250
         },
         legendary: {
-          scale: 3,
+          scale: 2.5,
           drop: [1000,2500],
           health: 500
         },
         mythical: {
-          scale: 5,
+          scale: 3.5,
           drop: [7000,12000],
           health: 1000
         }
