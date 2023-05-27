@@ -98,7 +98,7 @@ var progress = 1 - (remainder / total);
         this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
 
 
-        this.load.image("background", "/assets/images/background.jpeg");
+        this.load.image("background", "/assets/images/background.png");
         this.load.image("coin", "/assets/images/coin.png");
 
         this.load.image("chest", "/assets/images/chests/chest.png");
