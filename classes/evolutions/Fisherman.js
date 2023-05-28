@@ -17,7 +17,7 @@ class Fisherman extends Evolution {
             scale: 1,
             power: 1,
             resistance: 1,
-            damage: 0.9,
+            damage: 1.4,
             damageCooldown: 1.3,
             healAmount: 1.5,
             healWait: 1
@@ -31,7 +31,7 @@ class Fisherman extends Evolution {
             power: 1,
             damageCooldown: 0.3,
             resistance: 1,
-            damage: 0.5,
+            damage: 1,
             speed: 2,
             throwCooldown: 0,
         };
