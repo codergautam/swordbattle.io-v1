@@ -19,7 +19,7 @@ class Juggernaut extends Evolution {
             resistance: 3.5,
             damage: 1.3,
             damageCooldown: 1.2,
-            healAmount: 1.2,
+            healAmount: 1.5,
             healWait: 2.5
         };
     }
