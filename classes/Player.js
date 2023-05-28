@@ -247,7 +247,7 @@ var move = true;
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
-          this.coins+= coin.value;
+          this.coins+= coin.value*50;
           if(this.level <= levels.length && this.coins >= levels[this.level-1].coins) {
             //lvl up!
 

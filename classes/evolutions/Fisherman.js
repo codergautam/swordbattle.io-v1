@@ -13,7 +13,7 @@ class Fisherman extends Evolution {
         return {
             maxHealth: 1,
             health: 1,
-            speed: 1.2,
+            speed: 1.1,
             scale: 1,
             power: 1,
             resistance: 1,
@@ -32,7 +32,7 @@ class Fisherman extends Evolution {
             damageCooldown: 0.3,
             resistance: 1,
             damage: 0.5,
-            speed: 2.5,
+            speed: 2,
             throwCooldown: 0,
         };
     }
