@@ -39,7 +39,7 @@ class Archer extends Evolution {
             damageCooldown: 1,
             healAmount: 0.7,
             healWait: 0,
-            throwCooldown: 0.5,
+            throwCooldown: 0.4,
             throwDamageMultiplier: 100,
         };
     }

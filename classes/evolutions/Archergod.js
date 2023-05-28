@@ -37,7 +37,7 @@ class Archergod extends Evolution {
             damageCooldown: 1,
             healAmount: 0.9,
             healWait: 0,
-            throwCooldown: 0.3,
+            throwCooldown: 0.2,
             throwDamageMultiplier: 120
         };
     }
