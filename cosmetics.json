@@ -225,6 +225,13 @@
             "description": "Study the arts of stabbing..."
         },
         {
+            "name": "axolotl",
+            "displayName": "Axolotl",
+            "url": "/assets/images/axolotlPlayer.png",
+            "price": 20000,
+            "description": "Just swimming around"
+        },
+        {
             "name": "ninja",
             "displayName": "Ninja",
             "url": "/assets/images/ninjaPlayer.png",
@@ -456,6 +463,13 @@
             "description": "A hardened veteran"
         },
         {
+            "name": "suit",
+            "displayName": "The Suit",
+            "url": "/assets/images/suitPlayer.png",
+            "price": 78000,
+            "description": "Hide secrets under the suit"
+        },
+        {
             "name": "cardboard",
             "displayName": "Cardboard",
             "url": "/assets/images/cardboardPlayer.png",
@@ -496,6 +510,13 @@
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "painter",
+            "displayName": "Painter",
+            "url": "/assets/images/painterPlayer.png",
+            "price": 100000,
+            "description": "The power of paint"
         },
         {
             "name": "fall",
@@ -813,6 +834,13 @@
             "description": "A snack before destruction"
         },
         {
+            "name": "octopus",
+            "displayName": "The Octopus",
+            "url": "/assets/images/octopusPlayer.png",
+            "price": 400800,
+            "description": "Drag them away"
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
@@ -873,6 +901,13 @@
             "url": "/assets/images/icecreamPlayer.png",
             "price": 800000,
             "description": "I scream, you scream, your enemies scream"
+        },
+        {
+            "name": "shark",
+            "displayName": "Sharky",
+            "url": "/assets/images/sharkPlayer.png",
+            "price": 801000,
+            "description": "You never know what will hide in the deep ocean"
         },
         {
             "name": "elements",
