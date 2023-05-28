@@ -6,7 +6,7 @@ class Samurai extends Evolution {
         super();
         this.name = "samurai";
         this.abilityDuration = 8000;
-        this.abilityCooldown = 50000;
+        this.abilityCooldown = 70000;
         this.subEvolutions = [50000, new Fisherman(), new Juggernaut()];
     }
     default() {
@@ -17,8 +17,8 @@ class Samurai extends Evolution {
             scale: 1.3,
             power: 1,
             resistance: 5.5,
-            damage: 1.6,
-            damageCooldown: 1.3,
+            damage: 0.8,
+            damageCooldown: 1.5,
             healAmount: 1.5,
             healWait: 2
         };

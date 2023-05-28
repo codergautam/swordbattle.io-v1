@@ -22,14 +22,14 @@ class Archergod extends Evolution {
             healAmount: 1.8,
             healWait: 2,
             throwCooldown: 0.7,
-            throwDamageMultiplier: 90,
+            throwDamageMultiplier: 70,
         };
     }
     ability() {
         return {
             maxHealth: 0.8,
             health: 0.8,
-            speed: 2.1 ,
+            speed: 1.6 ,
             scale: 0.5,
             power: 1.5,
             resistance: 0.2,
@@ -38,7 +38,7 @@ class Archergod extends Evolution {
             healAmount: 0.9,
             healWait: 0,
             throwCooldown: 0.3,
-            throwDamageMultiplier: 170
+            throwDamageMultiplier: 150
         };
     }
 }

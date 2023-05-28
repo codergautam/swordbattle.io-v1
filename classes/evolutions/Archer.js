@@ -31,7 +31,7 @@ class Archer extends Evolution {
         return {
             maxHealth: 0.7,
             health: 0.7,
-            speed: 1.5,
+            speed: 1.3,
             scale: 0.7,
             power: 1.5,
             resistance: 0.2,
@@ -40,7 +40,7 @@ class Archer extends Evolution {
             healAmount: 0.7,
             healWait: 0,
             throwCooldown: 0.5,
-            throwDamageMultiplier: 170,
+            throwDamageMultiplier: 130,
         };
     }
 }
