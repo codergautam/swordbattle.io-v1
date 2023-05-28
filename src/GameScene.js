@@ -1013,8 +1013,6 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {
-								// console.log(this.myObj.evolutionQueue);
-								// console.log(this.classPicker)
 								if(!this.classPicker.shown || (this.classPicker.text1 != this.myObj.evolutionQueue[0][0] || this.classPicker.text2 != this.myObj.evolutionQueue[0][1])) {
 								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 
@@ -2132,7 +2130,6 @@ try {
 		var enemies = this.all.players.map((p) => {return {playerObj: p};});
 
 		enemies.push({playerObj: this.myObj});
-		console.log(this.countries)
 		try {
 			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
 			var text = "";

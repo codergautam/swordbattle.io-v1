@@ -808,7 +808,6 @@ app.get("/:user", async (req, res, next) => {
       count: 0
     };
   }
-  console.log(ips[req.ip].count, Date.now() - ips[req.ip].time);
 
 	  if(Date.now() - ips[req.ip].time > 30000) {
     ips[req.ip].time = Date.now();
@@ -877,7 +876,6 @@ LEFT JOIN (
 ) b ON a.dt = b.dt1
 ORDER BY a.dt ASC;
 `;
-console.log(stats);
     var lb = xplb;
     var lb2 =
       await sql`select username,(sum(coins)+(sum(stabs)*300)) as xp from stats where game_date>current_date-1 group by username order by xp desc`;
