@@ -6,7 +6,7 @@ class Lumberjack extends Evolution {
         super();
         this.name = "lumberjack";
         this.abilityDuration = 5000;
-        this.abilityCooldown = 55000;
+        this.abilityCooldown = 40000;
         this.subEvolutions = [50000, new Fisherman(), new Juggernaut()];
     }
     default() {
@@ -14,14 +14,14 @@ class Lumberjack extends Evolution {
             maxHealth: 0.6,
             health: 0.6,
             speed: 1,
-            scale: 1.1,
+            scale: 1.2,
             power: 1.3,
             resistance: 1.2,
-            damage: 1.8,
-            damageCooldown: 1.5,
+            damage: 2.2,
+            damageCooldown: 1.6,
             healAmount: 1.5,
-            healWait: 2.5,
-            throwCooldown: 0.5
+            healWait: 1.7,
+            throwCooldown: 0.4
         };
     }
     ability() {
