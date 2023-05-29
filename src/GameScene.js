@@ -1208,8 +1208,8 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
-						duration: 300,
-						ease: "Power2"
+						duration: (1000/20)*3.5,
+						ease: "power2"
 					});
 					}
 					this.mePlayer.setScale(player.scale);
@@ -1222,7 +1222,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
 
-					var show = 1200;
+					var show = 1300;
 					show += (this.mePlayer.width*this.mePlayer.scale)*5;
 					//var oldZoom = this.cameras.main.zoom;
 					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
@@ -1294,8 +1294,8 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 							targets: enemy.player,
 							x: player.pos.x,
 							y: player.pos.y,
-							duration: 300,
-							ease: "Power2"
+							duration: (1000/20)*3.5,
+							ease: "power2"
 						});
 
 						//update sword
