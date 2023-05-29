@@ -328,7 +328,7 @@ return false;
     return Math.atan2(this.mousePos.y - (this.mousePos.viewport.height / 2), this.mousePos.x - (this.mousePos.viewport.width / 2)) * 180 / Math.PI + 45;
   }
   inRange(player) {
-    var show = 1800+((300*player.scale)*4);
+    var show = 1700+((300*player.scale)*3);
     var dist = Math.sqrt(Math.pow(this.pos.x - player.pos.x, 2) + Math.pow(this.pos.y - player.pos.y, 2));
       return dist <= show;
   }
