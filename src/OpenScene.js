@@ -62,15 +62,15 @@ var progress = 1 - (remainder / total);
         return !loaded.includes(key);
     });
 
-    if(remaining.length == 0 && !this.readytogo) {
-      this.readytogo = setTimeout(() => {
-      if(this.checkInt) {
-        clearInterval(this.checkInt);
-      }
-      this.scene.stop();
-      this.scene.start("title");
-      }, 1000);
-    }
+    // if(remaining.length == 0 && !this.readytogo) {
+    //   this.readytogo = setTimeout(() => {
+    //   if(this.checkInt) {
+    //     clearInterval(this.checkInt);
+    //   }
+    //   this.scene.stop();
+    //   this.scene.start("title");
+    //   }, 1000);
+    // }
 
 
     console.log("remaining", remaining);
@@ -190,9 +190,9 @@ var progress = 1 - (remainder / total);
 
     create() {
       console.log("create");
-      // clearInterval(this.checkInt);
-      //        this.scene.stop();
-      //        this.scene.start("title");
+      clearInterval(this.checkInt);
+             this.scene.stop();
+             this.scene.start("title");
     }
     update() {
 
