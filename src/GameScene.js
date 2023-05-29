@@ -656,10 +656,15 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 				//server -> client
 
                 this.socket.on("levels", (l)=>this.levels=l);
-								this.socket.on("flyingSwords", (swords) => {
+								this.socket.on("newFlyingSword", (sword) => {
+									// destroy old sword if	 it exists
+									if(this.flyingSwordsData.has(sword.id)) {
 
-									swords.forEach((sword) => {
-										if(!this.flyingSwords.has(sword.id)) {
+										// delete old tweens
+										this.flyingSwords.get(sword.id).destroy();
+										this.flyingSwords.delete(sword.id);
+										this.flyingSwordsData.delete(sword.id);
+									}
 											var ability = false;
 											if(this.myObj && sword.id == this.myObj.id && this.myObj.abilityActive) ability = true;
 											else {
@@ -673,25 +678,41 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 
 											this.UICam.ignore(newSword);
 											this.flyingSwordsData.set(sword.id, newSword);
-										} else {
 
-											var oldSword = this.flyingSwordsData.get(sword.id);
-											var obj = this.flyingSwords.get(sword.id);
+											this.tweens.addCounter({
+												from: Math.round((Date.now() - sword.time) / 10),
+												to: 500,
+												duration: 5000 - Math.round((Date.now() - sword.time)),
+												ease: "Power2",
+												onUpdate:  (tween)=>{
+													var value = tween.getValue();
+													var obj = this.flyingSwordsData.get(sword.id);
+													var angle = sword.angle-45;
+													var x = sword.x;
+													var y = sword.y;
+													var scale = sword.scale;
+													var ability = sword.ability;
+													var skin = sword.skin;
+													var id = sword.id;
+													var owner = sword.owner;
 
-											this.tweens.add({
-												targets: oldSword,
-												x: sword.x,
-												y: sword.y,
-												duration: 1000/30,
-												ease: "Linear",
-											});
+													if(!this.flyingSwords.has(id)) return;
+													if(!this.flyingSwordsData.has(id)) return;
+													if(!this.flyingSwords.get(id)) return;
+													if(!this.flyingSwordsData.get(id)) return;
 
-											if(obj.ability) {
-												var particles = this.add.particles("starParticle");
+													var newX = x + (value*8.5 * Math.cos(angle * Math.PI / 180));
+													var newY = y + (value*8.5 * Math.sin(angle * Math.PI / 180));
+
+													obj.x = newX;
+													obj.y = newY;
+
+													if(ability) {
+			var particles = this.add.particles("starParticle");
 
 												var emitter = particles.createEmitter({
 
-													maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+													maxParticles: this.sys.game.loop.actualFps >= 50 ? 2 : 1,
 													scale: 0.05
 												});
 												function getRandomInt(min, max) {
@@ -699,25 +720,58 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 													max = Math.floor(max);
 													return Math.floor(Math.random() * (max - min + 1)) + min;
 												}
-												emitter.setPosition(oldSword.x + getRandomInt(-10, 10), oldSword.y + getRandomInt(-10, 10));
+												emitter.setPosition(obj.x + getRandomInt(-10, 10), obj.y + getRandomInt(-10, 10));
 
 												this.UICam.ignore(particles);
 												emitter.setSpeed(200);
 												particles.setDepth(105);
+													}
+												},
+												onComplete: ()=>{
+													var obj = this.flyingSwordsData.get(sword.id);
+													if(obj) obj.destroy();
+													this.flyingSwords.delete(sword.id);
+													this.flyingSwordsData.delete(sword.id);
+												}
+													});
 
-										}
-									}
+										// } else {
+
+										// 	var oldSword = this.flyingSwordsData.get(sword.id);
+										// 	var obj = this.flyingSwords.get(sword.id);
+
+										// 	this.tweens.add({
+										// 		targets: oldSword,
+										// 		x: sword.x,
+										// 		y: sword.y,
+										// 		duration: 1000/30,
+										// 		ease: "Linear",
+										// 	});
+
+										// 	if(obj.ability) {
+										// 		var particles = this.add.particles("starParticle");
+
+										// 		var emitter = particles.createEmitter({
+
+										// 			maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+										// 			scale: 0.05
+										// 		});
+										// 		function getRandomInt(min, max) {
+										// 			min = Math.ceil(min);
+										// 			max = Math.floor(max);
+										// 			return Math.floor(Math.random() * (max - min + 1)) + min;
+										// 		}
+										// 		emitter.setPosition(oldSword.x + getRandomInt(-10, 10), oldSword.y + getRandomInt(-10, 10));
+
+										// 		this.UICam.ignore(particles);
+										// 		emitter.setSpeed(200);
+										// 		particles.setDepth(105);
+
+										// }
+									// }
 									});
-									this.flyingSwordsData.forEach((sword, id) => {
-										if(!swords.find((s) => s.id == id)) {
-											this.flyingSwordsData.delete(id);
-											this.flyingSwords.delete(id);
-											sword.destroy();
-										}
-									});
 
 
-								});
 								this.socket.on("ability", (e) => {
 								//	console.log(e);
 									var [cooldown, duration, now] = e;
@@ -748,9 +802,9 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 										onComplete: () => {
 											this.ability.setText("");
 										}
-									});
 								});
 
+							});
 				const addPlayer = (player) => {
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
 					/* vendors contains the element we're looking for */

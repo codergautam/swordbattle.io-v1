@@ -1139,6 +1139,7 @@ io.on("connection", async (socket) => {
       if(Date.now() - player.lastSwordThrow < player.throwCooldown) return;
       player.swordInHand = false;
       flyingSwords.push({hit: [], scale: player.scale, x: player.pos.x, y: player.pos.y, time: Date.now(), angle: player.calcSwordAngle(), skin: player.skin, id: socket.id});
+      io.sockets.send("newFlyingSword", flyingSwords[flyingSwords.length - 1]);
       player.lastSwordThrow = Date.now();
       PlayerList.updatePlayer(player);
     } else socket.send("refresh");
@@ -1267,7 +1268,10 @@ app.get("/api/serverinfo", (req, res) => {
 
 var lastSendAll = 0;
 var allSendInt = 500;
+var lastTick = Date.now();
 setInterval(async () => {
+  let delta = Date.now() - lastTick;
+  lastTick = Date.now();
 	//const used = process.memoryUsage().heapUsed / 1024 / 1024;
 //console.log(`The script uses approximately ${Math.round(used * 100) / 100} MB`);
 	PlayerList.clean();
@@ -1316,8 +1320,10 @@ setInterval(async () => {
   }
   flyingSwords.forEach((sword, i) => {
     var a = degrees_to_radians(sword.angle-45);
-    sword.x += Math.cos(a) * 100;
-    sword.y += Math.sin(a) * 100;
+    const wantspeed = 100;
+    let speed  = delta/50 * wantspeed;
+    sword.x += Math.cos(a) * speed;
+    sword.y += Math.sin(a) * speed;
 
     //collision check
       //HARDCODED
@@ -1365,7 +1371,7 @@ setInterval(async () => {
       }
     }
   });
-  io.sockets.send("flyingSwords", flyingSwords);
+  // io.sockets.send("flyingSwords", flyingSwords);
 
 	if (normalPlayers > 0 && aiPlayers < maxAiPlayers && getRandomInt(0,100) == 5) {
 		var id = uuidv4();
@@ -1479,7 +1485,7 @@ setInterval(async () => {
     lastSendAll = Date.now();
   }
 	tps += 1;
-}, 1000 / 30);
+}, 1000 / 20);
 
 server.listen(process.env.PORT || 3000, () => {
   console.log("server started on port: ", process.env.PORT || 3000);
