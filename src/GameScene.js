@@ -379,7 +379,7 @@ class GameScene extends Phaser.Scene {
 				this.cameras.main.startFollow(this.mePlayer,true);
 
 
-				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.03).setAlpha(1);
+				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.02).setAlpha(1);
 				this.cameras.main.ignore(this.crown);
 
 
@@ -952,8 +952,8 @@ class GameScene extends Phaser.Scene {
 								ease: "Sine2"
 							});
 							if(this.highestCoins?.id == player.id) {
-								this.crown.displayHeight = miniMapPlayer.circle.displayHeight*2;
-								this.crown.displayWidth = miniMapPlayer.circle.displayWidth*2;
+								this.crown.displayHeight = miniMapPlayer.circle.displayHeight*1.5;
+								this.crown.displayWidth = miniMapPlayer.circle.displayWidth*1.5;
 							}
 						}
 
@@ -1214,8 +1214,8 @@ class GameScene extends Phaser.Scene {
 					if(this.highestCoins?.id == player.id) {
 						this.crown.x = miniMapPlayer.circle.x;
 						this.crown.y = miniMapPlayer.circle.y;
-						this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 2;
-						this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 2;
+						this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 1.5;
+						this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 1.5;
 					}
 
 				}
@@ -1332,8 +1332,8 @@ class GameScene extends Phaser.Scene {
 							if(this.highestCoins?.id == player.id) {
 								this.crown.x = miniMapPlayer.circle.x;
 								this.crown.y = miniMapPlayer.circle.y;
-								this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 2;
-								this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 2;
+								this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 1.5;
+								this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 1.5;
 							}
 						}
 
