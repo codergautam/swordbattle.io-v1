@@ -207,7 +207,6 @@ var move = true;
         this.pos.y = player.pos.y + Math.sin(angle) * (radius + playerSize / 2);
       });
 
-
     this.lastMove = Date.now();
     PlayerList.updatePlayer(this);
   }
@@ -528,6 +527,7 @@ DO UPDATE SET
 
               // default damage cooldown gets 1 damage per hit
               var chestDmg = Math.round(convert(140, 1, this.damageCooldown));
+              if(this.evolution.toLowerCase() == "lumberjack") chestDmg *= 2;
               if(this.level >= 10) chestDmg *= 2;
               if(this.level >= 25) chestDmg *= 2;
               chest.health -= chestDmg;

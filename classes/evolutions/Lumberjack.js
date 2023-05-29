@@ -35,7 +35,7 @@ class Lumberjack extends Evolution {
             damage: 4,
             speed: 1.2,
             throwCooldown: 0.3,
-            throwDamageMultiplier: 0.5
+            throwDamageMultiplier: 0.1
         };
     }
 }
