@@ -1883,7 +1883,7 @@ try {
   console.log("Failed to update level bar");
   console.log(e);
 }
-if(this.lastCountriesClear && Date.now() - this.lastCountriesClear > 5000) {
+if(this.lastCountriesClear && Date.now() - this.lastCountriesClear > 300000) {
 	this.countries = {};
 this.lastCountriesClear = Date.now();
 } else if(!this.lastCountriesClear) {
