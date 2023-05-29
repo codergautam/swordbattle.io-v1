@@ -40,8 +40,10 @@ class OpenScene extends Phaser.Scene {
       this.progressText.x = this.canvas.width/2;
       this.progressText.y = this.canvas.height/2 + this.canvas.height/10;
 let loaded = [];
+ this.lastProgress = Date.now();
 
       this.load.on("fileprogress", function(file, progress){
+        this.lastProgress = Date.now();
         // var key = file.key;
         var loader = this.load;
 var total = loader.totalToLoad;
@@ -59,6 +61,17 @@ var progress = 1 - (remainder / total);
     }).filter(function (key) {
         return !loaded.includes(key);
     });
+
+    if(remaining.length == 0 && !this.readytogo) {
+      this.readytogo = setTimeout(() => {
+      if(this.checkInt) {
+        clearInterval(this.checkInt);
+      }
+      this.scene.stop();
+      this.scene.start("title");
+      }, 1000);
+    }
+
 
     console.log("remaining", remaining);
     console.log("loaded", loaded);
@@ -163,12 +176,23 @@ var progress = 1 - (remainder / total);
         this.scale.fullscreenTarget = document.getElementById("game");
         console.timeEnd("load");
 
+        this.checkInt = setInterval(() => {
+          console.log(Date.now()- this.lastProgress);
+
+      if((Date.now()- this.lastProgress) > 10000) {
+        // reload
+        window.location.reload();
+      }
+
+    }, 100);
+
     }
 
     create() {
-
-             this.scene.stop();
-             this.scene.start("title");
+      console.log("create");
+      // clearInterval(this.checkInt);
+      //        this.scene.stop();
+      //        this.scene.start("title");
     }
     update() {
 
