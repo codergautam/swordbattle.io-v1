@@ -39,6 +39,8 @@ class OpenScene extends Phaser.Scene {
       this.loadText.y = this.canvas.height/2;
       this.progressText.x = this.canvas.width/2;
       this.progressText.y = this.canvas.height/2 + this.canvas.height/10;
+let loaded = [];
+
       this.load.on("fileprogress", function(file, progress){
         // var key = file.key;
         var loader = this.load;
@@ -46,7 +48,21 @@ var total = loader.totalToLoad;
 var remainder = loader.list.size + loader.inflight.size;
 var progress = 1 - (remainder / total);
         this.progressText.setText((progress*100).toFixed(1)+"%");
+        // log remaining file keys
+
     }, this);
+    this.load.on("filecomplete",  (file) => {
+    loaded.push(file);
+
+      let remaining = this.load.list.entries.map(function (item) {
+        return item.key;
+    }).filter(function (key) {
+        return !loaded.includes(key);
+    });
+
+    console.log("remaining", remaining);
+    console.log("loaded", loaded);
+  });
         this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
         this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
