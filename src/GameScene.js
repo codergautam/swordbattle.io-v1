@@ -814,7 +814,6 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 					enemy.bar.bar.setDepth(69);
-				if(!this.countries) this.countries = {};
 				if(player.country) {
 					this.countries[player.id] = player.country;
 				}
@@ -932,12 +931,6 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 					}
 
 					// remove keys from this.country that aren't in players
-
-					Object.keys(this.countries).forEach(key => {
-						if(!players.find(x => x.id == key)) {
-							delete this.countries[key];
-						}
-					});
 
 					players.forEach(player => {
 						if(!this.spectating && player.id != this.socket.id) {
@@ -1170,7 +1163,6 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 					this.meBar.setHealth(player.health);
 
 					if(player.country) {
-						if(!this.countries) this.countries = {};
 						this.countries[player.id] = player.country;
 					}
 
@@ -1891,6 +1883,13 @@ try {
   console.log("Failed to update level bar");
   console.log(e);
 }
+if(this.lastCountriesClear && Date.now() - this.lastCountriesClear > 5000) {
+	this.countries = {};
+this.lastCountriesClear = Date.now();
+} else if(!this.lastCountriesClear) {
+	this.lastCountriesClear = Date.now();
+}
+
 
 		var controller = {
 			left: false,
