@@ -849,7 +849,9 @@ this.shopLoading = false;
         document.getElementById("swordbattle-io_970x250").style.display = "";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
 
-      // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
+      if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
+}
       } catch(e) {
 
       }
@@ -858,7 +860,9 @@ this.shopLoading = false;
       try {
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "";
-      // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+      if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+}
       } catch(e) {
 
       }

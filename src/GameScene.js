@@ -465,12 +465,17 @@ class GameScene extends Phaser.Scene {
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
 
                 try {
-                  // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+
+                  if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+}
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
                  this.refreshInt = setInterval(() => {
 
-                  // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+}
 
                 }, 4000);
                 } catch(e) {
@@ -1745,14 +1750,18 @@ class GameScene extends Phaser.Scene {
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
                 try {
-                  // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+}
 
 
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
                 this.refreshInt = setInterval(() => {
 
-                  // aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+                  if(location.hostname.toLowerCase() != "swordbattle.io"){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+}
 
                 }, 4000);
                 } catch(e) {
