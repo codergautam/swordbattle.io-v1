@@ -17,7 +17,7 @@ class Samurai extends Evolution {
             scale: 1.3,
             power: 1,
             resistance: 5.5,
-            damage: 0.8,
+            damage: 1.3,
             damageCooldown: 1.5,
             healAmount: 1.5,
             healWait: 2
@@ -31,7 +31,7 @@ class Samurai extends Evolution {
             power: 1.5,
             damageCooldown: 0.9,
             resistance: 1,
-            damage: 1.2,
+            damage: 1.5,
             speed: 1.5,
         };
     }

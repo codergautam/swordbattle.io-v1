@@ -13,14 +13,14 @@ body {
 }
 
 
-iframe:not(#swordbattle-io_970x250 > iframe):not(#swordbattle-io_970x90 > iframe) {
+iframe:not(#swordbattle-io_970x250 > iframe):not(#swordbattle-io_970x90 > iframe):not(#swordbattle-io_970x90 > div > iframe):not(#swordbattle-io_970x250 > div > iframe) {
   width: 100%;
   height: 100%;
 }
 iframe{
     position: absolute;
   z-index: 1000;
-  
+
 }
 
 canvas {

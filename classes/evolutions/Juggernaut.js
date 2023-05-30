@@ -17,7 +17,7 @@ class Juggernaut extends Evolution {
             scale: 1.4,
             power: 1,
             resistance: 3.5,
-            damage: 1.3,
+            damage: 1.5,
             damageCooldown: 1.2,
             healAmount: 1.5,
             healWait: 2.5

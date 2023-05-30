@@ -18,7 +18,7 @@ class Lumberjack extends Evolution {
             power: 1.3,
             resistance: 1.2,
             damage: 2.2,
-            damageCooldown: 1.9,
+            damageCooldown: 1.8,
             healAmount: 1.5,
             healWait: 1.7,
             throwCooldown: 0.4
