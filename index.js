@@ -920,7 +920,7 @@ var maxEpicChests = 5;
 var maxLegendaryChests = 2;
 var maxMythicalChests = 1;
 
-var maxAiPlayers = 20;
+var maxAiPlayers = 15;
 var maxPlayers = 100;
 
 
