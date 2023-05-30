@@ -1208,7 +1208,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
-						duration: (1000/20)*3.5,
+						duration: (1000/20)*7,
 						ease: "power2"
 					});
 					}
@@ -1294,7 +1294,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 							targets: enemy.player,
 							x: player.pos.x,
 							y: player.pos.y,
-							duration: (1000/20)*3.5,
+							duration: (1000/20)*7,
 							ease: "power2"
 						});
 
