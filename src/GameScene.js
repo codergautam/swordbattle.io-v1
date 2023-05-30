@@ -688,9 +688,9 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 											this.flyingSwordsData.set(sword.id, newSword);
 
 											this.tweens.addCounter({
-												from: Math.round((Date.now() - sword.time) / 10),
+												from: 0,
 												to: 500,
-												duration: 5000 - Math.round((Date.now() - sword.time)),
+												duration: 5000,
 												ease: "Linear",
 												onUpdate:  (tween)=>{
 													var value = tween.getValue();
