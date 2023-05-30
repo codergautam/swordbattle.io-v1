@@ -28,7 +28,8 @@ class TitleScene extends Phaser.Scene {
   }
   create() {
     document.getElementById("90pxadstyle").innerHTML = `
-    #swordbattle-io_970x90 > iframe {
+    #swordbattle-io_970x90 > div > iframe,
+      #swordbattle-io_970x90 > iframe {
   bottom: 100px;
           left: 50%;
   transform: translateX(-50%);
@@ -304,10 +305,11 @@ class TitleScene extends Phaser.Scene {
                   document.getElementById("game").focus();
                   this.callback(myName, this.music, this.secret);
 document.getElementById("90pxadstyle").innerHTML = `
-    #swordbattle-io_970x90 > iframe {
-  bottom: 0px;
-          left: 50%;
-  transform: translateX(-50%);
+#swordbattle-io_970x90 > div > iframe,
+#swordbattle-io_970x90 > iframe {
+bottom: 100px;
+    left: 50%;
+transform: translateX(-50%);
 }`
                   document.getElementById("swordbattle-io_970x250").style.display = "none";
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
@@ -325,11 +327,12 @@ document.getElementById("90pxadstyle").innerHTML = `
             this.nameBox.destroy();
 
             document.getElementById("90pxadstyle").innerHTML = `
-    #swordbattle-io_970x90 > iframe {
-  bottom: 0px;
-          left: 50%;
-  transform: translateX(-50%);
-}`
+            #swordbattle-io_970x90 > div > iframe,
+            #swordbattle-io_970x90 > iframe {
+        bottom: 100px;
+                left: 50%;
+        transform: translateX(-50%);
+      }`
             this.callback(myName, this.music, this.secret);
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -341,11 +344,12 @@ document.getElementById("90pxadstyle").innerHTML = `
 
           this.nameBox.destroy();
           document.getElementById("90pxadstyle").innerHTML = `
-    #swordbattle-io_970x90 > iframe {
-  bottom: 0px;
-          left: 50%;
-  transform: translateX(-50%);
-}`
+          #swordbattle-io_970x90 > div > iframe,
+          #swordbattle-io_970x90 > iframe {
+      bottom: 100px;
+              left: 50%;
+      transform: translateX(-50%);
+    }`
           this.callback(myName, this.music, this.secret);
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
