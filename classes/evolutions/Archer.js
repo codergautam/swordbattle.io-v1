@@ -24,7 +24,7 @@ class Archer extends Evolution {
             healAmount: 2,
             healWait: 1,
             throwCooldown: 0.7,
-            throwDamageMultiplier: 30,
+            throwDamageMultiplier: 60,
         };
     }
     ability() {
@@ -40,7 +40,7 @@ class Archer extends Evolution {
             healAmount: 1,
             healWait: 0,
             throwCooldown: 0.2,
-            throwDamageMultiplier: 3,
+            throwDamageMultiplier: 6,
         };
     }
 }
