@@ -849,7 +849,7 @@ this.shopLoading = false;
       document.getElementById("swordbattle-io_970x90").style.display = "none";
     } else {
 
-    if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 50000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
+    if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 4000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
       console.log((this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460), (this.canvas.height - (this.nameBox.y+this.nameBox.height)));
       this.lastAdRef = Date.now();
       try {
@@ -863,7 +863,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x2
       } catch(e) {
 
       }
-    } else if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 50000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 160)) {
+    } else if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 4000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 160)) {
       // hide other ads
       try {
       document.getElementById("swordbattle-io_970x250").style.display = "none";
