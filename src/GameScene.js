@@ -661,8 +661,16 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 									if(this.flyingSwordsData.has(sword.id)) {
 
 										// delete old tweens
+										try {
 										this.flyingSwords.get(sword.id).destroy();
+										} catch(e) {
+											console.log(e);
+										}
+										try {
 										this.flyingSwords.delete(sword.id);
+										} catch(e) {
+											console.log(e);
+										}
 										this.flyingSwordsData.delete(sword.id);
 									}
 											var ability = false;
@@ -683,7 +691,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 												from: Math.round((Date.now() - sword.time) / 10),
 												to: 500,
 												duration: 5000 - Math.round((Date.now() - sword.time)),
-												ease: "Power2",
+												ease: "Linear",
 												onUpdate:  (tween)=>{
 													var value = tween.getValue();
 													var obj = this.flyingSwordsData.get(sword.id);
@@ -701,8 +709,8 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 													if(!this.flyingSwords.get(id)) return;
 													if(!this.flyingSwordsData.get(id)) return;
 
-													var newX = x + (value*8.5 * Math.cos(angle * Math.PI / 180));
-													var newY = y + (value*8.5 * Math.sin(angle * Math.PI / 180));
+													var newX = x + (value*25 * Math.cos(angle * Math.PI / 180));
+													var newY = y + (value*25 * Math.sin(angle * Math.PI / 180));
 
 													obj.x = newX;
 													obj.y = newY;
