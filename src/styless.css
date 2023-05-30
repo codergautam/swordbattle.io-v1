@@ -12,6 +12,11 @@ body {
   font-family: 'Franklin Gothic Medium', Arial, sans-serif;
 }
 
+#swordbattle-io_970x250 > div,
+#swordbattle-io_970x90 > div {
+  width: 0px;
+  height: 0px;
+}
 
 iframe:not(#swordbattle-io_970x250 > iframe):not(#swordbattle-io_970x90 > iframe):not(#swordbattle-io_970x90 > div > iframe):not(#swordbattle-io_970x250 > div > iframe) {
   width: 100%;
