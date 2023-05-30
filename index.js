@@ -1473,7 +1473,7 @@ setInterval(async () => {
 				 	} else {
           outOfRange.push(player.id);
         }
-        if(outOfRange.length > 0) socket.send("outOfRange", outOfRange);
+        if(outOfRange.length > 0 && shouldSendAll) socket.send("outOfRange", outOfRange);
 			});
 		}
 	});
