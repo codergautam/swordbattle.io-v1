@@ -30,7 +30,7 @@ class TitleScene extends Phaser.Scene {
     document.getElementById("90pxadstyle").innerHTML = `
     #swordbattle-io_970x90 > div > iframe,
       #swordbattle-io_970x90 > iframe {
-  bottom: 100px;
+  bottom: 50px;
           left: 50%;
   transform: translateX(-50%);
 }`
