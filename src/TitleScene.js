@@ -278,6 +278,7 @@ class TitleScene extends Phaser.Scene {
         this.done = true;
         if (access) window.localStorage.setItem("oldName", name.value);
         var myName = name.value;
+        console.log(this.playPreroll ? "preroll" : "no preroll");
 
         if (this.playPreroll) {
           if (typeof aiptag.adplayer !== "undefined") {
@@ -844,7 +845,6 @@ document.getElementById("shopFrame").style.display = "none";
     var footery = this.canvas.height - (this.footer.height);
     if (this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
-    console.log(this.canvas.height - (this.nameBox.y+this.nameBox.height))
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
     if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=300) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible) || (document.getElementById("shopFrame").style.display != "none")){
