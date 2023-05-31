@@ -33,7 +33,12 @@ class TitleScene extends Phaser.Scene {
   bottom: 100px;
           left: 50%;
   transform: translateX(-50%);
-}`
+}`;
+
+try {
+  document.getElementById("swordbattle.io-970x250").style.display = "none";
+} catch (e) {
+}
       this.lastAdRef = 0;
 
     this.optimalServer = "us2";
@@ -311,7 +316,7 @@ document.getElementById("90pxadstyle").innerHTML = `
 bottom: 0px;
     left: 50%;
 transform: translateX(-50%);
-}`
+}`;
                   document.getElementById("swordbattle-io_970x250").style.display = "none";
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -333,7 +338,7 @@ transform: translateX(-50%);
         bottom: 0px;
                 left: 50%;
         transform: translateX(-50%);
-      }`
+      }`;
             this.callback(myName, this.music, this.secret);
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -350,7 +355,7 @@ transform: translateX(-50%);
       bottom: 0px;
               left: 50%;
       transform: translateX(-50%);
-    }`
+    }`;
           this.callback(myName, this.music, this.secret);
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -861,7 +866,7 @@ document.getElementById("shopFrame").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
 
       // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x250'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x250"); });
 // }
       } catch(e) {
 
@@ -872,7 +877,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x2
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "";
       // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
       } catch(e) {
 
