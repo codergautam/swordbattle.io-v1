@@ -679,7 +679,11 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 										} catch(e) {
 											console.log(e);
 										}
+										try {
 										this.flyingSwordsData.delete(sword.id);
+										} catch(e) {
+											console.log(e);
+										}
 									}
 											var ability = false;
 											if(this.myObj && sword.id == this.myObj.id && this.myObj.abilityActive) ability = true;
@@ -695,6 +699,13 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 											this.UICam.ignore(newSword);
 											this.flyingSwordsData.set(sword.id, newSword);
 
+											setTimeout(()=>{
+												try {
+												newSword.destroy();
+												}  catch(e) {
+													console.log(e);
+												}
+											}, 5000);
 											this.tweens.addCounter({
 												from: 0,
 												to: 500,
@@ -717,8 +728,8 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 													if(!this.flyingSwords.get(id)) return;
 													if(!this.flyingSwordsData.get(id)) return;
 
-													var newX = x + (value*25 * Math.cos(angle * Math.PI / 180));
-													var newY = y + (value*25 * Math.sin(angle * Math.PI / 180));
+													var newX = x + (value*18 * Math.cos(angle * Math.PI / 180));
+													var newY = y + (value*18 * Math.sin(angle * Math.PI / 180));
 
 													obj.x = newX;
 													obj.y = newY;
@@ -2288,6 +2299,15 @@ this.lastCountriesClear = Date.now();
 			if(!this.spectating)	this.playerCount.setText("Players: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
+		}
+		if(!this.spectating) {
+			try {
+				document.getElementById("swordbattle-io_970x250").style.display = "none";
+				document.getElementById("swordbattle-io_970x90").style.display = "none";
+			} catch(e) {
+				console.log(e);
+			}
+
 		}
 
 		if(!this.myObj) return;
