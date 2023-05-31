@@ -844,6 +844,8 @@ document.getElementById("shopFrame").style.display = "none";
     var footery = this.canvas.height - (this.footer.height);
     if (this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
+    console.log(this.canvas.height - (this.nameBox.y+this.nameBox.height))
+
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
     if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=200) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible) || (document.getElementById("shopFrame").style.display != "none")){
       // hide ads
