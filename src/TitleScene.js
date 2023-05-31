@@ -34,6 +34,7 @@ class TitleScene extends Phaser.Scene {
           left: 50%;
   transform: translateX(-50%);
 }`;
+this.sceneStart = Date.now();
 
 try {
   document.getElementById("swordbattle.io-970x250").style.display = "none";
@@ -852,6 +853,9 @@ document.getElementById("shopFrame").style.display = "none";
 
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
+
+    if(Date.now() - this.sceneStart > 1000) {
+
     if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=300) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible) || (document.getElementById("shopFrame").style.display != "none")){
       // hide ads
       document.getElementById("swordbattle-io_970x250").style.display = "none";
@@ -886,7 +890,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 
     }
   }
-
+    }
 
 
   }
