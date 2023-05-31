@@ -43,6 +43,14 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+
+			try {
+				document.getElementById("swordbattle-io_970x250").style.display = "none";
+				document.getElementById("swordbattle-io_970x90").style.display = "none";
+			} catch(e) {
+				console.log(e);
+			}
+
 		var map = 15000;
 		this.failedLoads = [];
 		this.countries = {};
