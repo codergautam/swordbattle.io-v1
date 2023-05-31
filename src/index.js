@@ -75,7 +75,6 @@ var lastAd = 0;
   var lastAd = 0;
 } else {
   var lastAd = Number(window.localStorage.getItem("lastAd"));
-    playPreroll = true;
 }
 //alert(lastAd)
 var scale = "scale(1)";
