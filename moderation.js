@@ -1,4 +1,19 @@
 const PlayerList = require("./classes/PlayerList");
+const { timingSafeEqual } = require("crypto");
+const tokenBuf=Buffer.from(process.env.TOKEN);
+const tokenBufLen=Buffer.byteLength(tokenBuf);
+/**
+ * Validate the token that the user provides.
+ * @param {String} uToken
+ * @returns {Boolean} Whether the token was correct (false if incorrect, true otherwise)
+ */
+function validateToken(uToken) {
+    const uTokenBuf=Buffer.from(uToken);
+    const uTokenBufLen=Buffer.byteLength(uToken);
+    // UTF-16 could probably cause issues here, so the buffer lengths are compared. The token length should not be a secret.
+    if(uTokenBufLen!=tokenBufLen) return false;
+    return timingSafeEqual(tokenBuf, uTokenBuf);
+}
 module.exports = {
     bannedIps: [
         "34.133.168.193",
@@ -14,7 +29,7 @@ module.exports = {
       io: undefined,
     start(app, io) {
       app.get("/announcement/:token", (req, res) => {
-        if (process.env.TOKEN == req.params.token && typeof req.query.message == "string") {
+        if (validateToken(req.params.token) && typeof req.query.message == "string") {
           io.sockets.send("announcement", req.query.message);
           res.send("Announcement sent to all players");
         } else {
@@ -22,7 +37,7 @@ module.exports = {
         }
       });
       app.get("/announcement1/:token", async (req, res) => {
-        if (process.env.TOKEN == req.params.token && typeof req.query.message == "string" && typeof req.query.id == "string") {
+        if (validateToken(req.params.token) && typeof req.query.message == "string" && typeof req.query.id == "string") {
           var all = await io.fetchSockets();
           var socket = all.find(s => s.id == req.query.id);
           if (socket) {
@@ -37,7 +52,7 @@ module.exports = {
       });
 
         app.get("/ipcheck/:token", (req, res) => {
-            if (process.env.TOKEN == req.params.token) {
+            if (validateToken(req.params.token)) {
               var txt = "";
               if (Object.values(PlayerList.players).length < 1) return res.send("len 0");
               Object.values(PlayerList.players).forEach((player) => {
@@ -51,8 +66,7 @@ module.exports = {
           });
           
           app.get("/ipban/:token", (req, res) => {
-            var token = req.params.token == process.env.TOKEN;
-            if (token) {
+            if (validateToken(req.params.token)) {
                   var socket = module.exports.io.sockets.sockets.get(req.query.id);
               module.exports.bannedIps.push(socket.ip);
                 socket.disconnect();
@@ -63,12 +77,11 @@ module.exports = {
           });
           
           app.get("/ipunban/:token", (req, res) => {
-            var token = req.params.token == process.env.TOKEN;
             if(typeof req.query.ip !== "string"){
                 res.send("estúpido");
                 return;
             }
-            if (token) {
+            if (validateToken(req.params.token)) {
                 var ip = req.query.ip.replace(/%20/g, " ");
 
               if (module.exports.bannedIps.includes(ip))
