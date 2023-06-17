@@ -5,7 +5,7 @@ const {sql} = require("../database");
 function getRandomInt(min, max) {
   return min + Math.floor(Math.random() * (max - min + 1));
 }
-var map = 15000;
+var map = 300000;
 const evolutions = require("./evolutions");
 
 class Player {
@@ -242,7 +242,7 @@ var move = true;
   collectCoins(coins, io, levels) {
 
 
-           var touching = coins.filter((coin) => coin.touchingPlayer(this));
+           var touching = coins.filter((coin) => coin.touchingPlayer(this) && (!this.verified || coin.owner != this.name));
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
@@ -471,7 +471,7 @@ DO UPDATE SET
           new Coin({
             x: clamp(x, -(map/2), map/2),
             y: clamp(y, -(map/2), map/2),
-          },value)
+          },value, enemy.verified ? enemy.name : "")
         );
         dropped += value;
         drop.push(coins[coins.length - 1]);

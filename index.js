@@ -1215,7 +1215,7 @@ console.log(thePlayer.name + " - " + socket.id + " disconnected");
                   new Coin({
                     x: clamp(x, -(map/2), map/2),
                     y: clamp(y, -(map/2), map/2),
-                  },value)
+                  },value, thePlayer.verified ? thePlayer.name : "")
                 );
                 dropped += value;
                 drop.push(coins[coins.length - 1]);
