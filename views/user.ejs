@@ -1,26 +1,26 @@
 <%
 function msToTime(duration) {
     const portions = [];
-  
+
     const msInHour = 1000 * 60 * 60;
     const hours = Math.trunc(duration / msInHour);
     if (hours > 0) {
       portions.push(hours + 'h');
       duration = duration - (hours * msInHour);
     }
-  
+
     const msInMinute = 1000 * 60;
     const minutes = Math.trunc(duration / msInMinute);
     if (minutes > 0) {
       portions.push(minutes + 'm');
       duration = duration - (minutes * msInMinute);
     }
-  
+
     const seconds = Math.trunc(duration / 1000);
     if (seconds > 0) {
       portions.push(seconds + 's');
     }
-  
+
     return portions.join(' ');
   }
 
@@ -97,18 +97,20 @@ function go() {
 }
 function br() {
   var recent = games.sort(function(a, b) {
-    return new Date(b.created_at) - new Date(a.created_at);
+    return new Date(b.game_date) - new Date(a.game_date);
   })[0];
 if(recent) {
-  var date = new Date(recent.created_at);
- // date = new Date(date.valueOf() + recent.time);
-
-  //time since Date
-  var timeSince =(new Date(new Date().toUTCString().slice(0, -3)))- date;
-  //time since in seconds
-  timeSince = timeSince / 1000;
-  //convert to readable format
-  return forHumans(timeSince);
+  var date = new Date(recent.game_date);
+ var today = new Date();
+  var diff = today - date;
+  var days = Math.floor(diff / 86400000);
+  if(days == 0) {
+    return "today";
+  } else if( days-1 == 0) {
+    return "yesterday";
+  } else {
+    return days + " days ago";
+  }
 } else return false
 }
   %>
@@ -261,21 +263,27 @@ if(recent) {
       <div class="container">
         <h1><%= user.username %></h1>
         <br />
-        <h3>Joined <%=go()%> ago<% if(br()) { %> <br> Last seen <%=br()%> ago <% } %>
+        <h3>Joined <%=go()%> ago<% if(br()) { %> <br> Last seen <%=br()%> <% } %>
         <br />      <br>
-        <% var arank =(lb.findIndex((l)=>l.name==user.username)+1); %>
+        <% var arank =(lb.findIndex((l)=>l.username==user.username)+1); %>
 
-      <%= (arank==0?"":`#${arank} all time`) %> 
+      <%= (arank==0?"":`#${arank} all time`) %>
       <br>
-        <% var brank =(lb2.findIndex((l)=>l.name==user.username)+1); %>
-        <%= (brank==0?"":`#${brank} today`) %> 
+        <% var brank =(lb2.findIndex((l)=>l.username==user.username)+1); %>
+        <%= (brank==0?"":`#${brank} today`) %>
+        <br/>
+        <br/>
+        <%         function conv(num) {
+          return num>999?parseFloat((num/1000).toFixed(num<10000?2:1))+"k":num;
+        } %>
+        <%= conv(user.views) %> profile views
         </h3>
         <br />
         <div class="row">
           <div class="col-sm-4">
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
-                <h3 class="text-center"><%= numberWithCommas(games.length) %></h3>
+                <h3 class="text-center"><%= numberWithCommas(games.reduce((a,b)=>a+b.game_count,0)) %></h3>
               </div>
               <div class="leaderboard-card__body">
                 <div class="text-center">
@@ -290,7 +298,7 @@ if(recent) {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                  <% var e = 0; games.forEach((x)=>e+=(x.kills*300)+x.coins ) %>
+                  <% var e = 0; games.forEach((x)=>e+=(x.stabs*300)+x.coins ) %>
                     <%= numberWithCommas(e) %>
                 </h3>
               </div>
@@ -313,7 +321,7 @@ if(recent) {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                    <% var e = 0; games.forEach((x)=>e+=x.time ) %>
+                    <% var e = 0; games.forEach((x)=>e+=x.game_time ) %>
                     <%= msToTime(e)==""?"0s":msToTime(e) %>
                 </h3>
               </div>
@@ -331,7 +339,7 @@ if(recent) {
             <div class="leaderboard-card">
               <div class="leaderboard-card__top">
                 <h3 class="text-center">
-                    <% var e = 0; games.forEach((x)=>e+=x.kills ) %>
+                    <% var e = 0; games.forEach((x)=>e+=x.stabs ) %>
                     <%= numberWithCommas(e) %>
                 </h3>
               </div>
@@ -415,9 +423,9 @@ display:inline-block;
                               id="op3"
                 >Time</button
               >
-                
+
             </div>
-            
+
           </div>
           <canvas id="myChart"></canvas>
         </div>
@@ -425,28 +433,28 @@ display:inline-block;
 
        function msToTime(duration) {
     const portions = [];
-  
+
     const msInHour = 1000 * 60 * 60;
     const hours = Math.trunc(duration / msInHour);
     if (hours > 0) {
       portions.push(hours + 'h');
       duration = duration - (hours * msInHour);
     }
-  
+
     const msInMinute = 1000 * 60;
     const minutes = Math.trunc(duration / msInMinute);
     if (minutes > 0) {
       portions.push(minutes + 'm');
       duration = duration - (minutes * msInMinute);
     }
-  
+
     const seconds = Math.trunc(duration / 1000);
     if (seconds > 0) {
       portions.push(seconds + 's');
     }
 
-         
-  
+
+
     return portions.join(' ') ? portions.join(' ') : "0s";
   }
 
@@ -456,10 +464,10 @@ display:inline-block;
             let psum = 0;
             return nums.map(x => psum += x);
           };
-          var xpData =  <%- "["+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
-          var coinsData =  <%- "["+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
-          var killsData =  <%- "["+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
-            var timeData =  <%- "["+stats.map((e) => `"${e.time?e.time:0}"`).join(",")+"]" %>
+          var xpData =  <%- "[0,"+stats.map((e) => `"${e.xp?e.xp:0}"`).join(",")+"]" %>
+          var coinsData =  <%- "[0,"+stats.map((e) => `"${e.coins?e.coins:0}"`).join(",")+"]" %>
+          var killsData =  <%- "[0,"+stats.map((e) => `"${e.kills?e.kills:0}"`).join(",")+"]" %>
+            var timeData =  <%- "[0,"+stats.map((e) => `"${e.time?e.time:0}"`).join(",")+"]" %>
 function numberWithCommas(x) {
     return x.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
 }
@@ -473,7 +481,7 @@ function numberWithCommas(x) {
     document.getElementById("op2").innerHTML = list[1];
     document.getElementById("op3").innerHTML = list[2];
     changeTotal(true);
-    
+
          }
 
 
@@ -486,8 +494,8 @@ function numberWithCommas(x) {
           document.getElementById("op3").addEventListener("click", () => {
             changeSelector(document.getElementById("op3"))
           })
-          
-          
+
+
           function getSelector() {
             if (selected == "xp") {
                 return xpData
@@ -520,13 +528,13 @@ function numberWithCommas(x) {
             tooltip: {
                 callbacks: {
                     label: function(context) {
-                        
+
                         return context.dataset.label+": "+(selected=="time"?msToTime(context.parsed.y):numberWithCommas(context.parsed.y));
                     }
                 }
             }
         },
-                              
+
         scales: {
             y: {
                 ticks: {
@@ -537,17 +545,17 @@ function numberWithCommas(x) {
                 }
             }
         }
-       
+
     }
     }
-                          
+
                           var myChart = new Chart(
               document.getElementById('myChart'),
               config
             );
             document.getElementById("total").innerHTML = "Total"
             function changeTotal(e=false) {
-                
+
                     if(e) {
                      if(document.getElementById("total").innerHTML == "Total") {
                          data.datasets[0].data = runningTotal(getSelector(selected).map(Number))
@@ -556,8 +564,8 @@ function numberWithCommas(x) {
                                                    data.datasets[0].label = selected+" Gained"
                                   data.datasets[0].data = (getSelector().map(Number))
                      }
-                      uh();           
-                              return false; 
+                      uh();
+                              return false;
                     }  else {         if(document.getElementById("total").innerHTML == "Total") {
                                   document.getElementById("total").innerHTML = "Gained"
                                   document.getElementById("totalClick").innerHTML = "Total"
@@ -570,7 +578,7 @@ function numberWithCommas(x) {
                                   data.datasets[0].label = "Total "+selected
                               }
                               uh()
-                              return false; 
+                              return false;
                             }
               }
 

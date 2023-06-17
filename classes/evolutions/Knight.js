@@ -1,11 +1,14 @@
+const Archer = require("./Archer");
 const Evolution = require("./Evolution");
+const Fisherman = require("./Fisherman");
+const Samurai = require("./Samurai");
 class Knight extends Evolution {
     constructor() {
         super();
         this.name = "knight";
         this.abilityDuration = 10000;
-        this.abilityCooldown = 60000;
-        this.subEvolutions = [];
+        this.abilityCooldown = 50000;
+        this.subEvolutions = [30000, new Archer(), new Samurai()];
     }
     default() {
         return {
@@ -22,7 +25,7 @@ class Knight extends Evolution {
             power: 0.7,
             resistance: 0.2,
             damage: 1.5,
-            damageCooldown: 0.3,
+            damageCooldown: 0.4,
         };
     }
 }

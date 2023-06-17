@@ -8,12 +8,12 @@ if ("serviceWorker" in navigator) {
     navigator.serviceWorker.register("sw.js");
   }
 
-  
+
  window.addEventListener("online", handleConnection);
 window.addEventListener("offline", handleConnection);
 
 function handleConnection() {
-  
+
   if (!navigator.onLine) {
 
     		document.write("<h1>You got disconnected</h1><br><button onclick=\"location.reload()\"><h1>Refresh</h1></button>");
@@ -45,7 +45,7 @@ var config = {
     scale: {
         mode:Phaser.Scale.RESIZE,
     }
-    
+
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
@@ -75,7 +75,6 @@ var lastAd = 0;
   var lastAd = 0;
 } else {
   var lastAd = Number(window.localStorage.getItem("lastAd"));
-    playPreroll = true;
 }
 //alert(lastAd)
 var scale = "scale(1)";
@@ -83,12 +82,13 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 120000;
+var adDelay = 600000;
 var gameScene = new GameScene((data) => {
-    titleScene.playPreroll = (Date.now() - lastAd > adDelay);
+    titleScene.playPreroll = Date.now() - lastAd > adDelay;
+    playPreroll = true;
 });
 
-var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), (name, music, secret) => {
+var titleScene = new TitleScene(((lastAd != 0) && Date.now() - lastAd > adDelay), (name, music, secret) => {
     gameScene.name = name;
     gameScene.options = titleScene.options;
     if(gameScene.options.server == "auto") gameScene.options.server = titleScene.optimalServer;
@@ -97,12 +97,17 @@ var titleScene = new TitleScene((playPreroll && Date.now() - lastAd > adDelay), 
 
     titleScene.scene.start("game");
     titleScene.showPromo = false;
-    if((playPreroll && Date.now() - lastAd > adDelay)) if(sva){
+    console.log(Date.now()-lastAd, playPreroll)
+
+    if(playPreroll && ( Date.now() - lastAd > adDelay)) {
+        console.log(Date.now()-lastAd)
+        if(sva){
       window.localStorage.setItem("lastAd", Date.now());
        lastAd = Date.now();
     } else {
       lastAd = Date.now();
     }
+}
 });
 
 titleScene.mobile = mobile;

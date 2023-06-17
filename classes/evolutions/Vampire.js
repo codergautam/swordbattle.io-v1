@@ -1,12 +1,16 @@
 
+const Archer = require("./Archer");
 const Evolution = require("./Evolution");
+const Fisherman = require("./Fisherman");
+const Lumberjack = require("./Lumberjack");
+
 class Warrior extends Evolution {
     constructor() {
         super();
         this.name = "vampire";
         this.abilityDuration = 7000;
-        this.abilityCooldown = 40000;
-        this.subEvolutions = [];
+        this.abilityCooldown = 35000;
+        this.subEvolutions = [30000, new Archer(), new Lumberjack()];
     }
     default() {
         return {
@@ -19,14 +23,14 @@ class Warrior extends Evolution {
             damage: 1.1,
             damageCooldown: 0.85,
             healAmount: 0.8,
-            leech: 1.1,
+            leech: 1.3,
         };
     }
     ability() {
         return {
-            leech: 1.2,
-            speed: 1.7,
-            resistance: 1,
+            leech: 2,
+            speed: 1.8,
+            resistance: 1.5,
         };
     }
 }

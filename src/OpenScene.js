@@ -4,8 +4,8 @@ function msToTime(duration) {
       seconds = Math.floor((duration / 1000) % 60),
       minutes = Math.floor((duration / (1000 * 60)) % 60),
       hours = Math.floor((duration / (1000 * 60 * 60)) % 24);
-  
-  
+
+
     return (hours == "00"?"": hours+"h ") + (minutes == "00"?"": minutes+"m ") + seconds+"s";
   }
 
@@ -29,30 +29,61 @@ class OpenScene extends Phaser.Scene {
       }
       console.time("load");
         this.e = true;
-        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0xFC46AA).setOrigin(0).setScrollFactor(0, 0).setScale(2);
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
    this.progressText = this.add.text(0,0,"please wait.").setOrigin(0.5,0.5);
-      
+
       this.loadText.setFontSize(this.canvas.width/20);
       this.progressText.setFontSize(this.canvas.width/40);
       this.loadText.x = this.canvas.width/2;
       this.loadText.y = this.canvas.height/2;
       this.progressText.x = this.canvas.width/2;
       this.progressText.y = this.canvas.height/2 + this.canvas.height/10;
+let loaded = [];
+ this.lastProgress = Date.now();
+
       this.load.on("fileprogress", function(file, progress){
+        this.lastProgress = Date.now();
         // var key = file.key;
         var loader = this.load;
 var total = loader.totalToLoad;
 var remainder = loader.list.size + loader.inflight.size;
 var progress = 1 - (remainder / total);
         this.progressText.setText((progress*100).toFixed(1)+"%");
+        // log remaining file keys
+
     }, this);
+    this.load.on("filecomplete",  (file) => {
+    loaded.push(file);
+
+      let remaining = this.load.list.entries.map(function (item) {
+        return item.key;
+    }).filter(function (key) {
+        return !loaded.includes(key);
+    });
+
+    // if(remaining.length == 0 && !this.readytogo) {
+    //   this.readytogo = setTimeout(() => {
+    //   if(this.checkInt) {
+    //     clearInterval(this.checkInt);
+    //   }
+    //   this.scene.stop();
+    //   this.scene.start("title");
+    //   }, 1000);
+    // }
+
+
+    console.log("remaining", remaining);
+    console.log("loaded", loaded);
+  });
         this.load.plugin("rexvirtualjoystickplugin",    "/joystick.js", true);
         this.load.plugin("rexbbcodetextplugin", "/textplus.js", true);
 
         this.load.image("playerPlayer", "/assets/images/player.png");
         this.load.image("playerSword", "/assets/images/sword.png");
-  
+
+        this.load.image("crown", "/assets/images/crown.png");
+
         // samurai evolution
         this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
         // warrior evolution
@@ -77,9 +108,26 @@ var progress = 1 - (remainder / total);
         // rook evolution
         this.load.image("rookPlayer", "/assets/images/rookSkin.png");
 
+        // archer evolution
+        this.load.image("archerPlayer", "/assets/images/archerSkin.png");
+
+        // Juggernaut evolution
+        this.load.image("juggernautPlayer", "/assets/images/juggernautPlayer.png");
+
+        // archergod evolution
+        this.load.image("archergodPlayer", "/assets/images/archergodSkin.png");
+
+        // fisherman evolution
+        this.load.image("fishermanPlayer", "/assets/images/fishermanSkin.png");
+
+        // lumberjack evolution
+        this.load.image("lumberjackPlayer", "/assets/images/lumberjackSkin.png");
+
+        // samurai evolution
+        this.load.image("samuraiPlayer", "/assets/images/samuraiSkin.png");
 
 
-        this.load.image("background", "/assets/images/background.jpeg");
+        this.load.image("background", "/assets/images/background.png");
         this.load.image("coin", "/assets/images/coin.png");
 
         this.load.image("chest", "/assets/images/chests/chest.png");
@@ -93,7 +141,7 @@ var progress = 1 - (remainder / total);
         this.load.image("hitParticle", "/assets/images/hitparticle.png");
         this.load.image("starParticle", "/assets/images/star.png");
         this.load.image("bush", "/assets/images/bush.png");
-        
+
         this.load.image("chatbtn", "/assets/images/chat.png");
         this.load.image("throwbtn", "/assets/images/throw.png");
         this.load.image("loginbtn", "/assets/images/login.png");
@@ -127,16 +175,27 @@ var progress = 1 - (remainder / total);
 
         this.scale.fullscreenTarget = document.getElementById("game");
         console.timeEnd("load");
-  
+
+        this.checkInt = setInterval(() => {
+          console.log(Date.now()- this.lastProgress);
+
+      if((Date.now()- this.lastProgress) > 10000) {
+        // reload
+        window.location.reload();
+      }
+
+    }, 100);
+
     }
 
     create() {
-    
+      console.log("create");
+      clearInterval(this.checkInt);
              this.scene.stop();
              this.scene.start("title");
     }
     update() {
-    
+
     }
 }
 

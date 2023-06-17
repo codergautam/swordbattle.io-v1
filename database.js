@@ -1,7 +1,7 @@
 const postgres = require("postgres");
 require("dotenv").config();
 if(process.env.DATABASE_URL) {
-const sql = postgres(process.env.DATABASE_URL, {max: 5, idle_timeout:30, ssl: {rejectUnauthorized:false}});
+const sql = postgres(process.env.DATABASE_URL, {max: 3, idle_timeout:30, ssl: {rejectUnauthorized:false}});
 console.log("Connected to database");
 module.exports = {sql: sql};
 } else {

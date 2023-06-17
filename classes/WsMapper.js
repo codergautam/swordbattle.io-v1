@@ -25,8 +25,8 @@ class Socket extends EventEmitter {
       }
 
       this.emit(message.t, message.d);
-      
-    }); 
+
+    });
     this.ws.on("close", () => {
       this.emit("disconnect");
 
@@ -68,7 +68,7 @@ module.exports = class WsMapper extends EventEmitter {
       const socket = new Socket(ws, req, this);
       this.clients.set(socket.id, socket);
       this.emit("connection", socket);
-    }); 
+    });
   }
   async fetchSockets() {
     return this.getSocketsSync();

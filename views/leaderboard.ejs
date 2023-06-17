@@ -35,7 +35,7 @@ function niceifyType(d) {
 		'time': 'Survived',
 		'xp': 'XP',
 		'totalcoins': 'Total Coins',
-		'totalkills': 'Total Kills',
+		'totalstabs': 'Total Stabs',
 		'totaltime': 'Total Playtime',
 	}
 	var arr = [table[d]]
@@ -64,7 +64,7 @@ function tableDur(d) {
 	return table;
 }
 function tableType(d) {
-	var table = ["coins", "kills", "time", "xp", "totalcoins", "totalkills", "totaltime"];
+	var table = ["coins", "kills", "time", "xp", "totalcoins", "totalstabs", "totaltime"];
 	//remove d from table
 	table.splice(table.indexOf(d), 1);
 
@@ -189,7 +189,7 @@ img.circle-img.circle-img--small {
 	<section class="main-content">
 
 		<div class="container">
-			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : type=="xp"?"XP":type=="totaltime"?"Total Playtime":type=="totalkills"?"Total Kills":"Total Coins") %> Leaderboard%></h1>
+			<h1><%= (type == "coins" ? "Coins" : type=="kills" ? "Kills" : type=="xp"?"XP":type=="totaltime"?"Total Playtime":type=="totalstabs"?"Total Stabs":"Total Coins") %> Leaderboard%></h1>
             <br>
             <h3><%=(duration == "all" ? "All-Time" : duration == "day" ? "Past Day" : "Past Week")%></h3>
 			<br>
@@ -228,9 +228,9 @@ img.circle-img.circle-img--small {
 					<div class="leaderboard-card leaderboard-card--first">
 						<div class="leaderboard-card__top">
 							<% if (lb[0].verified) { %>
-								<h3 class="text-center">#1 - <a style="color:white;" href="/<%= lb[0].name %>"><%= lb[0].name %></a> </h3>
+								<h3 class="text-center">#1 - <a style="color:white;" href="/<%= lb[0].username %>"><%= lb[0].username %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center">#1 - <%= lb[0].name %> </h3>
+							<h3 class="text-center">#1 - <%= lb[0].username %> </h3>
 							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
@@ -242,7 +242,7 @@ img.circle-img.circle-img--small {
 								<h5 class="mb-0"><%= numberWithCommas(lb[0].coins) %> coins</h5>
 								<p class="text-muted mb-0">Kills: <%= lb[0].kills %>, Survived: <%= msToTime(lb[0].time) %>  </p>
 								<% } else { %>
-									<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[0].time):numberWithCommas(lb[0][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+									<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[0].game_time):numberWithCommas(lb[0][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
 								<% } %>
 
 							</div>
@@ -253,9 +253,9 @@ img.circle-img.circle-img--small {
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
 							<% if (lb[1].verified) { %>
-								<h3 class="text-center">#2 - <a style="color:black;" href="/<%= lb[1].name %>"><%= lb[1].name %></a> </h3>
+								<h3 class="text-center">#2 - <a style="color:black;" href="/<%= lb[1].username %>"><%= lb[1].username %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center">#2 - <%= lb[1].name %> </h3>
+							<h3 class="text-center">#2 - <%= lb[1].username %> </h3>
 							<% } %>
 						</div>
 						<div class="leaderboard-card__body">
@@ -266,7 +266,7 @@ img.circle-img.circle-img--small {
 																	<h5 class="mb-0"><%= numberWithCommas(lb[1].coins) %> coins</h5>
 																	<p class="text-muted mb-0">Kills: <%= lb[1].kills %>, Survived: <%= msToTime(lb[1].time) %>  </p>
 																	<% } else { %>
-																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[1].time):numberWithCommas(lb[1][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[1].game_time):numberWithCommas(lb[1][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
 																	<% } %>
 
 							</div>
@@ -277,9 +277,9 @@ img.circle-img.circle-img--small {
 					<div class="leaderboard-card">
 						<div class="leaderboard-card__top">
 							<% if (lb[2].verified) { %>
-								<h3 class="text-center">#3 - <a style="color:black;" href="/<%= lb[2].name %>"><%= lb[2].name %></a> </h3>
+								<h3 class="text-center">#3 - <a style="color:black;" href="/<%= lb[2].username %>"><%= lb[2].username %></a> </h3>
 								<% } else { %>
-							<h3 class="text-center">#3 - <%= lb[2].name %> </h3>
+							<h3 class="text-center">#3 - <%= lb[2].username %> </h3>
 							<% } %>
 						</div>
 
@@ -292,7 +292,7 @@ img.circle-img.circle-img--small {
 																	<h5 class="mb-0"><%= numberWithCommas(lb[2].coins) %> coins</h5>
 																	<p class="text-muted mb-0">Kills: <%= lb[2].kills %>, Survived: <%= msToTime(lb[2].time) %>  </p>
 																	<% } else { %>
-																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[2].time):numberWithCommas(lb[2][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
+																		<h5 class="mb-0"><%= type=="totaltime"?msToTime(lb[2].game_time):numberWithCommas(lb[2][type == "xp"?"xp":type.slice(5)]) %> <%= type == "xp"?"XP":type.slice(5)=="time"?"played":type.slice(5) %></h5>
 																	<% } %>
 
 							</div>
@@ -325,15 +325,15 @@ img.circle-img.circle-img--small {
 				<tbody>
                     <% for (var i = 3; i < lb.length; i++) { %>
 					<tr>
-						<a href="/<%= lb[i].name %>">
+						<a href="/<%= lb[i].username %>">
 							<td><b>#<%= i+1 %></b></td>
 						<td>
 							<div class="d-flex align-items-center">
 								<div class="user-info__basic">
 									<% if (lb[i].verified) { %>
-										<h5 class="mb-0"><a style="color:black;" href="/<%= lb[i].name %>"><%= lb[i].name %></a> </h3>
+										<h5 class="mb-0"><a style="color:black;" href="/<%= lb[i].username %>"><%= lb[i].username %></a> </h3>
 										<% } else { %>
-									<h5 class="mb-0"><%= lb[i].name %> </h3>
+									<h5 class="mb-0"><%= lb[i].username %> </h3>
 									<% } %>
 									<p class="text-muted mb-0"></p>
 								</div>
@@ -350,7 +350,7 @@ img.circle-img.circle-img--small {
 						<% } else { %>
 							<td>
 
-									<h4 class="mr-1"><%=type=="totaltime"?msToTime(lb[i][type == "xp"?"xp":type.slice(5)]):numberWithCommas(lb[i][type == "xp"?"xp":type.slice(5)])%></h4>
+									<h4 class="mr-1"><%=type=="totaltime"?msToTime(lb[i][type == "xp"?"xp":type=="totaltime"?"game_time":type.slice(5)]):numberWithCommas(lb[i][type == "xp"?"xp":type.slice(5)])%></h4>
 
 							</td>
 							<% } %>

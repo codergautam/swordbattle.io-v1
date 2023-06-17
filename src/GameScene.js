@@ -5,6 +5,7 @@ import ClassPicker from "./components/ClassPicker.js";
 import {locations} from "./bushes.json";
 import Phaser from "phaser";
 import {CAPTCHASITE,localServer} from "./../config.json";
+import { countryCodeEmoji } from "country-code-emoji";
 
 import io from "./Io.js";
 
@@ -42,8 +43,17 @@ class GameScene extends Phaser.Scene {
 	}
 
 	create() {
+
+			try {
+				document.getElementById("swordbattle-io_970x250").style.display = "none";
+				document.getElementById("swordbattle-io_970x90").style.display = "none";
+			} catch(e) {
+				console.log(e);
+			}
+
 		var map = 15000;
 		this.failedLoads = [];
+		this.countries = {};
 
         this.levels = [];
 
@@ -56,9 +66,10 @@ class GameScene extends Phaser.Scene {
 				}
 
 		//recaptcha
-		grecaptcha.ready(() =>{
-			grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
+		// grecaptcha.ready(() =>{
+		// 	grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
 
+		let thetoken = "subtocodergautam";
 				this.readyt = true;
 				this.openingBgm.stop();
 				var config =  {
@@ -98,14 +109,15 @@ class GameScene extends Phaser.Scene {
 
 				//player
 
-				this.meSword = this.add.image(400, 100, "sword").setScale(0.25).setDepth(50).setAlpha(0.5);
-				this.mePlayer = this.add.image(400, 100, "player").setScale(0.25).setDepth(51).setAlpha(0.5);
+				this.meSword = this.add.image(400, 100, "sword").setScale(0.85).setDepth(50).setAlpha(0.5);
+				this.mePlayer = this.add.image(400, 100, "player").setScale(0.85).setDepth(51).setAlpha(0.5);
 				this.meChat = this.add.text(0,0,"", {
 					fontFamily: "Georgia",
 				}).setOrigin(0.5).setDepth(71);
 				this.meChatTween = undefined;
 				this.swordAnim = {go: false, added: 0};
 				this.myObj = undefined;
+
 
 
 
@@ -315,6 +327,9 @@ class GameScene extends Phaser.Scene {
 				this.cursors.enter.on("down", () => {
 
 					if(this.loadtext.visible) return;
+					if(this.refreshInt) {
+						clearInterval(this.refreshInt);
+					}
 					this.chat.toggled = !this.chat.toggled;
           if(this.spectating) {
 			  if(this.deadText.visible) {
@@ -322,6 +337,14 @@ class GameScene extends Phaser.Scene {
                     this.socket.disconnect();
           this.scene.start("title");
 			  }
+
+            try {
+
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
+
+                    } catch(e) {
+
+                    }
 
           }
 		  if(this.spectating) return;
@@ -362,6 +385,11 @@ class GameScene extends Phaser.Scene {
 			// this.cameras.main.ignore([ this.killCount, this.playerCount, this.leaderboard,this.lvlBar.bar, this.lvlText, this.lvlState ]);
 			this.UICam.ignore([this.mePlayer, this.meBar.bar, this.meSword, this.background, this.meChat]);
 				this.cameras.main.startFollow(this.mePlayer,true);
+
+
+				this.crown = this.add.image(0, 0, "crown").setDepth(110).setScale(0.02).setAlpha(1);
+				this.cameras.main.ignore(this.crown);
+
 
 				//bushes
 				this.bushes = [];
@@ -443,6 +471,25 @@ class GameScene extends Phaser.Scene {
               this.dataText.destroy();
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+
+                try {
+
+                  // if(!location.hostname.includes("swordbattle.io")){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+// }
+
+                document.getElementById("swordbattle-io_970x90").style.display = "";
+                 this.refreshInt = setInterval(() => {
+
+                  // if(!location.hostname.includes("swordbattle.io")){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+// }
+
+                }, 4000);
+                } catch(e) {
+                  console.log(e);
+                }
+
 							this.dataText.y += this.dataText.height*1.5;
 
               this.statsText.destroy();
@@ -451,6 +498,16 @@ class GameScene extends Phaser.Scene {
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+                    if(this.refreshInt) {
+        clearInterval(this.refreshInt);
+        }
+                    try {
+
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
+                    } catch(e) {
+
+                    }
+
                     this.callback();
                     this.socket.disconnect();
           this.scene.start("title");
@@ -607,10 +664,27 @@ class GameScene extends Phaser.Scene {
 				//server -> client
 
                 this.socket.on("levels", (l)=>this.levels=l);
-								this.socket.on("flyingSwords", (swords) => {
+								this.socket.on("newFlyingSword", (sword) => {
+									// destroy old sword if	 it exists
+									if(this.flyingSwordsData.has(sword.id)) {
 
-									swords.forEach((sword) => {
-										if(!this.flyingSwords.has(sword.id)) {
+										// delete old tweens
+										try {
+										this.flyingSwords.get(sword.id).destroy();
+										} catch(e) {
+											console.log(e);
+										}
+										try {
+										this.flyingSwords.delete(sword.id);
+										} catch(e) {
+											console.log(e);
+										}
+										try {
+										this.flyingSwordsData.delete(sword.id);
+										} catch(e) {
+											console.log(e);
+										}
+									}
 											var ability = false;
 											if(this.myObj && sword.id == this.myObj.id && this.myObj.abilityActive) ability = true;
 											else {
@@ -624,25 +698,48 @@ class GameScene extends Phaser.Scene {
 
 											this.UICam.ignore(newSword);
 											this.flyingSwordsData.set(sword.id, newSword);
-										} else {
 
-											var oldSword = this.flyingSwordsData.get(sword.id);
-											var obj = this.flyingSwords.get(sword.id);
-
-											this.tweens.add({
-												targets: oldSword,
-												x: sword.x,
-												y: sword.y,
-												duration: 1000/30,
+											setTimeout(()=>{
+												try {
+												newSword.destroy();
+												}  catch(e) {
+													console.log(e);
+												}
+											}, 5000);
+											this.tweens.addCounter({
+												from: 0,
+												to: 500,
+												duration: 4000,
 												ease: "Linear",
-											});
+												onUpdate:  (tween)=>{
+													var value = tween.getValue();
+													var obj = this.flyingSwordsData.get(sword.id);
+													var angle = sword.angle-45;
+													var x = sword.x;
+													var y = sword.y;
+													var scale = sword.scale;
+													var ability = sword.ability;
+													var skin = sword.skin;
+													var id = sword.id;
+													var owner = sword.owner;
 
-											if(obj.ability) {
-												var particles = this.add.particles("starParticle");
+													if(!this.flyingSwords.has(id)) return;
+													if(!this.flyingSwordsData.has(id)) return;
+													if(!this.flyingSwords.get(id)) return;
+													if(!this.flyingSwordsData.get(id)) return;
+
+													var newX = x + (value*18 * Math.cos(angle * Math.PI / 180));
+													var newY = y + (value*18 * Math.sin(angle * Math.PI / 180));
+
+													obj.x = newX;
+													obj.y = newY;
+
+													if(ability) {
+			var particles = this.add.particles("starParticle");
 
 												var emitter = particles.createEmitter({
 
-													maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+													maxParticles: this.sys.game.loop.actualFps >= 50 ? 2 : 1,
 													scale: 0.05
 												});
 												function getRandomInt(min, max) {
@@ -650,25 +747,58 @@ class GameScene extends Phaser.Scene {
 													max = Math.floor(max);
 													return Math.floor(Math.random() * (max - min + 1)) + min;
 												}
-												emitter.setPosition(oldSword.x + getRandomInt(-10, 10), oldSword.y + getRandomInt(-10, 10));
+												emitter.setPosition(obj.x + getRandomInt(-10, 10), obj.y + getRandomInt(-10, 10));
 
 												this.UICam.ignore(particles);
 												emitter.setSpeed(200);
 												particles.setDepth(105);
+													}
+												},
+												onComplete: ()=>{
+													var obj = this.flyingSwordsData.get(sword.id);
+													if(obj) obj.destroy();
+													this.flyingSwords.delete(sword.id);
+													this.flyingSwordsData.delete(sword.id);
+												}
+													});
 
-										}
-									}
+										// } else {
+
+										// 	var oldSword = this.flyingSwordsData.get(sword.id);
+										// 	var obj = this.flyingSwords.get(sword.id);
+
+										// 	this.tweens.add({
+										// 		targets: oldSword,
+										// 		x: sword.x,
+										// 		y: sword.y,
+										// 		duration: 1000/30,
+										// 		ease: "Linear",
+										// 	});
+
+										// 	if(obj.ability) {
+										// 		var particles = this.add.particles("starParticle");
+
+										// 		var emitter = particles.createEmitter({
+
+										// 			maxParticles: this.sys.game.loop.actualFps >= 60 ? 3 : this.sys.game.loop.actualFps >= 30 ? 2 : 1,
+										// 			scale: 0.05
+										// 		});
+										// 		function getRandomInt(min, max) {
+										// 			min = Math.ceil(min);
+										// 			max = Math.floor(max);
+										// 			return Math.floor(Math.random() * (max - min + 1)) + min;
+										// 		}
+										// 		emitter.setPosition(oldSword.x + getRandomInt(-10, 10), oldSword.y + getRandomInt(-10, 10));
+
+										// 		this.UICam.ignore(particles);
+										// 		emitter.setSpeed(200);
+										// 		particles.setDepth(105);
+
+										// }
+									// }
 									});
-									this.flyingSwordsData.forEach((sword, id) => {
-										if(!swords.find((s) => s.id == id)) {
-											this.flyingSwordsData.delete(id);
-											this.flyingSwords.delete(id);
-											sword.destroy();
-										}
-									});
 
 
-								});
 								this.socket.on("ability", (e) => {
 								//	console.log(e);
 									var [cooldown, duration, now] = e;
@@ -699,9 +829,9 @@ class GameScene extends Phaser.Scene {
 										onComplete: () => {
 											this.ability.setText("");
 										}
-									});
 								});
 
+							});
 				const addPlayer = (player) => {
 					if (this.enemies.filter(e => e.id === player.id).length > 0) return;
 					/* vendors contains the element we're looking for */
@@ -711,12 +841,12 @@ class GameScene extends Phaser.Scene {
 						down: false,
 						playerObj: undefined,
 						lastTick: Date.now(),
-						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.25).setDepth(49),
-						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.25).setDepth(49),
+						sword: this.add.image(player.pos.x, player.pos.y, "playerSword").setScale(0.85).setDepth(49),
+						player: this.add.image(player.pos.x, player.pos.y, "playerPlayer").setScale(0.85).setDepth(49),
 						bar: new HealthBar(this, player.pos.x, player.pos.y + 55),
-						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}`, {
+						nameTag: this.add.rexBBCodeText(player.pos.x, player.pos.y - 90, `${player.name}${player.country?" ("+countryCodeEmoji(player.country)+")":""}`, {
 							fontFamily: "serif",
-							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"||player.name.toLowerCase()=="cosmicwarlord"?"#FF0000":"#0000FF" :"#000000",
+							fill: player.verified?player.name.toLowerCase()=="mitblade" ||player.name.toLowerCase()=="codergautam"?"#FF0000":"#0000FF" :"#000000",
 							fontSize: "25px"
 						}).setDepth(69).setAlpha(player.verified?1:0.5),
 						swordAnim: {go: false, added: 0},
@@ -765,6 +895,11 @@ class GameScene extends Phaser.Scene {
 					enemy.sword.x = enemy.player.x + enemy.player.width / factor * Math.cos(enemy.sword.angle * Math.PI / 180);
 					enemy.sword.y = enemy.player.y + enemy.player.width / factor * Math.sin(enemy.sword.angle * Math.PI / 180);
 					enemy.bar.bar.setDepth(69);
+				if(player.country) {
+					this.countries[player.id] = player.country;
+				}
+
+					enemy.country = player.country;
 
 					this.UICam.ignore([enemy.player, enemy.bar.bar, enemy.sword, enemy.nameTag,enemy.chatText, this.graphics]);
 					this.enemies.push(enemy);
@@ -870,27 +1005,35 @@ class GameScene extends Phaser.Scene {
 				this.socket.on("all", (players) => {
 					this.all.players = players.filter((p) => p.id != this.socket.id);
 					this.all.lastUpdate = Date.now();
+					this.highestCoins = players.filter(x => x.id != this.socket.id).sort((a, b) => b.coins - a.coins)[0];
+
+					if(this.myObj?.coins > this.highestCoins?.coins) {
+						this.highestCoins = this.myObj;
+					}
+
+					// remove keys from this.country that aren't in players
+
 					players.forEach(player => {
 						if(!this.spectating && player.id != this.socket.id) {
 						if(this.miniMap.people.find(x => x.id === player.id)) {
 
 							var miniMapPlayer = this.miniMap.people.find(x => x.id === player.id);
 
-
-
-
-
 							if(this.enemies.find(x => x.id === player.id) || (miniMapPlayer.circle.x == 0 && miniMapPlayer.circle.y == 0) ) {
 								miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 								miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
 							} else {
 							this.tweens.add({
-								targets: miniMapPlayer.circle,
+								targets: this.highestCoins?.id == player.id ? [miniMapPlayer.circle, this.crown] : miniMapPlayer.circle,
 								x: (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor,
 								y: (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor,
 								duration: 1000+this.ping,
 								ease: "Sine2"
 							});
+							if(this.highestCoins?.id == player.id) {
+								this.crown.displayHeight = miniMapPlayer.circle.displayHeight*1.5;
+								this.crown.displayWidth = miniMapPlayer.circle.displayWidth*1.5;
+							}
 						}
 
 
@@ -911,6 +1054,8 @@ class GameScene extends Phaser.Scene {
 					}
 				}
 					});
+
+
                     if(players.length < this.miniMap.people.length) {
           var remaining = this.miniMap.people.filter((p) => !players.find(x => x.id === p.id));
           for (var remain of remaining) {
@@ -919,7 +1064,9 @@ class GameScene extends Phaser.Scene {
           }
           }
 
-				});
+
+
+			});
 				this.socket.on("me", (player) => {
 
 					if(this.loadrect.visible) {
@@ -945,8 +1092,6 @@ class GameScene extends Phaser.Scene {
 					if(this.levels.length > 0) {
 						if(this.myObj?.evolutionQueue) {
 							if(this.myObj.evolutionQueue.length > 0) {
-								// console.log(this.myObj.evolutionQueue);
-								// console.log(this.classPicker)
 								if(!this.classPicker.shown || (this.classPicker.text1 != this.myObj.evolutionQueue[0][0] || this.classPicker.text2 != this.myObj.evolutionQueue[0][1])) {
 								this.classPicker.setEvoQueue(this.myObj.evolutionQueue);
 
@@ -1090,16 +1235,21 @@ class GameScene extends Phaser.Scene {
 						targets: this.mePlayer,
 						x: player.pos.x,
 						y: player.pos.y,
-						duration: 300,
-						ease: "Power2"
+						duration: (1000/20)*7,
+						ease: "power2"
 					});
 					}
 					this.mePlayer.setScale(player.scale);
 					this.meBar.maxValue = player.maxHealth;
 					this.meBar.setHealth(player.health);
+
+					if(player.country) {
+						this.countries[player.id] = player.country;
+					}
+
 					// if(this.myObj) console.log( this.cameras.main.zoom+" -> "+this.myObj.coins+" -> "+player.scale)
 
-					var show = 1000;
+					var show = 1300;
 					show += (this.mePlayer.width*this.mePlayer.scale)*5;
 					//var oldZoom = this.cameras.main.zoom;
 					var newZoom = Math.max(this.scale.width / show, this.scale.height / show);
@@ -1134,10 +1284,18 @@ class GameScene extends Phaser.Scene {
 
 					miniMapPlayer.circle.x = (this.miniGraphics.x + ((player.pos.x / (map/2)) * this.miniMap.scaleFactor))+this.miniMap.scaleFactor;
 					miniMapPlayer.circle.y = (this.miniGraphics.y+ ((player.pos.y / (map/2)) * this.miniMap.scaleFactor)) + this.miniMap.scaleFactor;
+
 					var bruh = map / 10000;
 					if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 					miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
 					}
+					if(this.highestCoins?.id == player.id) {
+						this.crown.x = miniMapPlayer.circle.x;
+						this.crown.y = miniMapPlayer.circle.y;
+						this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 1.5;
+						this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 1.5;
+					}
+
 				}
 
 				});
@@ -1163,8 +1321,8 @@ class GameScene extends Phaser.Scene {
 							targets: enemy.player,
 							x: player.pos.x,
 							y: player.pos.y,
-							duration: 300,
-							ease: "Power2"
+							duration: (1000/20)*7,
+							ease: "power2"
 						});
 
 						//update sword
@@ -1248,6 +1406,12 @@ class GameScene extends Phaser.Scene {
 							if(miniMapPlayer && miniMapPlayer.circle && miniMapPlayer.circle?.radius) {
 
 							miniMapPlayer.circle.radius = player.scale * (convert(1280, 15, this.canvas.width)/bruh);
+							}
+							if(this.highestCoins?.id == player.id) {
+								this.crown.x = miniMapPlayer.circle.x;
+								this.crown.y = miniMapPlayer.circle.y;
+								this.crown.displayHeight = miniMapPlayer.circle.displayHeight * 1.5;
+								this.crown.displayWidth = miniMapPlayer.circle.displayWidth * 1.5;
 							}
 						}
 
@@ -1658,6 +1822,25 @@ class GameScene extends Phaser.Scene {
 								var msg = msgs[Math.floor(Math.random() * msgs.length)];
 								this.dataText = this.add.text(this.canvas.width/2, this.deadText.y, msg, {fontFamily: "Arial", fontSize: "32px", color: "#000000"}).setOrigin(0.5);
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
+                try {
+                  // if(!location.hostname.includes("swordbattle.io")){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+// }
+
+
+
+                document.getElementById("swordbattle-io_970x90").style.display = "";
+                this.refreshInt = setInterval(() => {
+
+                  // if(!location.hostname.includes("swordbattle.io")){
+aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+// }
+
+                }, 4000);
+                } catch(e) {
+                  console.log(e);
+                }
+
 
 							this.dataText.y += this.dataText.height*1.5;
                  this.cameras.main.ignore(this.dataText);
@@ -1669,6 +1852,16 @@ class GameScene extends Phaser.Scene {
 
 
       this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
+        try {
+                document.getElementById("swordbattle-io_970x90").style.display = "none";
+
+        } catch(e) {
+
+        }
+        if(this.refreshInt) {
+        clearInterval(this.refreshInt);
+        }
+
         this.callback();
         this.socket.disconnect();
 
@@ -1756,10 +1949,10 @@ class GameScene extends Phaser.Scene {
 						});
 				},5000);
 			});
-			}).catch((e) => {
-				console.trace(e);
-			});
-		});
+		// 	}).catch((e) => {
+		// 		console.trace(e);
+		// 	});
+		// });
 	}
 
 	update(time, delta) {
@@ -1771,6 +1964,13 @@ try {
   console.log("Failed to update level bar");
   console.log(e);
 }
+if(this.lastCountriesClear && Date.now() - this.lastCountriesClear > 300000) {
+	this.countries = {};
+this.lastCountriesClear = Date.now();
+} else if(!this.lastCountriesClear) {
+	this.lastCountriesClear = Date.now();
+}
+
 
 		var controller = {
 			left: false,
@@ -1927,7 +2127,7 @@ try {
 			if(Date.now() - enemy.lastTick > 10000) return this.removePlayer(enemy);
 
 			if(enemy.playerObj) var scale = enemy.playerObj.scale;
-			else var scale = 0.25;
+			else var scale = 0.85;
 			enemy.bar.width = (enemy.player.height*scale / 0.9375);
 			enemy.bar.height = (enemy.player.height*scale*0.150);
 			enemy.bar.x = enemy.player.x  - enemy.bar.width / 2;
@@ -1987,7 +2187,7 @@ try {
 
 		var myObj = this.myObj;
 
-		if(!myObj) myObj = {scale: 0.25};
+		if(!myObj) myObj = {scale: 0.85};
 		try {
 		this.meBar.width = (this.mePlayer.height*myObj.scale / 0.9375);
 		this.meBar.height = (this.mePlayer.height*myObj.scale*0.200);
@@ -2033,13 +2233,9 @@ try {
 					var rankingColors = [
 						{color: "#90EE90", ranking: 100},
 						{color: "#023020", ranking: 50},
-
 						{color: "#ffa500", ranking: 10},
-
 						{color: "#ffff00", ranking: 5},
-
 						{color: "#ff0000", ranking: 1},
-
 					];
 				var rankingColor;
 				if(playerObj.ranking) {
@@ -2052,7 +2248,7 @@ try {
 					});
 				}
 
-				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `#${i+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${this.countries[playerObj.id]?" [color=#00FF00]("+countryCodeEmoji(this.countries[playerObj.id])+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			});
 			if(!amIinit) {
@@ -2080,7 +2276,7 @@ try {
 				}
 				var myIndex = sorted.findIndex(a=> a.playerObj.id == this.myObj.id);
 
-				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam"||playerObj.name.toLowerCase()=="cosmicwarlord" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
+				text += `...\n#${myIndex+1}: ${playerObj.verified? playerObj.name.toLowerCase()=="mitblade" ||playerObj.name.toLowerCase()=="codergautam" ?"[color=#FF0000]":"[color=#0000FF]":""}${playerObj.name}${this.countries[playerObj.id]?"[color=#00FF00]("+countryCodeEmoji(this.countries[playerObj.id])+")[/color]":""}${playerObj.verified? "[/color]":""}${rankingColor ? `[color=${rankingColor}](#${playerObj.ranking})[/color]` : ""}- ${conv(playerObj.coins)}\n`;
 
 			}
 			if(!this.spectating) {
@@ -2103,6 +2299,15 @@ try {
 			if(!this.spectating)	this.playerCount.setText("Players: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
+		}
+		if(!this.spectating) {
+			try {
+				document.getElementById("swordbattle-io_970x250").style.display = "none";
+				document.getElementById("swordbattle-io_970x90").style.display = "none";
+			} catch(e) {
+				console.log(e);
+			}
+
 		}
 
 		if(!this.myObj) return;

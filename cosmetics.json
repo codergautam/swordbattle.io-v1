@@ -232,6 +232,13 @@
             "description": "Study the arts of stabbing..."
         },
         {
+            "name": "axolotl",
+            "displayName": "Axolotl",
+            "url": "/assets/images/axolotlPlayer.png",
+            "price": 20000,
+            "description": "Just swimming around"
+        },
+        {
             "name": "ninja",
             "displayName": "Ninja",
             "url": "/assets/images/ninjaPlayer.png",
@@ -477,6 +484,13 @@
             "description": "A hardened veteran"
         },
         {
+            "name": "suit",
+            "displayName": "The Suit",
+            "url": "/assets/images/suitPlayer.png",
+            "price": 78000,
+            "description": "Hide secrets under the suit"
+        },
+        {
             "name": "cardboard",
             "displayName": "Cardboard",
             "url": "/assets/images/cardboardPlayer.png",
@@ -517,6 +531,13 @@
             "url": "/assets/images/winterPlayer.png",
             "price": 100000,
             "description": "I like it cold."
+        },
+        {
+            "name": "painter",
+            "displayName": "Painter",
+            "url": "/assets/images/painterPlayer.png",
+            "price": 100000,
+            "description": "The power of paint"
         },
         {
             "name": "fall",
@@ -576,10 +597,10 @@
         },
         {
             "name": "bishop",
-            "displayName": "Bishop",
+            "displayName": "Chess Bishop",
             "url": "/assets/images/bishopPlayer.png",
             "price": 135000,
-            "description": "When in doubt, move diagonally with the Bishop skin!"
+            "description": "Deliver the final checkmate to your opponent."
         },
         {
             "name": "covid",
@@ -854,6 +875,13 @@
             "price": 450000,
             "description": "A snack before destruction"
         },
+      {
+                    "name": "octopus",
+            "displayName": "The Octopus",
+            "url": "/assets/images/octopusPlayer.png",
+            "price": 400800,
+            "description": "Drag them away"
+      },
         {
             "name": "camera",
             "displayName": "Camera",
@@ -924,6 +952,13 @@
             "description": "I scream, you scream, your enemies scream"
         },
         {
+            "name": "shark",
+            "displayName": "Sharky",
+            "url": "/assets/images/sharkPlayer.png",
+            "price": 801000,
+            "description": "You never know what will hide in the deep ocean"
+        },
+        {
             "name": "elements",
             "displayName": "Elements",
             "url": "/assets/images/elementsPlayer.png",
@@ -950,6 +985,13 @@
             "url": "/assets/images/mossmechPlayer.png",
             "price": 1000001,
             "description": "Rise from the wild and DOMINATE!"
+        },
+        {
+            "name": "explosion",
+            "displayName": "Explosion",
+            "url": "/assets/images/explosionPlayer.png",
+            "price": 1150000,
+            "description": "I hope they're not nukes.."
         },
         {
             "name": "honeycomb",
