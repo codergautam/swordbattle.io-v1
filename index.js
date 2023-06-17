@@ -74,9 +74,8 @@ const { v4: uuidv4 } = require("uuid");
  var {recaptcha, localServer} = require("./config.json");
 
 
-// DISABLED DUE TO PEOPLE HAVING ISSUES
-recaptcha = false;
-// recaptcha = true;
+
+recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
@@ -588,6 +587,7 @@ app.post("/api/login",checkifMissingFields, async (req, res) => {
 		response: req.body.captcha,
 		remoteip: req.headers["x-forwarded-for"] || req.socket?.remoteAddress
 	};
+  console.log(send);
 	if(recaptcha) {
 		axios
 			.post(

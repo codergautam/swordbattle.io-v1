@@ -8,6 +8,14 @@
             "description": "The default skin"
         },
         {
+            "name": "sandcastle",
+            "displayName": "Sandcastle",
+            "url": "/assets/images/sandcastlePlayer.png",
+            "price": 0,
+            "description": "The strength of a million grains of sand",
+            "original": 5000000
+        },
+        {
             "name": "yinyang",
             "displayName": "Yin Yang",
             "url": "/assets/images/yinyangPlayer.png",
@@ -1091,7 +1099,7 @@
             "price": 4000000,
             "description": "Scary... watch out"
         },
-        
+
         {
             "name": "laserfoil",
             "displayName": "Laserfoil",

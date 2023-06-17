@@ -66,10 +66,10 @@ class GameScene extends Phaser.Scene {
 				}
 
 		//recaptcha
-		// grecaptcha.ready(() =>{
-		// 	grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
+		grecaptcha.ready(() =>{
+			grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
 
-		let thetoken = "subtocodergautam";
+		// let thetoken = "subtocodergautam";
 				this.readyt = true;
 				this.openingBgm.stop();
 				var config =  {
@@ -1949,10 +1949,10 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 						});
 				},5000);
 			});
-		// 	}).catch((e) => {
-		// 		console.trace(e);
-		// 	});
-		// });
+			}).catch((e) => {
+				console.trace(e);
+			});
+		});
 	}
 
 	update(time, delta) {

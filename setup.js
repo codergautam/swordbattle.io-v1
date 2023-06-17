@@ -3,7 +3,7 @@ if (process.env["REPLIT_DB_URL"]){
 	replit = true
 }
 const fs = require("fs");
-const {execSync} = require("child_process"); 
+const {execSync} = require("child_process");
 const dotenv = require("dotenv");
 dotenv.config();
 var testenv =
