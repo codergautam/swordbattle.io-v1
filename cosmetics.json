@@ -106,11 +106,11 @@
             "description": "I don't feel so good... I need coins"
         },
         {
-            "name": "clef",
-            "displayName": "Clef",
+            "name": "bass",
+            "displayName": "Bass",
             "url": "/assets/images/clefPlayer.png",
             "price": 2750,
-            "description": "Lure them in..."
+            "description": "Slap them with you bass"
         },
         {
             "name": "bowling",
@@ -167,6 +167,13 @@
             "url": "/assets/images/chefPlayer.png",
             "price": 10000,
             "description": "Chop 'em up"
+        },
+        {
+            "name": "rainbow",
+            "displayName": "Rainbow",
+            "url": "/assets/images/rainbowPlayer.png",
+            "price": 10500,
+            "description": "Its bright and colorful"
         },
         {
             "name": "meelee",
@@ -279,6 +286,13 @@
             "url": "/assets/images/frumpythefrogPlayer.png",
             "price": 30000,
             "description": "A frog named Frumpy"
+        },
+        {
+            "name": "vinyl",
+            "displayName": "Vinyl",
+            "url": "/assets/images/vinylPlayer.png",
+            "price": 31000,
+            "description": "Go old fashioned"
         },
         {
             "name": "asteroid",
@@ -428,11 +442,18 @@
             "description": "A snack before slaughter"
         },
         {
+            "name": "dog",
+            "displayName": "Dog",
+            "url": "/assets/images/dogPlayer.png",
+            "price": 64999,
+            "description": "Dogs!"
+        },
+        {
             "name": "cat",
             "displayName": "Cat",
             "url": "/assets/images/catPlayer.png",
             "price": 65000,
-            "description": "Sharp claws... and easy kills"
+            "description": "Cats!"
         },
         {
             "name": "wizard",
@@ -729,6 +750,13 @@
             "description": "Back from the dead!"
         },
         {
+            "name": "toilet",
+            "displayName": "Toilet",
+            "url": "/assets/images/toiletPlayer.png",
+            "price": 205000,
+            "description": "Release the explosives..."
+        },
+        {
             "name": "vaporwave",
             "displayName": "Vaporwave",
             "url": "/assets/images/vaporwavePlayer.png",
@@ -771,6 +799,13 @@
             "description": "Watch out for the talons..."
         },
         {
+            "name": "bottlecap",
+            "displayName": "Bottle Cap",
+            "url": "/assets/images/bottlecapPlayer.png",
+            "price": 305000,
+            "description": "A boost of energy"
+        },
+        {
             "name": "galaxy",
             "displayName": "Galaxy",
             "url": "/assets/images/galaxyPlayer.png",
@@ -797,6 +832,13 @@
             "url": "/assets/images/incendiaryPlayer.png",
             "price": 360000,
             "description": "Melt your gold"
+        },
+        {
+            "name": "snake",
+            "displayName": "Snake",
+            "url": "/assets/images/snakePlayer.png",
+            "price": 370000,
+            "description": "Coil around coins"
         },
         {
             "name": "eclipse",
@@ -833,12 +875,19 @@
             "price": 450000,
             "description": "A snack before destruction"
         },
-        {
-            "name": "octopus",
+      {
+                    "name": "octopus",
             "displayName": "The Octopus",
             "url": "/assets/images/octopusPlayer.png",
             "price": 400800,
             "description": "Drag them away"
+      },
+        {
+            "name": "camera",
+            "displayName": "Camera",
+            "url": "/assets/images/cameraPlayer.png",
+            "price": 475000,
+            "description": "A photo with your friends"
         },
         {
             "name": "angel",
@@ -1022,12 +1071,27 @@
             "description": "Hunt them down..."
         },
         {
+            "name": "mercenary",
+            "displayName": "Mercenary",
+            "url": "/assets/images/mercenaryPlayer.png",
+            "price": 3250000,
+            "description": "Hunt down predators"
+        },
+        {
+            "name": "biker",
+            "displayName": "Biker",
+            "url": "/assets/images/bikerPlayer.png",
+            "price": 3500000,
+            "description": "Training to be assassin"
+        },
+        {
             "name": "reaper",
             "displayName": "Reaper",
             "url": "/assets/images/reaperPlayer.png",
             "price": 4000000,
             "description": "Scary... watch out"
         },
+        
         {
             "name": "laserfoil",
             "displayName": "Laserfoil",
@@ -1048,6 +1112,13 @@
             "url": "/assets/images/supremeneonPlayer.png",
             "price": 6000000,
             "description": "Neon but better"
+        },
+        {
+            "name": "shadow",
+            "displayName": "Shadow",
+            "url": "/assets/images/shadowPlayer.png",
+            "price": 6500000,
+            "description": "Fight with a legendary Shadowblade"
         },
         {
             "name": "bush",
