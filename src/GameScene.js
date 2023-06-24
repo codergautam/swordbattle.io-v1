@@ -550,7 +550,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://usasword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
