@@ -857,7 +857,8 @@ document.getElementById("shopFrame").style.display = "none";
 
     if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=300) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible) || (document.getElementById("shopFrame").style.display != "none")){
       // hide ads
-      console.log("hiding both ads");
+      // console.log("hiding both ads");
+
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
       this.lastAdRef = 0;
