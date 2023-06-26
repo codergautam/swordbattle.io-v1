@@ -857,14 +857,16 @@ document.getElementById("shopFrame").style.display = "none";
 
     if((this.canvas.height - (this.nameBox.y+this.nameBox.height) <=300) || (this.login && this.login.visible) || (this.signup && this.signup.visible) || (this.settings && this.settings.visible) || (document.getElementById("shopFrame").style.display != "none")){
       // hide ads
+      console.log("hiding both ads");
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
+      this.lastAdRef = 0;
     } else {
 
-    if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 4000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
-      this.lastAdRef = Date.now();
+    if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000)  || (((this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460) && document.getElementById("swordbattle-io_970x90").style.display == "" && document.getElementById("swordbattle-io_970x250").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
+      this.lastAdRef = Number.MAX_SAFE_INTEGER;
       try {
-        console.log("adding ad");
+        console.log("adding ad (970x250)");
         document.getElementById("swordbattle-io_970x250").style.display = "";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -874,8 +876,10 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x2
       } catch(e) {
 
       }
-    } else if((!this.promo || !this.promo.visible) && (Date.now() - this.lastAdRef > 4000) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 300)) {
+    } else if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000) || ((this.canvas.height - (this.nameBox.y+this.nameBox.height) <= 460) && ( document.getElementById("swordbattle-io_970x250").style.display == "" && document.getElementById("swordbattle-io_970x90").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 300)) {
       // hide other ads
+      this.lastAdRef = Number.MAX_SAFE_INTEGER;
+      console.log("adding ad (970x90)");
       try {
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "";
