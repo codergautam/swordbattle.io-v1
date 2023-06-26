@@ -475,17 +475,11 @@ class GameScene extends Phaser.Scene {
                 try {
 
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                 this.refreshInt = setInterval(() => {
 
-                  // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-// }
-
-                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
@@ -498,9 +492,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
-                    if(this.refreshInt) {
-        clearInterval(this.refreshInt);
-        }
+
                     try {
 
                 document.getElementById("swordbattle-io_970x90").style.display = "none";
@@ -1824,19 +1816,13 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
                 try {
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
 
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                this.refreshInt = setInterval(() => {
 
-                  // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-// }
-
-                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
@@ -1857,9 +1843,6 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 
         } catch(e) {
 
-        }
-        if(this.refreshInt) {
-        clearInterval(this.refreshInt);
         }
 
         this.callback();
