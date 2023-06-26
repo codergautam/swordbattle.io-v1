@@ -1,5 +1,5 @@
 ##################################
-# AdinPlay.com ads.txt - 2023-05-30
+# AdinPlay.com ads.txt - 2023-06-25
 ##################################
 
 OWNERDOMAIN=swordbattle.io
@@ -383,6 +383,11 @@ pubmatic.com, 158060, RESELLER, 5d62403b186f2ace
 
 #Conversant
 conversantmedia.com, 100106, RESELLER, 03113cd04947736d
+lijit.com, 411121, RESELLER, fafdf38b16bf6b2b #SOVRN
+admanmedia.com, 2050, RESELLER
+Appnerve.com, 187287,  RESELLER
+rubiconproject.com, 23644, RESELLER, 0bfd66d529a55807
+
 
 #OneTag
 onetag.com, 7683ebe7bee7969, RESELLER
@@ -769,6 +774,28 @@ appnexus.com, 3153, RESELLER, f5ab79cb980f11d1
 media.net, 8CUV34PJ4, DIRECT
 sharethrough.com, koRtppYA, RESELLER, d53b998a7bd4ecd2
 
+#AdaptMX
+
+amxrtb.com, 105199723, DIRECT
+appnexus.com, 12290, RESELLER
+pubmatic.com, 161527, RESELLER
+rubiconproject.com, 23844, RESELLER
+
+
+# Adagio
+adagio.io, 1361, RESELLER
+# Adagio - Magnite
+rubiconproject.com, 19116, RESELLER, 0bfd66d529a55807
+# Adagio - Pubmatic
+pubmatic.com, 159110, RESELLER, 5d62403b186f2ace
+# Adagio - Improve Digital
+improvedigital.com, 1790, RESELLER
+# Adagio - Onetag
+onetag.com, 6b859b96c564fbe, RESELLER
+# Adagio - Index Exchange
+indexexchange.com, 194558, RESELLER
+
+
 ##################################
-# AdinPlay.com ads.txt - 2023-05-30
+# AdinPlay.com ads.txt - 2023-06-25
 ##################################
