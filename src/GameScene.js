@@ -66,10 +66,10 @@ class GameScene extends Phaser.Scene {
 				}
 
 		//recaptcha
-		// grecaptcha.ready(() =>{
-		// 	grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
+		grecaptcha.ready(() =>{
+			grecaptcha.execute(CAPTCHASITE, {action: "join"}).then((thetoken) => {
 
-		let thetoken = "subtocodergautam";
+		// let thetoken = "subtocodergautam";
 				this.readyt = true;
 				this.openingBgm.stop();
 				var config =  {
@@ -475,17 +475,11 @@ class GameScene extends Phaser.Scene {
                 try {
 
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                 this.refreshInt = setInterval(() => {
 
-                  // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-// }
-
-                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
@@ -498,9 +492,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
-                    if(this.refreshInt) {
-        clearInterval(this.refreshInt);
-        }
+
                     try {
 
                 document.getElementById("swordbattle-io_970x90").style.display = "none";
@@ -550,7 +542,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://usasword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
@@ -1824,19 +1816,13 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
                 try {
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
+aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
 
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
-                this.refreshInt = setInterval(() => {
 
-                  // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x90'); });
-// }
-
-                }, 4000);
                 } catch(e) {
                   console.log(e);
                 }
@@ -1857,9 +1843,6 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 
         } catch(e) {
 
-        }
-        if(this.refreshInt) {
-        clearInterval(this.refreshInt);
         }
 
         this.callback();
@@ -1949,10 +1932,10 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display('swordbattle-io_970x9
 						});
 				},5000);
 			});
-		// 	}).catch((e) => {
-		// 		console.trace(e);
-		// 	});
-		// });
+			}).catch((e) => {
+				console.trace(e);
+			});
+		});
 	}
 
 	update(time, delta) {

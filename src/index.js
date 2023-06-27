@@ -88,7 +88,7 @@ var gameScene = new GameScene((data) => {
     playPreroll = true;
 });
 
-var titleScene = new TitleScene(((lastAd != 0) && Date.now() - lastAd > adDelay), (name, music, secret) => {
+var titleScene = new TitleScene(((lastAd != 0) && (Date.now() - lastAd > adDelay) && playPreroll), (name, music, secret) => {
     gameScene.name = name;
     gameScene.options = titleScene.options;
     if(gameScene.options.server == "auto") gameScene.options.server = titleScene.optimalServer;

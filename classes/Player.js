@@ -242,7 +242,7 @@ var move = true;
   collectCoins(coins, io, levels) {
 
 
-           var touching = coins.filter((coin) => coin.touchingPlayer(this));
+           var touching = coins.filter((coin) => coin.touchingPlayer(this) && (!this.verified || coin.owner != this.name));
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
@@ -339,7 +339,7 @@ return false;
     this.maxHealth = this.scale * 400;
     this.health = percent * this.maxHealth;
     this.damage =  (80 * this.scale > 30 ? 30 +(((80 * this.scale) - 30) / 5) : 80 * this.scale );
-    this.speed = clamp(720 -  (this.scale* 90),550,1000);
+    this.speed = clamp(850 -  (this.scale* 90),550,1200);
     this.throwCooldown = 5000;
     this.throwDamageMultiplier = 1;
 
@@ -471,7 +471,7 @@ DO UPDATE SET
           new Coin({
             x: clamp(x, -(map/2), map/2),
             y: clamp(y, -(map/2), map/2),
-          },value)
+          },value, enemy.verified ? enemy.name : "")
         );
         dropped += value;
         drop.push(coins[coins.length - 1]);
