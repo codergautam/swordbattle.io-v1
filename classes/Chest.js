@@ -20,7 +20,7 @@ function getRandomInt(min, max) {
         },
         uncommon: {
           scale: 1,
-          drop: [150,250],
+          drop: [150,210],
           health: 20
         },
         rare: {
