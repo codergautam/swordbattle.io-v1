@@ -911,12 +911,12 @@ var coins = [];
 var chests = [];
 var flyingSwords = [];
 
-var maxCoins = 2000;
+var maxCoins = 2500;
 
-var maxChests = 30;
-var maxUncommonChests = 15;
-var maxRareChests = 10;
-var maxEpicChests = 5;
+var maxChests = 22;
+var maxUncommonChests = 11;
+var maxRareChests = 7;
+var maxEpicChests = 4;
 var maxLegendaryChests = 2;
 var maxMythicalChests = 1;
 
