@@ -26,7 +26,7 @@ function getRandomInt(min, max) {
         rare: {
           scale: 1.25,
           drop: [400,650],
-          health: 70,
+          health: 50,
         },
         epic: {
           scale: 1.5,
