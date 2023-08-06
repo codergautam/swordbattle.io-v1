@@ -133,6 +133,11 @@ if (production) {
 }
 
 let xplb = null;
+var content = [];
+
+(async () => {
+  content = await sql`SELECT * FROM public.content`;
+})();
 
 var oldlevels = [
 	{coins: 5, scale: 0.85},
@@ -370,9 +375,9 @@ app.post("/api/changepassword", async (req,res) => {
 		return;
   };
 
-  newSecret = uuid.v4()
+  newSecret = uuid.v4();
   newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`
-  res.send({"Success": true, "secret": newSecret})
+  res.send({"Success": true, "secret": newSecret});
 });
 
 app.post("/api/changename", async (req,res) => {
@@ -655,6 +660,9 @@ app.post("/api/loginsecret", async (req, res) => {
 
 app.get("/skins", async (req, res) => {
   res.redirect("/shop");
+});
+app.get("/api/getFeaturedContent", () => {
+  console.log(content)
 });
 
 app.get("/shop", async (req, res) => {
@@ -1661,6 +1669,7 @@ setInterval(async () => {
  FROM public.stats
  GROUP BY username
  ORDER BY xp DESC;`;
+ content = await sql`SELECT * FROM public.content`;
 }, 120000);
 
 /*
