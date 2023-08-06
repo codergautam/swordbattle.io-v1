@@ -377,8 +377,8 @@ export default class Player {
 
 
         // clamp this player to the world bounds
-        this.pos.x = clamp(this.pos.x, this.radius/2, constants.map.width - (this.radius/2));
-        this.pos.y = clamp(this.pos.y, this.radius/2, constants.map.height - (this.radius/2));
+        // this.pos.x = clamp(this.pos.x, this.radius/2, constants.map.width - (this.radius/2));
+        // this.pos.y = clamp(this.pos.y, this.radius/2, constants.map.height - (this.radius/2));
         // Do not resolve collisions if the player hasn't moved
         if (this.pos.x !== oldX || this.pos.y !== oldY) {
             const room = this.room as Room;
