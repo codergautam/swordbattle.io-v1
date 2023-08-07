@@ -39,6 +39,7 @@ class OpenScene extends Phaser.Scene {
       this.loadText.y = this.canvas.height/2;
       this.progressText.x = this.canvas.width/2;
       this.progressText.y = this.canvas.height/2 + this.canvas.height/10;
+
 let loaded = [];
  this.lastProgress = Date.now();
 
@@ -169,6 +170,7 @@ var progress = 1 - (remainder / total);
         this.load.html("dropdown", "/dropdown.html");
         this.load.html("footer", "/footer.html");
         this.load.html("settings", "/settings.html");
+        this.load.html("featured", "/featured.html");
         this.load.html("chat", "/chatbox.html");
         this.load.audio("openingsound", "/assets/sound/opening.mp3");
 

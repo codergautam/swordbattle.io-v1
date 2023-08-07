@@ -170,8 +170,60 @@ try {
 
     this.background = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
     this.footer = this.add.dom(this.canvas.width / 2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile ? 1 : 2);
+    this.featured = this.add.dom(0, this.canvas.height/3).createFromCache("featured").setOrigin(0).setScale(this.mobile ? 0 : 1);
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/getfeaturedcontent');
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return [];
+      }
+    }
+
+    // Function to render the featured items in the widget
+    // Function to render the featured items in the widget
+    function renderWidget(data) {
+      const featuredContentDiv = document.getElementById('featured-content');
+      featuredContentDiv.innerHTML = '';
+
+      data.forEach((item) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('featured-item');
+
+        const thumbnailImg = document.createElement('img');
+        thumbnailImg.src = item.source == "youtube" ? 'https://www.cdnlogo.com/logos/y/84/youtube.svg' : '/assets/images/sword.png';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('featured-item-content');
+
+        const titleH3 = document.createElement('h3');
+        titleH3.textContent = item.title;
+
+        const authorP = document.createElement('p');
+        authorP.textContent = item.author;
+
+        contentDiv.appendChild(titleH3);
+        contentDiv.appendChild(authorP);
+
+        itemDiv.appendChild(thumbnailImg);
+        itemDiv.appendChild(contentDiv);
+
+        // Add an event listener to open the content link when clicked
+        itemDiv.addEventListener('click', () => {
+          window.open(item.link, '_blank');
+        });
+
+        featuredContentDiv.appendChild(itemDiv);
+      });
+    }
 
 
+    // Fetch data and render the widget on page load
+      fetchData().then((data) => {
+      renderWidget(data);
+    });
     this.nameBox = this.add.dom(this.canvas.width / 2, 0).createFromCache("title");
 
     if (this.showPromo) {
@@ -847,11 +899,30 @@ document.getElementById("shopFrame").style.display = "none";
   update(d) {
     this.nameBox.y = (this.mobile ? this.text.y + (this.text.height / 2) : this.text.y + (this.text.height));
 
+
     var footery = this.canvas.height - (this.footer.height);
     if (this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
+
+
+    // console.log(this.canvas.width + " " + this.canvas.height, this.canvas.width / this.canvas.height);
+    this.featured.y = this.canvas.height/3;
+    this.featured.setScale(0.9)
+    if(this.canvas.width < 1000 || this.canvas.height < 700 || this.mobile) {
+      if(this.mobile) {
+      this.featured.visible = false;
+      }
+      if((this.canvas.width / this.canvas.height > 1.4 || this.canvas.width / this.canvas.height < 1.1) || this.canvas.width < 750 || this.height < 600) {
+        this.featured.visible = false;
+      } else {
+        this.featured.visible = true;
+      }
+    } else {
+      this.featured.visible = true;
+    }
+
 
     if(Date.now() - this.sceneStart > 1000) {
 
