@@ -376,7 +376,7 @@ app.post("/api/changepassword", async (req,res) => {
   };
 
   newSecret = uuid.v4();
-  newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`
+  newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`;
   res.send({"Success": true, "secret": newSecret});
 });
 
@@ -687,7 +687,15 @@ app.get("/api/getFeaturedContent", (req,res) => {
     return result;
   }
 
-  res.send(getRandomContent(content));
+  let out = getRandomContent(content);
+  // Sort the array by chance being higher (if they are same, then sort by created_at most recent)
+  out.sort((a, b) => {
+    // console.log(b.title, new Date(b.created_at), " - ", a.title, new Date(a.created_at), " = ", new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+
+  res.send(out);
 });
 
 app.get("/shop", async (req, res) => {

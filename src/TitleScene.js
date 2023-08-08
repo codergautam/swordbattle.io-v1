@@ -203,6 +203,9 @@ try {
 
         const authorP = document.createElement('p');
         authorP.textContent = item.author;
+        if(item.label) {
+          authorP.innerHTML += ` - <span style="color: orange; font-weight: bold;">${item.label}</span>`;
+        }
 
         contentDiv.appendChild(titleH3);
         contentDiv.appendChild(authorP);
