@@ -36,7 +36,7 @@ const config = {
         { from: "src/manifest.json", to: "" },
         { from: "src/settings.html", to: "" },
         { from: "src/featured.html", to: "" },
-        { from: "src/stylesnew.css", to: "./" },
+        { from: "src/stylesnew1.css", to: "./" },
       ],
     }),
   ],
