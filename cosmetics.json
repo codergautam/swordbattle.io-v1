@@ -192,10 +192,10 @@
         },
         {
             "name": "radiation",
-            "displayName": "Radiation",
+            "displayName": "Radioactive",
             "url": "/assets/images/radiationPlayer.png",
             "price": 12500,
-            "description": "Very Toxic..."
+            "description": "Give your enemies radiation poisoning!"
         },
         {
             "name": "pizza",
