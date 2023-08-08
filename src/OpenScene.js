@@ -148,6 +148,7 @@ var progress = 1 - (remainder / total);
         this.load.image("loginbtn", "/assets/images/login.png");
         this.load.image("signupbtn", "/assets/images/signup.png");
         this.load.image("playAgainBtn", "/assets/images/playAgain.png");
+        this.load.image("homeBtn", "/assets/images/home.png");
         this.load.image("settingsBtn", "/assets/images/settingsBtn.png");
         this.load.image("shopBtn", "/assets/images/shop.png");
         this.load.image("abilityBtn", "/assets/images/ability.png");

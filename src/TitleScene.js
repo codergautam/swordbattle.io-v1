@@ -896,6 +896,9 @@ document.getElementById("shopFrame").style.display = "none";
       duration: 1000,
       ease: "Power2"
     });
+    if(this.instantStart) {
+      go();
+    }
 
   }
 

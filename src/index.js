@@ -83,8 +83,10 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.transform = scale;     // General
 
 var adDelay = 600000;
-var gameScene = new GameScene((data) => {
+var gameScene = new GameScene((instantStart=false) => {
     titleScene.playPreroll = Date.now() - lastAd > adDelay;
+    console.log(instantStart, "instantStart");
+    titleScene.instantStart = instantStart;
     playPreroll = true;
 });
 
@@ -113,6 +115,7 @@ var titleScene = new TitleScene(((lastAd != 0) && (Date.now() - lastAd > adDelay
 titleScene.mobile = mobile;
 gameScene.mobile = mobile;
 openScene.mobile = mobile;
+titleScene.instantStart = false;
 
 if(!mobile) titleScene.showPromo = true;
 //titleScene.showPromo = false;
