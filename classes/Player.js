@@ -287,7 +287,7 @@ var move = true;
       && evolutions[this.evolution].subEvolutions
       && evolutions[this.evolution].subEvolutions.length > 2
       && evolutions[this.evolution].subEvolutions[0] <= this.coins
-      && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1] && q[1] == evolutions[this.evolution].subEvolutions[2]) == -1
+      && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1].name && q[1] == evolutions[this.evolution].subEvolutions[2].name) == -1
       ) this.evolutionQueue.push(evolutions[this.evolution].subEvolutions.slice(1).map((e)=>e.name));
 
   }
