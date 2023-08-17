@@ -1138,7 +1138,9 @@ io.on("connection", async (socket) => {
       var evo = evolutions[eclass];
       console.log(player.name + " evolved to " + eclass);
 
-
+      if (player.evolution) {
+        player.prevAbilityCooldown = evolutions[player.evolution].abilityCooldown;
+      }
 
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
