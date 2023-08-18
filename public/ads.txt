@@ -1,5 +1,5 @@
 ##################################
-# AdinPlay.com ads.txt - 2023-06-25
+# AdinPlay.com ads.txt - 2023-08-07
 ##################################
 
 OWNERDOMAIN=swordbattle.io
@@ -783,6 +783,7 @@ rubiconproject.com, 23844, RESELLER
 
 
 # Adagio
+
 adagio.io, 1361, RESELLER
 # Adagio - Magnite
 rubiconproject.com, 19116, RESELLER, 0bfd66d529a55807
@@ -792,10 +793,98 @@ pubmatic.com, 159110, RESELLER, 5d62403b186f2ace
 improvedigital.com, 1790, RESELLER
 # Adagio - Onetag
 onetag.com, 6b859b96c564fbe, RESELLER
-# Adagio - Index Exchange
+appnexus.com, 13099, RESELLER
+pubmatic.com, 161593, RESELLER, 5d62403b186f2ace
+# Adagio - Equativ
+smartadserver.com, 3554, RESELLER
+adyoulike.com, b4bf4fdd9b0b915f746f6747ff432bde, RESELLER
+# Adagio - OpenX
+openx.com, 558899373, RESELLER, 6a698e2ec38604c6
+# Adagio - E-Planning
+e-planning.net, 83c06e81531537f4, RESELLER, c1ba615865ed87b2
+pubmatic.com, 156631, RESELLER, 5d62403b186f2ace
+openx.com, 541031350, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 12186, RESELLER, 0bfd66d529a55807
+# Adagio - Index Exchange - Pending Bidder Whitelisting
 indexexchange.com, 194558, RESELLER
+# Adagio - 33Across - Pending Bidder Whitelisting
+33across.com, 0015a00002oUk4aAAC, RESELLER, bbea06d9c4d2853c
+yahoo.com, 57289, RESELLER, e1a5b5b6e3255540
+appnexus.com, 10239, RESELLER, f5ab79cb980f11d1
+rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807
+pubmatic.com, 156423, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 21642, RESELLER, 0bfd66d529a55807
+conversantmedia.com, 100141, RESELLER
+indexexchange.com, 191973, RESELLER, 50b1c356f2c5c8fc
+openx.com, 537120563, RESELLER, 6a698e2ec38604c6
+contextweb.com, 561516, RESELLER, 89ff185a4c4e857c
+triplelift.com, 12503, RESELLER, 6c33edb13117fd86
+video.unrulymedia.com, 2439829435, RESELLER
+loopme.com, 11575, RESELLER, 6c8d5f95897a5a3b
+# Adagio - Sovrn - Pending Bidder Whitelisting
+lijit.com, 367236, RESELLER, fafdf38b16bf6b2b
+appnexus.com, 1019, RESELLER, f5ab79cb980f11d1
+# Adagio - Yahoo - Pending Bidder Whitelisting
+yahoo.com, 59973, RESELLER, e1a5b5b6e3255540
+appnexus.com, 11664, RESELLER
+indexexchange.com, 195924, RESELLER
+pubmatic.com, 156325, RESELLER, 5d62403b186f2ace
+pubmatic.com, 155967, RESELLER, 5d62403b186f2ace
+openx.com, 544096208, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 17250, RESELLER, 0bfd66d529a55807
+telaria.com, 4jdlm-4qsx9, RESELLER, 1a4e959a1b50034a
+tremorhub.com, 4jdlm-4qsx9, RESELLER, 1a4e959a1b50034a
+emxdgt.com, 1291, RESELLER, 1e1d41537f7cad7f
+contextweb.com, 561707, RESELLER, 89ff185a4c4e857c
+sharethrough.com, 8bab9627, RESELLER, d53b998a7bd4ecd2
+gumgum.com, 15563, RESELLER, ffdef49475d318a9
+# Adagio - Freewheel - Pending Bidder Whitelisting
+freewheel.tv, 1568036, RESELLER
+freewheel.tv, 1568041, RESELLER
+# Adagio - Triplelift - Pending Bidder Whitelisting
+triplelift.com, 13482, RESELLER, 6c33edb13117fd86
+
+
+
+#Freewheel
+
+freewheel.tv, 1598995, RESELLER
+freewheel.tv, 1599004, RESELLER
+
+
+#Pgam
+
+pgamssp.com, 64661fa49d522e327b0a8b84, DIRECT
+freewheel.tv, 1489202, RESELLER
+freewheel.tv, 1488706, RESELLER
+rubiconproject.com, 24852, RESELLER, 0bfd66d529a55807
+pubmatic.com, 162623, RESELLER, 5d62403b186f2ace
+video.unrulymedia.com, 5921144960123684292, RESELLER
+appnexus.com, 9291, RESELLER
+
+
+#Sonobi
+
+sonobi.com, 3ee2ca3952, DIRECT, d1a215d9eb5aee9e
+
+
+#Rich Audience
+
+richaudience.com, kWVs0vbyki, DIRECT
+appnexus.com, 2928, DIRECT
+appnexus.com, 8233, DIRECT
+
+#Ozone
+
+the-ozone-project.com, OZONEAIP0001, DIRECT  
+appnexus.com, 9979, RESELLER                                                  
+openx.com, 540731760, RESELLER, 6a698e2ec38604c6                            
+adform.com, 2657, RESELLER, 9f5210a2f0999e32                                  
+pubmatic.com, 160557, RESELLER, 5d62403b186f2ace                              
+indexexchange.com, 206233, RESELLER, 50b1c356f2c5c8fc
+themediagrid.com, 1J3ZI6, DIRECT, 35d5010d7789b49d 
 
 
 ##################################
-# AdinPlay.com ads.txt - 2023-06-25
+# AdinPlay.com ads.txt - 2023-08-07
 ##################################
