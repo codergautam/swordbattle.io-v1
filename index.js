@@ -1142,6 +1142,7 @@ io.on("connection", async (socket) => {
 
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
+      player.ability = Date.now();
       player.checkSubEvolutions();
       player.updateValues();
 
