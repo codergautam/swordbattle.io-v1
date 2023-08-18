@@ -46,6 +46,8 @@ class Player {
     this.ability = 0;
     this.abilityActive = false;
 
+    this.prevAbilityCooldown = null;
+
    this.skin = "player";
     this.levelScale = 0.85;
 
@@ -351,11 +353,15 @@ return false;
     this.healWait = 5000;
     this.leech =1;
 
+    if (this.ability <= Date.now()) {
+      this.prevAbilityCooldown = null;
+    }
+
     if(Object.keys(this.evolutionData).length > 0) {
       Object.keys(this.evolutionData.default).forEach((prop) => {
        if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.default[prop];
       });
-      if(this.ability > Date.now() +evolutions[this.evolution].abilityCooldown) {
+      if(this.ability > Date.now() + (this.prevAbilityCooldown ?? evolutions[this.evolution].abilityCooldown)) {
       //  console.log("ability",this.ability);
         Object.keys(this.evolutionData.ability).forEach((prop) => {
          if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.ability[prop];
