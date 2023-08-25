@@ -47,7 +47,8 @@ try {
     const pingServers = (sethtml = true) => {
       var servers = {
         "us1": "https://sword-io-game.herokuapp.com",
-        "eu1": "https://europesword.herokuapp.com"
+        "eu1": "https://europesword.herokuapp.com",
+        "us2": "https://swordbattl2-c68254602948.herokuapp.com"
       };
 
       var ping = (server) => {
@@ -82,12 +83,12 @@ try {
         });
       };
       var pings = [];
-      var e = ["us1","eu1"];
-      var f = ["USA","Europe"];
+      var e = ["us1","us2","eu1"];
+      var f = ["USA","USA 2","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
-        // ping("us2").then(res2 => {
-        //   pings.push(res2);
+        ping("us2").then(res2 => {
+          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -108,7 +109,7 @@ try {
             }
           }
     });
-  // });
+  });
 });
 
     };
