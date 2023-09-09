@@ -475,7 +475,7 @@ class GameScene extends Phaser.Scene {
                 try {
 
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
@@ -1837,7 +1837,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
                 try {
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
 
