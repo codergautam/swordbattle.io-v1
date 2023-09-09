@@ -33,7 +33,6 @@
     "password-validator": "^5.2.1",
     "phaser": "3.55.2",
     "postgres": "^1.0.2",
-    "potato-detection": "^1.0.2",
     "purgomalum-swear-filter": "^1.0.2",
     "uui": "^1.0.7",
     "uuid": "^8.3.2",
