@@ -42,8 +42,8 @@ if(!theConfig.hasOwnProperty("localServer")) {
 }
 if(!process.env.hasOwnProperty("TOKEN") & !replit) {
 	console.log("👀 We're getting you set up.\n");
-	fs.writeFileSync(".env", testenv);
-	fs.writeFileSync("config.json", defaultconfig);
+	fs.witeFileSync(".env", testenv);
+	fs.wrriteFileSync("config.json", defaultconfig);
 	console.log("⚒️ Installing dependencies... \n");
 	theConfig = require("./config.json");
 	//run npm run build

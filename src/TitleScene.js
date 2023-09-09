@@ -330,6 +330,7 @@ try {
 
     const go = () => {
       let name = this.nameBox.getChildByName("name");
+      console.log(aiptag, "aiptag");
 
       // let name ={value: "hi"}
       if (!name) return;
@@ -342,6 +343,7 @@ try {
         console.log(this.playPreroll ? "preroll" : "no preroll");
 
         if (this.playPreroll) {
+          console.log(typeof aiptag.adplayer, "adplayer");
           if (typeof aiptag.adplayer !== "undefined") {
             this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
             this.nameBox.getChildByName("btn").style.backgroundColor = "grey";
@@ -363,9 +365,13 @@ try {
                    from the page, it will be hidden automaticly.
                    If you do want to remove it use the AIP_REMOVE callback.
                   */
+                 console.log("preroll complete", evt);
                   this.nameBox.destroy();
                   document.getElementById("game").focus();
-                  this.callback(myName, this.music, this.secret);
+                  let failed= false;
+                  if(evt == "video-ad-empty" || evt == "user-has-adblock") failed = true;
+                  // if(evt == "user-has-adblock") alert("Hi, we noticed you are using adblock on swordbattle.io.\n\n As a heavy adblock user myself, I understand the frustration of ads.\n However, as a free game we rely on ads for servers and development cost.\n If you would like to support us, please consider disabling adblock on swordbattle.io to remove this message.\n Thanks!\n- Gautam, lead dev @ swordbattle.io");
+                  this.callback(myName, this.music, this.secret, failed);
 document.getElementById("90pxadstyle").innerHTML = `
 #swordbattle-io_970x90 > div > iframe,
 #swordbattle-io_970x90 > iframe {
@@ -383,6 +389,7 @@ transform: translateX(-50%);
               });
             });
             aiptag.cmd.player.push(() => {
+              console.log("starting preroll");
               aiptag.adplayer.startPreRoll();
             });
           } else {
@@ -945,7 +952,7 @@ document.getElementById("shopFrame").style.display = "none";
     if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000)  || (((this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460) && document.getElementById("swordbattle-io_970x90").style.display == "" && document.getElementById("swordbattle-io_970x250").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
       this.lastAdRef = Number.MAX_SAFE_INTEGER;
       try {
-        console.log("adding ad (970x250)");
+        // console.log("adding ad (970x250)");
         document.getElementById("swordbattle-io_970x250").style.display = "";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
 
@@ -958,7 +965,7 @@ document.getElementById("shopFrame").style.display = "none";
     } else if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000) || ((this.canvas.height - (this.nameBox.y+this.nameBox.height) <= 460) && ( document.getElementById("swordbattle-io_970x250").style.display == "" && document.getElementById("swordbattle-io_970x90").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 300)) {
       // hide other ads
       this.lastAdRef = Number.MAX_SAFE_INTEGER;
-      console.log("adding ad (970x90)");
+      // console.log("adding ad (970x90)");
       try {
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "";
