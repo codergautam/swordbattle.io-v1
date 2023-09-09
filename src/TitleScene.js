@@ -96,7 +96,7 @@ try {
             alert("Could not find an available server. Please try again later.");
           } else {
 
-            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 15 ? Math.abs(15-p.info.playerCount)*100: 0) + (p.info.playerCount < 3 ? Math.abs(p.info.playerCount)*200: 0)).map((p) => !p ? Infinity : p);
+            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 10 ? Math.abs(10-p.info.playerCount)*100: 0) + (p.info.playerCount < 3 ? Math.abs(p.info.playerCount)*200: 0)).map((p) => !p ? Infinity : p);
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
@@ -344,7 +344,7 @@ try {
 
         if (this.playPreroll) {
           console.log(typeof aiptag.adplayer, "adplayer");
-          // if (typeof aiptag.adplayer !== "undefined") {
+          if (typeof aiptag.adplayer !== "undefined") {
             this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
             this.nameBox.getChildByName("btn").style.backgroundColor = "grey";
             this.music.stop();
@@ -369,6 +369,15 @@ try {
                   this.nameBox.destroy();
                   document.getElementById("game").focus();
                   let failed= false;
+                  try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const ad = urlParams.get('debugAd');
+                    if(ad) {
+                      alert(evt+ " ad completed");
+                    }
+                  } catch (e) {
+                    console.log("failed to get url params");
+                  }
                   if(evt == "video-ad-empty" || evt == "user-has-adblock") failed = true;
                   // if(evt == "user-has-adblock") alert("Hi, we noticed you are using adblock on swordbattle.io.\n\n As a heavy adblock user myself, I understand the frustration of ads.\n However, as a free game we rely on ads for servers and development cost.\n If you would like to support us, please consider disabling adblock on swordbattle.io to remove this message.\n Thanks!\n- Gautam, lead dev @ swordbattle.io");
                   this.callback(myName, this.music, this.secret, failed);
@@ -392,23 +401,35 @@ transform: translateX(-50%);
               console.log("starting preroll");
               aiptag.adplayer.startPreRoll();
             });
-      //     } else {
-      //       this.nameBox.destroy();
+          } else {
+            this.nameBox.destroy();
+            console.log("Failed because undefined");
+            // Check url query param
+            try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ad = urlParams.get('debugAd');
+            if(ad) {
+              alert("Ad failed to load -- aiptag is undefined");
+            }
+          } catch (e) {
+            console.log("failed to get url params");
+          }
 
-      //       document.getElementById("90pxadstyle").innerHTML = `
-      //       #swordbattle-io_970x90 > div > iframe,
-      //       #swordbattle-io_970x90 > iframe {
-      //   bottom: 0px;
-      //           left: 50%;
-      //   transform: translateX(-50%);
-      // }`;
-      //       this.callback(myName, this.music, this.secret);
-      //             document.getElementById("swordbattle-io_970x90").style.display = "none";
 
-      //             this.lastAdRef = Number.MAX_SAFE_INTEGER;
+            document.getElementById("90pxadstyle").innerHTML = `
+            #swordbattle-io_970x90 > div > iframe,
+            #swordbattle-io_970x90 > iframe {
+        bottom: 0px;
+                left: 50%;
+        transform: translateX(-50%);
+      }`;
+            this.callback(myName, this.music, this.secret, true);
+                  document.getElementById("swordbattle-io_970x90").style.display = "none";
 
-      //       document.getElementById("swordbattle-io_970x250").style.display = "none";
-      //     }
+                  this.lastAdRef = Number.MAX_SAFE_INTEGER;
+
+            document.getElementById("swordbattle-io_970x250").style.display = "none";
+          }
         } else {
 
           this.nameBox.destroy();
