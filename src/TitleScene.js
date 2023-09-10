@@ -96,7 +96,7 @@ try {
             alert("Could not find an available server. Please try again later.");
           } else {
 
-            var scores = pings.map(p => (p.ping*3) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 10 ? Math.abs(p.info.playerCount-10)*100: 0) + (p.info.playerCount < 3 ? Math.abs(p.info.playerCount)*200: 0)).map((p) => !p ? Infinity : p);
+            var scores = pings.map(p => (p.ping*3) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.actualPlayercount > 10 ? Math.abs(p.info.actualPlayercount-10)*100: 0) + (p.info.actualPlayercount < 3 ? Math.abs(p.info.actualPlayercount)*200: 0)).map((p) => !p ? Infinity : p);
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
