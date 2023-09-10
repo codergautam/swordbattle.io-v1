@@ -341,8 +341,17 @@ try {
         if (access) window.localStorage.setItem("oldName", name.value);
         var myName = name.value;
         console.log(this.playPreroll ? "preroll" : "no preroll");
-
-        if (this.playPreroll) {
+        let debugMode = false;
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const ad = urlParams.get('debugAd');
+          if(ad) {
+            debugMode = true;
+          }
+        } catch (e) {
+          console.log("failed to get url params");
+        }
+        if (this.playPreroll || debugMode) {
           console.log(typeof aiptag.adplayer, "adplayer");
           if (typeof aiptag.adplayer !== "undefined") {
             this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
@@ -431,7 +440,6 @@ transform: translateX(-50%);
             document.getElementById("swordbattle-io_970x250").style.display = "none";
           }
         } else {
-
           this.nameBox.destroy();
           document.getElementById("90pxadstyle").innerHTML = `
           #swordbattle-io_970x90 > div > iframe,
