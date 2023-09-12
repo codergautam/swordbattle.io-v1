@@ -47,7 +47,8 @@ try {
     const pingServers = (sethtml = true) => {
       var servers = {
         "us1": "https://sword-io-game.herokuapp.com",
-        "eu1": "https://europesword.herokuapp.com"
+        "eu1": "https://europesword.herokuapp.com",
+        "us2": "https://swordbattl2-c68254602948.herokuapp.com"
       };
 
       var ping = (server) => {
@@ -82,12 +83,12 @@ try {
         });
       };
       var pings = [];
-      var e = ["us1","eu1"];
-      var f = ["USA","Europe"];
+      var e = ["us1","us2","eu1"];
+      var f = ["USA","USA 2","Europe"];
       ping("us1").then(res1 => {
         pings.push(res1);
-        // ping("us2").then(res2 => {
-        //   pings.push(res2);
+        ping("us2").then(res2 => {
+          pings.push(res2);
         ping("eu1").then(res3 => {
           pings.push(res3);
           //now calculate the optimal server.
@@ -95,7 +96,7 @@ try {
             alert("Could not find an available server. Please try again later.");
           } else {
 
-            var scores = pings.map(p => (p.ping*2) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.playerCount > 15 ? Math.abs(15-p.info.playerCount)*100 : 0)).map((p) => !p ? Infinity : p);
+            var scores = pings.map(p => (p.ping*3) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.actualPlayercount > 10 ? Math.abs(p.info.actualPlayercount-10)*100: 0) + (p.info.actualPlayercount < 3 ? Math.abs(p.info.actualPlayercount)*200: 0)).map((p) => !p ? Infinity : p);
             var best = e[scores.indexOf(Math.min(...scores))];
             console.log("optimal server found: " + best + " with score: " + Math.min(...scores));
             this.optimalServer = best;
@@ -108,7 +109,7 @@ try {
             }
           }
     });
-  // });
+  });
 });
 
     };
@@ -170,8 +171,63 @@ try {
 
     this.background = this.add.image(0, 0, "opening").setOrigin(0).setScrollFactor(0, 0).setScale(2);
     this.footer = this.add.dom(this.canvas.width / 2, this.canvas.height).createFromCache("footer").setOrigin(0.5).setScale(this.mobile ? 1 : 2);
+    this.featured = this.add.dom(0, this.canvas.height/3).createFromCache("featured").setOrigin(0).setScale(this.mobile ? 0 : 1);
+    async function fetchData() {
+      try {
+        const response = await fetch('/api/getfeaturedcontent');
+        const data = await response.json();
+        return data;
+      } catch (error) {
+        console.error('Error fetching data:', error);
+        return [];
+      }
+    }
+
+    // Function to render the featured items in the widget
+    // Function to render the featured items in the widget
+    function renderWidget(data) {
+      const featuredContentDiv = document.getElementById('featured-content');
+      featuredContentDiv.innerHTML = '';
+
+      data.forEach((item) => {
+        const itemDiv = document.createElement('div');
+        itemDiv.classList.add('featured-item');
+
+        const thumbnailImg = document.createElement('img');
+        thumbnailImg.src = item.source == "youtube" ? 'https://www.cdnlogo.com/logos/y/84/youtube.svg' : '/assets/images/sword.png';
+
+        const contentDiv = document.createElement('div');
+        contentDiv.classList.add('featured-item-content');
+
+        const titleH3 = document.createElement('h3');
+        titleH3.textContent = item.title;
+
+        const authorP = document.createElement('p');
+        authorP.textContent = item.author;
+        if(item.label) {
+          authorP.innerHTML += ` - <span style="color: orange; font-weight: bold;">${item.label}</span>`;
+        }
+
+        contentDiv.appendChild(titleH3);
+        contentDiv.appendChild(authorP);
+
+        itemDiv.appendChild(thumbnailImg);
+        itemDiv.appendChild(contentDiv);
+
+        // Add an event listener to open the content link when clicked
+        itemDiv.addEventListener('click', () => {
+          window.open(item.link, '_blank');
+        });
+
+        featuredContentDiv.appendChild(itemDiv);
+      });
+    }
 
 
+    // Fetch data and render the widget on page load
+      fetchData().then((data) => {
+      renderWidget(data);
+    });
     this.nameBox = this.add.dom(this.canvas.width / 2, 0).createFromCache("title");
 
     if (this.showPromo) {
@@ -274,6 +330,7 @@ try {
 
     const go = () => {
       let name = this.nameBox.getChildByName("name");
+      console.log(aiptag, "aiptag");
 
       // let name ={value: "hi"}
       if (!name) return;
@@ -284,8 +341,18 @@ try {
         if (access) window.localStorage.setItem("oldName", name.value);
         var myName = name.value;
         console.log(this.playPreroll ? "preroll" : "no preroll");
-
-        if (this.playPreroll) {
+        let debugMode = false;
+        try {
+          const urlParams = new URLSearchParams(window.location.search);
+          const ad = urlParams.get('debugAd');
+          if(ad) {
+            debugMode = true;
+          }
+        } catch (e) {
+          console.log("failed to get url params");
+        }
+        if (this.playPreroll || debugMode) {
+          console.log(typeof aiptag.adplayer, "adplayer");
           if (typeof aiptag.adplayer !== "undefined") {
             this.nameBox.getChildByName("btn").innerHTML = "Connecting..";
             this.nameBox.getChildByName("btn").style.backgroundColor = "grey";
@@ -307,9 +374,22 @@ try {
                    from the page, it will be hidden automaticly.
                    If you do want to remove it use the AIP_REMOVE callback.
                   */
+                 console.log("preroll complete", evt);
                   this.nameBox.destroy();
                   document.getElementById("game").focus();
-                  this.callback(myName, this.music, this.secret);
+                  let failed= false;
+                  try {
+                    const urlParams = new URLSearchParams(window.location.search);
+                    const ad = urlParams.get('debugAd');
+                    if(ad) {
+                      alert(evt+ " ad completed");
+                    }
+                  } catch (e) {
+                    console.log("failed to get url params");
+                  }
+                  if(evt == "video-ad-empty" || evt == "user-has-adblock") failed = true;
+                  // if(evt == "user-has-adblock") alert("Hi, we noticed you are using adblock on swordbattle.io.\n\n As a heavy adblock user myself, I understand the frustration of ads.\n However, as a free game we rely on ads for servers and development cost.\n If you would like to support us, please consider disabling adblock on swordbattle.io to remove this message.\n Thanks!\n- Gautam, lead dev @ swordbattle.io");
+                  this.callback(myName, this.music, this.secret, failed);
 document.getElementById("90pxadstyle").innerHTML = `
 #swordbattle-io_970x90 > div > iframe,
 #swordbattle-io_970x90 > iframe {
@@ -327,10 +407,23 @@ transform: translateX(-50%);
               });
             });
             aiptag.cmd.player.push(() => {
+              console.log("starting preroll");
               aiptag.adplayer.startPreRoll();
             });
           } else {
             this.nameBox.destroy();
+            console.log("Failed because undefined");
+            // Check url query param
+            try {
+            const urlParams = new URLSearchParams(window.location.search);
+            const ad = urlParams.get('debugAd');
+            if(ad) {
+              alert("Ad failed to load -- aiptag is undefined");
+            }
+          } catch (e) {
+            console.log("failed to get url params");
+          }
+
 
             document.getElementById("90pxadstyle").innerHTML = `
             #swordbattle-io_970x90 > div > iframe,
@@ -339,7 +432,7 @@ transform: translateX(-50%);
                 left: 50%;
         transform: translateX(-50%);
       }`;
-            this.callback(myName, this.music, this.secret);
+            this.callback(myName, this.music, this.secret, true);
                   document.getElementById("swordbattle-io_970x90").style.display = "none";
 
                   this.lastAdRef = Number.MAX_SAFE_INTEGER;
@@ -347,7 +440,6 @@ transform: translateX(-50%);
             document.getElementById("swordbattle-io_970x250").style.display = "none";
           }
         } else {
-
           this.nameBox.destroy();
           document.getElementById("90pxadstyle").innerHTML = `
           #swordbattle-io_970x90 > div > iframe,
@@ -841,17 +933,39 @@ document.getElementById("shopFrame").style.display = "none";
       duration: 1000,
       ease: "Power2"
     });
+    if(this.instantStart) {
+      go();
+    }
 
   }
 
   update(d) {
     this.nameBox.y = (this.mobile ? this.text.y + (this.text.height / 2) : this.text.y + (this.text.height));
 
+
     var footery = this.canvas.height - (this.footer.height);
     if (this.canvas.height < 384) footery = this.canvas.height - (this.footer.height / 2);
 
 
     if (this.footerdone && this.footer.y != footery) this.footer.y = footery;
+
+
+    // console.log(this.canvas.width + " " + this.canvas.height, this.canvas.width / this.canvas.height);
+    this.featured.y = this.canvas.height/3;
+    this.featured.setScale(0.9)
+    if(this.canvas.width < 1000 || this.canvas.height < 700 || this.mobile) {
+      if(this.mobile) {
+      this.featured.visible = false;
+      }
+      if((this.canvas.width / this.canvas.height > 1.4 || this.canvas.width / this.canvas.height < 1.1) || this.canvas.width < 750 || this.height < 600) {
+        this.featured.visible = false;
+      } else {
+        this.featured.visible = true;
+      }
+    } else {
+      this.featured.visible = true;
+    }
+
 
     if(Date.now() - this.sceneStart > 1000) {
 
@@ -867,12 +981,12 @@ document.getElementById("shopFrame").style.display = "none";
     if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000)  || (((this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460) && document.getElementById("swordbattle-io_970x90").style.display == "" && document.getElementById("swordbattle-io_970x250").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 460)) {
       this.lastAdRef = Number.MAX_SAFE_INTEGER;
       try {
-        console.log("adding ad (970x250)");
+        // console.log("adding ad (970x250)");
         document.getElementById("swordbattle-io_970x250").style.display = "";
       document.getElementById("swordbattle-io_970x90").style.display = "none";
 
       // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x250"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x250"); });
 // }
       } catch(e) {
 
@@ -880,12 +994,12 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x2
     } else if((!this.promo || !this.promo.visible) && ((Date.now() - this.lastAdRef > 4000) || ((this.canvas.height - (this.nameBox.y+this.nameBox.height) <= 460) && ( document.getElementById("swordbattle-io_970x250").style.display == "" && document.getElementById("swordbattle-io_970x90").style.display == "none" ))) && (this.canvas.height - (this.nameBox.y+this.nameBox.height) > 300)) {
       // hide other ads
       this.lastAdRef = Number.MAX_SAFE_INTEGER;
-      console.log("adding ad (970x90)");
+      // console.log("adding ad (970x90)");
       try {
       document.getElementById("swordbattle-io_970x250").style.display = "none";
       document.getElementById("swordbattle-io_970x90").style.display = "";
       // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
       } catch(e) {
 

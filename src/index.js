@@ -67,8 +67,8 @@ function storageAvailable(type) {
 
 var sva = storageAvailable("localStorage");
 //var sva=false
-var playPreroll = false;
-if(sva && window.localStorage.getItem("lastAd") === null) {
+var firstPlay = window.localStorage.getItem("lastAd") === null ? true : false;
+if(sva && firstPlay) {
 window.localStorage.setItem("lastAd", 0);
 var lastAd = 0;
 } else if(!sva) {
@@ -82,13 +82,15 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 600000;
-var gameScene = new GameScene((data) => {
+var adDelay = 120000;
+var gameScene = new GameScene((instantStart=false) => {
     titleScene.playPreroll = Date.now() - lastAd > adDelay;
-    playPreroll = true;
+    console.log(instantStart, "instantStart");
+    titleScene.instantStart = instantStart;
+    firstPlay = false;
 });
-
-var titleScene = new TitleScene(((lastAd != 0) && (Date.now() - lastAd > adDelay) && playPreroll), (name, music, secret) => {
+console.log(Date.now()-lastAd, "lastAd")
+var titleScene = new TitleScene(((Date.now() - lastAd > adDelay) && !firstPlay), (name, music, secret, adFailed = false) => {
     gameScene.name = name;
     gameScene.options = titleScene.options;
     if(gameScene.options.server == "auto") gameScene.options.server = titleScene.optimalServer;
@@ -97,10 +99,10 @@ var titleScene = new TitleScene(((lastAd != 0) && (Date.now() - lastAd > adDelay
 
     titleScene.scene.start("game");
     titleScene.showPromo = false;
-    console.log(Date.now()-lastAd, playPreroll)
+    if(!adFailed) {
+    console.log(Date.now()-lastAd, "lastAd")
 
-    if(playPreroll && ( Date.now() - lastAd > adDelay)) {
-        console.log(Date.now()-lastAd)
+    if(( Date.now() - lastAd > adDelay)) {
         if(sva){
       window.localStorage.setItem("lastAd", Date.now());
        lastAd = Date.now();
@@ -108,11 +110,15 @@ var titleScene = new TitleScene(((lastAd != 0) && (Date.now() - lastAd > adDelay
       lastAd = Date.now();
     }
 }
+}else {
+    console.log("ad failed")
+}
 });
 
 titleScene.mobile = mobile;
 gameScene.mobile = mobile;
 openScene.mobile = mobile;
+titleScene.instantStart = false;
 
 if(!mobile) titleScene.showPromo = true;
 //titleScene.showPromo = false;

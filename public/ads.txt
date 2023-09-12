@@ -1,5 +1,5 @@
 ##################################
-# AdinPlay.com ads.txt - 2023-06-25
+# AdinPlay.com ads.txt - 2023-08-16
 ##################################
 
 OWNERDOMAIN=swordbattle.io
@@ -136,11 +136,11 @@ freewheel.tv, 1590601, RESELLER
 freewheel.tv, 1590606, RESELLER
 
 
-# 33Across 
+# 33Across
 rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807 #33Across #hb #tag
 rubiconproject.com, 21642, RESELLER, 0bfd66d529a55807 #33Across #hb #tag #viewable
 rubiconproject.com, 21434, RESELLER, 0bfd66d529a55807 #33Across #tag #ebda
-rubiconproject.com, 21720, RESELLER, 0bfd66d529a55807 #33Across EU #hb #tag 
+rubiconproject.com, 21720, RESELLER, 0bfd66d529a55807 #33Across EU #hb #tag
 pubmatic.com, 156423, RESELLER, 5d62403b186f2ace #33Across #hb #tag
 pubmatic.com, 158136, RESELLER, 5d62403b186f2ace #33Across EU #hb #tag
 pubmatic.com, 158569, RESELLER, 5d62403b186f2ace #33Across #tag #ebda
@@ -185,7 +185,7 @@ appnexus.com, 9624, RESELLER, f5ab79cb980f11d1
 adtech.com, 11506, RESELLER
 yahoo.com, 56896, RESELLER
 pubmatic.com, 156078, RESELLER, 5d62403b186f2ace
-advertising.com, 25218, RESELLER #video, US 
+advertising.com, 25218, RESELLER #video, US
 beachfront.com, 9065, RESELLER
 contextweb.com, 559969, RESELLER, 89ff185a4c4e857c
 indexexchange.com, 189455, RESELLER, 50b1c356f2c5c8fc
@@ -263,7 +263,7 @@ rubiconproject.com, 23042, RESELLER, 0bfd66d529a55807
 rubiconproject.com, 23044, RESELLER, 0bfd66d529a55807
 
 
-#V 01.02.2021 PH 
+#V 01.02.2021 PH
 
 
 advertising.com, 2694, RESELLER                                                # Verizon AOL video
@@ -286,7 +286,7 @@ improvedigital.com, 1012, RESELLER                                          # Im
 indexexchange.com, 183921, RESELLER, 50b1c356f2c5c8fc                          # Index video
 ironsrc.com, 5fa94677b2db6a00015b22a9, RESELLER                                # IronSource
 ironsrc.com, 5a169d7d9515390002000001, RESELLER                                # IronSource
-openx.com, 537140488, RESELLER, 6a698e2ec38604c6                               # IronSource 
+openx.com, 537140488, RESELLER, 6a698e2ec38604c6                               # IronSource
 pubmatic.com, 159087, RESELLER, 5d62403b186f2ace                               # IronSource
 advertising.com, 8693, RESELLER                                                # IronSource
 lkqd.net, 304, RESELLER, 59c49fa9598a0117                                      # LKQD video
@@ -448,12 +448,12 @@ pubmatic.com, 159110, RESELLER, 5d62403b186f2ace                              # 
 improvedigital.com, 1790, RESELLER                                            # Adagio_0_6
 onetag.com, 6b859b96c564fbe, RESELLER                                         # Adagio_0_6
 indexexchange.com, 194558, RESELLER, 50b1c356f2c5c8fc                                      # Adagio_0_6
-richaudience.com, 1BTOoaD22a, DIRECT                                          # Adagio_0_6  
-33across.com, 0015a00002oUk4aAAC, DIRECT, bbea06d9c4d2853c                    # Adagio_0_6 
-yahoo.com, 57289, RESELLER, e1a5b5b6e3255540                                  # Adagio_0_6 
-appnexus.com, 10239, RESELLER, f5ab79cb980f11d1                               # Adagio_0_6 
-rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807                         # Adagio_0_6 
-lijit.com, 367236, RESELLER, fafdf38b16bf6b2b                                 # Adagio_0_6 
+richaudience.com, 1BTOoaD22a, DIRECT                                          # Adagio_0_6
+33across.com, 0015a00002oUk4aAAC, DIRECT, bbea06d9c4d2853c                    # Adagio_0_6
+yahoo.com, 57289, RESELLER, e1a5b5b6e3255540                                  # Adagio_0_6
+appnexus.com, 10239, RESELLER, f5ab79cb980f11d1                               # Adagio_0_6
+rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807                         # Adagio_0_6
+lijit.com, 367236, RESELLER, fafdf38b16bf6b2b                                 # Adagio_0_6
 amxrtb.com, 105199358, DIRECT                                                 # AdaptMX_1_6&7
 indexexchange.com, 191503, RESELLER, 50b1c356f2c5c8fc             # AdaptMX_1_6&7
 appnexus.com, 11786, RESELLER, f5ab79cb980f11d1                   # AdaptMX_1_6&7
@@ -495,7 +495,7 @@ yahoo.com, 55317, RESELLER, e1a5b5b6e3255540                                  # 
 media.net, 8CU322PTV, RESELLER                                                # Aniview_5_7
 freewheel.tv, 1157665, RESELLER                                               # Aniview_5_7
 freewheel.tv, 1157681, RESELLER                                               # Aniview_5_7
-blockthrough.com, 5698090870767616, DIRECT                                    # Blockthrough                       
+blockthrough.com, 5698090870767616, DIRECT                                    # Blockthrough
 appnexus.com, 6979, RESELLER, f5ab79cb980f11d1                 # Blockthrough
 indexexchange.com, 194341, RESELLER, 50b1c356f2c5c8fc                         # Blockthrough
 indexexchange.com, 194341, DIRECT, 50b1c356f2c5c8fc                          # Blockthrough
@@ -539,8 +539,8 @@ indexexchange.com, 184081, RESELLER, 50b1c356f2c5c8fc                         # 
 contextweb.com, 562001, RESELLER, 89ff185a4c4e857c                            # Kargo_0_6
 appnexus.com, 8173, RESELLER, f5ab79cb980f11d1                                # Kargo_0_6
 rubiconproject.com, 11864, RESELLER, 0bfd66d529a55807                         # Kargo_0_6
-loopme.com, 11398, RESELLER, 6c8d5f95897a5a3b                                # Loopme_4_6&7	
-loopme.com, 11511,RESELLER,6c8d5f95897a5a3b                                   # Loopme_4_6&7	                                   
+loopme.com, 11398, RESELLER, 6c8d5f95897a5a3b                                # Loopme_4_6&7
+loopme.com, 11511,RESELLER,6c8d5f95897a5a3b                                   # Loopme_4_6&7
 xandr.com, 13799, RESELLER                                                    # Loopme_2_6&7
 freewheel.tv, 1137745, RESELLER                                               # Loopme_2_6&7
 freewheel.tv, 1138513, RESELLER                                               # Loopme_2_6&7
@@ -550,7 +550,7 @@ rubiconproject.com, 20744, RESELLER, 0bfd66d529a55807                         # 
 sovrn.com, 400766, RESELLER, fafdf38b16bf6b2b                                 # Loopme_2_6&7
 rubiconproject.com, 17902, RESELLER, 0bfd66d529a55807                         # Magnite_1_6&7
 rubiconproject.com,  13762, RESELLER, 0bfd66d529a55807                        # Magnite_0&2_6&7
-media.net, 8CU8ARTF8, DIRECT                                                  # Media.net   
+media.net, 8CU8ARTF8, DIRECT                                                  # Media.net
 openx.com, 537100188, RESELLER, 6a698e2ec38604c6                              # Media.net
 pubmatic.com, 159463, RESELLER, 5d62403b186f2ace                              # Media.net
 emxdgt.com, 1759, RESELLER, 1e1d41537f7cad7f                                  # Media.net
@@ -605,11 +605,11 @@ appnexus.com, 8233, DIRECT, f5ab79cb980f11d1                          # Rich Aud
 rubiconproject.com, 13510, DIRECT, 0bfd66d529a55807                      # Rich Audience_0_6&7
 openx.com, 539625136, RESELLER, 6a698e2ec38604c6                          # Rich Audience_0_6&7
 yahoo.com, 57857, RESELLER, e1a5b5b6e3255540                                  # Rich Audience_0_6&7
-risecodes.com, 5fa94677b2db6a00015b22a9, DIRECT                               # Rise_4_7	
-sharethrough.com, 5926d422, RESELLER, d53b998a7bd4ecd2                        # Rise_4_7	
-sonobi.com, 4a289cdd79, RESELLER, d1a215d9eb5aee9e                            # Rise_4_7	
-rubiconproject.com, 23876, RESELLER, 0bfd66d529a55807                         # Rise_4_7	
-yahoo.com, 59261, RESELLER                                                    # Rise_4_7	
+risecodes.com, 5fa94677b2db6a00015b22a9, DIRECT                               # Rise_4_7
+sharethrough.com, 5926d422, RESELLER, d53b998a7bd4ecd2                        # Rise_4_7
+sonobi.com, 4a289cdd79, RESELLER, d1a215d9eb5aee9e                            # Rise_4_7
+rubiconproject.com, 23876, RESELLER, 0bfd66d529a55807                         # Rise_4_7
+yahoo.com, 59261, RESELLER                                                    # Rise_4_7
 pubmatic.com, 160295, RESELLER, 5d62403b186f2ace                              # Rise_4_7
 yahoo.com, 59261, RESELLER, e1a5b5b6e3255540                                  # Rise_4_7
 synacor.com, 82401, RESELLER, e108f11b2cdf7d5b                                # Rise_4_7
@@ -731,7 +731,7 @@ axonix.com, 57264, RESELLER
 admanmedia.com, 43, RESELLER
 sharethrough.com, OAW69Fon, RESELLER, d53b998a7bd4ecd2
 contextweb.com, 560288, RESELLER, 89ff185a4c4e857c
-
+themediagrid.com, 4DQHAP, RESELLER, 35d5010d7789b49d
 
 #nobid
 
@@ -783,6 +783,7 @@ rubiconproject.com, 23844, RESELLER
 
 
 # Adagio
+
 adagio.io, 1361, RESELLER
 # Adagio - Magnite
 rubiconproject.com, 19116, RESELLER, 0bfd66d529a55807
@@ -792,10 +793,98 @@ pubmatic.com, 159110, RESELLER, 5d62403b186f2ace
 improvedigital.com, 1790, RESELLER
 # Adagio - Onetag
 onetag.com, 6b859b96c564fbe, RESELLER
-# Adagio - Index Exchange
+appnexus.com, 13099, RESELLER
+pubmatic.com, 161593, RESELLER, 5d62403b186f2ace
+# Adagio - Equativ
+smartadserver.com, 3554, RESELLER
+adyoulike.com, b4bf4fdd9b0b915f746f6747ff432bde, RESELLER
+# Adagio - OpenX
+openx.com, 558899373, RESELLER, 6a698e2ec38604c6
+# Adagio - E-Planning
+e-planning.net, 83c06e81531537f4, RESELLER, c1ba615865ed87b2
+pubmatic.com, 156631, RESELLER, 5d62403b186f2ace
+openx.com, 541031350, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 12186, RESELLER, 0bfd66d529a55807
+# Adagio - Index Exchange - Pending Bidder Whitelisting
 indexexchange.com, 194558, RESELLER
+# Adagio - 33Across - Pending Bidder Whitelisting
+33across.com, 0015a00002oUk4aAAC, RESELLER, bbea06d9c4d2853c
+yahoo.com, 57289, RESELLER, e1a5b5b6e3255540
+appnexus.com, 10239, RESELLER, f5ab79cb980f11d1
+rubiconproject.com, 16414, RESELLER, 0bfd66d529a55807
+pubmatic.com, 156423, RESELLER, 5d62403b186f2ace
+rubiconproject.com, 21642, RESELLER, 0bfd66d529a55807
+conversantmedia.com, 100141, RESELLER
+indexexchange.com, 191973, RESELLER, 50b1c356f2c5c8fc
+openx.com, 537120563, RESELLER, 6a698e2ec38604c6
+contextweb.com, 561516, RESELLER, 89ff185a4c4e857c
+triplelift.com, 12503, RESELLER, 6c33edb13117fd86
+loopme.com, 11575, RESELLER, 6c8d5f95897a5a3b
+# Adagio - Sovrn - Pending Bidder Whitelisting
+lijit.com, 367236, RESELLER, fafdf38b16bf6b2b
+appnexus.com, 1019, RESELLER, f5ab79cb980f11d1
+# Adagio - Yahoo - Pending Bidder Whitelisting
+yahoo.com, 59973, RESELLER, e1a5b5b6e3255540
+appnexus.com, 11664, RESELLER
+indexexchange.com, 195924, RESELLER
+pubmatic.com, 156325, RESELLER, 5d62403b186f2ace
+pubmatic.com, 155967, RESELLER, 5d62403b186f2ace
+openx.com, 544096208, RESELLER, 6a698e2ec38604c6
+rubiconproject.com, 17250, RESELLER, 0bfd66d529a55807
+telaria.com, 4jdlm-4qsx9, RESELLER, 1a4e959a1b50034a
+tremorhub.com, 4jdlm-4qsx9, RESELLER, 1a4e959a1b50034a
+emxdgt.com, 1291, RESELLER, 1e1d41537f7cad7f
+contextweb.com, 561707, RESELLER, 89ff185a4c4e857c
+sharethrough.com, 8bab9627, RESELLER, d53b998a7bd4ecd2
+gumgum.com, 15563, RESELLER, ffdef49475d318a9
+# Adagio - Freewheel - Pending Bidder Whitelisting
+freewheel.tv, 1568036, RESELLER
+freewheel.tv, 1568041, RESELLER
+# Adagio - Triplelift - Pending Bidder Whitelisting
+triplelift.com, 13482, RESELLER, 6c33edb13117fd86
+video.unrulymedia.com, 5672421953199218469, RESELLER
+
+
+
+#Freewheel
+
+freewheel.tv, 1598995, RESELLER
+freewheel.tv, 1599004, RESELLER
+
+
+#Pgam
+
+pgamssp.com, 64661fa49d522e327b0a8b84, DIRECT
+freewheel.tv, 1489202, RESELLER
+freewheel.tv, 1488706, RESELLER
+rubiconproject.com, 24852, RESELLER, 0bfd66d529a55807
+pubmatic.com, 162623, RESELLER, 5d62403b186f2ace
+video.unrulymedia.com, 5921144960123684292, RESELLER
+appnexus.com, 9291, RESELLER
+
+
+#Sonobi
+
+sonobi.com, 3ee2ca3952, DIRECT, d1a215d9eb5aee9e
+
+
+#Rich Audience
+
+richaudience.com, kWVs0vbyki, DIRECT
+appnexus.com, 2928, DIRECT
+appnexus.com, 8233, DIRECT
+
+#Ozone
+
+the-ozone-project.com, OZONEAIP0001, DIRECT
+appnexus.com, 9979, RESELLER
+openx.com, 540731760, RESELLER, 6a698e2ec38604c6
+adform.com, 2657, RESELLER, 9f5210a2f0999e32
+pubmatic.com, 160557, RESELLER, 5d62403b186f2ace
+indexexchange.com, 206233, RESELLER, 50b1c356f2c5c8fc
+themediagrid.com, 1J3ZI6, DIRECT, 35d5010d7789b49d
 
 
 ##################################
-# AdinPlay.com ads.txt - 2023-06-25
+# AdinPlay.com ads.txt - 2023-08-16
 ##################################

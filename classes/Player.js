@@ -46,6 +46,8 @@ class Player {
     this.ability = 0;
     this.abilityActive = false;
 
+    this.prevAbilityCooldown = null;
+
    this.skin = "player";
     this.levelScale = 0.85;
 
@@ -287,7 +289,7 @@ var move = true;
       && evolutions[this.evolution].subEvolutions
       && evolutions[this.evolution].subEvolutions.length > 2
       && evolutions[this.evolution].subEvolutions[0] <= this.coins
-      && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1] && q[1] == evolutions[this.evolution].subEvolutions[2]) == -1
+      && this.evolutionQueue.findIndex((q) => q[0] == evolutions[this.evolution].subEvolutions[1].name && q[1] == evolutions[this.evolution].subEvolutions[2].name) == -1
       ) this.evolutionQueue.push(evolutions[this.evolution].subEvolutions.slice(1).map((e)=>e.name));
 
   }
@@ -351,11 +353,15 @@ return false;
     this.healWait = 5000;
     this.leech =1;
 
+    if (this.ability <= Date.now()) {
+      this.prevAbilityCooldown = null;
+    }
+
     if(Object.keys(this.evolutionData).length > 0) {
       Object.keys(this.evolutionData.default).forEach((prop) => {
        if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.default[prop];
       });
-      if(this.ability > Date.now() +evolutions[this.evolution].abilityCooldown) {
+      if(this.ability > Date.now() + (this.prevAbilityCooldown ?? evolutions[this.evolution].abilityCooldown)) {
       //  console.log("ability",this.ability);
         Object.keys(this.evolutionData.ability).forEach((prop) => {
          if(this.hasOwnProperty(prop)) this[prop] *= this.evolutionData.ability[prop];

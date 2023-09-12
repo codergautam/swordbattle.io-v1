@@ -333,7 +333,7 @@ class GameScene extends Phaser.Scene {
 					this.chat.toggled = !this.chat.toggled;
           if(this.spectating) {
 			  if(this.deadText.visible) {
-                       this.callback();
+                       this.callback(true);
                     this.socket.disconnect();
           this.scene.start("title");
 			  }
@@ -475,7 +475,7 @@ class GameScene extends Phaser.Scene {
                 try {
 
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
                 document.getElementById("swordbattle-io_970x90").style.display = "";
@@ -491,6 +491,8 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 								this.statsText.setFontSize(Math.min(this.canvas.width/35, this.canvas.height/25));
 							this.statsText.y += this.statsText.height;
 						this.playAgain.destroy();
+						this.home.destroy();
+
                   this.playAgain = new ImgButton(this, 0,0, "playAgainBtn",()=>{
 
                     try {
@@ -500,14 +502,33 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 
                     }
 
-                    this.callback();
+                    this.callback(true);
                     this.socket.disconnect();
           this.scene.start("title");
       });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
 
-              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+              this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight + 20;
               this.playAgain.btn.x = this.canvas.width/2;
               this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+
+							this.home = new ImgButton(this, 0,0, "homeBtn",()=>{
+
+								try {
+
+						document.getElementById("swordbattle-io_970x90").style.display = "none";
+								} catch(e) {
+
+								}
+
+								this.callback();
+								this.socket.disconnect();
+			this.scene.start("title");
+	});this.home.btn.setScale(Math.min(this.canvas.width/3533.33333333,this.canvas.height/2532.33333333));
+
+	this.home.btn.y = this.statsText.y + this.statsText.displayHeight - Math.min(200*this.playAgain.btn.scaleY, 80);
+
+					this.home.btn.x = this.canvas.width/2;
+					this.home.btn.x -= this.home.btn.displayWidth/2;
 
 
             }
@@ -542,7 +563,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://swordbattl2-c68254602948.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
@@ -1816,7 +1837,7 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 								this.dataText.setFontSize(Math.min(this.canvas.width/40, this.canvas.height/30));
                 try {
                   // if(!location.hostname.includes("swordbattle.io")){
-aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
+// aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x90"); });
 // }
 
 
@@ -1845,16 +1866,34 @@ aiptag.cmd.display.push(function() { aipDisplayTag.display("swordbattle-io_970x9
 
         }
 
-        this.callback();
+				this.callback(true);
         this.socket.disconnect();
 
           this.scene.start("title");
       });this.playAgain.btn.setScale(Math.min(this.canvas.width/6533.33333333,this.canvas.height/5532.33333333));
                 this.cameras.main.ignore(this.playAgain.btn);
 
-                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight;
+                          this.playAgain.btn.y = this.statsText.y + this.statsText.displayHeight + 20;
               this.playAgain.btn.x = this.canvas.width/2;
               this.playAgain.btn.x -= this.playAgain.btn.displayWidth/2;
+
+							this.home = new ImgButton(this, 0,0, "homeBtn",()=>{
+								try {
+												document.getElementById("swordbattle-io_970x90").style.display = "none";
+
+								} catch(e) {
+
+								}
+								this.callback();
+								this.socket.disconnect();
+
+									this.scene.start("title");
+							});this.home.btn.setScale(Math.min(this.canvas.width/3533.33333333,this.canvas.height/2532.33333333));
+												this.cameras.main.ignore(this.home.btn);
+
+																	this.home.btn.y = this.statsText.y + this.statsText.displayHeight - Math.min(200*this.playAgain.btn.scaleY, 80);
+											this.home.btn.x = this.canvas.width/2;
+											this.home.btn.x -= this.home.btn.displayWidth/2;
 
 
 			this.tweens.addCounter({

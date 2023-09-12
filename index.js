@@ -376,7 +376,7 @@ app.post("/api/changepassword", async (req,res) => {
   };
 
   newSecret = uuid.v4();
-  newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`
+  newAccount = await sql`UPDATE accounts SET password=${bcrypt.hashSync(req.body.newPass, 10)}, secret=${newSecret} WHERE secret=${req.body.secret}`;
   res.send({"Success": true, "secret": newSecret});
 });
 
@@ -661,8 +661,41 @@ app.post("/api/loginsecret", async (req, res) => {
 app.get("/skins", async (req, res) => {
   res.redirect("/shop");
 });
-app.get("/api/getFeaturedContent", () => {
-  console.log(content)
+app.get("/api/getFeaturedContent", (req,res) => {
+  function getRandomContent(arr, numItems = 3) {
+    // Create an array that considers the "chance" property
+    const weightedArray = [];
+    for (const item of arr) {
+      for (let i = 0; i < item.chance; i++) {
+        weightedArray.push(item);
+      }
+    }
+
+    // Shuffle the array to make the selection random
+    const shuffledArray = weightedArray.sort(() => 0.5 - Math.random());
+
+    // Select the specified number of unique items
+    const result = [];
+    const seen = new Set();
+    for (const item of shuffledArray) {
+      if (!seen.has(item.id) && result.length < numItems) {
+        result.push(item);
+        seen.add(item.id);
+      }
+    }
+
+    return result;
+  }
+
+  let out = getRandomContent(content);
+  // Sort the array by chance being higher (if they are same, then sort by created_at most recent)
+  out.sort((a, b) => {
+    // console.log(b.title, new Date(b.created_at), " - ", a.title, new Date(a.created_at), " = ", new Date(b.created_at).getTime() - new Date(a.created_at).getTime());
+    return new Date(b.created_at).getTime() - new Date(a.created_at).getTime();
+  });
+
+
+  res.send(out);
 });
 
 app.get("/shop", async (req, res) => {
@@ -1105,10 +1138,13 @@ io.on("connection", async (socket) => {
       var evo = evolutions[eclass];
       console.log(player.name + " evolved to " + eclass);
 
-
+      if (player.evolution) {
+        player.prevAbilityCooldown = evolutions[player.evolution].abilityCooldown;
+      }
 
         player.evolutionData = {default: evo.default(), ability: evo.ability()};
       player.evolution =evo.name;
+      player.ability = Date.now();
       player.checkSubEvolutions();
       player.updateValues();
 
