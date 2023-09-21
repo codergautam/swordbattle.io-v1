@@ -8,12 +8,12 @@
             "description": "The default skin"
         },
         {
-            "name": "sandcastle",
-            "displayName": "Sandcastle",
-            "url": "/assets/images/sandcastlePlayer.png",
+            "name": "pumpkin",
+            "displayName": "Pumpkin",
+            "url": "/assets/images/pumpkinPlayer.png",
             "price": 0,
-            "description": "The strength of a million grains of sand",
-            "original": 5000000
+            "original": 52500,
+            "description": "Very spooky..."
         },
         {
             "name": "yinyang",
@@ -385,13 +385,6 @@
             "url": "/assets/images/monkeyPlayer.png",
             "price": 51000,
             "description": "Le Monke"
-        },
-        {
-            "name": "pumpkin",
-            "displayName": "Pumpkin",
-            "url": "/assets/images/pumpkinPlayer.png",
-            "price": 52500,
-            "description": "Very spooky..."
         },
         {
             "name": "santa",
@@ -1113,6 +1106,13 @@
             "url": "/assets/images/scythePlayer.png",
             "price": 5000000,
             "description": "I'm coming for you!"
+        },
+        {
+            "name": "sandcastle",
+            "displayName": "Sandcastle",
+            "url": "/assets/images/sandcastlePlayer.png",
+            "description": "The strength of a million grains of sand",
+            "price": 5000000
         },
         {
             "name": "supremeneon",
