@@ -1059,7 +1059,7 @@ class GameScene extends Phaser.Scene {
 						} catch (e) {
 							// I honestly don't know why this is here, but it works so I'm not touching it
 						}
-						} else {
+						} else if(!player.zombie) {
 						this.miniMap.people.push({
 							id: player.id,
 							circle: this.add.circle(0, 0, 10, 0xFF0000)
@@ -1324,7 +1324,6 @@ class GameScene extends Phaser.Scene {
 						}
 
 						enemy.lastTick = Date.now();
-
 						enemy.playerObj = player;
 						enemy.bar.maxValue = player.maxHealth;
 						enemy.bar.setHealth(player.health);
@@ -2242,7 +2241,8 @@ this.lastCountriesClear = Date.now();
 
 		enemies.push({playerObj: this.myObj});
 		try {
-			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
+			console.log(enemies);
+			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().filter(a=>!a.playerObj.zombie);
 			var text = "";
 			var amIinit = false;
 			var limit = this.mobile || this.canvas.height < 550 ? 5 : 10;
