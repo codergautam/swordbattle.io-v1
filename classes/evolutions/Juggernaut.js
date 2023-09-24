@@ -13,10 +13,10 @@ class Juggernaut extends Evolution {
         return {
             maxHealth: 1.5,
             health: 1.5,
-            speed: 0.7,
+            speed: 0.8,
             scale: 1.4,
             power: 1,
-            resistance: 3.5,
+            resistance: 3.8,
             damage: 1.5,
             damageCooldown: 1.2,
             healAmount: 1.5,
