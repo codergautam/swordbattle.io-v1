@@ -29,7 +29,7 @@ class OpenScene extends Phaser.Scene {
       }
       console.time("load");
         this.e = true;
-        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0x008800).setOrigin(0).setScrollFactor(0, 0).setScale(2);
+        this.background = this.add.rectangle(0, 0, document.documentElement.clientWidth, document.documentElement.clientHeight, 0xFF5F1F).setOrigin(0).setScrollFactor(0, 0).setScale(2); // OLD HEX: 008800
    this.loadText =  this.add.text(0,0,"Loading").setOrigin(0.5,0.5);
    this.progressText = this.add.text(0,0,"please wait.").setOrigin(0.5,0.5);
 
@@ -162,7 +162,7 @@ var progress = 1 - (remainder / total);
         this.load.audio("chestHit", "/assets/sound/chesthit.wav");
 
 
-        this.load.image("opening", "/assets/images/opening.png");
+        this.load.image("opening", "/assets/images/openingFall.png");
         this.load.html("title", "/title.html");
         this.load.html("promo", "/promo.html");
         this.load.html("login", "/login.html");

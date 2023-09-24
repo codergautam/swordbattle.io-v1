@@ -1528,7 +1528,7 @@ class GameScene extends Phaser.Scene {
 						} else {
 
 						this.streak = 0;
-					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
+					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name.length < 0 ? "A Zombie" : enemy.playerObj.name}[/color][/b]`;
 						}
 					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
 					text.setData("index", this.killtxts.length);
@@ -2318,7 +2318,7 @@ this.lastCountriesClear = Date.now();
 
 		try {
 			// add one because count myself
-			if(!this.spectating)	this.playerCount.setText("Players: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+			if(!this.spectating)	this.playerCount.setText("Entities: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}

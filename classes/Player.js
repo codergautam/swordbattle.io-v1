@@ -450,7 +450,7 @@ DO UPDATE SET
 
 
       socketById.send("youDied", {
-        killedBy: this.name,
+        killedBy: this.zombie ? "A Zombie" : name,
         killerVerified: this.verified,
         killedById: this.id,
         timeSurvived: Date.now() - enemy.joinTime,
@@ -465,9 +465,9 @@ DO UPDATE SET
         }]);
       }
       //drop their coins
-      if(!enemy.zombie) {
+      // if(!enemy.zombie) {
       var drop = [];
-      var dropAmount = enemy.coins < 13 ? 10 : Math.round(enemy.coins < 25000 ? enemy.coins * 0.8 : Math.log10(enemy.coins) * 30000 - 111938.2002602);
+      var dropAmount = enemy.zombie ? enemy.coins >= 10000000 ? 5000 : 300 : enemy.coins < 13 ? 10 : Math.round(enemy.coins < 25000 ? enemy.coins * 0.8 : Math.log10(enemy.coins) * 30000 - 111938.2002602);
       var dropped = 0;
       while (dropped < dropAmount) {
         var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
@@ -486,7 +486,7 @@ DO UPDATE SET
         dropped += value;
         drop.push(coins[coins.length - 1]);
       }
-    }
+    // }
 
         io.sockets.send("coin", [drop, [enemy.pos.x, enemy.pos.y]]);
 
