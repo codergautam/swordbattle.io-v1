@@ -17,7 +17,7 @@ class AiPlayer extends Player {
         this.ai = true;
         this.zombie = Math.random() > .5;
         if(this.zombie) {
-          this.name = "";
+          this.name = "A Zombie";
           this.coins = 0;
         }
         this.target = undefined;
