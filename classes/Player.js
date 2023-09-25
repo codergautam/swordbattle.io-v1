@@ -409,6 +409,7 @@ return false;
     enemy.lastHit = Date.now();
     var oldHealth = enemy.health;
     enemy.health -= this.damage;
+      console.log(enemy.health, this.damage);
     if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
       enemy.health = enemy.maxHealth * 0.1;
 
