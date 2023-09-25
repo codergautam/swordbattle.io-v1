@@ -12,7 +12,7 @@ class Archergod extends Evolution {
     default() {
         return {
             maxHealth: 0.5,
-            health: 1,
+            health: 0.5,
             speed: 1.1,
             scale: 1,
             power: 1.5,
