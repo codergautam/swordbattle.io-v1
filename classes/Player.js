@@ -450,7 +450,7 @@ DO UPDATE SET
 
 
       socketById.send("youDied", {
-        killedBy: this.zombie ? "A Zombie" : name,
+        killedBy: this.zombie ? "A Zombie" : this.name,
         killerVerified: this.verified,
         killedById: this.id,
         timeSurvived: Date.now() - enemy.joinTime,
