@@ -5,8 +5,8 @@ class Fisherman extends Evolution {
     constructor() {
         super();
         this.name = "fisherman";
-        this.abilityDuration = 8000;
-        this.abilityCooldown = 30000;
+        this.abilityDuration = 7000;
+        this.abilityCooldown = 45000;
         this.subEvolutions = [];
     }
     default() {
