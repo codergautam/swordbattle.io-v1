@@ -245,6 +245,7 @@ var move = true;
 
 
            var touching = coins.filter((coin) => coin.touchingPlayer(this) && (!this.verified || coin.owner != this.name));
+    if(this.zombie) touching = [];
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
