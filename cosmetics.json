@@ -1067,7 +1067,7 @@
         {
             "name": "controller",
             "displayName": "Controller",
-            "url": "/assets/images/controlelrPlayer.png",
+            "url": "/assets/images/controllerPlayer.png",
             "price": 1600000,
             "description": "Use this to control the computer skin"
         },
