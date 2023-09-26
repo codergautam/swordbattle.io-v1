@@ -37,6 +37,9 @@ class AiPlayer extends Player {
 
         if(this.zombie) {
           this.skin = "realZombie";
+          if(Math.random() > .95) {
+            this.coins = 1000000;
+          }
         }
     }
     tick(coins, io, levels, chests) {
