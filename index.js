@@ -6,6 +6,16 @@
 |___/ \_/\_/ \___/|_|  \__,_|_.__/ \__,_|\__|\__|_|\___(_)_|\___/
 A game by Gautam
 */
+
+
+const { execSync } = require("child_process");
+let commit;
+try {
+  commit = execSync("git rev-parse HEAD").toString().trim();
+} catch (e) {
+  commit = "unknown";
+}
+console.log("\x1b[32mSwordbattle.io\x1b[0m server starting up... \nRunning \x1b[33m" + commit.slice(0, 7) + "\x1b[0m!");
 const express = require("express");
 const https = require("https");
 var http = require("http");
@@ -23,6 +33,9 @@ const filtery = new Filtery();
 var ipInfo = require("ip-info-finder");
 
 var usewebhook = false;
+var useDb = process.env.DATABASE_URL ? true : false;
+const dbText = "Database not connected. Enable your database using this tutorial: https://iogames.forum/t/integrating-database-to-swordbattle-v1-code/13458"
+console.log(useDb ? "Using database" : "Not using database");
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
 var Hook;
@@ -136,7 +149,7 @@ let xplb = null;
 var content = [];
 
 (async () => {
-  content = await sql`SELECT * FROM public.content`;
+  if(useDb) content = await sql`SELECT * FROM public.content`;
 })();
 
 var oldlevels = [
@@ -253,6 +266,7 @@ app.use("/assets", express.static("assets"));
 
 app.post("/api/buy", async (req, res) => {
   //read cosmetics.json
+  if(!useDb) return res.status(500).send(dbText);
   var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
 
   //get user data
@@ -307,6 +321,7 @@ app.post("/api/buy", async (req, res) => {
 });
 app.post("/api/equip", async (req, res) => {
   //read cosmetics.json
+  if(!useDb) return res.status(500).send(dbText);
   var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
 
   //get user data
@@ -353,6 +368,7 @@ app.post("/api/equip", async (req, res) => {
 });
 
 app.post("/api/changepassword", async (req,res) => {
+  if(!useDb) return res.status(500).send(dbText);
   if(typeof req.body !== "object" || typeof req.body.secret !== "string" || typeof req.body.oldPass !== "string" || typeof req.body.newPass !== "string") {
     res.status(400).send({error: "Missing fields"});
 		return;
@@ -381,6 +397,7 @@ app.post("/api/changepassword", async (req,res) => {
 });
 
 app.post("/api/changename", async (req,res) => {
+  if(!useDb) return res.status(500).send(dbText);
 	if(typeof req.body!=="object" || typeof req.body.secret !== "string" || typeof req.body.username !== "string") {
 		res.status(400).send({error: "Missing fields"});
 		return;
@@ -465,6 +482,7 @@ app.post("/api/changename", async (req,res) => {
 });
 
 app.post("/api/signup",checkifMissingFields, async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
 
 	if(typeof req.body!=="object" || typeof req.body.password !== "string" || typeof req.body.username !== "string") {
 		res.send({error: "Missing fields"});
@@ -567,6 +585,8 @@ if(recaptcha) {
 });
 
 app.post("/api/login",checkifMissingFields, async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
 
 
 	async function doit() {
@@ -615,6 +635,8 @@ app.post("/api/login",checkifMissingFields, async (req, res) => {
 });
 
 app.post("/api/loginsecret", async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
   if (!req.body || !req.body.secret || req.body.captcha == undefined) {
     res.send({ error: "Missing secret or captcha" });
     return;
@@ -659,9 +681,13 @@ app.post("/api/loginsecret", async (req, res) => {
 });
 
 app.get("/skins", async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
   res.redirect("/shop");
 });
 app.get("/api/getFeaturedContent", (req,res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
   function getRandomContent(arr, numItems = 3) {
     // Create an array that considers the "chance" property
     const weightedArray = [];
@@ -699,6 +725,8 @@ app.get("/api/getFeaturedContent", (req,res) => {
 });
 
 app.get("/shop", async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
   //read cosmetics.json
   var cosmetics = JSON.parse(fs.readFileSync("./cosmetics.json"));
 
@@ -739,6 +767,8 @@ if (secret != "undefined") {
 });
 
 app.get("/leaderboard", async (req, res) => {
+  if(!useDb) return res.status(500).send(dbText);
+
 
   var type = ["coins", "kills", "time", "xp","totalstabs","totaltime","totalcoins"].includes(req.query.type)
     ? req.query.type
@@ -838,6 +868,8 @@ app.get("/settings", async (req, res) => {
 let ipusers = {};
 let ips = {};
 app.get("/:user", async (req, res, next) => {
+  if(!useDb) return res.status(500).send(dbText);
+
   console.log("IP: " + req.ip + " is looking at " + req.params.user);
   if (!ipusers[req.params.user.toLowerCase()]) {
     ipusers[req.params.user.toLowerCase()] = [];
@@ -999,6 +1031,7 @@ io.on("connection", async (socket) => {
           name = name;
         }
       } else {
+        if(!useDb) return socket.send("ban",dbText);
         var accounts = await sql`select * from accounts where secret=${r}`;
         if (!accounts[0]) {
           socket.send(
@@ -1268,9 +1301,11 @@ console.log(thePlayer.name + " - " + socket.id + " disconnected");
                 io.sockets.send("coin", [drop, [thePlayer.pos.x, thePlayer.pos.y]]);
 
 
+                if(useDb) {
                 if(thePlayer.coins > 100000 || thePlayer.kills > 20 || thePlayer.time > 1800000) {
 		sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${thePlayer.name}, ${thePlayer.coins}, ${thePlayer.kills}, ${Date.now() - thePlayer.joinTime}, ${thePlayer.verified})`;
                 }
+              }
                 if(thePlayer.verified) {
                   /*
                   INSERT INTO public.stats (username, game_time, game_count, stabs, coins)
@@ -1535,6 +1570,7 @@ setInterval(async () => {
 server.listen(process.env.PORT || 3000, () => {
   console.log("server started on port: ", process.env.PORT || 3000);
   setTimeout(async () => {
+    if(!useDb) return;
     if(!xplb) {
       xplb = await sql`
       SELECT username, (SUM(coins) + SUM(stabs) * 300) AS xp
@@ -1672,6 +1708,7 @@ async function cleanExit() {
             "</h1><hr>"
         );
         socket.disconnect();
+        if(useDb) {
         if(player.coins > 100000 || player.kills > 20 || player.time > 1800000) {
         await sql`INSERT INTO games (name, coins, kills, time, verified) VALUES (${
           player.name
@@ -1679,6 +1716,7 @@ async function cleanExit() {
           player.verified
         })`;
       }
+    }
       if(player.verified) {
         /*
         INSERT INTO public.stats (username, game_time, game_count, stabs, coins)
@@ -1702,6 +1740,7 @@ DO UPDATE SET
 }
 
 setInterval(async () => {
+  if(!useDb) return;
  xplb = await sql`SELECT username, (SUM(coins) + SUM(stabs) * 300) AS xp
  FROM public.stats
  GROUP BY username

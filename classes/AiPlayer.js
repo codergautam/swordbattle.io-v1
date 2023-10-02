@@ -96,13 +96,13 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
     getEntities(coins) {
     var players;
     var entities;
-    if(this.zombie) {
-       players = Object.values(PlayerList.players).filter(p=>p && !p.ai && !p.zombie && p.id !== this.id && Date.now() - p.joinTime > 5000);
-       entities = players;
-    } else {
+    // if(this.zombie) {
+    //    players = Object.values(PlayerList.players).filter(p=>p && !p.ai && !p.zombie && p.id !== this.id && Date.now() - p.joinTime > 5000);
+    //    entities = players;
+    // } else {
       players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id);
       entities = coins;
-    }
+    // }
       return (this.coins < 5000 && Date.now() - this.joinTime < 5000 ? coins : (this.coins < 5000 ? entities : players));
       //return players
     }

@@ -5,5 +5,8 @@ const sql = postgres(process.env.DATABASE_URL, {max: 3, idle_timeout:30, ssl: {r
 console.log("Connected to database");
 module.exports = {sql: sql};
 } else {
-  throw new Error("Hmm, looks like you haven't run the setup wizard yet.\nPlease run `node setup` to get everything up & running\n\n");
+  module.exports = {sql: () => {
+    console.log("Error: calling sql() when database is not connected");
+  }};
+  // throw new Error("Hmm, looks like you haven't run the setup wizard yet.\nPlease run `node setup` to get everything up & running\n\n");
 }

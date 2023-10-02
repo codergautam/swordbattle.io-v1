@@ -245,7 +245,7 @@ var move = true;
 
 
            var touching = coins.filter((coin) => coin.touchingPlayer(this) && (!this.verified || coin.owner != this.name));
-    if(this.zombie) touching = [];
+    // if(this.zombie) touching = [];
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
@@ -410,7 +410,6 @@ return false;
     enemy.lastHit = Date.now();
     var oldHealth = enemy.health;
     enemy.health -= this.damage;
-      console.log(enemy.health, this.damage);
     if (enemy.health <= 0 && oldHealth * 2 >= enemy.maxHealth)
       enemy.health = enemy.maxHealth * 0.1;
 
