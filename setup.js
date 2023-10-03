@@ -5,6 +5,16 @@ if (process.env["REPLIT_DB_URL"]){
 const fs = require("fs");
 const {execSync} = require("child_process");
 const dotenv = require("dotenv");
+const shell = (cmd) => execSync(cmd, { encoding: 'utf8' });
+
+pkMan = "nvm"
+function executableIsAvailable(name){
+	try{ shell(`which ${name}`); return true}
+	catch(error){return false}
+}
+if (executableIsAvailable('bun')){
+	pkMan='bun'
+}
 dotenv.config();
 var testenv =
 `TOKEN=test
@@ -36,8 +46,8 @@ if(!theConfig.hasOwnProperty("localServer")) {
 	fs.writeFileSync("./config.json", defaultconfig);
 	theConfig = require("./config.json");
     console.log("⚡ Hold on...");
-    execSync("npm i --dev");
-	execSync("npm run build");
+    execSync(pkMan + " i --dev");
+	execSync(pkMan + " run build");
 	console.log("⚡ Done!");
 }
 if(!process.env.hasOwnProperty("TOKEN") & !replit) {
@@ -47,9 +57,9 @@ if(!process.env.hasOwnProperty("TOKEN") & !replit) {
 	console.log("⚒️ Installing dependencies... \n");
 	theConfig = require("./config.json");
 	//run npm run build
-    execSync("npm i --dev");
+    execSync(pkMan + " i --dev");
     console.log("\n ⚒️ Building code..\n");
-	execSync("npm run build");
+	execSync(pkMan + " run build");
 	console.log("✅ Done!");
 
 //	process.exit(1);
@@ -64,9 +74,9 @@ if(!process.env.hasOwnProperty("TOKEN") & replit){
 	console.log("⚒️ Installing dependencies... \n");
 	theConfig = require("./config.json");
 	//run npm run build
-    execSync("npm i --dev");
+    execSync(pkMan + " i --dev");
     console.log("\n ⚒️ Building code..\n");
-	execSync("npm run build");
+	execSync(pkMan + " run build");
 	console.log("✅ Done!");
 }
 
@@ -81,8 +91,8 @@ if(process.env.PRODUCTION == "true") {
 	console.log("Note: We've updated the config.json file to reflect this.\n");
 	console.log("If you're running this during development, the game won't work\n");
 	console.log("🔥 Creating a production build...");
-    execSync("npm i --dev");
-	execSync("npm run prod");
+    execSync(pkMan + " i --dev");
+	execSync(pkMan + " run prod");
 	console.log("✅ Done!\n");
 
 }
