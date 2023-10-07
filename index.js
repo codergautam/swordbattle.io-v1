@@ -65,10 +65,10 @@ if (process.env.USEFISHYSSL === "true") {
   usinghttps = true;
   var options = {
     key: fs.readFileSync(
-      "/etc/letsencrypt/live/www.swordbattle.io/privkey.pem"
+      process.env.PRIVKEYPATH
     ),
     cert: fs.readFileSync(
-      "/etc/letsencrypt/live/www.swordbattle.io/fullchain.pem"
+      process.env.FULLCHAINPATH
     ),
   };
   httpsserver = https.createServer(options, app).listen(443);
