@@ -151,6 +151,9 @@ try {
         antiAliasing: true
       };
     }
+    if(!this.options.hasOwnProperty("antiAliasing")) {
+      this.options.antiAliasing = true;
+    }
 
     try {
       this.music = this.sound.add("openingsound", {
