@@ -2241,7 +2241,6 @@ this.lastCountriesClear = Date.now();
 
 		enemies.push({playerObj: this.myObj});
 		try {
-			console.log(enemies);
 			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().filter(a=>!a.playerObj.zombie);
 			var text = "";
 			var amIinit = false;

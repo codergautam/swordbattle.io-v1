@@ -32,6 +32,30 @@ function handleConnection() {
 
 
 window.addEventListener("load", () => {
+    function storageAvailable(type) {
+        try {
+            var storage = window[type],
+                x = "__storage_test__";
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return false;
+        }
+    }
+
+    var sva = storageAvailable("localStorage");
+    let options;
+    if(!sva) options = {};
+    else {
+    try {
+        options = JSON.parse(window.localStorage.getItem("options"));
+    } catch (e) {
+        options = {};
+    }
+}
+    console.warn(options, "options");
 if(!navigator.onLine) handleConnection();
 var config = {
     type: Phaser.CANVAS,
@@ -44,28 +68,15 @@ var config = {
     },
     scale: {
         mode:Phaser.Scale.RESIZE,
-    }
-
+    },
+    pixelArt: (options?.antiAliasing == "false") ? true : false,
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
 
 var openScene = new OpenScene();
 
-function storageAvailable(type) {
-    try {
-        var storage = window[type],
-            x = "__storage_test__";
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch(e) {
-        return false;
-    }
-}
 
-var sva = storageAvailable("localStorage");
 //var sva=false
 var firstPlay = window.localStorage.getItem("lastAd") === null ? true : false;
 if(sva && firstPlay) {

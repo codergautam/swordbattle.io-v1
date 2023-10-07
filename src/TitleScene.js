@@ -137,7 +137,8 @@ try {
           movementMode: "keys",
           sound: "normal",
           server: "auto",
-          country: false
+          country: false,
+          antiAliasing: "true"
         };
         window.localStorage.setItem("options", JSON.stringify(this.options));
       }
@@ -146,7 +147,8 @@ try {
         movementMode: "keys",
         sound: "normal",
         server: "auto",
-        country: false
+        country: false,
+        antiAliasing: true
       };
     }
 
@@ -290,6 +292,7 @@ try {
       document.getElementById("sound").value = this.options.sound;
       document.getElementById("server").value = this.options.server;
       document.getElementById("country").checked = this.options.country;
+      document.getElementById("antiAliasing").checked = this.options.antiAliasing === "true";
 
       //ping servers
       pingServers();
@@ -313,6 +316,13 @@ try {
         } else if (this.options.sound == "off") {
           this.music.volume = 0;
         }
+      };
+      document.getElementById("antiAliasing").onchange = () => {
+        if(!access) alert("Error: unable to save antiAliasing.");
+        this.options.antiAliasing = document.getElementById("antiAliasing").checked.toString();
+        window.localStorage.setItem("options", JSON.stringify(this.options));
+        //reload the game rendering
+        window.location.reload();
       };
       document.getElementById("server").onchange = () => {
         this.options.server = document.getElementById("server").value;
