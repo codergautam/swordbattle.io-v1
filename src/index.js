@@ -29,7 +29,14 @@ function handleConnection() {
 }
 
 
-
+function canvas() {
+    let downGrade = 1; // Do not change this, it breaks the game
+    return {
+        width: document.documentElement.clientWidth/downGrade,
+        height: document.documentElement.clientHeight/downGrade,
+        downGrade
+    };
+}
 
 window.addEventListener("load", () => {
     function storageAvailable(type) {
@@ -59,17 +66,18 @@ window.addEventListener("load", () => {
 if(!navigator.onLine) handleConnection();
 var config = {
     type: Phaser.CANVAS,
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: canvas().width,
+    height: canvas().height,
     parent: "game",
     dom: {
         createContainer: true,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scale: {
-        mode:Phaser.Scale.RESIZE,
+        mode:Phaser.Scale.NONE,
     },
     pixelArt: (options?.antiAliasing == "false") ? true : false,
+    resolution: 0.5
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
@@ -134,12 +142,7 @@ titleScene.instantStart = false;
 if(!mobile) titleScene.showPromo = true;
 //titleScene.showPromo = false;
 
-function canvas() {
-    return {
-        width: document.documentElement.clientWidth,
-        height: document.documentElement.clientHeight
-    };
-}
+
 
 Object.defineProperty(titleScene, "canvas", {
     get: canvas
