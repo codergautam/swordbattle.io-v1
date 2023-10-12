@@ -48,7 +48,7 @@ try {
       var servers = {
         "us1": "https://sword-io-game.herokuapp.com",
         "eu1": "https://europesword.herokuapp.com",
-        "us2": "https://swordbattl2-c68254602948.herokuapp.com"
+        "us2": "https://sb.fishymine.xyz"
       };
 
       var ping = (server) => {
