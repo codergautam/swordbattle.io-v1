@@ -8,12 +8,12 @@
             "description": "The default skin"
         },
         {
-            "name": "sandcastle",
-            "displayName": "Sandcastle",
-            "url": "/assets/images/sandcastlePlayer.png",
+            "name": "pumpkin",
+            "displayName": "Pumpkin",
+            "url": "/assets/images/pumpkinPlayer.png",
             "price": 0,
-            "description": "The strength of a million grains of sand",
-            "original": 5000000
+            "original": 52500,
+            "description": "Very spooky..."
         },
         {
             "name": "yinyang",
@@ -387,13 +387,6 @@
             "description": "Le Monke"
         },
         {
-            "name": "pumpkin",
-            "displayName": "Pumpkin",
-            "url": "/assets/images/pumpkinPlayer.png",
-            "price": 52500,
-            "description": "Very spooky..."
-        },
-        {
             "name": "santa",
             "displayName": "Santa",
             "url": "/assets/images/santaPlayer.png",
@@ -506,6 +499,13 @@
             "description": "Pacakge and keep your coins safe"
         },
         {
+            "name": "whale",
+            "displayName": "Whale",
+            "url": "/assets/images/whalePlayer.png",
+            "price": 82500,
+            "description": "A chilling spray of water"
+        },
+        {
             "name": "cactus",
             "displayName": "Cactus",
             "url": "/assets/images/cactusPlayer.png",
@@ -595,6 +595,13 @@
             "url": "/assets/images/frameworkPlayer.png",
             "price": 125000,
             "description": "Built like a rock..."
+        },
+        {
+            "name": "blobfish",
+            "displayName": "Blobfish",
+            "url": "/assets/images/blobfishPlayer.png",
+            "price": 127500,
+            "description": "Don't leave the deep..."
         },
         {
             "name": "blueberry",
@@ -821,6 +828,13 @@
             "description": "Rule the cosmos"
         },
         {
+            "name": "dragonfruit",
+            "displayName": "DragonFruit",
+            "url": "/assets/images/dragonfruitPlayer.png",
+            "price": 320000,
+            "description": "Tastes like a pear pineapple"
+        },
+        {
             "name": "pirate",
             "displayName": "Pirate",
             "url": "/assets/images/piratePlayer.png",
@@ -856,11 +870,25 @@
             "description": "Make other players be in YOUR shadow"
         },
         {
+            "name": "magnet",
+            "displayName": "Magnet",
+            "url": "/assets/images/magnetPlayer.png",
+            "price": 380000,
+            "description": "Attracts gold"
+        },
+        {
             "name": "devex",
             "displayName": "Dev3x",
             "url": "/assets/images/devexPlayer.png",
             "price": 400000,
             "description": "3x the power!"
+        },
+        {
+            "name": "boar",
+            "displayName": "Boar",
+            "url": "/assets/images/boarPlayer.png",
+            "price":405000,
+            "description": "Sharp horns..."
         },
         {
             "name": "apocalypse",
@@ -898,11 +926,25 @@
             "description": "A photo with your friends"
         },
         {
+            "name": "bubblegum",
+            "displayName": "Bubblegum",
+            "url": "/assets/images/bubblegumPlayer.png",
+            "price": 480000,
+            "description": "Blow it slowly"
+        },
+        {
             "name": "angel",
             "displayName": "ANGEL",
             "url": "/assets/images/angelPlayer.png",
             "price": 500000,
             "description": "The best at PVP. Ever."
+        },
+        {
+            "name": "starhog",
+            "displayName": "Starhog",
+            "url": "/assets/images/starhogPlayer.png",
+            "price": 550000,
+            "description": "A  hog in  space doesn't seem right..."
         },
         {
             "name": "scuba",
@@ -1023,6 +1065,13 @@
             "description": "Scrumptious!"
         },
         {
+            "name": "controller",
+            "displayName": "Controller",
+            "url": "/assets/images/controllerPlayer.png",
+            "price": 1600000,
+            "description": "Use this to control the computer skin"
+        },
+        {
             "name": "computer",
             "displayName": "Computer",
             "url": "/assets/images/computerPlayer.png",
@@ -1115,6 +1164,13 @@
             "description": "I'm coming for you!"
         },
         {
+            "name": "sandcastle",
+            "displayName": "Sandcastle",
+            "url": "/assets/images/sandcastlePlayer.png",
+            "description": "The strength of a million grains of sand",
+            "price": 5000000
+        },
+        {
             "name": "supremeneon",
             "displayName": "Supreme Neon",
             "url": "/assets/images/supremeneonPlayer.png",
@@ -1162,6 +1218,13 @@
             "url": "/assets/images/dragonPlayer.png",
             "price": 50000000,
             "description": "The king of the skies... and swords."
+        },
+        {
+            "name": "acol",
+            "displayName": "Acol",
+            "url": "/assets/images/acolPlayer.png",
+            "price": 100000000,
+            "description": "The world's #1 player.."
         }
     ]
 }

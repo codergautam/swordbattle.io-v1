@@ -12,8 +12,14 @@ class AiPlayer extends Player {
       if (aiName.length > 2) aiName = aiName[1];
       else aiName = aiName[0];
 
+
         super(id,  aiName);
         this.ai = true;
+        this.zombie = Math.random() > .5;
+        if(this.zombie) {
+          this.name = "A Zombie";
+          this.coins = 0;
+        }
         this.target = undefined;
         this.lastHit = Date.now();
         this.mousePos.viewport.width = 1000;
@@ -22,11 +28,18 @@ class AiPlayer extends Player {
         this.movementMode = "mouse";
         let tf= Math.random();
         let validSkins = ["player", "yinyang", "neon", "sponge", "vortex", "bubble", "bullseye", "fox", "spring"];
-        
+
         if (tf > .75){
           this.skin = validSkins[Math.floor(Math.random()* validSkins.length)];
         } else {
           this.skin = "player";
+        }
+
+        if(this.zombie) {
+          this.skin = "realZombie";
+          if(Math.random() > .95) {
+            this.coins = 1000000;
+          }
         }
     }
     tick(coins, io, levels, chests) {
@@ -46,12 +59,14 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
          [coins,chests] = this.down(!this.mouseDown, coins, io, chests);
         }
         var tPos = this.getTpos();
+        if(tPos) {
         this.toSword = {
           x: this.mousePos.viewport.width / 2 + (tPos.x - this.pos.x),
           y: this.mousePos.viewport.height / 2 + (tPos.y - this.pos.y)
       };
         this.mousePos.x = lerp(this.mousePos.x, this.toSword.x, 0.2);
         this.mousePos.y = lerp(this.mousePos.y, this.toSword.y, 0.2);
+    }
 
       }
     //  var controller = this.getController();
@@ -79,16 +94,27 @@ if(!this.target || !this.entityExists(this.target,this.getEntities(coins))) this
       return controller;
     }
     getEntities(coins) {
-      var players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id && Date.now() - p.joinTime > 5000);
-      var entities = players.concat(coins);
+    var players;
+    var entities;
+    // if(this.zombie) {
+    //    players = Object.values(PlayerList.players).filter(p=>p && !p.ai && !p.zombie && p.id !== this.id && Date.now() - p.joinTime > 5000);
+    //    entities = players;
+    // } else {
+      players = Object.values(PlayerList.players).filter(p=>p && p.id !== this.id);
+      entities = coins;
+    // }
       return (this.coins < 5000 && Date.now() - this.joinTime < 5000 ? coins : (this.coins < 5000 ? entities : players));
       //return players
     }
     getTpos() {
       try {
-      return (this.target.type == "player" ? PlayerList.getPlayer(this.target.id).getSendObj().pos : this.target.pos);
+        if (this.target && this.target.type == "player") {
+          return PlayerList.getPlayer(this.target.id).getSendObj().pos;
+        } else {
+          return this.target.pos;
+        }
       } catch(e) {
-        return this.target.pos;
+        return undefined;
       }
     }
     entityExists(entity, entities) {

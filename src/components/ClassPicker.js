@@ -4,6 +4,7 @@ export default class ClassPicker extends EventEmitter {
   constructor(scene) {
     super();
 //    this.draw(scene);
+this.hideFlag = false;
 this.text1 = "Berserker";
 this.text2 = "Tank";
   }
@@ -38,8 +39,21 @@ while(this.imgObj1.displayWidth>rect.width || this.imgObj1.displayHeight>rect.he
   this.imgObj1.setScale(this.imgObj1.scale*.9);
 }
 
-  scene.add.existing(this.rect1);
+var hideRect = new Phaser.Geom.Rectangle((scene.canvas.width/2) - 40, 10, 80, 30);
+this.hideButton = new Phaser.GameObjects.Graphics(scene, { fillStyle: { color: 0x21991d } }).setDepth(99);
+this.hideButton.fillRectShape(hideRect);
+this.hideButton.setDepth(50);
+this.hideButton.setAlpha(0.9);
+this.hideButton.setInteractive(hideRect, Phaser.Geom.Rectangle.Contains);
+scene.add.existing(this.hideButton);
 
+// Adding a new hide button text
+this.hideText = scene.add.text(scene.canvas.width/2, hideRect.y + hideRect.height / 2, "Hide", { fontSize: "18px", color: "#FFFFFF" }).setOrigin(0.5).setDepth(100);
+
+  scene.add.existing(this.rect1);
+  this.hideButton.on("pointerdown", function (pointer) {
+    this.toggleVisibility();
+  }, this);
   this.rect2 = new Phaser.GameObjects.Graphics(scene, {fillStyle: {color: 0x21991d}}).setDepth(99);
   this.rect2.fillRectShape(rect2);
   this.rect2.setDepth(50);
@@ -67,8 +81,10 @@ while(this.imgObj1.displayWidth>rect.width || this.imgObj1.displayHeight>rect.he
   scene.cameras.main.ignore(this.textObj2);
   scene.cameras.main.ignore(this.imgObj1);
   scene.cameras.main.ignore(this.imgObj2);
-  
-  
+  scene.cameras.main.ignore(this.hideButton);
+  scene.cameras.main.ignore(this.hideText);
+
+
   //onclick
   this.rect1.on("pointerdown", function (pointer) {
     this.emit("class-selected", this.text1);
@@ -78,6 +94,12 @@ while(this.imgObj1.displayWidth>rect.width || this.imgObj1.displayHeight>rect.he
     this.emit("class-selected", this.text2);
   }, this);
   }
+  toggleVisibility() {
+    this.hideFlag = !this.hideFlag;
+    this.hideText.setText(this.hideFlag ? "Show" : "Hide");
+    this.rect1.visible = this.textObj1.visible = this.imgObj1.visible = !this.hideFlag;
+    this.rect2.visible = this.textObj2.visible = this.imgObj2.visible = !this.hideFlag;
+  }
   clear() {
     this.rect1?.destroy();
     this.rect2?.destroy();
@@ -85,6 +107,8 @@ while(this.imgObj1.displayWidth>rect.width || this.imgObj1.displayHeight>rect.he
     this.textObj2?.destroy();
     this.imgObj1?.destroy();
     this.imgObj2?.destroy();
+    this.hideButton?.destroy();
+    this.hideText?.destroy();
 
     this.shown = false;
   }
@@ -96,6 +120,6 @@ while(this.imgObj1.displayWidth>rect.width || this.imgObj1.displayHeight>rect.he
 
   update() {
   //  console.log("ClassPicker update");
-    
+
   }
 }

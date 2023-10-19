@@ -563,7 +563,7 @@ class GameScene extends Phaser.Scene {
 					doit = setTimeout(resize, 100);
 				  });
 				//go packet
-				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://swordbattl2-c68254602948.herokuapp.com" : "wss://sword-io-game.herokuapp.com";
+				var server = this.options.server == "eu1" ? "wss://europesword.herokuapp.com" : this.options.server == "us2" ? "wss://sb.fishymine.xyz" : "wss://sword-io-game.herokuapp.com";
 				// server = undefined; // Enable for localhost/development
 				function isPrivateIP(ip) {
 					//remove port if present
@@ -1059,7 +1059,7 @@ class GameScene extends Phaser.Scene {
 						} catch (e) {
 							// I honestly don't know why this is here, but it works so I'm not touching it
 						}
-						} else {
+						} else if(!player.zombie) {
 						this.miniMap.people.push({
 							id: player.id,
 							circle: this.add.circle(0, 0, 10, 0xFF0000)
@@ -1324,7 +1324,6 @@ class GameScene extends Phaser.Scene {
 						}
 
 						enemy.lastTick = Date.now();
-
 						enemy.playerObj = player;
 						enemy.bar.maxValue = player.maxHealth;
 						enemy.bar.setHealth(player.health);
@@ -1529,7 +1528,7 @@ class GameScene extends Phaser.Scene {
 						} else {
 
 						this.streak = 0;
-					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name}[/color][/b]`;
+					var txt = `[b][color=#e82a1f]Stabbed [/color][color=#0000FF]${enemy.playerObj.name.length < 0 ? "A Zombie" : enemy.playerObj.name}[/color][/b]`;
 						}
 					var text = this.add.rexBBCodeText(this.canvas.width/2, this.canvas.height, txt).setOrigin(0.5).setAlpha(0).setFontSize(fontsize);
 					text.setData("index", this.killtxts.length);
@@ -2242,7 +2241,7 @@ this.lastCountriesClear = Date.now();
 
 		enemies.push({playerObj: this.myObj});
 		try {
-			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse();
+			var sorted = enemies.sort((a,b) => a.playerObj.coins - b.playerObj.coins).reverse().filter(a=>!a.playerObj.zombie);
 			var text = "";
 			var amIinit = false;
 			var limit = this.mobile || this.canvas.height < 550 ? 5 : 10;
@@ -2318,7 +2317,7 @@ this.lastCountriesClear = Date.now();
 
 		try {
 			// add one because count myself
-			if(!this.spectating)	this.playerCount.setText("Players: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
+			if(!this.spectating)	this.playerCount.setText("Entities: " + (this.all.players.length+1).toString() + (this.canvas.height<550 ? "" : "\nFPS: " + Math.round(this.sys.game.loop.actualFps)+"\nTPS: "+this.tps+"\nPing: "+this.ping+" ms"));
 		} catch(e) {
 			console.log(e);
 		}

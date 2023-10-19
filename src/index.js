@@ -29,43 +29,62 @@ function handleConnection() {
 }
 
 
-
+function canvas() {
+    let downGrade = 1; // Do not change this, it breaks the game
+    return {
+        width: document.documentElement.clientWidth/downGrade,
+        height: document.documentElement.clientHeight/downGrade,
+        downGrade
+    };
+}
 
 window.addEventListener("load", () => {
+    function storageAvailable(type) {
+        try {
+            var storage = window[type],
+                x = "__storage_test__";
+            storage.setItem(x, x);
+            storage.removeItem(x);
+            return true;
+        }
+        catch(e) {
+            return false;
+        }
+    }
+
+    var sva = storageAvailable("localStorage");
+    let options;
+    if(!sva) options = {};
+    else {
+    try {
+        options = JSON.parse(window.localStorage.getItem("options"));
+    } catch (e) {
+        options = {};
+    }
+}
+    console.warn(options, "options");
 if(!navigator.onLine) handleConnection();
 var config = {
     type: Phaser.CANVAS,
-    width: document.documentElement.clientWidth,
-    height: document.documentElement.clientHeight,
+    width: canvas().width,
+    height: canvas().height,
     parent: "game",
     dom: {
         createContainer: true,
         autoCenter: Phaser.Scale.CENTER_BOTH,
     },
     scale: {
-        mode:Phaser.Scale.RESIZE,
-    }
-
+        mode:Phaser.Scale.NONE,
+    },
+    pixelArt: (options?.antiAliasing == "false") ? true : false,
+    resolution: 0.5
 };
 var mobile = window.matchMedia("(pointer: coarse)").matches;
 var game = new Phaser.Game(config);
 
 var openScene = new OpenScene();
 
-function storageAvailable(type) {
-    try {
-        var storage = window[type],
-            x = "__storage_test__";
-        storage.setItem(x, x);
-        storage.removeItem(x);
-        return true;
-    }
-    catch(e) {
-        return false;
-    }
-}
 
-var sva = storageAvailable("localStorage");
 //var sva=false
 var firstPlay = window.localStorage.getItem("lastAd") === null ? true : false;
 if(sva && firstPlay) {
@@ -82,7 +101,7 @@ document.body.style.webkitTransform =       // Chrome, Opera, Safari
  document.body.style.msTransform =          // IE 9
  document.body.style.transform = scale;     // General
 
-var adDelay = 120000;
+var adDelay = 70000;
 var gameScene = new GameScene((instantStart=false) => {
     titleScene.playPreroll = Date.now() - lastAd > adDelay;
     console.log(instantStart, "instantStart");
@@ -123,12 +142,7 @@ titleScene.instantStart = false;
 if(!mobile) titleScene.showPromo = true;
 //titleScene.showPromo = false;
 
-function canvas() {
-    return {
-        width: document.documentElement.clientWidth,
-        height: document.documentElement.clientHeight
-    };
-}
+
 
 Object.defineProperty(titleScene, "canvas", {
     get: canvas

@@ -245,6 +245,7 @@ var move = true;
 
 
            var touching = coins.filter((coin) => coin.touchingPlayer(this) && (!this.verified || coin.owner != this.name));
+    // if(this.zombie) touching = [];
 
         touching.forEach((coin) => {
           //this.coins += (this.ai?coin.value:140);
@@ -439,7 +440,10 @@ DO UPDATE SET
       }
     }
       //increment killcount by 1
-      this.kills += 1;
+      if(!enemy.zombie) {
+        this.kills += 1;
+
+      }
 
       //tell clients that this enemy died
       if(!enemy.ai && socketById) {
@@ -447,7 +451,7 @@ DO UPDATE SET
 
 
       socketById.send("youDied", {
-        killedBy: this.name,
+        killedBy: this.zombie ? "A Zombie" : this.name,
         killerVerified: this.verified,
         killedById: this.id,
         timeSurvived: Date.now() - enemy.joinTime,
@@ -462,8 +466,9 @@ DO UPDATE SET
         }]);
       }
       //drop their coins
+      // if(!enemy.zombie) {
       var drop = [];
-      var dropAmount = enemy.coins < 13 ? 10 : Math.round(enemy.coins < 25000 ? enemy.coins * 0.8 : Math.log10(enemy.coins) * 30000 - 111938.2002602);
+      var dropAmount = enemy.zombie ? enemy.coins >= 1000000 ? 3000 : 300 : enemy.coins < 13 ? 10 : Math.round(enemy.coins < 25000 ? enemy.coins * 0.8 : Math.log10(enemy.coins) * 30000 - 111938.2002602);
       var dropped = 0;
       while (dropped < dropAmount) {
         var r = enemy.radius * enemy.scale * Math.sqrt(Math.random());
@@ -482,6 +487,7 @@ DO UPDATE SET
         dropped += value;
         drop.push(coins[coins.length - 1]);
       }
+    // }
 
         io.sockets.send("coin", [drop, [enemy.pos.x, enemy.pos.y]]);
 
@@ -577,7 +583,7 @@ DO UPDATE SET
 
 
   getSendObj() {
-    return {swordInHand: this.swordInHand, country: this.country, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos, ranking: this.ranking};
+    return {swordInHand: this.swordInHand, country: this.country, skin: this.skin, abilityActive: this.abilityActive, evolution: this.evolution,verified: this.verified, damageCooldown: this.damageCooldown, joinTime: this.joinTime, skin: this.skin, id: this.id, name:this.name, health:this.health, coins: this.coins,pos:this.pos, speed:this.speed,scale:this.scale,maxHealth: this.maxHealth, mouseDown: this.mouseDown, mousePos: this.mousePos, ranking: this.ranking, zombie: this.zombie ?? undefined};
   }
 }
 

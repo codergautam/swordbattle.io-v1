@@ -8,19 +8,18 @@ Play now at [swordbattle.io](http://swordbattle.io) and see the [leaderboard](ht
 * [Forum (most active)](https://forum.codergautam.dev)
 * [Discord](https://discord.com/invite/BDG8AfkysZ)
 
-## Contributing
+## Usage
 
 A more detailed guide will be released soon but for now, follow these instructions:
 
-1. Clone this repository with `git clone` or git desktop
+1. Clone this repository with `git clone` or Github desktop
 2. Cd into your folder and run `npm i` and `node setup`
-3. After each change build with `npm run build`
+3. DEVELOPERS ONLY: After each client change, build with `npm run build` (you can alternatively use `npm run watch` to automatically build on client changes)
 4. Start the program with `node .`
-5. Create a pull request to merge into this repository
-6. A few things in [CONTRIBUTING.md](https://github.com/codergautam/swordbattle.io/blob/main/CONTRIBUTING.md)
+5. View the game by going to `localhost:3000` in your browser
 
-## Code Usage
-You can use this code as a base for your IO games, but please change it to a considerable amount to make it different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take this free code and make it proprietary.
+## License
+You can use this code as a base for your IO games, but please change it to a considerable amount to make it a different game. Under libaries and code you used, please add a link to this github respiratory. Furthermore, under the GPL License, your game **MUST** also be open source. You cannot just take this free code and make it proprietary.
 
 Thanks.
 
