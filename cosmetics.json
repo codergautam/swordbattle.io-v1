@@ -1016,6 +1016,13 @@
             "description": "Be a swordbender... Make it your own element"
         },
         {
+            "name": "acol",
+            "displayName": "Acol",
+            "url": "/assets/images/acolPlayer.png",
+            "price": 1000000,
+            "description": "The world's #1 player.."
+        }
+        {
             "name": "devil",
             "displayName": "Devil",
             "url": "/assets/images/devilPlayer.png",
@@ -1219,12 +1226,5 @@
             "price": 50000000,
             "description": "The king of the skies... and swords."
         },
-        {
-            "name": "acol",
-            "displayName": "Acol",
-            "url": "/assets/images/acolPlayer.png",
-            "price": 100000000,
-            "description": "The world's #1 player.."
-        }
     ]
 }
