@@ -88,7 +88,7 @@ const { v4: uuidv4 } = require("uuid");
 
 
 
-recaptcha = true;
+//recaptcha = true;
 
 var passwordValidator = require("password-validator");
 var schema = new passwordValidator();
