@@ -257,9 +257,9 @@ app.use(function (req, res, next) {
 });
 
 if(!fs.existsSync(__dirname+"/dist")){
-  app.get('*', (req ,res) =>{
+  app.get("*", (req ,res) =>{
     res.send("Please build the client first<br/>Run <code>npm run build</code> or <code>npm run buildbun</code> if you have bun installed");
-  })
+  });
 }
 
 app.get("/", (req, res) =>{
