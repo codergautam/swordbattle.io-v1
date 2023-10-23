@@ -870,7 +870,7 @@ let ips = {};
 app.get("/:user", async (req, res, next) => {
   if(!useDb) return res.status(500).send(dbText);
 
-  console.log("IP: " + req.ip + " is looking at " + req.params.user);
+  //console.log("IP: " + req.ip + " is looking at " + req.params.user);
   if (!ipusers[req.params.user.toLowerCase()]) {
     ipusers[req.params.user.toLowerCase()] = [];
   }
