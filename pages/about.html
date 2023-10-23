@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="referrer" content="no-referrer">
+<style>
+body {
+  font-family: Arial, Helvetica, sans-serif;
+  margin: 0;
+}
+
+html {
+  box-sizing: border-box;
+}
+
+*, *:before, *:after {
+  box-sizing: inherit;
+}
+
+.column {
+  float: left;
+  width: 33.3%;
+  margin-bottom: 16px;
+  padding: 0 8px;
+}
+
+.card {
+  box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2);
+  margin: 8px;
+}
+
+.about-section {
+  padding: 50px;
+  text-align: center;
+  background-color: #474e5d;
+  color: white;
+}
+
+.container {
+  padding: 0 16px;
+}
+
+.container::after, .row::after {
+  content: "";
+  clear: both;
+  display: table;
+}
+
+.title {
+  color: grey;
+}
+
+.button {
+  border: none;
+  outline: 0;
+  display: inline-block;
+  padding: 8px;
+  color: white;
+  background-color: #000;
+  text-align: center;
+  cursor: pointer;
+  width: 100%;
+}
+
+.button:hover {
+  background-color: #555;
+}
+
+@media screen and (max-width: 650px) {
+  .column {
+    width: 100%;
+    display: block;
+  }
+}
+</style>
+</head>
+<body>
+
+<div class="about-section">
+  <h1>The Team</h1>
+  <p>The creators of swordbattle.io</p>
+</div>
+
+<div class="row">
+  <div class="column">
+    <div class="card">
+      <center><img src="//avatars.githubusercontent.com/u/66850133?v=4" alt="Gautam" style="width:30%">
+      <div class="container">
+        <h2>Gautam</h2>
+        <p class="title">Lead Developer</p>
+        <p>Coded the core game, fixes bugs, and implements new features!</p>
+        <p>gautam#1081</p>
+        <p>EMAIL: gautam@swordbattle.io</p>
+        <p><a href="//github.com/codergautam" class="button">View Github</a></p>
+      </div>
+      </center>
+    </div>
+  </div>
+
+  <div class="column">
+    <div class="card">
+      <center>
+      <img src="https://static.wikia.nocookie.net/youtube/images/b/b5/MitBlade.jpg/revision/latest?cb=20211203065513" alt="Mit" style="width:30%">
+      <div class="container">
+        <h2>MitBlade</h2>
+        <p class="title">Bald Man</p>
+        <p>Does everything from promoting game, improving designs, and <br>hires <strike>slaves</strike> workers.<br><br>MitBlade#5878</p>
+        
+        <p><a href="//www.youtube.com/channel/UC-B5POGYapujp_RyhsBqerg" class="button">View YT</a></p>
+      </div>
+    </center>
+    </div>
+  </div>
+  
+  
+  <div class="column">
+    <div class="card">
+     <center> <img src="//i.imgur.com/R4DmAr0.jpg" alt="John" style="width:20%;height:1%;">
+      <div class="container">
+        <h2>Smiley</h2>
+        <p class="title">Artist</p>
+        <p>Makes everything from backgrounds to buttons.</p>
+        <p>Smiley the Phoenix#5757</p>
+        <p><a href="//youtube.com/channel/UCeGmm2XTUHwB7CyrMBCA5Hw" class="button">View YT</a></p>
+      </center>
+      </div>
+    </div>
+  </div>
+</div>
+<div class="column">
+  <div class="card">
+   <center> <img src="https://api-private.atlassian.com/users/210fd6f0f70852eab8b7da46b0bc74b1/avatar" alt="Phoenix" style="width:20%;height:1%;">
+    <div class="container">
+      <h2>Phoenix</h2>
+      <p class="title"><small>(ICON BROKEN)</small></p>
+      <p class="title">Artist</p>
+      <p>Specializes in skins and drawing objects.</p>
+      <p>Phoenix"#1816</p>
+
+              <p><a href="      //www.youtube.com/channel/UCAyQpjJvM7vEI7-JMd24U3Q" class="button">View YT</a></p>
+    </center>
+    </div>
+  </div>
+</div>
+</div>
+
+</body>
+</html>

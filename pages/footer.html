@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <style>
+      .footer {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
+      a {
+        color: rgb(255, 255, 255);
+        margin: 1vw;
+        font-family: "Franklin Gothic Medium", Arial, sans-serif;
+      }
+
+      a:hover {
+        color: rgb(188, 188, 188);
+      }
+
+      a:active {
+        color: rgb(128, 128, 128);
+      }
+
+      img {
+        width: auto;
+        max-height: 2.5vh;
+        background: white;
+        padding: 5px;
+        border-radius: 10px;
+      }
+
+      /*add media query at 1000 width*/
+      .footer {
+        font-size: 15px;
+      }
+      @media screen and (max-width: 833px) {
+        .footer {
+          font-size: 13px;
+        }
+        .disc {
+          height: 29px; 
+          width: auto;
+        }
+      }
+
+      @media screen and (max-width: 742px) {
+        .footer {
+          font-size: 12px;
+        }
+        .disc {
+          height: 27px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 700px) {
+        .footer {
+          font-size: 11px;
+        }
+        .disc {
+          height: 25px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 650px) {
+        .footer {
+          font-size: 10px;
+        }
+        .disc {
+          height: 10px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 600px) {
+        .footer {
+          font-size: 9px;
+        }
+        .disc {
+          height: 9px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 550px) {
+        .footer {
+          font-size: 8px;
+        }
+        .disc {
+          height: 8px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 500px) {
+        .footer {
+          font-size: 7px;
+        }
+        .disc {
+          height: 10px; 
+          width: auto;
+        }
+      }
+      @media screen and (max-width: 450px) {
+        .footer {
+          font-size: 6px;
+        }
+        .disc {
+          height: 6px; 
+          width: auto;
+        }
+      }
+
+    </style>
+  </head>
+  <body>
+    <footer class="footer">
+      <a href="/about.html" target="_blank">About</a>
+      &nbsp;&nbsp;
+      <a href="/leaderboard" target="_blank">Leaderboard</a>
+      <!--
+            &nbsp;&nbsp;
+            <a href="https://github.com/codergautam/swordbattle.io">Github</a>
+            -->
+      &nbsp;&nbsp;
+      <a href="https://forum.codergautam.dev/c/swordbattle" target="_blank"
+        >Forum</a
+      >
+      &nbsp;&nbsp;
+      <a href="https://discord.gg/9A9dNTGWb9" target="_blank">
+        <img
+        class="disc"
+          src="/assets/images/discordLogo.png"
+          alt="Discord server"
+      /></a>
+    </footer>
+  </body>
+</html>
