@@ -205,7 +205,7 @@ app.all("*", (req, res, next) => {
   // get ip from headers first
   try {
   const ip = req.headers["x-forwarded-for"].split(",")[0];
-  console.log("IP", ip);
+ // console.log("IP", ip);
   req.ip = ip;
   // if ip is in ban list, send 403
   if (moderation.bannedIps.includes(ip)) {
@@ -870,7 +870,7 @@ let ips = {};
 app.get("/:user", async (req, res, next) => {
   if(!useDb) return res.status(500).send(dbText);
 
-  console.log("IP: " + req.ip + " is looking at " + req.params.user);
+  //console.log("IP: " + req.ip + " is looking at " + req.params.user);
   if (!ipusers[req.params.user.toLowerCase()]) {
     ipusers[req.params.user.toLowerCase()] = [];
   }
