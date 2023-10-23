@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "build": "webpack --config webpack.config.js",
+    "buildbun": "bun build src/index.js --sourcemap=external --target=browser --outdir=dist && mv dist/index.js dist/main.js && mv dist/index.js.map dist/main.js.map",
     "prod": "webpack --config webpackprod.config.js",
+    "prodbun": "bun build src/index.js --minify --sourcemap=external --target=browser --outdir=dist && mv dist/index.js dist/main.js && mv dist/index.js.map dist/main.js.map", 
     "heroku-postbuild": "node setup",
     "watch": "webpack --config webpack.config.js --watch --progress",
     "test": "node index.js --unhandled-rejections=strict",

@@ -26,6 +26,7 @@ const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
+const scriptId=uuid.v4()
 
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
@@ -255,8 +256,20 @@ app.use(function (req, res, next) {
   next();
 });
 
+if(!fs.existsSync(__dirname+"/dist")){
+  app.get('*', (req ,res) =>{
+    res.send("Please build the client first<br/>Run <code>npm run build</code> or <code>npm run buildbun</code> if you have bun installed");
+  })
+}
+
+app.get("/", (req, res) =>{
+  fileCont = fs.readFileSync(__dirname+"/index.html")
+  res.send(fileCont.toString().replace("RANDOM_UUID", scriptId).replace("INSERT_RECAPTCHA_SITE_KEY", process.env.CAPTCHASITE))
+})
 app.use("/", express.static("dist"));
+app.use("/", express.static("pages"));
 app.use("/", express.static("public"));
+
 
 app.get("/", (req, res) => {
   res.send("Please build the client first<br/>Run npm run build");
