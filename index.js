@@ -205,7 +205,7 @@ app.all("*", (req, res, next) => {
   // get ip from headers first
   try {
   const ip = req.headers["x-forwarded-for"].split(",")[0];
-  console.log("IP", ip);
+ // console.log("IP", ip);
   req.ip = ip;
   // if ip is in ban list, send 403
   if (moderation.bannedIps.includes(ip)) {
