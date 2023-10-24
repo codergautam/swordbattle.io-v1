@@ -26,7 +26,7 @@ const bcrypt = require("bcrypt");
 var uuid = require("uuid");
 var fs = require("fs");
 var process = require("process");
-const scriptId=uuid.v4()
+const scriptId=uuid.v4();
 
 const Filtery = require("purgomalum-swear-filter");
 const filtery = new Filtery();
