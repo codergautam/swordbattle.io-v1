@@ -35,7 +35,7 @@ var ipInfo = require("ip-info-finder");
 
 var usewebhook = false;
 var useDb = process.env.DATABASE_URL ? true : false;
-const dbText = "Database not connected. Enable your database using this tutorial: https://iogames.forum/t/integrating-database-to-swordbattle-v1-code/13458"
+const dbText = "Database not connected. Enable your database using this tutorial: https://iogames.forum/t/integrating-database-to-swordbattle-v1-code/13458";
 console.log(useDb ? "Using database" : "Not using database");
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
@@ -263,9 +263,9 @@ if(!fs.existsSync(__dirname+"/dist")){
 }
 
 app.get("/", (req, res) =>{
-  fileCont = fs.readFileSync(__dirname+"/index.html")
+  fileCont = fs.readFileSync(__dirname+"/index.html");
   res.send(fileCont.toString().replace("RANDOM_UUID", scriptId).replace("INSERT_RECAPTCHA_SITE_KEY", process.env.CAPTCHASITE))
-})
+});
 app.use("/", express.static("dist"));
 app.use("/", express.static("pages"));
 app.use("/", express.static("public"));
