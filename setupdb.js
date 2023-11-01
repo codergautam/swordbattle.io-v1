@@ -64,7 +64,8 @@ async function createAccounts() {
     username text NOT NULL,
     created_at timestamp without time zone NOT NULL DEFAULT now(),
     id serial NOT NULL,
-    lastusernamechange timestamp(6) without time zone NULL
+    lastusernamechange timestamp(6) without time zone NULL,
+    coins integer NOT NULL DEFAULT 0
   );`;
 }
 async function createStats() {
