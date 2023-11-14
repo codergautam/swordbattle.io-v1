@@ -183,7 +183,7 @@ try {
         const data = await response.json();
         return data;
       } catch (error) {
-        console.error('Error fetching data:', error);
+        console.error("Error fetching data:", error);
         return [];
       }
     }
@@ -196,7 +196,7 @@ try {
 
       data.forEach((item) => {
         const itemDiv = document.createElement("div");
-        itemDiv.classList.add('featured-item');
+        itemDiv.classList.add("Featured-item");
 
         const thumbnailImg = document.createElement("img");
         thumbnailImg.src = item.source == "youtube" ? "https://www.cdnlogo.com/logos/y/84/youtube.svg" : "/assets/images/sword.png";
@@ -357,7 +357,7 @@ try {
         let debugMode = false;
         try {
           const urlParams = new URLSearchParams(window.location.search);
-          const ad = urlParams.get('debugAd');
+          const ad = urlParams.get("debugAd");
           if(ad) {
             debugMode = true;
           }
@@ -393,7 +393,7 @@ try {
                   let failed= false;
                   try {
                     const urlParams = new URLSearchParams(window.location.search);
-                    const ad = urlParams.get('debugAd');
+                    const ad = urlParams.get("debugAd");
                     if(ad) {
                       alert(evt+ " ad completed");
                     }
@@ -429,7 +429,7 @@ transform: translateX(-50%);
             // Check url query param
             try {
             const urlParams = new URLSearchParams(window.location.search);
-            const ad = urlParams.get('debugAd');
+            const ad = urlParams.get("debugAd");
             if(ad) {
               alert("Ad failed to load -- aiptag is undefined");
             }
@@ -965,7 +965,7 @@ document.getElementById("shopFrame").style.display = "none";
 
     // console.log(this.canvas.width + " " + this.canvas.height, this.canvas.width / this.canvas.height);
     this.featured.y = this.canvas.height/3;
-    this.featured.setScale(0.9)
+    this.featured.setScale(0.9);
     if(this.canvas.width < 1000 || this.canvas.height < 700 || this.mobile) {
       if(this.mobile) {
       this.featured.visible = false;

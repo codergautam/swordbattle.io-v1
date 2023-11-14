@@ -108,7 +108,7 @@ var gameScene = new GameScene((instantStart=false) => {
     titleScene.instantStart = instantStart;
     firstPlay = false;
 });
-console.log(Date.now()-lastAd, "lastAd")
+console.log(Date.now()-lastAd, "lastAd");
 var titleScene = new TitleScene(((Date.now() - lastAd > adDelay) && !firstPlay), (name, music, secret, adFailed = false) => {
     gameScene.name = name;
     gameScene.options = titleScene.options;
@@ -119,7 +119,7 @@ var titleScene = new TitleScene(((Date.now() - lastAd > adDelay) && !firstPlay),
     titleScene.scene.start("game");
     titleScene.showPromo = false;
     if(!adFailed) {
-    console.log(Date.now()-lastAd, "lastAd")
+    console.log(Date.now()-lastAd, "lastAd");
 
     if(( Date.now() - lastAd > adDelay)) {
         if(sva){
@@ -130,7 +130,7 @@ var titleScene = new TitleScene(((Date.now() - lastAd > adDelay) && !firstPlay),
     }
 }
 }else {
-    console.log("ad failed")
+    console.log("ad failed");
 }
 });
 
