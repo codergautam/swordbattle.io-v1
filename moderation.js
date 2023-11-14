@@ -86,7 +86,7 @@ module.exports = {
 
               if (module.exports.bannedIps.includes(ip))
               module.exports.bannedIps = module.exports.bannedIps.filter((b) => b != ip);
-              res.send("unbanned "+ip.replace("<", "&lt;").replace(">", "$gt;"));
+              res.send("unbanned "+ip.replaceAll("<", "&lt;").replaceAll(">", "$gt;"));
             } else {
               res.send("idot");
             }
