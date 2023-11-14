@@ -179,7 +179,7 @@ try {
     this.featured = this.add.dom(0, this.canvas.height/3).createFromCache("featured").setOrigin(0).setScale(this.mobile ? 0 : 1);
     async function fetchData() {
       try {
-        const response = await fetch('/api/getfeaturedcontent');
+        const response = await fetch("/api/getfeaturedcontent");
         const data = await response.json();
         return data;
       } catch (error) {
@@ -191,23 +191,23 @@ try {
     // Function to render the featured items in the widget
     // Function to render the featured items in the widget
     function renderWidget(data) {
-      const featuredContentDiv = document.getElementById('featured-content');
-      featuredContentDiv.innerHTML = '';
+      const featuredContentDiv = document.getElementById("featured-content");
+      featuredContentDiv.innerHTML = "";
 
       data.forEach((item) => {
-        const itemDiv = document.createElement('div');
+        const itemDiv = document.createElement("div");
         itemDiv.classList.add('featured-item');
 
-        const thumbnailImg = document.createElement('img');
-        thumbnailImg.src = item.source == "youtube" ? 'https://www.cdnlogo.com/logos/y/84/youtube.svg' : '/assets/images/sword.png';
+        const thumbnailImg = document.createElement("img");
+        thumbnailImg.src = item.source == "youtube" ? "https://www.cdnlogo.com/logos/y/84/youtube.svg" : "/assets/images/sword.png";
 
-        const contentDiv = document.createElement('div');
-        contentDiv.classList.add('featured-item-content');
+        const contentDiv = document.createElement("div");
+        contentDiv.classList.add("featured-item-content");
 
-        const titleH3 = document.createElement('h3');
+        const titleH3 = document.createElement("h3");
         titleH3.textContent = item.title;
 
-        const authorP = document.createElement('p');
+        const authorP = document.createElement("p");
         authorP.textContent = item.author;
         if(item.label) {
           authorP.innerHTML += ` - <span style="color: orange; font-weight: bold;">${item.label}</span>`;
@@ -220,8 +220,8 @@ try {
         itemDiv.appendChild(contentDiv);
 
         // Add an event listener to open the content link when clicked
-        itemDiv.addEventListener('click', () => {
-          window.open(item.link, '_blank');
+        itemDiv.addEventListener("click", () => {
+          window.open(item.link, "_blank");
         });
 
         featuredContentDiv.appendChild(itemDiv);
