@@ -9,7 +9,7 @@ module.exports = {
 		"ecmaVersion": 13,
 		"sourceType": "module"
 	},
-	"ignorePatterns": ["dist/*.js"],
+	"ignorePatterns": ["dist/*.js", "public/joystick.js", "public/textplus.js"],
 	"rules": {
 		"linebreak-style": [
 			"error",
