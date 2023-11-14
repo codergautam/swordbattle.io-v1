@@ -1,6 +1,6 @@
-replit = false
+replit = false;
 if (process.env["REPLIT_DB_URL"]){
-	replit = true
+	replit = true;
 }
 const fs = require("fs");
 const {execSync} = require("child_process");
@@ -57,8 +57,8 @@ if(!process.env.hasOwnProperty("TOKEN") & !replit) {
 
 if(!process.env.hasOwnProperty("TOKEN") & replit){
 	console.log("👀 We're getting you set up.\n");
-	console.log("⚠️ You are using replit and therefore we can not use dotenv. please go to the secrets tab press open raw editor and paste content from env.json\n")
-	buf = Buffer.from(testenv)
+	console.log("⚠️ You are using replit and therefore we can not use dotenv. please go to the secrets tab press open raw editor and paste content from env.json\n");
+	buf = Buffer.from(testenv);
 	fs.writeFileSync("env.json", JSON.stringify(dotenv.parse(buf)));
 	fs.writeFileSync("config.json", defaultconfig);
 	console.log("⚒️ Installing dependencies... \n");
