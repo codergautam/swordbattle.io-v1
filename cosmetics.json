@@ -8,14 +8,6 @@
             "description": "The default skin"
         },
         {
-            "name": "pumpkin",
-            "displayName": "Pumpkin",
-            "url": "/assets/images/pumpkinPlayer.png",
-            "price": 0,
-            "original": 52500,
-            "description": "Very spooky..."
-        },
-        {
             "name": "yinyang",
             "displayName": "Yin Yang",
             "url": "/assets/images/yinyangPlayer.png",
@@ -357,6 +349,13 @@
             "url": "/assets/images/medicPlayer.png",
             "price": 50000,
             "description": "Heal.. or Stab..."
+        },
+        {
+            "name": "pumpkin",
+            "displayName": "Pumpkin",
+            "url": "/assets/images/pumpkinPlayer.png",
+            "price": 52500,
+            "description": "Very spooky..."
         },
         {
             "name": "floral",
