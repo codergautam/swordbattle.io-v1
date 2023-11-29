@@ -52,7 +52,7 @@ Hook.success(process.env.SERVER, "Server started");
 }
 var serverState = "running";
 
-var map = 15000;
+var map = 30000;
 //var cors = require("cors");
 
 var server;
