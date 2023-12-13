@@ -11,10 +11,6 @@ module.exports = {
 	},
 	"ignorePatterns": ["dist/*.js", "public/joystick.js", "public/textplus.js"],
 	"rules": {
-		"linebreak-style": [
-			"error",
-			"unix"
-		],
 		"quotes": [
 			"error",
 			"double"

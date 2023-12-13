@@ -162,7 +162,9 @@ var progress = 1 - (remainder / total);
         this.load.audio("chestHit", "/assets/sound/chesthit.wav");
 
 
-        this.load.image("opening", "/assets/images/openingFall.png");
+        // this.load.image("opening", "/assets/images/openingFall.png");
+        this.load.image("opening", "/assets/images/opening.png");
+
         this.load.html("title", "/title.html");
         this.load.html("promo", "/promo.html");
         this.load.html("login", "/login.html");
