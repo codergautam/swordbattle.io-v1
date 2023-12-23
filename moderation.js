@@ -1,6 +1,6 @@
 const PlayerList = require("./classes/PlayerList");
 const { timingSafeEqual } = require("crypto");
-const tokenBuf=Buffer.from(process.env.TOKEN);
+const tokenBuf=Buffer.from(process.env.TOKEN ?? '');
 const tokenBufLen=Buffer.byteLength(tokenBuf);
 /**
  * Validate the token that the user provides.
