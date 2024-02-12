@@ -1,3 +1,10 @@
+# End of Support
+
+It's been a long journey of me maintaining this [mess of a codebase](https://iogames.forum/t/announcing-swordbattle-io-v2-0/2484) for 2+ years and I think it's time to move on... I will no longer be actively maintaining the legacy codebase.
+
+The adventure doesn't stop here! Check out the new and updated swordbattle code [here](https://github.com/codergautam/swordbattle.io)!
+
+
 # Welcome!
 
 Swordbattle.io is a multiplayer game where players fight each other with diffrent 2D swords, and try to gain coins. The more coins you have, the bigger and powerful you get! Try to become the biggest of them all.
