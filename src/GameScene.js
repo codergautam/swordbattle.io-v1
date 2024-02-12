@@ -1930,7 +1930,7 @@ class GameScene extends Phaser.Scene {
 						(coin?this.coin:this.chestOpen).play();
 					}
 					// eslint-disable-next-line semi
-					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0}
+					if(this.coins.find(coin => coin.id == coinId)) this.coins.find(coin => coin.id == coinId).state = {collected: true, collectedBy: playerId, time: 0};
 					else if(this.chests.find(chest => chest.id == coinId)) {
 						var chest = this.chests.find(chest => chest.id == coinId);
 

@@ -34,7 +34,7 @@ var ipInfo = require("ip-info-finder");
 
 var usewebhook = false;
 var useDb = process.env.DATABASE_URL ? true : false;
-const dbText = "Database not connected. Enable your database using this tutorial: https://iogames.forum/t/integrating-database-to-swordbattle-v1-code/13458"
+const dbText = "Database not connected. Enable your database using this tutorial: https://iogames.forum/t/integrating-database-to-swordbattle-v1-code/13458";
 console.log(useDb ? "Using database" : "Not using database");
 if(process.env.hasOwnProperty("WEBHOOK_URL")) usewebhook = true;
 
