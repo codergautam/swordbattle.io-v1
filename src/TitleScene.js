@@ -93,7 +93,7 @@ try {
           pings.push(res3);
           //now calculate the optimal server.
           if (pings.filter(p => p.error).length == pings.length) {
-            alert("Could not find an available server. Please try again later.");
+            // alert("Could not find an available server. Please try again later.");
           } else {
 
             var scores = pings.map(p => (p.ping*3) - (p.info.actualPlayercount ? p.info.actualPlayercount * 50 : 0) + (p.info.lag == "No lag" ? 0 : p.info.lag == "Moderate lag" ? 250 : 1000) + (p.info.actualPlayercount > 10 ? Math.abs(p.info.actualPlayercount-10)*100: 0) + (p.info.actualPlayercount < 3 ? Math.abs(p.info.actualPlayercount)*200: 0)).map((p) => !p ? Infinity : p);
@@ -631,6 +631,7 @@ transform: translateX(-50%);
 this.shopLoading = false;
 document.getElementById("shopFrame").style.display = "none";
 
+
     this.shopBtn = new ImgButton(this, 10, 10, "shopBtn", () => {
       if(this.shopLoading) return;
       if(this.nameBox.getChildByName("btn").innerHTML == "Connecting..") return;
@@ -661,12 +662,14 @@ document.getElementById("shopFrame").style.display = "none";
 
 
     });
+    // hide it
+    this.shopBtn.btn.visible = false;
     this.shopBtn.btn.setScale(this.canvas.width / 6000);
     //increase scale times 5
     this.shopBtn.btn.setScale(this.shopBtn.btn.scale * 4);
 
     var createButtons = () => {
-      if (loggedIn) return;
+      if (true) return;
       this.loginButton = new ImgButton(this, this.canvas.width - (this.canvas.width > 610 ? 300 : 100), 0, "loginbtn", () => {
         if (this.promo && this.promo.visible) return;
         if (this.signup && this.signup.visible) return;
